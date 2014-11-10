@@ -35,6 +35,8 @@ typedef struct {
 	Point3F point0;
 	Point3F point1;
 	Point3F point2;
+
+	Point3F normal;
 } Triangle;
 
 //TRIGGER WARNING: LOTS OF GLOBAL VARIABLES. I BET "NOBODY" WOULD LOVE THIS.
@@ -122,6 +124,7 @@ void generateTriangles() {
 					gTriangles[triIndex].point0 = interior->point[interior->index[k + 0]];
 					gTriangles[triIndex].point1 = interior->point[interior->index[k + 1]];
 					gTriangles[triIndex].point2 = interior->point[interior->index[k + 2]];
+					gTriangles[triIndex].normal = interior->normal[interior->plane[surface.planeIndex].normalIndex];
 					triIndex ++;
 				}
 			}
@@ -133,6 +136,8 @@ void render() {
 	//Load the model matrix
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+//	glEnable(GL_CULL_FACE);
 
 	//Camera
 	glm::mat4x4 cameraMatrix = glm::mat4x4(1);
@@ -166,6 +171,7 @@ void render() {
 		glVertex3f(gTriangles[i].point2.x, gTriangles[i].point2.z, -gTriangles[i].point2.y);
 	}
 	glEnd();
+//	glDisable(GL_CULL_FACE);
 }
 
 void loop() {
