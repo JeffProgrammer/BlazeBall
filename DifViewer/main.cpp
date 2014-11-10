@@ -27,6 +27,10 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 
+#include <glm/matrix.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/vec3.hpp>
+
 typedef struct {
 	Point3F point0;
 	Point3F point1;
@@ -47,8 +51,9 @@ SDL_Window *gWindow;
 SDL_GLContext gContext;
 GLfloat gAngle;
 
-GLfloat gCameraPos[3] = {0.f, 0.f, 0.f};
-GLfloat gCameraRot[2] = {0.f, 0.f};
+float gYaw, gPitch;
+glm::vec3 gCameraPosition;
+
 static float gCameraSpeed = 0.1f;
 static float gMovementSpeed = 0.2f;
 
@@ -129,9 +134,11 @@ void render() {
 	glLoadIdentity();
 
 	//Camera
-	glTranslatef(gCameraPos[0], gCameraPos[1], gCameraPos[2]);
-	glRotatef(gCameraRot[0], 1.f, 0, 0);
-	glRotatef(gCameraRot[1], 0, 1.f, 0);
+	glm::mat4x4 cameraMatrix = glm::mat4x4(1);
+	cameraMatrix = glm::rotate(cameraMatrix, gPitch, glm::vec3(1, 0, 0));
+	cameraMatrix = glm::rotate(cameraMatrix, gYaw, glm::vec3(0, 1, 0));
+	cameraMatrix = glm::translate(cameraMatrix, gCameraPosition);
+	glLoadMatrixf(&cameraMatrix[0][0]);
 
 	//Clear
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -156,10 +163,21 @@ void render() {
 
 void loop() {
 	//Basic movement
-	if (movement[0]) gCameraPos[2] += gMovementSpeed;
-	if (movement[1]) gCameraPos[2] -= gMovementSpeed;
-	if (movement[2]) gCameraPos[0] += gMovementSpeed;
-	if (movement[3]) gCameraPos[0] -= gMovementSpeed;
+	glm::mat4x4 delta = glm::mat4x4(1);
+
+	delta = glm::rotate(delta, -gYaw, glm::vec3(0, 1, 0));
+	delta = glm::rotate(delta, -gPitch, glm::vec3(1, 0, 0));
+
+	float speed = gMovementSpeed;
+	if (mouseButtons[1])
+		speed *= 2.f;
+
+	if (movement[0]) delta = glm::translate(delta, glm::vec3(0, 0, speed));
+	if (movement[1]) delta = glm::translate(delta, glm::vec3(0, 0, -speed));
+	if (movement[2]) delta = glm::translate(delta, glm::vec3(speed, 0, 0));
+	if (movement[3]) delta = glm::translate(delta, glm::vec3(-speed, 0, 0));
+
+	gCameraPosition += glm::vec3(delta[3]);
 }
 
 bool initGL() {
@@ -217,8 +235,8 @@ void handleEvent(SDL_Event *event) {
 	}
 	//Mouse for rotation
 	if (event->type == SDL_MOUSEMOTION) {
-		gCameraRot[1] += (GLfloat)((SDL_MouseMotionEvent *)event)->xrel * gCameraSpeed;
-		gCameraRot[0] += (GLfloat)((SDL_MouseMotionEvent *)event)->yrel * gCameraSpeed;
+		gYaw += (GLfloat)((SDL_MouseMotionEvent *)event)->xrel * gCameraSpeed;
+		gPitch += (GLfloat)((SDL_MouseMotionEvent *)event)->yrel * gCameraSpeed;
 	}
 }
 
