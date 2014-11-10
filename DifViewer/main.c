@@ -33,6 +33,8 @@ typedef struct {
 	Point3F point2;
 } Triangle;
 
+//TRIGGER WARNING: LOTS OF GLOBAL VARIABLES. I BET "NOBODY" WOULD LOVE THIS.
+
 DIF *gDif;
 
 U32 gTriangleCount;
@@ -49,6 +51,9 @@ GLfloat gCameraRot[2] = {0.f, 0.f};
 bool movement[4] = {false, false, false, false};
 
 GLfloat *hsvToRGB(GLfloat h, GLfloat s, GLfloat v) {
+	//https://en.wikipedia.org/wiki/HSL_and_HSV#Converting_to_RGB
+	//Lazy!
+
 	GLfloat *rgb = malloc(sizeof(GLfloat) * 3);
 	GLfloat c = v * s;
 	GLint hp = (GLint)(h * 6.f);
@@ -72,6 +77,7 @@ void generateTriangles() {
 		for (U32 j = 0; j < interior->numSurfaces; j ++) {
 			Surface surface = interior->surface[j];
 			U8 windingCount = surface.windingCount;
+			//Triangles = (points - 2)
 			windingCount -= 2;
 			gTriangleCount += windingCount;
 		}
@@ -80,6 +86,12 @@ void generateTriangles() {
 	gTriangles = malloc(sizeof(Triangle) * gTriangleCount);
 	U32 triIndex = 0;
 
+	//Geometry is structured as lists of windings (point indices)
+	//Windings are in order, forming triangle strips from the points.
+	//
+	// It makes sense if you think about it.
+
+	//Actual generation
 	for (U32 i = 0; i < gDif->numDetailLevels; i ++) {
 		Interior *interior = gDif->interior[i];
 
@@ -89,11 +101,11 @@ void generateTriangles() {
 			U32 windingStart = surface.windingStart;
 			U8 windingCount = surface.windingCount;
 
+			//Triangle strips, but not how we want them. Somehow. I don't know; this actually works though.
 			windingCount -= 2;
 
-			U32 material = surface.textureIndex;
-
 			for (U32 k = windingStart; k < windingStart + windingCount; k ++) {
+				//Build triangles
 				gTriangles[triIndex].point0 = interior->point[interior->index[k + 0]];
 				gTriangles[triIndex].point1 = interior->point[interior->index[k + 1]];
 				gTriangles[triIndex].point2 = interior->point[interior->index[k + 2]];
@@ -104,35 +116,38 @@ void generateTriangles() {
 }
 
 void render() {
+	//Load the model matrix
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
+	//Camera
 	glTranslatef(gCameraPos[0], gCameraPos[1], gCameraPos[2]);
-	
 	glRotatef(gCameraRot[0], 1.f, 0, 0);
 	glRotatef(gCameraRot[1], 0, 1.f, 0);
 
+	//Clear
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0, 0, 0, -1.0f);
 
-	glEnable(GL_TEXTURE_2D);
-
+	//Actual rendering is here (GL 1.1 in a 2.1 context. Take THAT, good practice!)
+	//TODO: VBOs
 	glBegin(GL_TRIANGLES);
 	for (U32 i = 0; i < gTriangleCount; i ++) {
+		//Triangle-based color (probably)
 		GLfloat *rgb = hsvToRGB((GLfloat)i / (GLfloat)gTriangleCount, 1.f, 1.f);
 		glColor3f(rgb[0], rgb[1], rgb[2]);
 		free(rgb);
 
+		//Lazy, also wrong because Torque swaps y/z
 		glVertex3fv(&gTriangles[i].point0);
 		glVertex3fv(&gTriangles[i].point1);
 		glVertex3fv(&gTriangles[i].point2);
 	}
 	glEnd();
-
-	glDisable(GL_TEXTURE_2D);
 }
 
 void loop() {
+	//Basic movement
 	if (movement[0]) gCameraPos[2] += 0.2;
 	if (movement[1]) gCameraPos[2] -= 0.2;
 	if (movement[2]) gCameraPos[0] += 0.2;
@@ -144,11 +159,13 @@ bool initGL() {
 	glClearColor(0.f, 0.f, 0.f, 1.f);
 	glClearDepth(1.0f);
 
+	//Enable and set some shit for rendering
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glShadeModel(GL_SMOOTH);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
+	//Window size for viewport
 	int w, h;
 	SDL_GetWindowSize(gWindow, &w, &h);
 
@@ -164,14 +181,19 @@ bool initGL() {
 }
 
 void handleEvent(SDL_Event *event) {
+	//Quit
 	if (event->type == SDL_QUIT) {
 		gRunning = false;
 	}
+	//Window resize
 	if (event->type == SDL_WINDOWEVENT) {
+		//Just reinit (lazy)
 		initGL();
 	}
+	//Key events, movement
 	if (event->type == SDL_KEYDOWN) {
 		switch (((SDL_KeyboardEvent *)event)->keysym.scancode) {
+			//Same for Colemak...
 			case SDL_SCANCODE_W: movement[0] = true; break;
 			case SDL_SCANCODE_S: movement[1] = true; break;
 			case SDL_SCANCODE_A: movement[2] = true; break;
@@ -185,21 +207,20 @@ void handleEvent(SDL_Event *event) {
 			case SDL_SCANCODE_D: movement[3] = false; break;
 		}
 	}
+	//Mouse for rotation
 	if (event->type == SDL_MOUSEMOTION) {
 		gCameraRot[1] += (GLfloat)((SDL_MouseMotionEvent *)event)->xrel * 0.1f;
 		gCameraRot[0] += (GLfloat)((SDL_MouseMotionEvent *)event)->yrel * 0.1f;
-		int w, h;
-		SDL_GetWindowSize(gWindow, &w, &h);
-		SDL_WarpMouseInWindow(gWindow, w / 2, h / 2);
 	}
 }
 
 bool init() {
+	//Load our map into triangles (global var warning)
 	generateTriangles();
-
 
 	gRunning = true;
 
+	//Init SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		return false;
 	}
@@ -208,6 +229,7 @@ bool init() {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
+	//Create the window
 	if ((gWindow = SDL_CreateWindow("DIF Viewer", 0, 0, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI)) == NULL) {
 		return false;
 	}
@@ -222,6 +244,7 @@ bool init() {
 		return false;
 	}
 
+	//Lock cursor
 	SDL_SetRelativeMouseMode(true);
 
 	//Initialize OpenGL
@@ -232,28 +255,37 @@ bool init() {
 }
 
 void cleanup() {
+	//Destroy the SDL
 	SDL_Quit();
 }
 
 void run() {
+	//Init SDL
 	if (!init()) {
 		exit(-1);
 	}
 
 	SDL_Event event;
 
+	//Main loop
 	while (gRunning) {
+		//Profiling
 		struct timeval startTime, endTime;
 		gettimeofday(&startTime, NULL);
 
+		//Input
 		while (SDL_PollEvent(&event)) {
 			handleEvent(&event);
 		}
 
+		//Hard work
 		loop();
 		render();
 
+		//Flip buffers
 		SDL_GL_SwapWindow(gWindow);
+
+		//Profiling
 		gettimeofday(&endTime, NULL);
 
 		long long start = startTime.tv_usec + (startTime.tv_sec * 1000000ULL);
@@ -262,24 +294,35 @@ void run() {
 		printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
 	}
 
+	//Clean up (duh)
 	cleanup();
 }
 
 int main(int argc, const char * argv[])
 {
+	//Usage prompt
 	if (argc < 2) {
 		printf("Usage: %s <file>\n", argv[0]);
 		return 1;
 	}
 
+	//Open file
 	FILE *file = fopen(argv[1], "r");
+
+	//Read the .dif
 	gDif = dif_read_file(file);
 
+	//Clean up
+	fclose(file);
+
+	//Will return an error (or SEGFAULT) if there's a format error
 	if (gDif) {
+		//Init SDL and go!
 		run();
+
+		//Clean up
 		dif_release(gDif);
 	}
-	fclose(file);
 
 	return 0;
 }

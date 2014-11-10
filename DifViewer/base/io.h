@@ -20,6 +20,7 @@
 
 #include "types.h"
 
+//Base types
 U64 readU64(FILE **file);
 U32 readU32(FILE **file);
 U16 readU16(FILE **file);
@@ -31,6 +32,7 @@ S32 readS32(FILE **file);
 S16 readS16(FILE **file);
 S8  readS8 (FILE **file);
 
+//Structures
 PlaneF     readPlaneF(FILE **file);
 Point3F    readPoint3F(FILE **file);
 QuatF      readQuatF(FILE **file);
@@ -41,9 +43,11 @@ String     readString(FILE **file);
 void       readPNG(FILE **file);
 Dictionary readDictionary(FILE **file);
 
+//Mem mgt
 void releaseString(String string);
 void releaseDictionary(Dictionary dictionary);
 
+//Warning: Lazy!
 
 #define READ(type) read##type(&file)
 #define READVAR(name, type) type name = read##type(&file)

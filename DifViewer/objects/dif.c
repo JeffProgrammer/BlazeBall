@@ -21,6 +21,9 @@
 #include "dif.h"
 
 DIF *dif_read_file(FILE *file) {
+	//http://rustycode.com/tutorials/DIF_File_Format_44_14.html
+	// Someone give that guy all the cookies.
+
 	DIF *dif = malloc(sizeof(DIF));
 
 	READCHECK(U32, 44); //interiorResourceFileVersion

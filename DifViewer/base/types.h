@@ -18,6 +18,7 @@
 #ifndef types_h
 #define types_h
 
+//Base types (names stolen from TGE because lazy)
 typedef unsigned char      U8;
 typedef unsigned short     U16;
 typedef unsigned int       U32;
@@ -30,9 +31,11 @@ typedef signed long long S64;
 
 typedef float F32;
 
+//Pointer types
 typedef U8 * String;
-typedef U8 * PNG;
+typedef U8 * PNG; //unused
 
+//More names stolen from TGE
 typedef struct {
 	F32 x;
 	F32 y;

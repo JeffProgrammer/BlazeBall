@@ -35,6 +35,7 @@
 
 /* Begin PBXFileReference section */
 		B5099DAE1A10127F0005DAC6 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		B5201D7F1A103FB10084D459 /* DIF_MB_SPEC.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = DIF_MB_SPEC.rtf; path = "/Applications/MarbleBlast/MarbleBlast Platinum/MBP1.20-broken/Project/Docs/Reference/DIF_MB_SPEC.rtf"; sourceTree = "<absolute>"; };
 		B54F9D991A10399D00F550EA /* io.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = io.c; sourceTree = "<group>"; };
 		B54F9D9A1A10399D00F550EA /* io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = io.h; sourceTree = "<group>"; };
 		B54F9D9B1A10399D00F550EA /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
@@ -55,7 +56,7 @@
 		B54F9DAB1A10399D00F550EA /* trigger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trigger.h; sourceTree = "<group>"; };
 		B54F9DAC1A10399D00F550EA /* vehicleCollision.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vehicleCollision.c; sourceTree = "<group>"; };
 		B54F9DAD1A10399D00F550EA /* vehicleCollision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vehicleCollision.h; sourceTree = "<group>"; };
-		B5BF4D631A0BF42900BF0956 /* DifThing */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DifThing; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5BF4D631A0BF42900BF0956 /* DifViewer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DifViewer; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5D92CA61A100DD7000A36CB /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -111,6 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				B5BF4D651A0BF42900BF0956 /* DifViewer */,
+				B5201D7F1A103FB10084D459 /* DIF_MB_SPEC.rtf */,
 				B5099DAE1A10127F0005DAC6 /* OpenGL.framework */,
 				B5D92CA61A100DD7000A36CB /* SDL2.framework */,
 				B5BF4D641A0BF42900BF0956 /* Products */,
@@ -120,7 +122,7 @@
 		B5BF4D641A0BF42900BF0956 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B5BF4D631A0BF42900BF0956 /* DifThing */,
+				B5BF4D631A0BF42900BF0956 /* DifViewer */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -128,8 +130,8 @@
 		B5BF4D651A0BF42900BF0956 /* DifViewer */ = {
 			isa = PBXGroup;
 			children = (
-				B54F9D981A10399D00F550EA /* base */,
 				B54F9D9C1A10399D00F550EA /* main.c */,
+				B54F9D981A10399D00F550EA /* base */,
 				B54F9D9D1A10399D00F550EA /* objects */,
 			);
 			name = DifViewer;
@@ -153,7 +155,7 @@
 			);
 			name = DifViewer;
 			productName = DifThing;
-			productReference = B5BF4D631A0BF42900BF0956 /* DifThing */;
+			productReference = B5BF4D631A0BF42900BF0956 /* DifViewer */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */

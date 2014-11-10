@@ -76,6 +76,7 @@ F32 readF32(FILE **file) {
 	return value;
 }
 
+//Lazy!
 S64 readS64(FILE **file) { return (S64)readU64(file); }
 S32 readS32(FILE **file) { return (S32)readU32(file); }
 S16 readS16(FILE **file) { return (S16)readU16(file); }
@@ -137,11 +138,14 @@ ColorF readColorF(FILE **file) {
 }
 
 String readString(FILE **file) {
+	//<length><bytes>
+
 	U8 length = readU8(file);
 	String value = (String)malloc(length + 1);
 	for (int i = 0; i < length; i ++) {
 		value[i] = readU8(file);
 	}
+	//Null-terminate
 	value[length] = 0;
 	return value;
 }
@@ -149,12 +153,14 @@ String readString(FILE **file) {
 void readPNG(FILE **file) {
 	U8 PNGFooter[8] = {0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82};
 
+	//Basically throw out everything. Yeah.
 	for (int i = 0; i < sizeof(PNGFooter) / sizeof(PNGFooter[0]); i ++) {
 		while (readU8(file) != PNGFooter[i]);
 	}
 }
 
 Dictionary readDictionary(FILE **file) {
+	//<length>[<name><value>]...
 	Dictionary value;
 	U32 size = readU32(file);
 	value.size = size;
@@ -169,6 +175,7 @@ Dictionary readDictionary(FILE **file) {
 	return value;
 }
 
+//Mem mgt
 void releaseString(String string) {
 	free(string);
 }
