@@ -1,0 +1,463 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fswiss\fcharset0 Arial;}}
+{\colortbl ;\red255\green0\blue0;\red128\green128\blue128;\red0\green0\blue0;\red192\green192\blue192;}
+{\*\generator Msftedit 5.41.21.2500;}\viewkind4\uc1\pard\f0\fs20 version 1\par
+--------------------------------------------\par
+DIF File Format Specification\par
+\par
+InteriorResource Version \cf1 MARBLE_BLAST_GOLD\cf0\par
+Interior Version \cf1 MARBLE_BLAST_GOLD\cf0\par
+\par
+ORIGINAL DOCUMENTATION:\par
+\cf2 (InteriorResourceFileVersion 44; InteriorFileVersion 14)\cf0\par
+http://rustycode.com/tutorials/DIF_File_Format_44_14.html\par
+\par
+KEY:\par
+\cf1 Red:\cf3  Change/Addition (compared to v44_14).\cf1\par
+\cf2 Dark grey: \cf3 Not tested (usually unused features).\cf2\par
+\cf4 Light grey:\cf3  Not included in this version.\cf0\par
+ \par
+U32 interiorResourceFileVersion\par
+bool previewIncluded \par
+\cf2      if (previewIncluded) \par
+          PNG previewBitmap \cf0\par
+U32 numDetailLevels \par
+     for 0 to numDetailLevels \par
+          Interior  \par
+               U32 interiorFileVersion\par
+               U32 detailLevel\par
+               U32 minPixels\par
+               BoxF boundingBox\par
+               SphereF boundingSphere\par
+               Bool hasAlarmState\par
+               U32 numLightStateEntries\par
+               U32 numNormals\par
+                    for 0 to numNormals\par
+                         Point3F normal\par
+               U32 numPlanes\par
+                    for 0 to numPlanes\par
+                         \cf1 U16 \cf0 normalIndex\par
+                         F32 planeDistance\par
+               U32 numPoints\par
+                    for 0 to numPoints\par
+                         Point3F point\par
+               U32 numPointVisibilities\par
+                    for 0 to numPointVisibilities\par
+                         U8 pointVisibility\par
+               U32 numTexGenEqs\par
+                    for 0 to numTexGenEQs\par
+                         PlaneF planeX\par
+                         PlaneF planeY\par
+               U32 numBSPNodes\par
+                    for 0 to numBSPNodes\par
+                         U16 planeIndex\par
+                         \cf1 U16 \cf0 frontIndex\par
+                         \cf1 U16 \cf0 backIndex\par
+               U32 numBSPSolidLeaves\par
+                    for 0 to numBSPSolidLeaves\par
+                         U32 surfaceIndex\par
+                         U16 surfaceCount\par
+               MaterialList\par
+                    U8 version\par
+                    U32 numMaterials\par
+                    for 0 to numMaterials\par
+                         String\par
+                              U8 length\par
+                                   for 0 to length\par
+                                        U8 character\par
+               U32 numWindings\par
+                    for 0 to numWindings\par
+                         U32 index\par
+               U32 numWindingIndices\par
+\cf2                     for 0 to numWindingIndices\par
+                         U32 windingStart\par
+                         U32 windingCount\cf0\par
+\cf4                U32 numEdges\par
+                    for 0 to numEdges\par
+                         S32 pointIndex0\par
+                         S32 pointIndex1\par
+                         S32 surfaceIndex0\par
+                         S32 surfaceIndex1\cf0\par
+               U32 numZones\par
+                    for 0 to numZones\par
+                         U16 portalStart\par
+                         U16 portalCount\par
+                         U32 surfaceStart\par
+                         \cf1 U32 \cf0 surfaceCount\par
+\cf4                          U32 staticMeshStart\par
+                         U32 staticMeshCount\par
+                         U16 flags\cf0\par
+               U32 numZoneSurfaces\par
+                    for 0 to numZoneSurfaces\par
+                         U16 zoneSurface\par
+               U32 numZonePortalList\par
+\cf2                     for 0 to numZonePortalList\par
+                         U16 zonePortalList\cf0\par
+               U32 numPortals\par
+\cf2                     for 0 to numPortals\par
+                         U16 planeIndex\par
+                         U16 triFanCount\par
+                         U32 triFanStart\par
+                         U16 zoneFront\par
+                         U16 zoneBack\cf0\par
+               U32 numSurfaces\par
+                    for 0 to numSurfaces\par
+                         U32 windingStart\par
+                         \cf1 U8   \cf0 windingCount\par
+                         U16 planeIndex\par
+                         U16 textureIndex\par
+                         U32 texGenIndex\par
+                         U8   surfaceFlags\par
+                         U32 fanMask\par
+                         LightMapTexGen\par
+                              U16 finalWord\par
+                              F32 texGenXDistance\par
+                              F32 texGenYDistance\par
+                         U16 lightCount\par
+                         U32 lightStateInfoStart\par
+                         \cf1 U8   \cf0 mapOffsetX\par
+                         \cf1 U8   \cf0 mapOffsetY        //unsure of these, thinking it could be two U16s\par
+                         \cf1 U8   \cf0 mapSizeX\par
+                         \cf1 U8   \cf0 mapSizeY\par
+\cf4                          bool unused \cf0\par
+               U32 numNormalLMapIndices\par
+                    for 0 to numNormalLMapIndices\par
+                         U32 normalLMapIndex\par
+               U32 numAlarmLMapIndices\par
+                    for 0 to numAlarmLMapIndices\par
+                         U32 alarmLMapIndex\par
+               U32 numNullSurfaces\par
+\cf2                     \cf3 for 0 to numNullSurfaces\cf2\par
+                         \cf3 U32 windingStart\par
+                         U16 planeIndex\par
+                         U8   surfaceFlags  //not 100% sure about these, but I think it's close\par
+                         \cf1 U8   \cf3 windingCount\cf0\par
+               U32 numLightMaps\par
+                    for 0 to numLightMaps\par
+                         PNG lightMap\par
+\cf4                          PNG lightDirMap\cf0\par
+                         bool keepLightMap\par
+               U32 numSolidLeafSurfaces\par
+                    for 0 to numSolidLeafSurfaces\par
+                         U32 solidLeafSurface\par
+               U32 numAnimatedLights\par
+\cf2                     for 0 to numAnimatedLights\par
+                         U32 nameIndex\par
+                         U32 stateIndex\par
+                         U16 stateCount\par
+                         U16 flags\par
+                         U32 duration\cf0\par
+               U32 numLightStates\par
+\cf2                     for 0 to numLightStates\par
+                         U8   red\par
+                         U8   green\par
+                         U8   blue\par
+                         U32 activeTime\par
+                         U32 dataIndex\par
+                         U16 dataCount\cf0\par
+               U32 numStateDatas\par
+\cf2                     for 0 to numStateData\par
+                         U32 surfaceIndex\par
+                         U32 mapIndex\par
+                         U16 lightStateIndex\cf0\par
+               U32 numStateDataBuffers\par
+               U32 flags\par
+\cf2                     for 0 to numStateDataBuffers\par
+                         U8 stateDataBuffer\cf0\par
+               U32 numNameBuffers\par
+\cf2                     for 0 to numNameBuffers\par
+                         S8 character\cf0\par
+               U32 numSubObjects\par
+\cf2                     for 0 to numSubObjects\par
+                         InteriorSubObject object\cf0\par
+               U32 numConvexHulls\par
+                    for 0 to numConvexHulls\par
+                         U32 hullStart\par
+                         U16 hullCount\par
+                         F32 minX\par
+                         F32 maxX\par
+                         F32 minY\par
+                         F32 maxY\par
+                         F32 minZ\par
+                         F32 maxZ\par
+                         U32 surfaceStart\par
+                         U16 surfaceCount\par
+                         U32 planeStart\par
+                         U32 polyListPlaneStart\par
+                         U32 polyListPointStart\par
+                         U32 polyListStringStart\par
+                         \cf4 bool staticMesh\cf0\par
+               U32 numConvexHullEmitStrings\par
+                    for 0 to numConvexHullEmitStrings\par
+                         U8 convexHullEmitStringCharacter\par
+               U32 numHullIndices\par
+                    for 0 to numHullIndices\par
+                         U32 hullIndex\par
+               U32 numHullPlaneIndices\par
+                    for 0 to numHullPlaneIndices\par
+                         U16 hullPlaneIndex\par
+               U32 numHullEmitStringIndices\par
+                    for 0 to numHullEmitStringIndices\par
+                         U32 hullEmitStringIndex\par
+               U32 numHullSurfaceIndices\par
+                    for 0 to numHullSurfaceIndices\par
+                         U32 hullSurfaceIndex\par
+               U32 numPolyListPlanes\par
+                    for 0 to numPolyListPlanes\par
+                         U16 ployListPlaneIndex\par
+               U32 numPolyListPoints\par
+                    for 0 to numPolyListPoints\par
+                         U32 polyListPointIndex\par
+               U32 numPolyListStrings\par
+                    for 0 to numPolyListStrings\par
+                         U8 polyListStringCharacter\par
+               for 0 to NumCoordBins * NumCoordBins (16 * 16 by default)\par
+                    U32 binStart\par
+                    U32 binCount\par
+               U32 numCoordBinIndices\par
+                    for 0 to numCoordBinIndices\par
+                         U16 coordBinIndex\par
+               U32 coordBinMode\par
+               ColorF baseAmbientColor\par
+                    U8 red\par
+                    U8 green\par
+                    U8 blue\par
+                    U8 alpha\par
+               ColorF alarmAmbientColor\par
+                    U8 red\par
+                    U8 green\par
+                    U8 blue\par
+                    U8 alpha\par
+\cf4                U32 numStaticMeshes\par
+                    for 0 to numStaticMeshes\par
+                         ConstructorSimpleMesh\par
+                              U32 numPrimitives\par
+                                   for 0 to numPrimitives\par
+                                        bool alpha\par
+                                        U32 texS\par
+                                        U32 texT\par
+                                        S32 diffuseIndex\par
+                                        S32 lightMapIndex\par
+                                        U32 start\par
+                                        U32 count\par
+                                        PlaneF lightMapEquationX\par
+                                        PlaneF lightMapEquationY\par
+                                        Point2I lightMapOffset\par
+                                        Point2I lightMapSize\par
+                              U32 numIndices\par
+                                   for 0 to numIndices\par
+                                        U16 index\par
+                              U32 numVertices\par
+                                   for 0 to numVertices\par
+                                        Point3F vertex\par
+                              U32 numNormals\par
+                                   for 0 to numNormals\par
+                                        Point3F normal\par
+                              U32 numDiffuseUVs\par
+                                   for 0 to numDiffuseUVs\par
+                                        Point2F diffuseUV\par
+                              U32 numLightmapUVs\par
+                                   for 0 to numLightmapUVs\par
+                                        Point2F lightmapUV\par
+                              bool hasMaterialList\par
+                                   if (hasMaterialList)\par
+                                        TSMaterialList\par
+                                             MaterialList baseMaterialList  \par
+                                             for 0 to materialCount\par
+                                                  U32 flags\par
+                                             for 0 to materialCount\par
+                                                  U32 reflectanceMap\par
+                                             for 0 to materialCount\par
+                                                  U32 bumpMap\par
+                                             for 0 to materialCount\par
+                                                  U32 detailMap\par
+                                             for 0 to materialCount\par
+                                                  U32 lightMap\par
+                                             for 0 to materialCount\par
+                                                  U32 detailScale\par
+                                             for 0 to materialCount\par
+                                                  U32 reflectionAmount\par
+                              U32 numDiffuseBitmaps\par
+                                   for 0 to numDiffuseBitmaps\par
+                                        bool hasBitmap\par
+                                             if (hasBitmap)\par
+                                                  PNG bitmap\par
+                              bool hasSolid\par
+                              bool hasTranslucency\par
+                              Box3F bounds\par
+                              MatrixF transform\par
+                              Point3F scale\cf0\par
+               U32 numNormals\par
+\cf2                     for 0 to numNormals\par
+                         Point3F normal\cf0\par
+               U32 numTexMatrices\par
+\cf2                      for 0 to numTexMatrices\par
+                         S32 T\par
+                         S32 N\par
+                         S32 B\cf0\par
+               U32 numTexMatIndices\par
+\cf2                     for 0 to numTexMatIndices\par
+                         U32 texMatIndex\cf0\par
+               U32 extendedLightMapData\par
+\cf4                     if (extendedLightMapData == 1)\par
+                         U32 lightMapBorderSize\par
+                         U32 dummy\cf0\par
+U32 numSubObjects\par
+     for 0 to numSubObjects  // NOTE: These are not InteriorSubObjects (separate class); \par
+          Interior subObject      //            MPs are included here, for example.\par
+U32 numTriggers\par
+\cf3      for 0 to numTriggers\par
+          String name\par
+          String datablock \par
+\cf1           Dictionary\par
+               U32 size\par
+                    for 0 to size\par
+                         String name\par
+                         String value\cf3\par
+          U32 numPolyHedronPoints\par
+               for 0 to numPolyHedronPoints\par
+                    Point3F point\par
+          U32 numPolyHedronPlanes\par
+               for 0 to numPolyHedronPlanes\par
+                    PlaneF plane\par
+          U32 numPolyHedronEdges\par
+               for 0 to numPolyHedronEdges\par
+                    U32 face0\par
+                    U32 face1\par
+                    U32 vertex0\par
+                    U32 vertex1\par
+          Point3F offset\cf0\par
+U32 numInteriorPathFollowers\par
+      for 0 to numInteriorPathFollowers\par
+          String name\par
+          String datablock\par
+          U32 interiorResIndex\par
+          Point3F offset\par
+          Dictionary\par
+               U32 size\par
+                    for 0 to size\par
+                         String name\par
+                         String value\par
+          U32 numTriggerIds\par
+\cf3                for 0 to numTriggerIds\par
+                    U32 triggerId\cf0\par
+          U32 numWayPoints\par
+               for 0 to numWayPoints\par
+                    Point3F pos\par
+                    QuatF   rot\par
+                    U32 msToNext\par
+                    U32 smoothingType\par
+          U32 totalMS\par
+U32 numForceFields\par
+\cf2      for 0 to numForceFields\par
+          U32 forceFieldFileVersion\par
+          String name\par
+          U32 numTriggers\par
+               for 0 to numTriggers\par
+                    String trigger\par
+          Box3F boundingBox\par
+          SphereF boundingSphere\par
+          U32 numNormals\par
+               for 0 to numNormals\par
+                    Point3F normal\par
+          U32 numPlanes\par
+               for 0 to numPlanes\par
+                    U32 normalIndex\par
+                    F32 planeDistance\par
+          U32 numBSPNodes\par
+               for 0 to numBSPNodes\par
+                    U16 planeIndex\par
+                    U16 frontIndex\par
+                    U16 backIndex\par
+          U32 numBSPSolidLeaves\par
+               for 0 to numBSPSolidLeaves\par
+                    U32 surfaceIndex\par
+                    U16 surfaceCount\par
+          U32 numWindings\par
+               U32 index\par
+          U32 numSurfaces\par
+               for 0 to numSurfaces\par
+                    U32 windingStart\par
+                    U8   windingCount\par
+                    U16 planeIndex\par
+                    U8   surfaceFlags\par
+                    U32 fanMask\par
+          U32 numSolideLeafSurfaces\par
+          for 0 to numSolideLeafSurfaces\par
+               U32 surfaceIndex\par
+          ColorI\par
+               U8 red\par
+               U8 green\par
+               U8 blue\par
+               U8 alpha\cf0\par
+U32 numAISpecialNodes\par
+\cf2      for 0 to numAISpecialNodes\par
+          String name\par
+          Point3F position\cf0\par
+U32 readVehicleCollision\par
+      if (readVehicleCollision == 1)\par
+          VehicleCollision\par
+               U32 vehicleCollisionFileVersion\par
+               U32 numVehicleConvexHulls\par
+\cf2                     for 0 to numVehicleConvexHulls\par
+                         U32 hullStart\par
+                         U16 hullCount\par
+                         F32 minX\par
+                         F32 maxX\par
+                         F32 minY\par
+                         F32 maxY\par
+                         F32 minZ\par
+                         F32 maxZ\par
+                         U32 surfaceStart\par
+                         U16 surfaceCount\par
+                         U32 planeStart\par
+                         U32 polyListPlaneStart\par
+                         U32 polyListPointStart\par
+                         U32 polyListStringStart\cf0\par
+               U32 numVehicleConvexHullEmitStrings\par
+\cf2                     for 0 to numVehicleConvexHullEmitStrings\par
+                         U8 vehicleConvexHullEmitStringCharacter\cf0\par
+               U32 numVehicleHullIndices\par
+\cf2                     for 0 to numVehicleHullIndices\par
+                         U32 vehicleHullIndex\cf0\par
+               U32 numVehicleHullPlaneIndices\par
+\cf2                     for 0 to numVehicleHullPlaneIndices\par
+                         U16 vehicleHullPlaneIndex\cf0\par
+               U32 numVehicleHullEmitStringIndices\par
+\cf2                     for 0 to numVehicleHullEmitStringIndices\par
+                         U32 vehicleHullEmitStringIndex\cf0\par
+               U32 numVehicleHullSurfaceIndices\par
+\cf2                     for 0 to numVehicleHullSurfaceIndices\par
+                         U32 vehicleHullSurfaceIndex\cf0\par
+               U32 numVehiclePolyListPlanes\par
+\cf2                     for 0 to numVehiclePolyListPlanes\par
+                         U16 vehiclePloyListPlaneIndex\cf0\par
+               U32 numVehiclePolyListPoints\par
+\cf2                     for 0 to numVehiclePolyListPoints\par
+                         U32 vehiclePolyListPointIndex\cf0\par
+               U32 numVehiclePolyListStrings\par
+\cf2                     for 0 to numVehiclePolyListStrings\par
+                         U8 vehiclePolyListStringCharacter\cf0\par
+               U32 numVehicleNullSurfaces\par
+\cf2                     for 0 to numVehicleNullSurfaces\par
+                         U32 windingStart\par
+                         U16 planeIndex\par
+                         U8   surfaceFlags\par
+                         U32 windingCount\par
+\cf1 U32 UNKNOWN\par
+U32 UNKNOWN\par
+U32 UNKNOWN\par
+U32 UNKNOWN\cf0\par
+U32 readGameEntities\par
+     if (readGameEntities == 2)\par
+          U32 numGameEntities\par
+               for 0 to numGameEntities\par
+                    ItrGameEntity\par
+                         String datablock\par
+                         String gameClass\par
+                         Point3F position\par
+                         Dictionary properties\par
+U32 dummy\par
+\par
+\par
+}
+ 
