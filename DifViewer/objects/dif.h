@@ -18,6 +18,10 @@
 #ifndef dif_h
 #define dif_h
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "types.h"
 #include "interior.h"
 #include "trigger.h"
@@ -63,5 +67,9 @@ typedef struct {
 
 DIF *dif_read_file(FILE *file);
 void dif_release(DIF *dif);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
