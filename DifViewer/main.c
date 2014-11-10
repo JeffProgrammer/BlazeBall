@@ -35,7 +35,8 @@ typedef struct {
 
 //TRIGGER WARNING: LOTS OF GLOBAL VARIABLES. I BET "NOBODY" WOULD LOVE THIS.
 
-DIF *gDif;
+U32 gDifCount;
+DIF **gDifs;
 
 U32 gTriangleCount;
 Triangle *gTriangles;
@@ -74,15 +75,17 @@ GLfloat *hsvToRGB(GLfloat h, GLfloat s, GLfloat v) {
 
 void generateTriangles() {
 	gTriangleCount = 0;
-	for (U32 i = 0; i < gDif->numDetailLevels; i ++) {
-		Interior *interior = gDif->interior[i];
+	for (U32 dif = 0; dif < gDifCount; dif ++) {
+		for (U32 level = 0; level < gDifs[dif]->numDetailLevels; level ++) {
+			Interior *interior = gDifs[dif]->interior[level];
 
-		for (U32 j = 0; j < interior->numSurfaces; j ++) {
-			Surface surface = interior->surface[j];
-			U8 windingCount = surface.windingCount;
-			//Triangles = (points - 2)
-			windingCount -= 2;
-			gTriangleCount += windingCount;
+			for (U32 i = 0; i < interior->numSurfaces; i ++) {
+				Surface surface = interior->surface[i];
+				U8 windingCount = surface.windingCount;
+				//Triangles = (points - 2)
+				windingCount -= 2;
+				gTriangleCount += windingCount;
+			}
 		}
 	}
 
@@ -95,24 +98,26 @@ void generateTriangles() {
 	// It makes sense if you think about it.
 
 	//Actual generation
-	for (U32 i = 0; i < gDif->numDetailLevels; i ++) {
-		Interior *interior = gDif->interior[i];
+	for (U32 dif = 0; dif < gDifCount; dif ++) {
+		for (U32 i = 0; i < gDifs[dif]->numDetailLevels; i ++) {
+			Interior *interior = gDifs[dif]->interior[i];
 
-		for (U32 j = 0; j < interior->numSurfaces; j ++) {
-			Surface surface = interior->surface[j];
+			for (U32 j = 0; j < interior->numSurfaces; j ++) {
+				Surface surface = interior->surface[j];
 
-			U32 windingStart = surface.windingStart;
-			U8 windingCount = surface.windingCount;
+				U32 windingStart = surface.windingStart;
+				U8 windingCount = surface.windingCount;
 
-			//Triangle strips, but not how we want them. Somehow. I don't know; this actually works though.
-			windingCount -= 2;
+				//Triangle strips, but not how we want them. Somehow. I don't know; this actually works though.
+				windingCount -= 2;
 
-			for (U32 k = windingStart; k < windingStart + windingCount; k ++) {
-				//Build triangles
-				gTriangles[triIndex].point0 = interior->point[interior->index[k + 0]];
-				gTriangles[triIndex].point1 = interior->point[interior->index[k + 1]];
-				gTriangles[triIndex].point2 = interior->point[interior->index[k + 2]];
-				triIndex ++;
+				for (U32 k = windingStart; k < windingStart + windingCount; k ++) {
+					//Build triangles
+					gTriangles[triIndex].point0 = interior->point[interior->index[k + 0]];
+					gTriangles[triIndex].point1 = interior->point[interior->index[k + 1]];
+					gTriangles[triIndex].point2 = interior->point[interior->index[k + 2]];
+					triIndex ++;
+				}
 			}
 		}
 	}
@@ -309,23 +314,27 @@ int main(int argc, const char * argv[])
 		return 1;
 	}
 
-	//Open file
-	FILE *file = fopen(argv[1], "r");
+	gDifCount = (argc - 1);
+	gDifs = malloc(sizeof(DIF *) * gDifCount);
+	for (U32 i = 0; i < gDifCount; i ++) {
+		//Open file
+		FILE *file = fopen(argv[i + 1], "r");
 
-	//Read the .dif
-	gDif = dif_read_file(file);
-
-	//Clean up
-	fclose(file);
-
-	//Will return an error (or SEGFAULT) if there's a format error
-	if (gDif) {
-		//Init SDL and go!
-		run();
+		//Read the .dif
+		gDifs[i] = dif_read_file(file);
 
 		//Clean up
-		dif_release(gDif);
+		fclose(file);
 	}
+
+	//Init SDL and go!
+	run();
+
+	//Clean up
+	for (U32 i = 0; i < gDifCount; i ++) {
+		dif_release(gDifs[i]);
+	}
+	free(gDifs);
 
 	return 0;
 }
