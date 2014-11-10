@@ -57,6 +57,7 @@ glm::vec3 gCameraPosition;
 static float gCameraSpeed = 0.1f;
 static float gMovementSpeed = 0.2f;
 
+bool mouseButtons[3] = {false, false, false};
 bool movement[4] = {false, false, false, false};
 
 GLfloat *hsvToRGB(GLfloat h, GLfloat s, GLfloat v) {
@@ -237,6 +238,11 @@ void handleEvent(SDL_Event *event) {
 	if (event->type == SDL_MOUSEMOTION) {
 		gYaw += (GLfloat)((SDL_MouseMotionEvent *)event)->xrel * gCameraSpeed;
 		gPitch += (GLfloat)((SDL_MouseMotionEvent *)event)->yrel * gCameraSpeed;
+	}
+	if (event->type == SDL_MOUSEBUTTONDOWN) {
+		mouseButtons[((SDL_MouseButtonEvent *)event)->button] = true;
+	} else if (event->type == SDL_MOUSEBUTTONUP) {
+		mouseButtons[((SDL_MouseButtonEvent *)event)->button] = false;
 	}
 }
 
