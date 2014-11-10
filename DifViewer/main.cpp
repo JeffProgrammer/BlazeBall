@@ -37,6 +37,8 @@ typedef struct {
 	Point3F point2;
 
 	Point3F normal;
+
+	ColorF color;
 } Triangle;
 
 //TRIGGER WARNING: LOTS OF GLOBAL VARIABLES. I BET "NOBODY" WOULD LOVE THIS.
@@ -117,16 +119,40 @@ void generateTriangles() {
 				U8 windingCount = surface.windingCount;
 
 				//Triangle strips, but not how we want them. Somehow. I don't know; this actually works though.
+
 				windingCount -= 2;
 
 				for (U32 k = windingStart; k < windingStart + windingCount; k ++) {
 					//Build triangles
-					gTriangles[triIndex].point0 = interior->point[interior->index[k + 0]];
-					gTriangles[triIndex].point1 = interior->point[interior->index[k + 1]];
-					gTriangles[triIndex].point2 = interior->point[interior->index[k + 2]];
-					gTriangles[triIndex].normal = interior->normal[interior->plane[surface.planeIndex].normalIndex];
+					Point3F point0;
+					Point3F point1;
+					Point3F point2;
+					switch (k - windingStart) {
+						case 0:
+							point0 = interior->point[interior->index[k + 2]];
+							point1 = interior->point[interior->index[k + 1]];
+							point2 = interior->point[interior->index[k + 0]];
+							break;
+						case 1:
+							point0 = interior->point[interior->index[k + 0]];
+							point1 = interior->point[interior->index[k + 1]];
+							point2 = interior->point[interior->index[k + 2]];
+							break;
+					}
+					gTriangles[triIndex].point0 = point0;
+					gTriangles[triIndex].point1 = point1;
+					gTriangles[triIndex].point2 = point2;
+
+ 					gTriangles[triIndex].normal = interior->normal[interior->plane[surface.planeIndex].normalIndex];
+
+					//Triangle-based color (probably)
+					GLfloat *rgb = hsvToRGB((GLfloat)(k - windingStart) / (GLfloat)10.f, 1.f, 1.f);
+					free(rgb);
+					gTriangles[triIndex].color = *(ColorF *)rgb;
+
 					triIndex ++;
 				}
+				printf("\n");
 			}
 		}
 	}
@@ -137,7 +163,7 @@ void render() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-//	glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 
 	//Camera
 	glm::mat4x4 cameraMatrix = glm::mat4x4(1);
@@ -154,24 +180,16 @@ void render() {
 	//TODO: VBOs
 	glBegin(GL_TRIANGLES);
 	for (U32 i = 0; i < gTriangleCount; i ++) {
-		//Triangle-based color (probably)
-		GLfloat *rgb = hsvToRGB((GLfloat)i / (GLfloat)gTriangleCount, (GLfloat)(i % 10) / 10.f, 1.f);
-		glColor3f(rgb[0], rgb[1], rgb[2]);
-		free(rgb);
+		glColor3fv((GLfloat *)&gTriangles[i].color);
+		glNormal3f(gTriangles[i].normal.x, gTriangles[i].normal.z, gTriangles[i].normal.y);
 
 		//Lazy, also wrong because Torque swaps y/z
 		glVertex3f(gTriangles[i].point0.x, gTriangles[i].point0.z, -gTriangles[i].point0.y);
-		rgb = hsvToRGB((GLfloat)i / (GLfloat)gTriangleCount, (GLfloat)(i % 20) / 10.f, 1.f);
-		glColor3f(rgb[0], rgb[1], rgb[2]);
-		free(rgb);
 		glVertex3f(gTriangles[i].point1.x, gTriangles[i].point1.z, -gTriangles[i].point1.y);
-		rgb = hsvToRGB((GLfloat)i / (GLfloat)gTriangleCount, (GLfloat)(i % 15) / 10.f, 1.f);
-		glColor3f(rgb[0], rgb[1], rgb[2]);
-		free(rgb);
 		glVertex3f(gTriangles[i].point2.x, gTriangles[i].point2.z, -gTriangles[i].point2.y);
 	}
 	glEnd();
-//	glDisable(GL_CULL_FACE);
+	glDisable(GL_CULL_FACE);
 }
 
 void loop() {
@@ -338,7 +356,7 @@ void run() {
 		long long start = startTime.tv_usec + (startTime.tv_sec * 1000000ULL);
 		long long end = endTime.tv_usec + (endTime.tv_sec * 1000000ULL);
 
-		printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
+//		printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
 	}
 
 	//Clean up (duh)
