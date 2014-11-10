@@ -353,7 +353,7 @@ int main(int argc, const char * argv[])
 		return 1;
 	}
 
-	gDifCount = (argc - 1);
+	gDifCount = 1;//(argc - 1);
 	gDifs = (DIF **)malloc(sizeof(DIF *) * gDifCount);
 	for (U32 i = 0; i < gDifCount; i ++) {
 		//Open file
@@ -364,6 +364,53 @@ int main(int argc, const char * argv[])
 
 		//Clean up
 		fclose(file);
+	}
+
+	FILE *test = fopen(argv[2], "w");
+
+	for (U32 dif = 0; dif < gDifCount; dif ++) {
+		for (U32 i = 0; i < gDifs[dif]->numDetailLevels; i ++) {
+			Interior *interior = gDifs[dif]->interior[i];
+
+			for (U32 j = 0; j < interior->numPoints; j ++) {
+				//Build triangles
+				Point3F point = interior->point[j];
+				fprintf(test, "v %g %g %g\n", point.x, point.z, point.y);
+			}
+
+			for (U32 j = 0; j < interior->numNormals; j ++) {
+				//Build triangles
+				Point3F point = interior->normal[j];
+				fprintf(test, "vn %g %g %g\n", point.x, point.z, point.y);
+			}
+
+			fprintf(test, "\n");
+			
+			for (U32 j = 0; j < interior->numSurfaces; j ++) {
+				Surface surface = interior->surface[j];
+
+				U32 windingStart = surface.windingStart;
+				U8 windingCount = surface.windingCount;
+
+				//Triangle strips, but not how we want them. Somehow. I don't know; this actually works though.
+
+				windingCount -= 2;
+
+				for (U32 k = windingStart; k < windingStart + windingCount; k ++) {
+					//Build triangles
+					if ((k - windingStart) == 1) {
+						fprintf(test, "f %d//%d", interior->index[k] + 1, interior->plane[surface.planeIndex].normalIndex + 1);
+						fprintf(test, " %d//%d", interior->index[k + 1] + 1, interior->plane[surface.planeIndex].normalIndex + 1);
+						fprintf(test, " %d//%d\n", interior->index[k + 2] + 1, interior->plane[surface.planeIndex].normalIndex + 1);
+					} else {
+						fprintf(test, "f %d//%d", interior->index[k + 2] + 1, interior->plane[surface.planeIndex].normalIndex + 1);
+						fprintf(test, " %d//%d", interior->index[k + 1] + 1, interior->plane[surface.planeIndex].normalIndex + 1);
+						fprintf(test, " %d//%d\n", interior->index[k] + 1, interior->plane[surface.planeIndex].normalIndex + 1);
+					}
+				}
+				fprintf(test, "\n");
+			}
+		}
 	}
 
 	//Init SDL and go!
