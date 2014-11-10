@@ -66,9 +66,9 @@ GLfloat *hsvToRGB(GLfloat h, GLfloat s, GLfloat v) {
 
 	GLfloat *rgb = (GLfloat *)malloc(sizeof(GLfloat) * 3);
 	GLfloat c = v * s;
-	GLint hp = (GLint)(h * 6.f);
-	GLfloat x = c * (1.f - fabs(fmod((float)hp, 2.f) - 1.f));
-	switch (hp) {
+	GLfloat hp = (h * 6.f);
+	GLfloat x = c * (1.f - fabs(fmod(hp, 2.f) - 1.f));
+	switch ((GLint)hp) {
 		case 0: rgb[0] = c; rgb[1] = x; rgb[2] = 0; break;
 		case 1: rgb[0] = x; rgb[1] = c; rgb[2] = 0; break;
 		case 2: rgb[0] = 0; rgb[1] = c; rgb[2] = x; break;
@@ -150,14 +150,20 @@ void render() {
 	glBegin(GL_TRIANGLES);
 	for (U32 i = 0; i < gTriangleCount; i ++) {
 		//Triangle-based color (probably)
-		GLfloat *rgb = hsvToRGB((GLfloat)i / (GLfloat)gTriangleCount, 1.f, 1.f);
+		GLfloat *rgb = hsvToRGB((GLfloat)i / (GLfloat)gTriangleCount, (GLfloat)(i % 10) / 10.f, 1.f);
 		glColor3f(rgb[0], rgb[1], rgb[2]);
 		free(rgb);
 
 		//Lazy, also wrong because Torque swaps y/z
-		glVertex3fv(&gTriangles[i].point0);
-		glVertex3fv(&gTriangles[i].point1);
-		glVertex3fv(&gTriangles[i].point2);
+		glVertex3f(gTriangles[i].point0.x, gTriangles[i].point0.z, -gTriangles[i].point0.y);
+		rgb = hsvToRGB((GLfloat)i / (GLfloat)gTriangleCount, (GLfloat)(i % 20) / 10.f, 1.f);
+		glColor3f(rgb[0], rgb[1], rgb[2]);
+		free(rgb);
+		glVertex3f(gTriangles[i].point1.x, gTriangles[i].point1.z, -gTriangles[i].point1.y);
+		rgb = hsvToRGB((GLfloat)i / (GLfloat)gTriangleCount, (GLfloat)(i % 15) / 10.f, 1.f);
+		glColor3f(rgb[0], rgb[1], rgb[2]);
+		free(rgb);
+		glVertex3f(gTriangles[i].point2.x, gTriangles[i].point2.z, -gTriangles[i].point2.y);
 	}
 	glEnd();
 }
