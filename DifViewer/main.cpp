@@ -44,7 +44,7 @@ Triangle *gTriangles;
 bool gRunning;
 
 SDL_Window *gWindow;
-SDL_GLContext *gContext;
+SDL_GLContext gContext;
 GLfloat gAngle;
 
 GLfloat gCameraPos[3] = {0.f, 0.f, 0.f};
@@ -58,7 +58,7 @@ GLfloat *hsvToRGB(GLfloat h, GLfloat s, GLfloat v) {
 	//https://en.wikipedia.org/wiki/HSL_and_HSV#Converting_to_RGB
 	//Lazy!
 
-	GLfloat *rgb = malloc(sizeof(GLfloat) * 3);
+	GLfloat *rgb = (GLfloat *)malloc(sizeof(GLfloat) * 3);
 	GLfloat c = v * s;
 	GLint hp = (GLint)(h * 6.f);
 	GLfloat x = c * (1.f - fabs(fmod((float)hp, 2.f) - 1.f));
@@ -89,7 +89,7 @@ void generateTriangles() {
 		}
 	}
 
-	gTriangles = malloc(sizeof(Triangle) * gTriangleCount);
+	gTriangles = (Triangle *)malloc(sizeof(Triangle) * gTriangleCount);
 	U32 triIndex = 0;
 
 	//Geometry is structured as lists of windings (point indices)
@@ -256,7 +256,7 @@ bool init() {
 	}
 
 	//Lock cursor
-	SDL_SetRelativeMouseMode(true);
+	SDL_SetRelativeMouseMode(SDL_TRUE);
 
 	//Initialize OpenGL
 	if (!initGL()) {
@@ -318,7 +318,7 @@ int main(int argc, const char * argv[])
 	}
 
 	gDifCount = (argc - 1);
-	gDifs = malloc(sizeof(DIF *) * gDifCount);
+	gDifs = (DIF **)malloc(sizeof(DIF *) * gDifCount);
 	for (U32 i = 0; i < gDifCount; i ++) {
 		//Open file
 		FILE *file = fopen(argv[i + 1], "r");
