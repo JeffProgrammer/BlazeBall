@@ -48,6 +48,9 @@ GLfloat gAngle;
 
 GLfloat gCameraPos[3] = {0.f, 0.f, 0.f};
 GLfloat gCameraRot[2] = {0.f, 0.f};
+static float gCameraSpeed = 0.1f;
+static float gMovementSpeed = 0.2f;
+
 bool movement[4] = {false, false, false, false};
 
 GLfloat *hsvToRGB(GLfloat h, GLfloat s, GLfloat v) {
@@ -148,10 +151,10 @@ void render() {
 
 void loop() {
 	//Basic movement
-	if (movement[0]) gCameraPos[2] += 0.2;
-	if (movement[1]) gCameraPos[2] -= 0.2;
-	if (movement[2]) gCameraPos[0] += 0.2;
-	if (movement[3]) gCameraPos[0] -= 0.2;
+	if (movement[0]) gCameraPos[2] += gMovementSpeed;
+	if (movement[1]) gCameraPos[2] -= gMovementSpeed;
+	if (movement[2]) gCameraPos[0] += gMovementSpeed;
+	if (movement[3]) gCameraPos[0] -= gMovementSpeed;
 }
 
 bool initGL() {
@@ -209,8 +212,8 @@ void handleEvent(SDL_Event *event) {
 	}
 	//Mouse for rotation
 	if (event->type == SDL_MOUSEMOTION) {
-		gCameraRot[1] += (GLfloat)((SDL_MouseMotionEvent *)event)->xrel * 0.1f;
-		gCameraRot[0] += (GLfloat)((SDL_MouseMotionEvent *)event)->yrel * 0.1f;
+		gCameraRot[1] += (GLfloat)((SDL_MouseMotionEvent *)event)->xrel * gCameraSpeed;
+		gCameraRot[0] += (GLfloat)((SDL_MouseMotionEvent *)event)->yrel * gCameraSpeed;
 	}
 }
 
