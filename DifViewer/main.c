@@ -173,7 +173,7 @@ bool initGL() {
 	SDL_GetWindowSize(gWindow, &w, &h);
 
 	GLfloat aspect = (GLfloat)w / (GLfloat)h;
-	glViewport(0, 0, w * 2, h * 2);
+	glViewport(0, 0, w, h);
 
 	//Initialize Projection Matrix
 	glMatrixMode(GL_PROJECTION);
@@ -233,7 +233,7 @@ bool init() {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
 	//Create the window
-	if ((gWindow = SDL_CreateWindow("DIF Viewer", 0, 0, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI)) == NULL) {
+	if ((gWindow = SDL_CreateWindow("DIF Viewer", 0, 0, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE)) == NULL) {
 		return false;
 	}
 
