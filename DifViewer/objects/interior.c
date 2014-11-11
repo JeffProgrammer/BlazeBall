@@ -362,3 +362,45 @@ Triangle *interior_generate_triangles(Interior *interior, U32 *count) {
 	}
 	return triangles;
 }
+
+void interior_export_obj(Interior *interior, FILE *file) {
+	for (U32 j = 0; j < interior->numPoints; j ++) {
+		//Build triangles
+		Point3F point = interior->point[j];
+		fprintf(file, "v %g %g %g\n", -point.x, point.z, point.y);
+	}
+
+	for (U32 j = 0; j < interior->numNormals; j ++) {
+		//Build triangles
+		Point3F point = interior->normal[j];
+		fprintf(file, "vn %g %g %g\n", -point.x, point.z, point.y);
+	}
+
+	fprintf(file, "\n");
+
+	for (U32 surfaceNum = 0; surfaceNum < interior->numSurfaces; surfaceNum ++) {
+		Surface surface = interior->surface[surfaceNum];
+
+		U32 windingStart = surface.windingStart;
+		U8 windingCount = surface.windingCount;
+
+		windingCount -= 2;
+
+		//Triangle strips, but not how we want them. Somehow. I don't know; this actually works though.
+
+		for (U32 index = windingStart; index < windingStart + windingCount; index ++) {
+			//Build triangles
+			U32 indices[3] = {index + 0, index + 1, index + 2};
+			if ((index - windingStart) % 2 == 0) {
+				indices[0] = index + 2;
+				indices[1] = index + 1;
+				indices[2] = index + 0;
+			}
+
+			fprintf(file, "f %d//%d %d//%d %d//%d\n",
+					  interior->index[indices[0]] + 1, interior->plane[surface.planeIndex].normalIndex + 1,
+					  interior->index[indices[1]] + 1, interior->plane[surface.planeIndex].normalIndex + 1,
+					  interior->index[indices[2]] + 1, interior->plane[surface.planeIndex].normalIndex + 1);
+		}
+	}
+}

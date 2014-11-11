@@ -287,5 +287,6 @@ typedef struct {
 Interior *interior_read_file(FILE *file);
 void interior_release(Interior *interior);
 Triangle *interior_generate_triangles(Interior *interior, U32 *count);
+void interior_export_obj(Interior *interior, FILE *file);
 
 #endif
