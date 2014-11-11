@@ -338,12 +338,10 @@ Triangle *interior_generate_triangles(Interior *interior, U32 *count) {
 		for (U32 index = windingStart; index < windingStart + windingCount; index ++) {
 			//Build triangles
 			U32 indices[3] = {index + 0, index + 1, index + 2};
-			switch (index - windingStart) {
-				case 0: indices[0] = index + 0, indices[1] = index + 1, indices[2] = index + 2; break;
-				case 1: indices[0] = index + 2, indices[1] = index + 1, indices[2] = index + 0; break;
-				case 2: indices[0] = index + 0, indices[1] = index + 1, indices[2] = index + 2; break;
-				case 3: indices[0] = index + 0, indices[1] = index + 1, indices[2] = index + 2; break;
-				default: break;
+			if ((index - windingStart) % 2 == 0) {
+				indices[0] = index + 2;
+				indices[1] = index + 1;
+				indices[2] = index + 0;
 			}
 
 			Point3F point0 = interior->point[interior->index[indices[0]]];
