@@ -75,7 +75,7 @@ typedef struct {
 	U32 numSolidLeafSurfaces;
 	U32 *solidLeafSurface;
 
-	ColorF color;
+	ColorI color;
 } ForceField;
 
 ForceField *forceField_read_file(FILE *file);

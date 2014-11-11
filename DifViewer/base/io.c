@@ -128,8 +128,8 @@ SphereF readSphereF(FILE **file) {
 	return value;
 }
 
-ColorF readColorF(FILE **file) {
-	ColorF value;
+ColorI readColorI(FILE **file) {
+	ColorI value;
 	value.red = readU8(file);
 	value.green = readU8(file);
 	value.blue = readU8(file);

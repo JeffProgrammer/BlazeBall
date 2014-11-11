@@ -268,8 +268,8 @@ typedef struct {
 	U16 *coordBinIndex;
 
 	U32 coordBinMode;
-	ColorF baseAmbientColor;
-	ColorF alarmAmbientColor;
+	ColorI baseAmbientColor;
+	ColorI alarmAmbientColor;
 
 	U32 numTexNormals;
 	Point3F *texNormal;

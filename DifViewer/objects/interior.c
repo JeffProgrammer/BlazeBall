@@ -234,8 +234,8 @@ Interior *interior_read_file(FILE *file) {
 		READTOVAR(interior->coordBinIndex[i], U16); //coordBinIndex
 	}
 	READTOVAR(interior->coordBinMode, U32); //coordBinMode
-	READTOVAR(interior->baseAmbientColor, ColorF); //baseAmbientColor
-	READTOVAR(interior->alarmAmbientColor, ColorF); //alarmAmbientColor
+	READTOVAR(interior->baseAmbientColor, ColorI); //baseAmbientColor
+	READTOVAR(interior->alarmAmbientColor, ColorI); //alarmAmbientColor
 	/*
 	 There's a long list of static meshes here, but I'm too lazy to add it just to comment it out. Oh and I'd have to implement Point2I / Point2F. See DIF_MB_SPEC.rtf if you want to implement it.
 	 */
