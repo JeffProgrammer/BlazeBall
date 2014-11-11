@@ -38,7 +38,7 @@ Point3F    readPoint3F(FILE **file);
 QuatF      readQuatF(FILE **file);
 BoxF       readBoxF(FILE **file);
 SphereF    readSphereF(FILE **file);
-ColorF     readColorF(FILE **file);
+ColorI     readColorI(FILE **file);
 String     readString(FILE **file);
 void       readPNG(FILE **file);
 Dictionary readDictionary(FILE **file);

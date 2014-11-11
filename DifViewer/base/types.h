@@ -77,6 +77,13 @@ typedef struct {
 	U8 green;
 	U8 blue;
 	U8 alpha;
+} ColorI;
+
+typedef struct {
+	F32 red;
+	F32 green;
+	F32 blue;
+	F32 alpha;
 } ColorF;
 
 typedef struct {
@@ -84,5 +91,15 @@ typedef struct {
 	String *names;
 	String *values;
 } Dictionary;
+
+typedef struct {
+	Point3F point0;
+	Point3F point1;
+	Point3F point2;
+
+	Point3F normal;
+
+	ColorF color;
+} Triangle;
 
 #endif

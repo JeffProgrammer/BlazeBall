@@ -59,7 +59,7 @@ ForceField *forceField_read_file(FILE *file) {
 	READLOOPVAR(forceField->numSolidLeafSurfaces, forceField->solidLeafSurface, U32) {
 		READTOVAR(forceField->solidLeafSurface[i], U32); //solidLeafSurface
 	}
-	READTOVAR(forceField->color, ColorF); //color
+	READTOVAR(forceField->color, ColorI); //color
 
 	return forceField;
 }

@@ -234,8 +234,8 @@ Interior *interior_read_file(FILE *file) {
 		READTOVAR(interior->coordBinIndex[i], U16); //coordBinIndex
 	}
 	READTOVAR(interior->coordBinMode, U32); //coordBinMode
-	READTOVAR(interior->baseAmbientColor, ColorF); //baseAmbientColor
-	READTOVAR(interior->alarmAmbientColor, ColorF); //alarmAmbientColor
+	READTOVAR(interior->baseAmbientColor, ColorI); //baseAmbientColor
+	READTOVAR(interior->alarmAmbientColor, ColorI); //alarmAmbientColor
 	/*
 	 There's a long list of static meshes here, but I'm too lazy to add it just to comment it out. Oh and I'd have to implement Point2I / Point2F. See DIF_MB_SPEC.rtf if you want to implement it.
 	 */
@@ -304,4 +304,61 @@ void interior_release(Interior *interior) {
 	free(interior->texMatIndex);
 
 	free(interior);
+}
+
+Triangle *interior_generate_triangles(Interior *interior, U32 *count) {
+	*count = 0;
+	U32 maxWC = 0;
+	for (U32 i = 0; i < interior->numSurfaces; i ++) {
+		Surface surface = interior->surface[i];
+		U8 windingCount = surface.windingCount;
+		//Triangles = (points - 2)
+		windingCount -= 2;
+		*count += windingCount;
+		maxWC = (windingCount > maxWC ? windingCount : maxWC);
+	}
+
+	Triangle *triangles = (Triangle *)malloc(sizeof(Triangle) * *count);
+	U32 triIndex = 0;
+
+	//Geometry is structured as lists of windings (point indices)
+	//Windings are in order, forming triangle strips from the points.
+	//
+	// It makes sense if you think about it.
+
+	//Actual generation
+	for (U32 surfaceNum = 0; surfaceNum < interior->numSurfaces; surfaceNum ++) {
+		Surface surface = interior->surface[surfaceNum];
+
+		U32 windingStart = surface.windingStart;
+		U8 windingCount = surface.windingCount;
+
+		windingCount -= 2;
+
+		//Triangle strips, but not how we want them. Somehow. I don't know; this actually works though.
+
+		for (U32 index = windingStart; index < windingStart + windingCount; index ++) {
+			//Build triangles
+			U32 indices[3] = {index + 0, index + 1, index + 2};
+			if ((index - windingStart) % 2 == 0) {
+				indices[0] = index + 2;
+				indices[1] = index + 1;
+				indices[2] = index + 0;
+			}
+
+			Point3F point0 = interior->point[interior->index[indices[0]]];
+			Point3F point1 = interior->point[interior->index[indices[1]]];
+			Point3F point2 = interior->point[interior->index[indices[2]]];
+			triangles[triIndex].point0 = point0;
+			triangles[triIndex].point1 = point1;
+			triangles[triIndex].point2 = point2;
+			triangles[triIndex].normal = interior->normal[interior->plane[surface.planeIndex].normalIndex];
+
+			//Triangle-based color (probably)
+			triangles[triIndex].color = (ColorF){(F32)((index - windingStart) % 4) / 4.f, (F32)(index - windingStart) / (F32)windingCount, (F32)windingCount / (F32)maxWC, 1.f};
+			
+			triIndex ++;
+		}
+	}
+	return triangles;
 }

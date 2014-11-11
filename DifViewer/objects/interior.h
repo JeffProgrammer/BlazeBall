@@ -268,8 +268,8 @@ typedef struct {
 	U16 *coordBinIndex;
 
 	U32 coordBinMode;
-	ColorF baseAmbientColor;
-	ColorF alarmAmbientColor;
+	ColorI baseAmbientColor;
+	ColorI alarmAmbientColor;
 
 	U32 numTexNormals;
 	Point3F *texNormal;
@@ -286,5 +286,6 @@ typedef struct {
 
 Interior *interior_read_file(FILE *file);
 void interior_release(Interior *interior);
+Triangle *interior_generate_triangles(Interior *interior, U32 *count);
 
 #endif
