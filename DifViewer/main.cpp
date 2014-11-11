@@ -267,11 +267,17 @@ int main(int argc, const char * argv[])
 		return 1;
 	}
 
+	U32 argstart = 1;
+
+	if (!strcmp(argv[1], "-o")) {
+		argstart += 2;
+	}
+
 	gDifCount = 0;
-	gDifs = (DIF **)malloc(sizeof(DIF *) * (argc - 1));
-	for (U32 i = 0; i < (argc - 1); i ++) {
+	gDifs = (DIF **)malloc(sizeof(DIF *) * (argc - argstart));
+	for (U32 i = 0; i < (argc - argstart); i ++) {
 		//Open file
-		FILE *file = fopen(argv[i + 1], "r");
+		FILE *file = fopen(argv[i + argstart], "r");
 
 		//Read the .dif
 		gDifs[i] = dif_read_file(file);
@@ -283,13 +289,14 @@ int main(int argc, const char * argv[])
 		fclose(file);
 	}
 
+	if (!strcmp(argv[1], "-o")) {
 		FILE *test = fopen(argv[2], "w");
 		interior_export_obj(gDifs[0]->interior[0], test);
 		fclose(test);
+	} else {
+		//Init SDL and go!
+		run();
 	}
-
-	//Init SDL and go!
-	run();
 
 	//Clean up
 	for (U32 i = 0; i < gDifCount; i ++) {
