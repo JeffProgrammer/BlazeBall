@@ -31,16 +31,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/vec3.hpp>
 
-typedef struct {
-	Point3F point0;
-	Point3F point1;
-	Point3F point2;
-
-	Point3F normal;
-
-	ColorF color;
-} Triangle;
-
 //TRIGGER WARNING: LOTS OF GLOBAL VARIABLES. I BET "NOBODY" WOULD LOVE THIS.
 
 U32 gDifCount;
@@ -64,100 +54,6 @@ static float gMovementSpeed = 0.2f;
 bool mouseButtons[3] = {false, false, false};
 bool movement[4] = {false, false, false, false};
 
-GLfloat *hsvToRGB(GLfloat h, GLfloat s, GLfloat v) {
-	//https://en.wikipedia.org/wiki/HSL_and_HSV#Converting_to_RGB
-	//Lazy!
-
-	GLfloat *rgb = (GLfloat *)malloc(sizeof(GLfloat) * 3);
-	GLfloat c = v * s;
-	GLfloat hp = (h * 6.f);
-	GLfloat x = c * (1.f - fabs(fmod(hp, 2.f) - 1.f));
-	switch ((GLint)hp) {
-		case 0: rgb[0] = c; rgb[1] = x; rgb[2] = 0; break;
-		case 1: rgb[0] = x; rgb[1] = c; rgb[2] = 0; break;
-		case 2: rgb[0] = 0; rgb[1] = c; rgb[2] = x; break;
-		case 3: rgb[0] = 0; rgb[1] = x; rgb[2] = c; break;
-		case 4: rgb[0] = x; rgb[1] = 0; rgb[2] = c; break;
-		case 5: rgb[0] = c; rgb[1] = 0; rgb[2] = x; break;
-	}
-	return rgb;
-}
-
-void generateTriangles() {
-	gTriangleCount = 0;
-	for (U32 dif = 0; dif < gDifCount; dif ++) {
-		for (U32 level = 0; level < gDifs[dif]->numDetailLevels; level ++) {
-			Interior *interior = gDifs[dif]->interior[level];
-
-			for (U32 i = 0; i < interior->numSurfaces; i ++) {
-				Surface surface = interior->surface[i];
-				U8 windingCount = surface.windingCount;
-				//Triangles = (points - 2)
-				windingCount -= 2;
-				gTriangleCount += windingCount;
-			}
-		}
-	}
-
-	gTriangles = (Triangle *)malloc(sizeof(Triangle) * gTriangleCount);
-	U32 triIndex = 0;
-
-	//Geometry is structured as lists of windings (point indices)
-	//Windings are in order, forming triangle strips from the points.
-	//
-	// It makes sense if you think about it.
-
-	//Actual generation
-	for (U32 dif = 0; dif < gDifCount; dif ++) {
-		for (U32 i = 0; i < gDifs[dif]->numDetailLevels; i ++) {
-			Interior *interior = gDifs[dif]->interior[i];
-
-			for (U32 j = 0; j < interior->numSurfaces; j ++) {
-				Surface surface = interior->surface[j];
-
-				U32 windingStart = surface.windingStart;
-				U8 windingCount = surface.windingCount;
-
-				//Triangle strips, but not how we want them. Somehow. I don't know; this actually works though.
-
-				windingCount -= 2;
-
-				for (U32 k = windingStart; k < windingStart + windingCount; k ++) {
-					//Build triangles
-					Point3F point0;
-					Point3F point1;
-					Point3F point2;
-					switch (k - windingStart) {
-						case 0:
-							point0 = interior->point[interior->index[k + 2]];
-							point1 = interior->point[interior->index[k + 1]];
-							point2 = interior->point[interior->index[k + 0]];
-							break;
-						case 1:
-							point0 = interior->point[interior->index[k + 0]];
-							point1 = interior->point[interior->index[k + 1]];
-							point2 = interior->point[interior->index[k + 2]];
-							break;
-					}
-					gTriangles[triIndex].point0 = point0;
-					gTriangles[triIndex].point1 = point1;
-					gTriangles[triIndex].point2 = point2;
-
- 					gTriangles[triIndex].normal = interior->normal[interior->plane[surface.planeIndex].normalIndex];
-
-					//Triangle-based color (probably)
-					GLfloat *rgb = hsvToRGB((GLfloat)(k - windingStart) / (GLfloat)10.f, 1.f, 1.f);
-					free(rgb);
-					gTriangles[triIndex].color = *(ColorF *)rgb;
-
-					triIndex ++;
-				}
-				printf("\n");
-			}
-		}
-	}
-}
-
 void render() {
 	//Load the model matrix
 	glMatrixMode(GL_MODELVIEW);
@@ -180,7 +76,7 @@ void render() {
 	//TODO: VBOs
 	glBegin(GL_TRIANGLES);
 	for (U32 i = 0; i < gTriangleCount; i ++) {
-		glColor3fv((GLfloat *)&gTriangles[i].color);
+		glColor4f(gTriangles[i].color.red, gTriangles[i].color.green, gTriangles[i].color.blue, gTriangles[i].color.alpha);
 		glNormal3f(gTriangles[i].normal.x, gTriangles[i].normal.z, gTriangles[i].normal.y);
 
 		//Lazy, also wrong because Torque swaps y/z
@@ -278,7 +174,7 @@ void handleEvent(SDL_Event *event) {
 
 bool init() {
 	//Load our map into triangles (global var warning)
-	generateTriangles();
+	gTriangles = interior_generate_triangles(gDifs[0]->interior[0], &gTriangleCount);
 
 	gRunning = true;
 
@@ -371,14 +267,17 @@ int main(int argc, const char * argv[])
 		return 1;
 	}
 
-	gDifCount = (argc - 1);
+	gDifCount = 0;
 	gDifs = (DIF **)malloc(sizeof(DIF *) * gDifCount);
-	for (U32 i = 0; i < gDifCount; i ++) {
+	for (U32 i = 0; i < (argc - 1); i ++) {
 		//Open file
 		FILE *file = fopen(argv[i + 1], "r");
 
 		//Read the .dif
 		gDifs[i] = dif_read_file(file);
+		if (gDifs[i]) {
+			gDifCount ++;
+		}
 
 		//Clean up
 		fclose(file);
