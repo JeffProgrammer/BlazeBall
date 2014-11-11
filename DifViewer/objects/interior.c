@@ -308,12 +308,14 @@ void interior_release(Interior *interior) {
 
 Triangle *interior_generate_triangles(Interior *interior, U32 *count) {
 	*count = 0;
+	U32 maxWC = 0;
 	for (U32 i = 0; i < interior->numSurfaces; i ++) {
 		Surface surface = interior->surface[i];
 		U8 windingCount = surface.windingCount;
 		//Triangles = (points - 2)
 		windingCount -= 2;
 		*count += windingCount;
+		maxWC = (windingCount > maxWC ? windingCount : maxWC);
 	}
 
 	Triangle *triangles = (Triangle *)malloc(sizeof(Triangle) * *count);
@@ -353,7 +355,7 @@ Triangle *interior_generate_triangles(Interior *interior, U32 *count) {
 			triangles[triIndex].normal = interior->normal[interior->plane[surface.planeIndex].normalIndex];
 
 			//Triangle-based color (probably)
-			triangles[triIndex].color = (ColorF){1, 1, 1, 1};
+			triangles[triIndex].color = (ColorF){(F32)((index - windingStart) % 4) / 4.f, (F32)(index - windingStart) / (F32)windingCount, (F32)windingCount / (F32)maxWC, 1.f};
 			
 			triIndex ++;
 		}
