@@ -123,7 +123,7 @@ bool initGL() {
 	SDL_GetWindowSize(gWindow, &w, &h);
 
 	GLfloat aspect = (GLfloat)w / (GLfloat)h;
-	glViewport(0, 0, w, h);
+	glViewport(0, 0, w * 2, h * 2);
 
 	//Initialize Projection Matrix
 	glMatrixMode(GL_PROJECTION);
@@ -191,7 +191,7 @@ bool init() {
 	SDL_GetDisplayBounds(0, &bounds);
 
 	//Create the window
-	if ((gWindow = SDL_CreateWindow("DIF Viewer", (bounds.w - 1280) / 2, (bounds.h - 720) / 2, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE)) == NULL) {
+	if ((gWindow = SDL_CreateWindow("DIF Viewer", (bounds.w - 1280) / 2, (bounds.h - 720) / 2, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI)) == NULL) {
 		return false;
 	}
 
