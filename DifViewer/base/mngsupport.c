@@ -57,10 +57,10 @@ mng_bool mng__readdata(mng_handle handle, mng_ptr data, mng_uint32 length, mng_u
 		return false;
 	}
 	//Read data
-	bool success = fread(data, 1, length, info->stream);
-	*bytesread = length;
+	U32 read = (U32)fread(data, 1, length, info->stream);
+	*bytesread = read;
 
-	return success;
+	return read > 0;
 }
 
 mng_bool mng__processheader(mng_handle handle, mng_uint32 width, mng_uint32 height) {
@@ -111,7 +111,7 @@ mng_bool mng__processheader(mng_handle handle, mng_uint32 width, mng_uint32 heig
 mng_ptr mng__getcanvasline(mng_handle handle, mng_uint32 line) {
 	MNGInfo *info = mng_get_userdata(handle);
 
-	return *info->pixels;
+	return *info->pixels + (line * gMNGInfo.extent.x * info->format);
 }
 
 mng_bool mng__refresh(mng_handle handle, mng_uint32 x, mng_uint32 y, mng_uint32 w, mng_uint32 h) {
@@ -127,9 +127,8 @@ mng_bool mng__settimer(mng_handle handle, mng_uint32 msecs) {
 }
 
 bool mngReadImage(String file, U8 **bitmap, Point2I *dims) {
-	if (!gMNGInfo.inited) {
-		if (!initMNG())
-			return false;
+	if (!initMNG()) {
+		return false;
 	}
 
 	gMNGInfo.file = file;
@@ -166,11 +165,14 @@ bool mngReadImage(String file, U8 **bitmap, Point2I *dims) {
 	(*dims).x = gMNGInfo.extent.x;
 	(*dims).y = gMNGInfo.extent.y;
 
+	closeMNG();
+
 	return true;
 }
 
 bool initMNG() {
 	gMNGInfo.inited = false;
+	memset(&gMNGInfo, 0, sizeof(MNGInfo));
 
 	gMNG = mng_initialize(&gMNGInfo, mng__memalloc, mng__memfree, MNG_NULL);
 	if (gMNG == MNG_NULL) {
