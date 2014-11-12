@@ -143,6 +143,14 @@ void handleEvent(SDL_Event *event) {
 		//Just reinit (lazy)
 		initGL();
 	}
+	if (event->type == SDL_APP_DIDENTERFOREGROUND || event->type == SDL_MOUSEBUTTONDOWN) {
+		//Lock cursor
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+	}
+	if (event->type == SDL_APP_WILLENTERBACKGROUND) {
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+	}
 	//Key events, movement
 	if (event->type == SDL_KEYDOWN) {
 		switch (((SDL_KeyboardEvent *)event)->keysym.scancode) {
@@ -151,6 +159,10 @@ void handleEvent(SDL_Event *event) {
 			case SDL_SCANCODE_S: movement[1] = true; break;
 			case SDL_SCANCODE_A: movement[2] = true; break;
 			case SDL_SCANCODE_D: movement[3] = true; break;
+			case SDL_SCANCODE_ESCAPE:
+				//Unlock cursor
+				SDL_SetRelativeMouseMode(SDL_FALSE);
+				break;
 		}
 	} else if (event->type == SDL_KEYUP) {
 		switch (((SDL_KeyboardEvent *)event)->keysym.scancode) {
