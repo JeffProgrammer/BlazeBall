@@ -48,7 +48,7 @@
 		B566A68A1A12ED55003D6BEA /* libmng_zlib.c in Sources */ = {isa = PBXBuildFile; fileRef = B566A6611A12ED55003D6BEA /* libmng_zlib.c */; };
 		B566A68B1A12ED55003D6BEA /* libmng_zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = B566A6621A12ED55003D6BEA /* libmng_zlib.h */; };
 		B566A68C1A12ED55003D6BEA /* libmng.h in Headers */ = {isa = PBXBuildFile; fileRef = B566A6631A12ED55003D6BEA /* libmng.h */; };
-		B566A6BB1A12EFEE003D6BEA /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B566A6BA1A12EFEE003D6BEA /* libjpeg.a */; };
+		B566A6C41A12F11B003D6BEA /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B566A6C31A12F11B003D6BEA /* libjpeg.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,7 +105,7 @@
 		B566A6621A12ED55003D6BEA /* libmng_zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libmng_zlib.h; sourceTree = "<group>"; };
 		B566A6631A12ED55003D6BEA /* libmng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libmng.h; sourceTree = "<group>"; };
 		B566A6AD1A12EEC5003D6BEA /* jpeg.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = jpeg.xcodeproj; path = ../jpeg/jpeg.xcodeproj; sourceTree = "<group>"; };
-		B566A6BA1A12EFEE003D6BEA /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = ../jpeg/.libs/libjpeg.a; sourceTree = "<group>"; };
+		B566A6C31A12F11B003D6BEA /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = ../jpeg/.libs/libjpeg.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,7 +113,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B566A6BB1A12EFEE003D6BEA /* libjpeg.a in Frameworks */,
+				B566A6C41A12F11B003D6BEA /* libjpeg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,7 +123,7 @@
 		B566A61E1A12ED23003D6BEA = {
 			isa = PBXGroup;
 			children = (
-				B566A6BA1A12EFEE003D6BEA /* libjpeg.a */,
+				B566A6C31A12F11B003D6BEA /* libjpeg.a */,
 				B566A63A1A12ED49003D6BEA /* Source */,
 				B566A6961A12EEA5003D6BEA /* Dependencies */,
 				B566A6281A12ED23003D6BEA /* Products */,
@@ -405,8 +405,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Developer,
-					"Projects/Objective-C/Mac/DifThing/jpeg/.libs",
+					"$(PROJECT_DIR)/../jpeg/.libs",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -423,8 +422,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Developer,
-					"Projects/Objective-C/Mac/DifThing/jpeg/.libs",
+					"$(PROJECT_DIR)/../jpeg/.libs",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
