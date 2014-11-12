@@ -20,6 +20,11 @@
 
 #include "types.h"
 
+typedef enum {
+	BitmapTypePNG,
+	BitmapTypeJPEG,
+} BitmapType;
+
 static U32 gNumCoordBins = 16;
 
 typedef struct {

@@ -24,6 +24,7 @@
 #include "io.h"
 #include "interior.h"
 #include "mngsupport.h"
+#include "jpegsupport.h"
 
 Interior *interior_read_file(FILE *file, String directory) {
 	Interior *interior = (Interior *)malloc(sizeof(Interior));
@@ -261,6 +262,7 @@ Interior *interior_read_file(FILE *file, String directory) {
 	interior->materialData = malloc(sizeof(U8 *) * interior->numMaterials);
 	interior->materialDims = malloc(sizeof(Point2I) * interior->numMaterials);
 	for (U32 i = 0; i < interior->numMaterials; i ++) {
+		BitmapType type;
 		String base = strdup(directory);
 
 		U32 pathlen = (U32)(strlen((const char *)base) + strlen((const char *)interior->material[i]) + 1);
@@ -269,8 +271,12 @@ Interior *interior_read_file(FILE *file, String directory) {
 		do {
 			pathlen = sprintf((char *)imageFile, "%s/%s.png", base, interior->material[i]);
 
-//			if (!isfile(imageFile))
-//				memcpy(imageFile + pathlen - 3, "jpg", 3);
+			type = BitmapTypePNG;
+
+			if (!isfile(imageFile)) {
+				memcpy(imageFile + pathlen - 3, "jpg", 3);
+				type = BitmapTypeJPEG;
+			}
 			if (!isfile(imageFile))
 				*strrchr(base, '/') = 0;
 		} while (!isfile(imageFile) && strcmp((const char *)base, ""));
@@ -286,7 +292,10 @@ Interior *interior_read_file(FILE *file, String directory) {
 
 		U8 *bitmap;
 		Point2I dims;
-		mngReadImage(imageFile, &bitmap, &dims);
+		if (type == BitmapTypePNG)
+			mngReadImage(imageFile, &bitmap, &dims);
+		else if (type == BitmapTypeJPEG)
+			jpegReadImage(imageFile, &bitmap, &dims);
 		interior->materialData[i] = bitmap;
 		interior->materialDims[i] = dims;
 
