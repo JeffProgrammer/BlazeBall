@@ -18,8 +18,26 @@
 		B54F9DB51A10399D00F550EA /* interiorPathFollower.c in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DA81A10399D00F550EA /* interiorPathFollower.c */; };
 		B54F9DB61A10399D00F550EA /* trigger.c in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DAA1A10399D00F550EA /* trigger.c */; };
 		B54F9DB71A10399D00F550EA /* vehicleCollision.c in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DAC1A10399D00F550EA /* vehicleCollision.c */; };
+		B566A6BC1A12EFFA003D6BEA /* libmng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B566A6951A12EE54003D6BEA /* libmng.a */; };
 		B5D92CA71A100DD7000A36CB /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5D92CA61A100DD7000A36CB /* SDL2.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B566A6941A12EE54003D6BEA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B566A6901A12EE54003D6BEA /* mng.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B566A6271A12ED23003D6BEA;
+			remoteInfo = libmng;
+		};
+		B566A6BD1A12EFFD003D6BEA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B566A6901A12EE54003D6BEA /* mng.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = B566A6261A12ED23003D6BEA;
+			remoteInfo = mng;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		B5BF4D611A0BF42900BF0956 /* CopyFiles */ = {
@@ -56,8 +74,9 @@
 		B54F9DAB1A10399D00F550EA /* trigger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trigger.h; sourceTree = "<group>"; };
 		B54F9DAC1A10399D00F550EA /* vehicleCollision.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vehicleCollision.c; sourceTree = "<group>"; };
 		B54F9DAD1A10399D00F550EA /* vehicleCollision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vehicleCollision.h; sourceTree = "<group>"; };
+		B566A6901A12EE54003D6BEA /* mng.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = mng.xcodeproj; path = mng/mng.xcodeproj; sourceTree = "<group>"; };
 		B5BF4D631A0BF42900BF0956 /* DifViewer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DifViewer; sourceTree = BUILT_PRODUCTS_DIR; };
-		B5D92CA61A100DD7000A36CB /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		B5D92CA61A100DD7000A36CB /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B566A6BC1A12EFFA003D6BEA /* libmng.a in Frameworks */,
 				B5099DAF1A10127F0005DAC6 /* OpenGL.framework in Frameworks */,
 				B5D92CA71A100DD7000A36CB /* SDL2.framework in Frameworks */,
 			);
@@ -108,13 +128,30 @@
 			path = DifViewer/objects;
 			sourceTree = SOURCE_ROOT;
 		};
+		B566A61D1A12ED06003D6BEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B5099DAE1A10127F0005DAC6 /* OpenGL.framework */,
+				B5D92CA61A100DD7000A36CB /* SDL2.framework */,
+				B566A6901A12EE54003D6BEA /* mng.xcodeproj */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B566A6911A12EE54003D6BEA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B566A6951A12EE54003D6BEA /* libmng.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		B5BF4D5A1A0BF42900BF0956 = {
 			isa = PBXGroup;
 			children = (
 				B5BF4D651A0BF42900BF0956 /* DifViewer */,
 				B5201D801A10403F0084D459 /* DIF_MB_SPEC.rtf */,
-				B5099DAE1A10127F0005DAC6 /* OpenGL.framework */,
-				B5D92CA61A100DD7000A36CB /* SDL2.framework */,
+				B566A61D1A12ED06003D6BEA /* Frameworks */,
 				B5BF4D641A0BF42900BF0956 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -152,6 +189,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B566A6BE1A12EFFD003D6BEA /* PBXTargetDependency */,
 			);
 			name = DifViewer;
 			productName = DifThing;
@@ -177,12 +215,28 @@
 			mainGroup = B5BF4D5A1A0BF42900BF0956;
 			productRefGroup = B5BF4D641A0BF42900BF0956 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = B566A6911A12EE54003D6BEA /* Products */;
+					ProjectRef = B566A6901A12EE54003D6BEA /* mng.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				B5BF4D621A0BF42900BF0956 /* DifViewer */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		B566A6951A12EE54003D6BEA /* libmng.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libmng.a;
+			remoteRef = B566A6941A12EE54003D6BEA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B5BF4D5F1A0BF42900BF0956 /* Sources */ = {
@@ -203,6 +257,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B566A6BE1A12EFFD003D6BEA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = mng;
+			targetProxy = B566A6BD1A12EFFD003D6BEA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		B5BF4D6A1A0BF42A00BF0956 /* Debug */ = {
