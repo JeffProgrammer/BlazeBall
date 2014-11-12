@@ -27,7 +27,17 @@ typedef struct {
 	Dictionary properties;
 } GameEntity;
 
+/**
+ Reads a GameEntity from a FILE
+ @arg file - The FILE to read from (updates position)
+ @return A GameEntity
+ */
 GameEntity *gameEntity_read_file(FILE *file);
+
+/**
+ Frees the GameEntity and all memory contained within it
+ @arg gameEntity - The GameEntity to release
+ */
 void gameEntity_release(GameEntity *gameEntity);
 
 #endif

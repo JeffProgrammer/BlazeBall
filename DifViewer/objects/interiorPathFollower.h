@@ -43,7 +43,17 @@ typedef struct {
 	U32 totalMS;
 } InteriorPathFollower;
 
+/**
+ Reads an InteriorPathFollower from a FILE
+ @arg file - The FILE to read from (updates position)
+ @return An InteriorPathFollower
+ */
 InteriorPathFollower *interiorPathFollower_read_file(FILE *file);
+
+/**
+ Frees the InteriorPathFollower and all memory contained within it
+ @arg interiorPathFollower - The InteriorPathFollower to release
+ */
 void interiorPathFollower_release(InteriorPathFollower *interiorPathFollower);
 
 #endif

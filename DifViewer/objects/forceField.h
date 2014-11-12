@@ -78,7 +78,17 @@ typedef struct {
 	ColorI color;
 } ForceField;
 
+/**
+ Reads a ForceField from a FILE
+ @arg file - The FILE to read from (updates position)
+ @return A ForceField
+ */
 ForceField *forceField_read_file(FILE *file);
+
+/**
+ Frees the ForceField and all memory contained within it
+ @arg forceField - The ForceField to release
+ */
 void forceField_release(ForceField *forceField);
 
 #endif

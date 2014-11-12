@@ -78,7 +78,17 @@ typedef struct {
 	VehicleNullSurface *vehicleNullSurface;
 } VehicleCollision;
 
+/**
+ Reads a VehicleCollision from a FILE
+ @arg file - The FILE to read from (updates position)
+ @return A VehicleCollision
+ */
 VehicleCollision *vehicleCollision_read_file(FILE *file);
+
+/**
+ Frees the VehicleCollision and all memory contained within it
+ @arg vehicleCollision - The VehicleCollision to release
+ */
 void vehicleCollision_release(VehicleCollision *vehicleCollision);
 
 #endif

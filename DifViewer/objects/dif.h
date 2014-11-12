@@ -65,7 +65,17 @@ typedef struct {
 	U32 dummy;
 } DIF;
 
+/**
+ Reads a DIF from a FILE
+ @arg file - The FILE to read from (updates position)
+ @return A DIF
+ */
 DIF *dif_read_file(FILE *file);
+
+/**
+ Frees the DIF and all memory contained within it
+ @arg dif - The DIF to release
+ */
 void dif_release(DIF *dif);
 
 #ifdef __cplusplus

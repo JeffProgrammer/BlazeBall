@@ -284,9 +284,32 @@ typedef struct {
 	U32 lightMapBorderSize;
 } Interior;
 
+/**
+ Reads an Interior from a FILE
+ @arg file - The FILE to read from (updates position)
+ @return An Interior
+ */
 Interior *interior_read_file(FILE *file);
+
+/**
+ Frees the Interior and all memory contained within it
+ @arg interior - The Interior to release
+ */
 void interior_release(Interior *interior);
+
+/**
+ Generates a list of Triangles from an Interior
+ @arg interior - The interior to generate from
+ @arg count - The outputted triangle count
+ @return The list of Triangles
+ */
 Triangle *interior_generate_triangles(Interior *interior, U32 *count);
+
+/**
+ Exports an interior into a Wavefront .obj file
+ @arg interior - The Interior to export from
+ @arg file - The FILE to export to
+ */
 void interior_export_obj(Interior *interior, FILE *file);
 
 #endif

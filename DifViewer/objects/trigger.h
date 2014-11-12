@@ -44,7 +44,17 @@ typedef struct {
 	Point3F offset;
 } Trigger;
 
+/**
+ Reads a Trigger from a FILE
+ @arg file - The FILE to read from (updates position)
+ @return A Trigger
+ */
 Trigger *trigger_read_file(FILE *file);
+
+/**
+ Frees the Trigger and all memory contained within it
+ @arg trigger - The Trigger to release
+ */
 void trigger_release(Trigger *trigger);
 
 #endif

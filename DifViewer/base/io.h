@@ -20,17 +20,26 @@
 
 #include "types.h"
 
-//Base types
+/*
+ Read number types from a file
+ @var file - The FILE to read from (updates position)
+ @return The number data at that position in the FILE
+ */
+
+//Unsigned ints
 U64 readU64(FILE **file);
 U32 readU32(FILE **file);
 U16 readU16(FILE **file);
 U8  readU8 (FILE **file);
-F32 readF32(FILE **file);
 
+//Signed ints
 S64 readS64(FILE **file);
 S32 readS32(FILE **file);
 S16 readS16(FILE **file);
 S8  readS8 (FILE **file);
+
+//Floats
+F32 readF32(FILE **file);
 
 //Structures
 PlaneF     readPlaneF(FILE **file);
@@ -43,12 +52,11 @@ String     readString(FILE **file);
 void       readPNG(FILE **file);
 Dictionary readDictionary(FILE **file);
 
-//Mem mgt
+//Memory management
 void releaseString(String string);
 void releaseDictionary(Dictionary dictionary);
 
-//Warning: Lazy!
-
+//Macros to speed up file reading
 #define READ(type) read##type(&file)
 #define READVAR(name, type) type name = read##type(&file)
 #define READTOVAR(name, type) name = read##type(&file)
@@ -57,10 +65,10 @@ void releaseDictionary(Dictionary dictionary);
 #define READLOOPVAR(countvar, listvar, type) \
 countvar = readU32(&file); \
 listvar = (type *)malloc(sizeof(type) * countvar); \
-	for (U32 i = 0; i < countvar; i ++)
+for (U32 i = 0; i < countvar; i ++)
 
 #define READLOOP(name, type) \
 type name##_length = read##type(&file); \
-	for (U32 i = 0; i < name##_length; i ++)
+for (U32 i = 0; i < name##_length; i ++)
 
 #endif

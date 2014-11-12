@@ -333,10 +333,10 @@ Triangle *interior_generate_triangles(Interior *interior, U32 *count) {
 		U32 windingStart = surface.windingStart;
 		U8 windingCount = surface.windingCount;
 
+		//2 points are lost (first and last)
 		windingCount -= 2;
 
-		//Triangle strips, but not how we want them. Somehow. I don't know; this actually works though.
-
+		//Triangle strips, in 0-1-2, 3-2-1, 2-3-4, 5-4-3 order
 		for (U32 index = windingStart; index < windingStart + windingCount; index ++) {
 			//Build triangles
 			U32 indices[3] = {index + 0, index + 1, index + 2};
@@ -384,10 +384,10 @@ void interior_export_obj(Interior *interior, FILE *file) {
 		U32 windingStart = surface.windingStart;
 		U8 windingCount = surface.windingCount;
 
+		//2 points are lost (first and last)
 		windingCount -= 2;
 
-		//Triangle strips, but not how we want them. Somehow. I don't know; this actually works though.
-
+		//Triangle strips, in 0-1-2, 3-2-1, 2-3-4, 5-4-3 order
 		for (U32 index = windingStart; index < windingStart + windingCount; index ++) {
 			//Build triangles
 			U32 indices[3] = {index + 0, index + 1, index + 2};
