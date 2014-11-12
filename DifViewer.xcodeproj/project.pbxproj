@@ -23,6 +23,7 @@
 		B5D92CA71A100DD7000A36CB /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5D92CA61A100DD7000A36CB /* SDL2.framework */; };
 		B5E0CD9C1A13F41200BB4291 /* jpegsupport.c in Sources */ = {isa = PBXBuildFile; fileRef = B5E0CD981A13F41200BB4291 /* jpegsupport.c */; };
 		B5E0CD9D1A13F41200BB4291 /* mngsupport.c in Sources */ = {isa = PBXBuildFile; fileRef = B5E0CD9A1A13F41200BB4291 /* mngsupport.c */; };
+		B5E0CDA01A13F43B00BB4291 /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = B5E0CD9F1A13F43B00BB4291 /* texture.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +87,8 @@
 		B5E0CD991A13F41200BB4291 /* jpegsupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpegsupport.h; path = DifViewer/bitmap/jpegsupport.h; sourceTree = SOURCE_ROOT; };
 		B5E0CD9A1A13F41200BB4291 /* mngsupport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mngsupport.c; path = DifViewer/bitmap/mngsupport.c; sourceTree = SOURCE_ROOT; };
 		B5E0CD9B1A13F41200BB4291 /* mngsupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mngsupport.h; path = DifViewer/bitmap/mngsupport.h; sourceTree = SOURCE_ROOT; };
+		B5E0CD9E1A13F43100BB4291 /* texture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = texture.h; path = DifViewer/bitmap/texture.h; sourceTree = SOURCE_ROOT; };
+		B5E0CD9F1A13F43B00BB4291 /* texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = texture.c; path = DifViewer/bitmap/texture.c; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,8 +183,8 @@
 			isa = PBXGroup;
 			children = (
 				B54F9D9C1A10399D00F550EA /* main.cpp */,
-				B5E0CD971A13F3EC00BB4291 /* bitmap */,
 				B54F9D981A10399D00F550EA /* base */,
+				B5E0CD971A13F3EC00BB4291 /* bitmap */,
 				B54F9D9D1A10399D00F550EA /* objects */,
 			);
 			name = DifViewer;
@@ -195,6 +198,8 @@
 				B5E0CD991A13F41200BB4291 /* jpegsupport.h */,
 				B5E0CD9A1A13F41200BB4291 /* mngsupport.c */,
 				B5E0CD9B1A13F41200BB4291 /* mngsupport.h */,
+				B5E0CD9F1A13F43B00BB4291 /* texture.c */,
+				B5E0CD9E1A13F43100BB4291 /* texture.h */,
 			);
 			name = bitmap;
 			path = ../DifViewer/base;
@@ -277,6 +282,7 @@
 				B54F9DAE1A10399D00F550EA /* io.c in Sources */,
 				B54F9DB21A10399D00F550EA /* forceField.c in Sources */,
 				B5E0CD9D1A13F41200BB4291 /* mngsupport.c in Sources */,
+				B5E0CDA01A13F43B00BB4291 /* texture.c in Sources */,
 				B54F9DB01A10399D00F550EA /* aiSpecialNode.c in Sources */,
 				B54F9DB61A10399D00F550EA /* trigger.c in Sources */,
 				B54F9DB71A10399D00F550EA /* vehicleCollision.c in Sources */,

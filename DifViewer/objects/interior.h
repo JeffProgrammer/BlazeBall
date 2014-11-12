@@ -19,11 +19,23 @@
 #define interior_h
 
 #include "types.h"
+#include "texture.h"
 
 typedef enum {
 	BitmapTypePNG,
 	BitmapTypeJPEG,
 } BitmapType;
+
+typedef struct {
+	Point3F point0;
+	Point3F point1;
+	Point3F point2;
+
+	Point3F normal;
+	ColorF color;
+
+	Texture *texture;
+} Triangle;
 
 static U32 gNumCoordBins = 16;
 
@@ -182,8 +194,7 @@ typedef struct {
 	U32 materialListVersion;
 	U32 numMaterials;
 	String *material;
-	U8 **materialData;
-	Point2I *materialDims;
+	Texture **texture;
 
 	U32 numWindings;
 	U32 *index;

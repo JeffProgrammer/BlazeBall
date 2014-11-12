@@ -110,14 +110,4 @@ typedef struct {
 	String *values;
 } Dictionary;
 
-typedef struct {
-	Point3F point0;
-	Point3F point1;
-	Point3F point2;
-
-	Point3F normal;
-
-	ColorF color;
-} Triangle;
-
 #endif

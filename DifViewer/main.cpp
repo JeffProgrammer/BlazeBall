@@ -23,6 +23,7 @@
 #include "io.h"
 #include "types.h"
 #include "dif.h"
+#include "texture.h"
 
 #include <SDL2/SDL.h>
 #include <OpenGL/gl.h>
@@ -77,13 +78,20 @@ void render() {
 	//TODO: VBOs
 	glBegin(GL_TRIANGLES);
 	for (U32 i = 0; i < gTriangleCount; i ++) {
-		glColor4f(gTriangles[i].color.red, gTriangles[i].color.green, gTriangles[i].color.blue, gTriangles[i].color.alpha);
+		Texture *texture = gTriangles[i].texture;
+
+		if (texture)
+			texture_activate(texture);
+
 		glNormal3f(gTriangles[i].normal.x, gTriangles[i].normal.z, gTriangles[i].normal.y);
 
 		//Lazy, also wrong because Torque swaps y/z
-		glVertex3f(gTriangles[i].point0.x, gTriangles[i].point0.z, -gTriangles[i].point0.y);
-		glVertex3f(gTriangles[i].point1.x, gTriangles[i].point1.z, -gTriangles[i].point1.y);
-		glVertex3f(gTriangles[i].point2.x, gTriangles[i].point2.z, -gTriangles[i].point2.y);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(gTriangles[i].point0.x, gTriangles[i].point0.z, -gTriangles[i].point0.y);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(gTriangles[i].point1.x, gTriangles[i].point1.z, -gTriangles[i].point1.y);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(gTriangles[i].point2.x, gTriangles[i].point2.z, -gTriangles[i].point2.y);
+
+		if (texture)
+			texture_deactivate(texture);
 	}
 	glEnd();
 	glDisable(GL_CULL_FACE);
@@ -186,9 +194,6 @@ void handleEvent(SDL_Event *event) {
 }
 
 bool init() {
-	//Load our map into triangles (global var warning)
-	gTriangles = interior_generate_triangles(gDifs[0]->interior[0], &gTriangleCount);
-
 	gRunning = true;
 
 	//Init SDL
@@ -225,6 +230,9 @@ bool init() {
 	if (!initGL()) {
 		return false;
 	}
+
+	//Load our map into triangles (global var warning)
+	gTriangles = interior_generate_triangles(gDifs[0]->interior[0], &gTriangleCount);
 	return true;
 }
 

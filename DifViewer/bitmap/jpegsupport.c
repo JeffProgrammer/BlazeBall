@@ -24,7 +24,7 @@ bool jpegReadImage(String file, U8 **bitmap, Point2I *dims) {
 	struct jpeg_decompress_struct dptr;
 	struct jpeg_error_mgr errmgr;
 
-	FILE *stream = fopen(file, "r");
+	FILE *stream = fopen((const char *)file, "r");
 
 	dptr.err = jpeg_std_error(&errmgr);
 
@@ -41,7 +41,7 @@ bool jpegReadImage(String file, U8 **bitmap, Point2I *dims) {
 	U8 *b = *bitmap;
 
 	for (U32 y = 0; y < dims->y; y ++) {
-		JSAMPROW row = calloc(dims->x, sizeof(U32));
+		JSAMPROW row = calloc(dims->x, sizeof(U8) * 4);
 		jpeg_read_scanlines(&dptr, &row, 1);
 
 		for (U32 x = 0; x < dims->x; x ++) {

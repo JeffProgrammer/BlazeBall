@@ -259,11 +259,10 @@ Interior *interior_read_file(FILE *file, String directory) {
 		READ(U32); //dummy
 	}
 
-	interior->materialData = malloc(sizeof(U8 *) * interior->numMaterials);
-	interior->materialDims = malloc(sizeof(Point2I) * interior->numMaterials);
+	interior->texture = malloc(sizeof(Texture *) * interior->numMaterials);
 	for (U32 i = 0; i < interior->numMaterials; i ++) {
 		BitmapType type;
-		String base = strdup(directory);
+		String base = (String)strdup((char *)directory);
 
 		U32 pathlen = (U32)(strlen((const char *)base) + strlen((const char *)interior->material[i]) + 1);
 		String imageFile = malloc(sizeof(U8) * pathlen + 3);
@@ -278,13 +277,11 @@ Interior *interior_read_file(FILE *file, String directory) {
 				type = BitmapTypeJPEG;
 			}
 			if (!isfile(imageFile))
-				*strrchr(base, '/') = 0;
+				*strrchr((const char *)base, '/') = 0;
 		} while (!isfile(imageFile) && strcmp((const char *)base, ""));
 
 		if (!isfile(imageFile)) {
-			interior->materialData[i] = NULL;
-			interior->materialDims[i].x = 0;
-			interior->materialDims[i].y = 0;
+			interior->texture[i] = NULL;
 			free(base);
 			free(imageFile);
 			continue;
@@ -296,9 +293,11 @@ Interior *interior_read_file(FILE *file, String directory) {
 			mngReadImage(imageFile, &bitmap, &dims);
 		else if (type == BitmapTypeJPEG)
 			jpegReadImage(imageFile, &bitmap, &dims);
-		interior->materialData[i] = bitmap;
-		interior->materialDims[i] = dims;
 
+		Texture *texture = texture_create_from_pixels(bitmap, dims);
+		interior->texture[i] = texture;
+
+		free(bitmap);
 		free(base);
 		free(imageFile);
 	}
@@ -309,7 +308,9 @@ Interior *interior_read_file(FILE *file, String directory) {
 void interior_release(Interior *interior) {
 	for (U32 i = 0; i < interior->numMaterials; i ++) {
 		releaseString(interior->material[i]);
-		free(interior->materialData[i]);
+
+		if (interior->texture[i])
+			texture_release(interior->texture[i]);
 	}
 
 	free(interior->normal);
@@ -320,8 +321,7 @@ void interior_release(Interior *interior) {
 	free(interior->BSPNode);
 	free(interior->BSPSolidLeaf);
 	free(interior->material);
-	free(interior->materialData);
-	free(interior->materialDims);
+	free(interior->texture);
 	free(interior->index);
 	free(interior->windingIndex);
 	free(interior->zone);
@@ -407,6 +407,12 @@ Triangle *interior_generate_triangles(Interior *interior, U32 *count) {
 
 			//Triangle-based color (probably)
 			triangles[triIndex].color = (ColorF){(F32)((index - windingStart) % 4) / 4.f, (F32)(index - windingStart) / (F32)windingCount, (F32)windingCount / (F32)maxWC, 1.f};
+
+			Texture *texture = interior->texture[surface.textureIndex];
+			if (!texture->generated)
+				texture_generate_buffer(texture);
+
+			triangles[triIndex].texture = texture;
 			
 			triIndex ++;
 		}
@@ -452,18 +458,6 @@ void interior_export_obj(Interior *interior, FILE *file) {
 					  interior->index[indices[0]] + 1, interior->plane[surface.planeIndex].normalIndex + 1,
 					  interior->index[indices[1]] + 1, interior->plane[surface.planeIndex].normalIndex + 1,
 					  interior->index[indices[2]] + 1, interior->plane[surface.planeIndex].normalIndex + 1);
-		}
-	}
-
-	for (U32 i = 0; i < interior->numMaterials; i ++) {
-		U32 pixel = 0;
-		for (U32 y = 0; y < interior->materialDims[i].y; y ++) {
-			for (U32 x = 0; x < interior->materialDims[i].x; x ++) {
-				fprintf(file, "%c", interior->materialData[i][pixel++]);
-				fprintf(file, "%c", interior->materialData[i][pixel++]);
-				fprintf(file, "%c", interior->materialData[i][pixel++]);
-				fprintf(file, "%c", interior->materialData[i][pixel++]);
-			}
 		}
 	}
 }
