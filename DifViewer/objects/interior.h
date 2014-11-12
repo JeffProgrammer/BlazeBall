@@ -177,6 +177,8 @@ typedef struct {
 	U32 materialListVersion;
 	U32 numMaterials;
 	String *material;
+	U8 **materialData;
+	Point2I *materialDims;
 
 	U32 numWindings;
 	U32 *index;
@@ -287,9 +289,10 @@ typedef struct {
 /**
  Reads an Interior from a FILE
  @arg file - The FILE to read from (updates position)
+ @arg directory - The base directory for images
  @return An Interior
  */
-Interior *interior_read_file(FILE *file);
+Interior *interior_read_file(FILE *file, String directory);
 
 /**
  Frees the Interior and all memory contained within it

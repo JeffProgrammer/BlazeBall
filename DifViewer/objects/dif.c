@@ -20,7 +20,7 @@
 #include "io.h"
 #include "dif.h"
 
-DIF *dif_read_file(FILE *file) {
+DIF *dif_read_file(FILE *file, String directory) {
 	//http://rustycode.com/tutorials/DIF_File_Format_44_14.html
 	// Someone give that guy all the cookies.
 
@@ -32,10 +32,10 @@ DIF *dif_read_file(FILE *file) {
 	}
 
 	READLOOPVAR(dif->numDetailLevels, dif->interior, Interior *) {
-		dif->interior[i] = interior_read_file(file);
+		dif->interior[i] = interior_read_file(file, directory);
 	}
 	READLOOPVAR(dif->numSubObjects, dif->subObject, Interior *) {
-		dif->subObject[i] = interior_read_file(file);
+		dif->subObject[i] = interior_read_file(file, directory);
 	}
 	READLOOPVAR(dif->numTriggers, dif->trigger, Trigger *) {
 		dif->trigger[i] = trigger_read_file(file);

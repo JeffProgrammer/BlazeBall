@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <sys/time.h>
+#include <libgen.h>
 #include "io.h"
 #include "types.h"
 #include "dif.h"
@@ -288,11 +289,13 @@ int main(int argc, const char * argv[])
 	gDifCount = 0;
 	gDifs = (DIF **)malloc(sizeof(DIF *) * (argc - argstart));
 	for (U32 i = 0; i < (argc - argstart); i ++) {
+		String directory = (String)dirname((char *)argv[i + argstart]);
+
 		//Open file
 		FILE *file = fopen(argv[i + argstart], "r");
 
 		//Read the .dif
-		gDifs[i] = dif_read_file(file);
+		gDifs[i] = dif_read_file(file, directory);
 		if (gDifs[i]) {
 			gDifCount ++;
 		}

@@ -19,10 +19,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <libgen.h>
 #include "io.h"
 #include "interior.h"
+#include "mngsupport.h"
 
-Interior *interior_read_file(FILE *file) {
+Interior *interior_read_file(FILE *file, String directory) {
 	Interior *interior = (Interior *)malloc(sizeof(Interior));
 
 	READTOVAR(interior->interiorFileVersion, U32); //interiorFileVersion
@@ -255,12 +258,49 @@ Interior *interior_read_file(FILE *file) {
 		READ(U32); //dummy
 	}
 
+	interior->materialData = malloc(sizeof(U8 *) * interior->numMaterials);
+	interior->materialDims = malloc(sizeof(Point2I) * interior->numMaterials);
+	for (U32 i = 0; i < interior->numMaterials; i ++) {
+		String base = strdup(directory);
+
+		U32 pathlen = (U32)(strlen((const char *)base) + strlen((const char *)interior->material[i]) + 1);
+		String imageFile = malloc(sizeof(U8) * pathlen + 3);
+
+		do {
+			pathlen = sprintf((char *)imageFile, "%s/%s.png", base, interior->material[i]);
+
+//			if (!isfile(imageFile))
+//				memcpy(imageFile + pathlen - 3, "jpg", 3);
+			if (!isfile(imageFile))
+				*strrchr(base, '/') = 0;
+		} while (!isfile(imageFile) && strcmp((const char *)base, ""));
+
+		if (!isfile(imageFile)) {
+			interior->materialData[i] = NULL;
+			interior->materialDims[i].x = 0;
+			interior->materialDims[i].y = 0;
+			free(base);
+			free(imageFile);
+			continue;
+		}
+
+		U8 *bitmap;
+		Point2I dims;
+		mngReadImage(imageFile, &bitmap, &dims);
+		interior->materialData[i] = bitmap;
+		interior->materialDims[i] = dims;
+
+		free(base);
+		free(imageFile);
+	}
+
 	return interior;
 }
 
 void interior_release(Interior *interior) {
 	for (U32 i = 0; i < interior->numMaterials; i ++) {
 		releaseString(interior->material[i]);
+		free(interior->materialData[i]);
 	}
 
 	free(interior->normal);
@@ -271,6 +311,8 @@ void interior_release(Interior *interior) {
 	free(interior->BSPNode);
 	free(interior->BSPSolidLeaf);
 	free(interior->material);
+	free(interior->materialData);
+	free(interior->materialDims);
 	free(interior->index);
 	free(interior->windingIndex);
 	free(interior->zone);
@@ -401,6 +443,18 @@ void interior_export_obj(Interior *interior, FILE *file) {
 					  interior->index[indices[0]] + 1, interior->plane[surface.planeIndex].normalIndex + 1,
 					  interior->index[indices[1]] + 1, interior->plane[surface.planeIndex].normalIndex + 1,
 					  interior->index[indices[2]] + 1, interior->plane[surface.planeIndex].normalIndex + 1);
+		}
+	}
+
+	for (U32 i = 0; i < interior->numMaterials; i ++) {
+		U32 pixel = 0;
+		for (U32 y = 0; y < interior->materialDims[i].y; y ++) {
+			for (U32 x = 0; x < interior->materialDims[i].x; x ++) {
+				fprintf(file, "%c", interior->materialData[i][pixel++]);
+				fprintf(file, "%c", interior->materialData[i][pixel++]);
+				fprintf(file, "%c", interior->materialData[i][pixel++]);
+				fprintf(file, "%c", interior->materialData[i][pixel++]);
+			}
 		}
 	}
 }

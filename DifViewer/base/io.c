@@ -188,3 +188,12 @@ void releaseDictionary(Dictionary dictionary) {
 	free(dictionary.names);
 	free(dictionary.values);
 }
+
+bool isfile(String file) {
+	FILE *stream = fopen((const char *)file, "r");
+	if (stream) {
+		fclose(stream);
+		return true;
+	}
+	return false;
+}

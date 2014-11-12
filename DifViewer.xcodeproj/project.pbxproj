@@ -19,6 +19,8 @@
 		B54F9DB61A10399D00F550EA /* trigger.c in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DAA1A10399D00F550EA /* trigger.c */; };
 		B54F9DB71A10399D00F550EA /* vehicleCollision.c in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DAC1A10399D00F550EA /* vehicleCollision.c */; };
 		B566A6BC1A12EFFA003D6BEA /* libmng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B566A6951A12EE54003D6BEA /* libmng.a */; };
+		B5BAE7401A13081C00D220B3 /* mngsupport.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BAE73F1A13081C00D220B3 /* mngsupport.c */; };
+		B5CC8E9A1A13090A0037BFF7 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B5CC8E991A13090A0037BFF7 /* libz.dylib */; };
 		B5D92CA71A100DD7000A36CB /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5D92CA61A100DD7000A36CB /* SDL2.framework */; };
 /* End PBXBuildFile section */
 
@@ -75,7 +77,10 @@
 		B54F9DAC1A10399D00F550EA /* vehicleCollision.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vehicleCollision.c; sourceTree = "<group>"; };
 		B54F9DAD1A10399D00F550EA /* vehicleCollision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vehicleCollision.h; sourceTree = "<group>"; };
 		B566A6901A12EE54003D6BEA /* mng.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = mng.xcodeproj; path = mng/mng.xcodeproj; sourceTree = "<group>"; };
+		B5BAE73F1A13081C00D220B3 /* mngsupport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mngsupport.c; path = DifViewer/base/mngsupport.c; sourceTree = SOURCE_ROOT; };
+		B5BAE7411A13082400D220B3 /* mngsupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mngsupport.h; sourceTree = "<group>"; };
 		B5BF4D631A0BF42900BF0956 /* DifViewer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DifViewer; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5CC8E991A13090A0037BFF7 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		B5D92CA61A100DD7000A36CB /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -84,6 +89,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5CC8E9A1A13090A0037BFF7 /* libz.dylib in Frameworks */,
 				B566A6BC1A12EFFA003D6BEA /* libmng.a in Frameworks */,
 				B5099DAF1A10127F0005DAC6 /* OpenGL.framework in Frameworks */,
 				B5D92CA71A100DD7000A36CB /* SDL2.framework in Frameworks */,
@@ -98,6 +104,8 @@
 			children = (
 				B54F9D991A10399D00F550EA /* io.c */,
 				B54F9D9A1A10399D00F550EA /* io.h */,
+				B5BAE73F1A13081C00D220B3 /* mngsupport.c */,
+				B5BAE7411A13082400D220B3 /* mngsupport.h */,
 				B54F9D9B1A10399D00F550EA /* types.h */,
 			);
 			name = base;
@@ -131,6 +139,7 @@
 		B566A61D1A12ED06003D6BEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B5CC8E991A13090A0037BFF7 /* libz.dylib */,
 				B5099DAE1A10127F0005DAC6 /* OpenGL.framework */,
 				B5D92CA61A100DD7000A36CB /* SDL2.framework */,
 				B566A6901A12EE54003D6BEA /* mng.xcodeproj */,
@@ -250,6 +259,7 @@
 				B54F9DB31A10399D00F550EA /* gameEntity.c in Sources */,
 				B54F9DAE1A10399D00F550EA /* io.c in Sources */,
 				B54F9DB21A10399D00F550EA /* forceField.c in Sources */,
+				B5BAE7401A13081C00D220B3 /* mngsupport.c in Sources */,
 				B54F9DB01A10399D00F550EA /* aiSpecialNode.c in Sources */,
 				B54F9DB61A10399D00F550EA /* trigger.c in Sources */,
 				B54F9DB71A10399D00F550EA /* vehicleCollision.c in Sources */,
@@ -349,6 +359,8 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(PROJECT_DIR)/glm",
+					"$(PROJECT_DIR)/",
+					"$(PROJECT_DIR)/jpeg",
 				);
 				LIBRARY_SEARCH_PATHS = "$(INHERITED)";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
@@ -368,6 +380,8 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(PROJECT_DIR)/glm",
+					"$(PROJECT_DIR)/",
+					"$(PROJECT_DIR)/jpeg",
 				);
 				LIBRARY_SEARCH_PATHS = "$(INHERITED)";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
