@@ -21,9 +21,13 @@
 #include <stdbool.h>
 #include "types.h"
 
-bool initMNG();
-void closeMNG();
-
+/**
+ Reads an image from a given file using MNG (PNG/MNG support)
+ @param file - The file to read from
+ @param bitmap - The address of a U8* to read pixel data into
+ @param dims - The address of a Point2I to read image dimensions into
+ @return Whether or not the operation succeeded
+ */
 bool mngReadImage(String file, U8 **bitmap, Point2I *dims);
 
 #endif

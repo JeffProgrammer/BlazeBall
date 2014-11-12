@@ -38,6 +38,9 @@ typedef struct {
 static mng_handle gMNG = MNG_NULL;
 static MNGInfo gMNGInfo = (MNGInfo) {false, NULL, NULL, {0, 0}, NULL};
 
+bool initMNG();
+void closeMNG();
+
 mng_ptr mng__memalloc(mng_size_t len) {
 	//Must be zeroed
 	return calloc(1, len);
@@ -142,7 +145,7 @@ bool mngReadImage(String file, U8 **bitmap, Point2I *dims) {
 
 	gMNGInfo.file = file;
 	gMNGInfo.pixels = bitmap;
-	gMNGInfo.stream = fopen(file, "r");
+	gMNGInfo.stream = fopen((const char *)file, "r");
 
 	if (mng_set_suspensionmode(gMNG, MNG_FALSE) != MNG_NOERROR) {
 		mng_reset(gMNG);
