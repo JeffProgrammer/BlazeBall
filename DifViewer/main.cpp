@@ -71,7 +71,7 @@ void render() {
 
 	//Clear
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0, 0, 0, -1.0f);
+	glClearColor(0.5f, 0.5f, 0.5f, -1.0f);
 
 	//Actual rendering is here (GL 1.1 in a 2.1 context. Take THAT, good practice!)
 	//TODO: VBOs
@@ -110,7 +110,7 @@ void loop() {
 
 bool initGL() {
 	//Initialize clear color
-	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 	glClearDepth(1.0f);
 
 	//Enable and set some shit for rendering
