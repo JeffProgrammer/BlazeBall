@@ -66,7 +66,11 @@ Interior *interior_read_file(FILE *file, String directory) {
 	READTOVAR(interior->materialListVersion, U8); //version
 	READLOOPVAR(interior->numMaterials, interior->material, String) {
 		READTOVAR(interior->material[i], String); //material
+
+		//Chop off any paths from the material. Constructor likes to save albums in the materials
+		// and it royally breaks this program.
 		if (strstr(interior->material[i], "/")) {
+			//Hacky but effective method
 			strcpy(interior->material[i], strstr(interior->material[i], "/") + 1);
 		}
 	}
@@ -262,31 +266,41 @@ Interior *interior_read_file(FILE *file, String directory) {
 		READ(U32); //dummy
 	}
 
+	//Allocate all textures for the interior
 	interior->texture = malloc(sizeof(Texture *) * interior->numMaterials);
 	for (U32 i = 0; i < interior->numMaterials; i ++) {
-		BitmapType type;
 		BitmapType type = BitmapTypePNG;
+
+		//For some reason these two like to become the same.
 		String base = (String)strdup((char *)directory);
 
+		//Allocate enough space in each of these so we can work comfortably
 		U32 pathlen = (U32)(strlen((const char *)base) + strlen((const char *)interior->material[i]) + 1);
 		String imageFile = malloc(sizeof(U8) * pathlen + 3);
 
 		do {
+			//Init imageFile to base/file.png
 			pathlen = sprintf((char *)imageFile, "%s/%s.png", base, interior->material[i]);
 
 			type = BitmapTypePNG;
 
+			//If we can't find the PNG, try for JPEG
+			//TODO: BMP Support?
 			if (!isfile(imageFile)) {
+				//Swap the last 3 chars with jpg
 				memcpy(imageFile + pathlen - 3, "jpg", 3);
 				type = BitmapTypeJPEG;
 			}
 			//Can't recurse any further
 			if (!strrchr((const char *)base, '/'))
 				break;
+
+			//If we still can't find it, recurse (hacky but effective method)
 			if (!isfile(imageFile))
 				*strrchr((const char *)base, '/') = 0;
 		} while (!isfile(imageFile) && strcmp((const char *)base, ""));
 
+		//If we can't find it, just chuck the lot and keep going.
 		if (!isfile(imageFile)) {
 			interior->texture[i] = NULL;
 			free(base);
@@ -294,8 +308,11 @@ Interior *interior_read_file(FILE *file, String directory) {
 			continue;
 		}
 
+		//Setup
 		U8 *bitmap;
 		Point2I dims;
+
+		//Try to read the image based on format
 		if (type == BitmapTypePNG)
 			mngReadImage(imageFile, &bitmap, &dims);
 		else if (type == BitmapTypeJPEG)
@@ -304,9 +321,11 @@ Interior *interior_read_file(FILE *file, String directory) {
 			// ?!
 		}
 
+		//Create a texture from the bitmap (copies bitmap)
 		Texture *texture = texture_create_from_pixels(bitmap, dims);
 		interior->texture[i] = texture;
 
+		//Clean up bitmap (copied above, this is safe)
 		free(bitmap);
 		free(base);
 		free(imageFile);
