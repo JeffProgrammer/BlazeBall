@@ -132,7 +132,6 @@
 				B54F9DA31A10399D00F550EA /* forceField.h */,
 				B54F9DA41A10399D00F550EA /* gameEntity.c */,
 				B54F9DA51A10399D00F550EA /* gameEntity.h */,
-				B5BC0E361A1423DE00D86A8D /* interiorRender.c */,
 				B54F9DA61A10399D00F550EA /* interior.c */,
 				B54F9DA71A10399D00F550EA /* interior.h */,
 				B54F9DA81A10399D00F550EA /* interiorPathFollower.c */,
@@ -166,6 +165,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		B5AADE701A143C950064F1E5 /* render */ = {
+			isa = PBXGroup;
+			children = (
+				B5BC0E361A1423DE00D86A8D /* interiorRender.c */,
+			);
+			name = render;
+			sourceTree = "<group>";
+		};
 		B5BF4D5A1A0BF42900BF0956 = {
 			isa = PBXGroup;
 			children = (
@@ -188,6 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				B54F9D9C1A10399D00F550EA /* main.cpp */,
+				B5AADE701A143C950064F1E5 /* render */,
 				B54F9D981A10399D00F550EA /* base */,
 				B5E0CD971A13F3EC00BB4291 /* bitmap */,
 				B54F9D9D1A10399D00F550EA /* objects */,

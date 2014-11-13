@@ -19,7 +19,7 @@
 #include "interior.h"
 #include "math.h"
 
-void interior_render(Interior *interior) {
+void interior_render(Interior *interior, Point3F offset) {
 	//Actual rendering is here (GL 1.1 in a 2.1 context. Take THAT, good practice!)
 
 	Texture *currentTexture = NULL;
@@ -56,7 +56,7 @@ void interior_render(Interior *interior) {
 			glTexCoord2f(s, t);
 
 			//Torque swaps y/z (x is inverted, but I can't flip without issues with normals)
-			glVertex3f(u.x, u.z, u.y);
+			glVertex3f(u.x + offset.x, u.z + offset.z, u.y + offset.y);
 			glNormal3f(n.x, n.z, n.y);
 		}
 		glEnd();

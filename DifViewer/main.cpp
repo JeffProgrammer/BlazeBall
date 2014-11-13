@@ -71,9 +71,11 @@ void render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, -1.0f);
 
+	Point3F offset = {0.f, 0.f, 0.f};
+
 	for (U32 index = 0; index < gDifCount; index ++) {
 		for (U32 intIndex = 0; intIndex < gDifs[index]->numDetailLevels; intIndex ++) {
-			interior_render(gDifs[index]->interior[intIndex]);
+			interior_render(gDifs[index]->interior[intIndex], offset);
 		}
 	}
 

@@ -324,9 +324,10 @@ void interior_release(Interior *interior);
 void interior_export_obj(Interior *interior, FILE *file);
 
 /**
- Renders an interior with OpenGL
+ Renders an interior with OpenGL at an offset
  @arg interior - The Interior to render
+ @arg offset - The offset from the origin from which to render
  */
-void interior_render(Interior *interior);
+void interior_render(Interior *interior, Point3F offset);
 
 #endif
