@@ -19,10 +19,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <libgen.h>
 #include "io.h"
 #include "interior.h"
+#include "mngsupport.h"
+#include "jpegsupport.h"
 
-Interior *interior_read_file(FILE *file) {
+Interior *interior_read_file(FILE *file, String directory) {
 	Interior *interior = (Interior *)malloc(sizeof(Interior));
 
 	READTOVAR(interior->interiorFileVersion, U32); //interiorFileVersion
@@ -62,6 +66,13 @@ Interior *interior_read_file(FILE *file) {
 	READTOVAR(interior->materialListVersion, U8); //version
 	READLOOPVAR(interior->numMaterials, interior->material, String) {
 		READTOVAR(interior->material[i], String); //material
+
+		//Chop off any paths from the material. Constructor likes to save albums in the materials
+		// and it royally breaks this program.
+		if (strstr(interior->material[i], "/")) {
+			//Hacky but effective method
+			strcpy(interior->material[i], strstr(interior->material[i], "/") + 1);
+		}
 	}
 	READLOOPVAR(interior->numWindings, interior->index, U32) {
 		READTOVAR(interior->index[i], U32); //index
@@ -255,12 +266,80 @@ Interior *interior_read_file(FILE *file) {
 		READ(U32); //dummy
 	}
 
+	//Allocate all textures for the interior
+	interior->texture = malloc(sizeof(Texture *) * interior->numMaterials);
+	for (U32 i = 0; i < interior->numMaterials; i ++) {
+		BitmapType type = BitmapTypePNG;
+
+		//For some reason these two like to become the same.
+		String base = (String)strdup((char *)directory);
+
+		//Allocate enough space in each of these so we can work comfortably
+		U32 pathlen = (U32)(strlen((const char *)base) + strlen((const char *)interior->material[i]) + 1);
+		String imageFile = malloc(sizeof(U8) * pathlen + 3);
+
+		do {
+			//Init imageFile to base/file.png
+			pathlen = sprintf((char *)imageFile, "%s/%s.png", base, interior->material[i]);
+
+			type = BitmapTypePNG;
+
+			//If we can't find the PNG, try for JPEG
+			//TODO: BMP Support?
+			if (!isfile(imageFile)) {
+				//Swap the last 3 chars with jpg
+				memcpy(imageFile + pathlen - 3, "jpg", 3);
+				type = BitmapTypeJPEG;
+			}
+			//Can't recurse any further
+			if (!strrchr((const char *)base, '/'))
+				break;
+
+			//If we still can't find it, recurse (hacky but effective method)
+			if (!isfile(imageFile))
+				*strrchr((const char *)base, '/') = 0;
+		} while (!isfile(imageFile) && strcmp((const char *)base, ""));
+
+		//If we can't find it, just chuck the lot and keep going.
+		if (!isfile(imageFile)) {
+			interior->texture[i] = NULL;
+			free(base);
+			free(imageFile);
+			continue;
+		}
+
+		//Setup
+		U8 *bitmap;
+		Point2I dims;
+
+		//Try to read the image based on format
+		if (type == BitmapTypePNG)
+			mngReadImage(imageFile, &bitmap, &dims);
+		else if (type == BitmapTypeJPEG)
+			jpegReadImage(imageFile, &bitmap, &dims);
+		else {
+			// ?!
+		}
+
+		//Create a texture from the bitmap (copies bitmap)
+		Texture *texture = texture_create_from_pixels(bitmap, dims);
+		interior->texture[i] = texture;
+
+		//Clean up bitmap (copied above, this is safe)
+		free(bitmap);
+		free(base);
+		free(imageFile);
+	}
+
 	return interior;
 }
 
 void interior_release(Interior *interior) {
 	for (U32 i = 0; i < interior->numMaterials; i ++) {
 		releaseString(interior->material[i]);
+
+		if (interior->texture[i])
+			texture_release(interior->texture[i]);
 	}
 
 	free(interior->normal);
@@ -271,6 +350,7 @@ void interior_release(Interior *interior) {
 	free(interior->BSPNode);
 	free(interior->BSPSolidLeaf);
 	free(interior->material);
+	free(interior->texture);
 	free(interior->index);
 	free(interior->windingIndex);
 	free(interior->zone);
@@ -304,63 +384,6 @@ void interior_release(Interior *interior) {
 	free(interior->texMatIndex);
 
 	free(interior);
-}
-
-Triangle *interior_generate_triangles(Interior *interior, U32 *count) {
-	*count = 0;
-	U32 maxWC = 0;
-	for (U32 i = 0; i < interior->numSurfaces; i ++) {
-		Surface surface = interior->surface[i];
-		U8 windingCount = surface.windingCount;
-		//Triangles = (points - 2)
-		windingCount -= 2;
-		*count += windingCount;
-		maxWC = (windingCount > maxWC ? windingCount : maxWC);
-	}
-
-	Triangle *triangles = (Triangle *)malloc(sizeof(Triangle) * *count);
-	U32 triIndex = 0;
-
-	//Geometry is structured as lists of windings (point indices)
-	//Windings are in order, forming triangle strips from the points.
-	//
-	// It makes sense if you think about it.
-
-	//Actual generation
-	for (U32 surfaceNum = 0; surfaceNum < interior->numSurfaces; surfaceNum ++) {
-		Surface surface = interior->surface[surfaceNum];
-
-		U32 windingStart = surface.windingStart;
-		U8 windingCount = surface.windingCount;
-
-		//2 points are lost (first and last)
-		windingCount -= 2;
-
-		//Triangle strips, in 0-1-2, 3-2-1, 2-3-4, 5-4-3 order
-		for (U32 index = windingStart; index < windingStart + windingCount; index ++) {
-			//Build triangles
-			U32 indices[3] = {index + 0, index + 1, index + 2};
-			if ((index - windingStart) % 2 == 0) {
-				indices[0] = index + 2;
-				indices[1] = index + 1;
-				indices[2] = index + 0;
-			}
-
-			Point3F point0 = interior->point[interior->index[indices[0]]];
-			Point3F point1 = interior->point[interior->index[indices[1]]];
-			Point3F point2 = interior->point[interior->index[indices[2]]];
-			triangles[triIndex].point0 = point0;
-			triangles[triIndex].point1 = point1;
-			triangles[triIndex].point2 = point2;
-			triangles[triIndex].normal = interior->normal[interior->plane[surface.planeIndex].normalIndex];
-
-			//Triangle-based color (probably)
-			triangles[triIndex].color = (ColorF){(F32)((index - windingStart) % 4) / 4.f, (F32)(index - windingStart) / (F32)windingCount, (F32)windingCount / (F32)maxWC, 1.f};
-			
-			triIndex ++;
-		}
-	}
-	return triangles;
 }
 
 void interior_export_obj(Interior *interior, FILE *file) {

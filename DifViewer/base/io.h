@@ -71,4 +71,6 @@ for (U32 i = 0; i < countvar; i ++)
 type name##_length = read##type(&file); \
 for (U32 i = 0; i < name##_length; i ++)
 
+bool isfile(String file);
+
 #endif

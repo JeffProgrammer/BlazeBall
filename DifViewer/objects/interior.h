@@ -19,6 +19,23 @@
 #define interior_h
 
 #include "types.h"
+#include "texture.h"
+
+typedef enum {
+	BitmapTypePNG,
+	BitmapTypeJPEG,
+} BitmapType;
+
+typedef struct {
+	Point3F point0;
+	Point3F point1;
+	Point3F point2;
+
+	Point3F normal;
+	ColorF color;
+
+	Texture *texture;
+} Triangle;
 
 static U32 gNumCoordBins = 16;
 
@@ -177,6 +194,7 @@ typedef struct {
 	U32 materialListVersion;
 	U32 numMaterials;
 	String *material;
+	Texture **texture;
 
 	U32 numWindings;
 	U32 *index;
@@ -287,9 +305,10 @@ typedef struct {
 /**
  Reads an Interior from a FILE
  @arg file - The FILE to read from (updates position)
+ @arg directory - The base directory for images
  @return An Interior
  */
-Interior *interior_read_file(FILE *file);
+Interior *interior_read_file(FILE *file, String directory);
 
 /**
  Frees the Interior and all memory contained within it
@@ -298,18 +317,17 @@ Interior *interior_read_file(FILE *file);
 void interior_release(Interior *interior);
 
 /**
- Generates a list of Triangles from an Interior
- @arg interior - The interior to generate from
- @arg count - The outputted triangle count
- @return The list of Triangles
- */
-Triangle *interior_generate_triangles(Interior *interior, U32 *count);
-
-/**
  Exports an interior into a Wavefront .obj file
  @arg interior - The Interior to export from
  @arg file - The FILE to export to
  */
 void interior_export_obj(Interior *interior, FILE *file);
+
+/**
+ Renders an interior with OpenGL at an offset
+ @arg interior - The Interior to render
+ @arg offset - The offset from the origin from which to render
+ */
+void interior_render(Interior *interior, Point3F offset);
 
 #endif

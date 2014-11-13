@@ -70,7 +70,7 @@ typedef struct {
  @arg file - The FILE to read from (updates position)
  @return A DIF
  */
-DIF *dif_read_file(FILE *file);
+DIF *dif_read_file(FILE *file, String directory);
 
 /**
  Frees the DIF and all memory contained within it

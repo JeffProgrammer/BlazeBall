@@ -18,6 +18,8 @@
 #ifndef types_h
 #define types_h
 
+#include <stdbool.h>
+
 //Base types (names stolen from TGE because lazy)
 typedef unsigned char      U8;
 typedef unsigned short     U16;
@@ -37,6 +39,22 @@ typedef U8 * PNG; //unused
 
 //More names stolen from TGE
 typedef struct {
+	U16 x; //Should be enough
+	U16 y;
+} Point2I;
+
+typedef struct {
+	F32 x;
+	F32 y;
+} Point2F;
+
+typedef struct {
+	U32 x;
+	U32 y;
+	U32 z;
+} Point3I;
+
+typedef struct {
 	F32 x;
 	F32 y;
 	F32 z;
@@ -50,10 +68,10 @@ typedef struct {
 } QuatF;
 
 typedef struct {
-	U32 index1;
-	F32 distance1;
-	U32 index2;
-	F32 distance2;
+	F32 x;
+	F32 y;
+	F32 z;
+	F32 d;
 } PlaneF;
 
 typedef struct {
@@ -91,15 +109,5 @@ typedef struct {
 	String *names;
 	String *values;
 } Dictionary;
-
-typedef struct {
-	Point3F point0;
-	Point3F point1;
-	Point3F point2;
-
-	Point3F normal;
-
-	ColorF color;
-} Triangle;
 
 #endif

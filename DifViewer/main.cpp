@@ -19,9 +19,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <sys/time.h>
+#include <libgen.h>
 #include "io.h"
 #include "types.h"
 #include "dif.h"
+#include "texture.h"
 
 #include <SDL2/SDL.h>
 #include <OpenGL/gl.h>
@@ -35,9 +37,6 @@
 
 U32 gDifCount;
 DIF **gDifs;
-
-U32 gTriangleCount;
-Triangle *gTriangles;
 
 bool gRunning;
 
@@ -70,21 +69,16 @@ void render() {
 
 	//Clear
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0, 0, 0, -1.0f);
+	glClearColor(0.5f, 0.5f, 0.5f, -1.0f);
 
-	//Actual rendering is here (GL 1.1 in a 2.1 context. Take THAT, good practice!)
-	//TODO: VBOs
-	glBegin(GL_TRIANGLES);
-	for (U32 i = 0; i < gTriangleCount; i ++) {
-		glColor4f(gTriangles[i].color.red, gTriangles[i].color.green, gTriangles[i].color.blue, gTriangles[i].color.alpha);
-		glNormal3f(gTriangles[i].normal.x, gTriangles[i].normal.z, gTriangles[i].normal.y);
+	Point3F offset = {0.f, 0.f, 0.f};
 
-		//Lazy, also wrong because Torque swaps y/z
-		glVertex3f(gTriangles[i].point0.x, gTriangles[i].point0.z, -gTriangles[i].point0.y);
-		glVertex3f(gTriangles[i].point1.x, gTriangles[i].point1.z, -gTriangles[i].point1.y);
-		glVertex3f(gTriangles[i].point2.x, gTriangles[i].point2.z, -gTriangles[i].point2.y);
+	for (U32 index = 0; index < gDifCount; index ++) {
+		for (U32 intIndex = 0; intIndex < gDifs[index]->numDetailLevels; intIndex ++) {
+			interior_render(gDifs[index]->interior[intIndex], offset);
+		}
 	}
-	glEnd();
+
 	glDisable(GL_CULL_FACE);
 }
 
@@ -109,7 +103,7 @@ void loop() {
 
 bool initGL() {
 	//Initialize clear color
-	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 	glClearDepth(1.0f);
 
 	//Enable and set some shit for rendering
@@ -123,7 +117,7 @@ bool initGL() {
 	SDL_GetWindowSize(gWindow, &w, &h);
 
 	GLfloat aspect = (GLfloat)w / (GLfloat)h;
-	glViewport(0, 0, w, h);
+	glViewport(0, 0, w * 2, h * 2);
 
 	//Initialize Projection Matrix
 	glMatrixMode(GL_PROJECTION);
@@ -185,9 +179,6 @@ void handleEvent(SDL_Event *event) {
 }
 
 bool init() {
-	//Load our map into triangles (global var warning)
-	gTriangles = interior_generate_triangles(gDifs[0]->interior[0], &gTriangleCount);
-
 	gRunning = true;
 
 	//Init SDL
@@ -203,7 +194,7 @@ bool init() {
 	SDL_GetDisplayBounds(0, &bounds);
 
 	//Create the window
-	if ((gWindow = SDL_CreateWindow("DIF Viewer", (bounds.w - 1280) / 2, (bounds.h - 720) / 2, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE)) == NULL) {
+	if ((gWindow = SDL_CreateWindow("DIF Viewer", (bounds.w - 1280) / 2, (bounds.h - 720) / 2, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI)) == NULL) {
 		return false;
 	}
 
@@ -264,7 +255,7 @@ void run() {
 		long long start = startTime.tv_usec + (startTime.tv_sec * 1000000ULL);
 		long long end = endTime.tv_usec + (endTime.tv_sec * 1000000ULL);
 
-//		printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
+		printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
 	}
 
 	//Clean up (duh)
@@ -288,11 +279,13 @@ int main(int argc, const char * argv[])
 	gDifCount = 0;
 	gDifs = (DIF **)malloc(sizeof(DIF *) * (argc - argstart));
 	for (U32 i = 0; i < (argc - argstart); i ++) {
+		String directory = (String)dirname((char *)argv[i + argstart]);
+
 		//Open file
 		FILE *file = fopen(argv[i + argstart], "r");
 
 		//Read the .dif
-		gDifs[i] = dif_read_file(file);
+		gDifs[i] = dif_read_file(file, directory);
 		if (gDifs[i]) {
 			gDifCount ++;
 		}
