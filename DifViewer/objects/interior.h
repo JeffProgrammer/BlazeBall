@@ -331,4 +331,10 @@ Triangle *interior_generate_triangles(Interior *interior, U32 *count);
  */
 void interior_export_obj(Interior *interior, FILE *file);
 
+/**
+ Renders an interior with OpenGL
+ @arg interior - The Interior to render
+ */
+void interior_render(Interior *interior);
+
 #endif

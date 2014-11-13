@@ -66,6 +66,9 @@ Interior *interior_read_file(FILE *file, String directory) {
 	READTOVAR(interior->materialListVersion, U8); //version
 	READLOOPVAR(interior->numMaterials, interior->material, String) {
 		READTOVAR(interior->material[i], String); //material
+		if (strstr(interior->material[i], "/")) {
+			strcpy(interior->material[i], strstr(interior->material[i], "/") + 1);
+		}
 	}
 	READLOOPVAR(interior->numWindings, interior->index, U32) {
 		READTOVAR(interior->index[i], U32); //index
@@ -409,7 +412,7 @@ Triangle *interior_generate_triangles(Interior *interior, U32 *count) {
 			triangles[triIndex].color = (ColorF){(F32)((index - windingStart) % 4) / 4.f, (F32)(index - windingStart) / (F32)windingCount, (F32)windingCount / (F32)maxWC, 1.f};
 
 			Texture *texture = interior->texture[surface.textureIndex];
-			if (!texture->generated)
+			if (texture && !texture->generated)
 				texture_generate_buffer(texture);
 
 			triangles[triIndex].texture = texture;

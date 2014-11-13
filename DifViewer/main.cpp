@@ -38,9 +38,6 @@
 U32 gDifCount;
 DIF **gDifs;
 
-U32 gTriangleCount;
-Triangle *gTriangles;
-
 bool gRunning;
 
 SDL_Window *gWindow;
@@ -74,26 +71,12 @@ void render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, -1.0f);
 
-	//Actual rendering is here (GL 1.1 in a 2.1 context. Take THAT, good practice!)
-	//TODO: VBOs
-	glBegin(GL_TRIANGLES);
-	for (U32 i = 0; i < gTriangleCount; i ++) {
-		Texture *texture = gTriangles[i].texture;
-
-		if (texture)
-			texture_activate(texture);
-
-		glNormal3f(gTriangles[i].normal.x, gTriangles[i].normal.z, gTriangles[i].normal.y);
-
-		//Lazy, also wrong because Torque swaps y/z
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(gTriangles[i].point0.x, gTriangles[i].point0.z, -gTriangles[i].point0.y);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(gTriangles[i].point1.x, gTriangles[i].point1.z, -gTriangles[i].point1.y);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(gTriangles[i].point2.x, gTriangles[i].point2.z, -gTriangles[i].point2.y);
-
-		if (texture)
-			texture_deactivate(texture);
+	for (U32 index = 0; index < gDifCount; index ++) {
+		for (U32 intIndex = 0; intIndex < gDifs[index]->numDetailLevels; intIndex ++) {
+			interior_render(gDifs[index]->interior[intIndex]);
+		}
 	}
-	glEnd();
+
 	glDisable(GL_CULL_FACE);
 }
 
@@ -230,9 +213,6 @@ bool init() {
 	if (!initGL()) {
 		return false;
 	}
-
-	//Load our map into triangles (global var warning)
-	gTriangles = interior_generate_triangles(gDifs[0]->interior[0], &gTriangleCount);
 	return true;
 }
 
@@ -273,7 +253,7 @@ void run() {
 		long long start = startTime.tv_usec + (startTime.tv_sec * 1000000ULL);
 		long long end = endTime.tv_usec + (endTime.tv_sec * 1000000ULL);
 
-//		printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
+		printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
 	}
 
 	//Clean up (duh)

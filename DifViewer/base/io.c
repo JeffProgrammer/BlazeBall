@@ -84,10 +84,10 @@ S8  readS8 (FILE **file) { return  (S8)readU8 (file); }
 
 PlaneF readPlaneF(FILE **file) {
 	PlaneF value;
-	value.index1 = readU32(file);
-	value.distance1 = readF32(file);
-	value.index2 = readU32(file);
-	value.distance2 = readF32(file);
+	value.x = readF32(file);
+	value.y = readF32(file);
+	value.z = readF32(file);
+	value.d = readF32(file);
 	return value;
 }
 

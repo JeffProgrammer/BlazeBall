@@ -68,10 +68,10 @@ typedef struct {
 } QuatF;
 
 typedef struct {
-	U32 index1;
-	F32 distance1;
-	U32 index2;
-	F32 distance2;
+	F32 x;
+	F32 y;
+	F32 z;
+	F32 d;
 } PlaneF;
 
 typedef struct {

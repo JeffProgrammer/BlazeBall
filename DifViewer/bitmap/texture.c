@@ -61,6 +61,7 @@ void texture_release(Texture *texture) {
 
 void texture_activate(Texture *texture) {
 	glEnable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE0);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glBindTexture(GL_TEXTURE_2D, texture->buffer);
 }
