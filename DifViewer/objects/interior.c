@@ -265,6 +265,7 @@ Interior *interior_read_file(FILE *file, String directory) {
 	interior->texture = malloc(sizeof(Texture *) * interior->numMaterials);
 	for (U32 i = 0; i < interior->numMaterials; i ++) {
 		BitmapType type;
+		BitmapType type = BitmapTypePNG;
 		String base = (String)strdup((char *)directory);
 
 		U32 pathlen = (U32)(strlen((const char *)base) + strlen((const char *)interior->material[i]) + 1);
@@ -279,6 +280,9 @@ Interior *interior_read_file(FILE *file, String directory) {
 				memcpy(imageFile + pathlen - 3, "jpg", 3);
 				type = BitmapTypeJPEG;
 			}
+			//Can't recurse any further
+			if (!strrchr((const char *)base, '/'))
+				break;
 			if (!isfile(imageFile))
 				*strrchr((const char *)base, '/') = 0;
 		} while (!isfile(imageFile) && strcmp((const char *)base, ""));
@@ -296,6 +300,9 @@ Interior *interior_read_file(FILE *file, String directory) {
 			mngReadImage(imageFile, &bitmap, &dims);
 		else if (type == BitmapTypeJPEG)
 			jpegReadImage(imageFile, &bitmap, &dims);
+		else {
+			// ?!
+		}
 
 		Texture *texture = texture_create_from_pixels(bitmap, dims);
 		interior->texture[i] = texture;
