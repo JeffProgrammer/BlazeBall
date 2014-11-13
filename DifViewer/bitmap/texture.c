@@ -53,13 +53,16 @@ void texture_generate_buffer(Texture *texture) {
 }
 
 void texture_release(Texture *texture) {
-	glDeleteTextures(1, &texture->buffer);
+	if (texture->generated)
+		glDeleteTextures(1, &texture->buffer);
 
 	free(texture->pixels);
 	free(texture);
 }
 
 void texture_activate(Texture *texture) {
+	if (!texture->generated)
+		return;
 	glEnable(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE0);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
