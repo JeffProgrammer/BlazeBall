@@ -24,6 +24,7 @@
 Texture *texture_create_from_pixels(U8 *pixels, Point2I extent) {
 	Texture *texture = malloc(sizeof(Texture));
 
+	//Set some fields
 	texture->extent = extent;
 	texture->generated = false;
 
@@ -35,24 +36,30 @@ Texture *texture_create_from_pixels(U8 *pixels, Point2I extent) {
 }
 
 void texture_generate_buffer(Texture *texture) {
+	//Just in case
 	glEnable(GL_TEXTURE_2D);
 
+	//Set mode
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
+	//Generate the texture buffer
 	glGenTextures(1, &texture->buffer);
 	glBindTexture(GL_TEXTURE_2D, texture->buffer);
 
+	//Set some flags
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
+	//Actually create the texture
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->extent.x, texture->extent.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture->pixels);
 
 	texture->generated = true;
 }
 
 void texture_release(Texture *texture) {
+	//Clean up
 	if (texture->generated)
 		glDeleteTextures(1, &texture->buffer);
 
@@ -61,8 +68,10 @@ void texture_release(Texture *texture) {
 }
 
 void texture_activate(Texture *texture) {
+	//Error check
 	if (!texture->generated)
 		return;
+	//Activate and bind the buffer
 	glEnable(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE0);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
@@ -70,5 +79,6 @@ void texture_activate(Texture *texture) {
 }
 
 void texture_deactivate(Texture *texture) {
+	//Haha, this method is just BS. Fooled you.
 	glDisable(GL_TEXTURE_2D);
 }
