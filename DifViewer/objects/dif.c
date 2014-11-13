@@ -60,6 +60,9 @@ DIF *dif_read_file(FILE *file, String directory) {
 		READLOOPVAR(dif->numGameEntities, dif->gameEntity, GameEntity *) {
 			dif->gameEntity[i] = gameEntity_read_file(file);
 		}
+	} else {
+		dif->numGameEntities = 0;
+		dif->gameEntity = NULL;
 	}
 	READ(U32); //dummy
 

@@ -30,7 +30,7 @@ void interior_render(Interior *interior, Point3F offset) {
 
 		Texture *texture = interior->texture[surface.textureIndex];
 		//Make sure our texture is active before drawing
-		if (texture != currentTexture) {
+		if (texture && texture != currentTexture) {
 			if (currentTexture)
 				texture_deactivate(currentTexture);
 

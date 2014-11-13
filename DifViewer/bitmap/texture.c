@@ -21,7 +21,14 @@
 #include <OpenGL/glu.h>
 #include "texture.h"
 
+#define TEXTURE_MAX_SIZE 1024
+
 Texture *texture_create_from_pixels(U8 *pixels, Point2I extent) {
+	if (extent.x > TEXTURE_MAX_SIZE || extent.y > TEXTURE_MAX_SIZE) {
+		printf("Texture too large! (%d, %d) > (%d, %d). Bug HiGuy to make textures larger.", extent.x, extent.y, TEXTURE_MAX_SIZE, TEXTURE_MAX_SIZE);
+		return NULL;
+	}
+
 	Texture *texture = malloc(sizeof(Texture));
 
 	//Set some fields

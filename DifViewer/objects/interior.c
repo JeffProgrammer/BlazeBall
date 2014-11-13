@@ -267,68 +267,70 @@ Interior *interior_read_file(FILE *file, String directory) {
 	}
 
 	//Allocate all textures for the interior
-	interior->texture = malloc(sizeof(Texture *) * interior->numMaterials);
-	for (U32 i = 0; i < interior->numMaterials; i ++) {
-		BitmapType type = BitmapTypePNG;
+	if (interior->numMaterials) {
+		interior->texture = malloc(sizeof(Texture *) * interior->numMaterials);
+		for (U32 i = 0; i < interior->numMaterials; i ++) {
+			BitmapType type = BitmapTypePNG;
 
-		//For some reason these two like to become the same.
-		String base = (String)strdup((char *)directory);
+			//For some reason these two like to become the same.
+			String base = (String)strdup((char *)directory);
 
-		//Allocate enough space in each of these so we can work comfortably
-		U32 pathlen = (U32)(strlen((const char *)base) + strlen((const char *)interior->material[i]) + 1);
-		String imageFile = malloc(sizeof(U8) * pathlen + 3);
+			//Allocate enough space in each of these so we can work comfortably
+			U32 pathlen = (U32)(strlen((const char *)base) + strlen((const char *)interior->material[i]) + 1);
+			String imageFile = malloc(sizeof(U8) * pathlen + 5);
 
-		do {
-			//Init imageFile to base/file.png
-			pathlen = sprintf((char *)imageFile, "%s/%s.png", base, interior->material[i]);
+			do {
+				//Init imageFile to base/file.png
+				pathlen = sprintf((char *)imageFile, "%s/%s.png", base, interior->material[i]);
 
-			type = BitmapTypePNG;
+				type = BitmapTypePNG;
 
-			//If we can't find the PNG, try for JPEG
-			//TODO: BMP Support?
+				//If we can't find the PNG, try for JPEG
+				//TODO: BMP Support?
+				if (!isfile(imageFile)) {
+					//Swap the last 3 chars with jpg
+					memcpy(imageFile + pathlen - 3, "jpg", 3);
+					type = BitmapTypeJPEG;
+				}
+				//Can't recurse any further
+				if (!strrchr((const char *)base, '/'))
+					break;
+
+				//If we still can't find it, recurse (hacky but effective method)
+				if (!isfile(imageFile))
+					*strrchr((const char *)base, '/') = 0;
+			} while (!isfile(imageFile) && strcmp((const char *)base, ""));
+
+			//If we can't find it, just chuck the lot and keep going.
 			if (!isfile(imageFile)) {
-				//Swap the last 3 chars with jpg
-				memcpy(imageFile + pathlen - 3, "jpg", 3);
-				type = BitmapTypeJPEG;
+				interior->texture[i] = NULL;
+				free(base);
+				free(imageFile);
+				continue;
 			}
-			//Can't recurse any further
-			if (!strrchr((const char *)base, '/'))
-				break;
 
-			//If we still can't find it, recurse (hacky but effective method)
-			if (!isfile(imageFile))
-				*strrchr((const char *)base, '/') = 0;
-		} while (!isfile(imageFile) && strcmp((const char *)base, ""));
+			//Setup
+			U8 *bitmap;
+			Point2I dims;
 
-		//If we can't find it, just chuck the lot and keep going.
-		if (!isfile(imageFile)) {
-			interior->texture[i] = NULL;
+			//Try to read the image based on format
+			if (type == BitmapTypePNG)
+				mngReadImage(imageFile, &bitmap, &dims);
+			else if (type == BitmapTypeJPEG)
+				jpegReadImage(imageFile, &bitmap, &dims);
+			else {
+				// ?!
+			}
+
+			//Create a texture from the bitmap (copies bitmap)
+			Texture *texture = texture_create_from_pixels(bitmap, dims);
+			interior->texture[i] = texture;
+
+			//Clean up bitmap (copied above, this is safe)
+			free(bitmap);
 			free(base);
 			free(imageFile);
-			continue;
 		}
-
-		//Setup
-		U8 *bitmap;
-		Point2I dims;
-
-		//Try to read the image based on format
-		if (type == BitmapTypePNG)
-			mngReadImage(imageFile, &bitmap, &dims);
-		else if (type == BitmapTypeJPEG)
-			jpegReadImage(imageFile, &bitmap, &dims);
-		else {
-			// ?!
-		}
-
-		//Create a texture from the bitmap (copies bitmap)
-		Texture *texture = texture_create_from_pixels(bitmap, dims);
-		interior->texture[i] = texture;
-
-		//Clean up bitmap (copied above, this is safe)
-		free(bitmap);
-		free(base);
-		free(imageFile);
 	}
 
 	return interior;

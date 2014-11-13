@@ -36,6 +36,11 @@ bool jpegReadImage(String file, U8 **bitmap, Point2I *dims) {
 	dims->x = dptr.output_width;
 	dims->y = dptr.output_height;
 
+	if (dims->x == 0 || dims->y == 0) {
+		*bitmap = NULL;
+		return false;
+	}
+
 	*bitmap = malloc(sizeof(U8) * dims->x * dims->y * 4);
 
 	U8 *b = *bitmap;
