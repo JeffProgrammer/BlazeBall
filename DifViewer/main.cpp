@@ -50,6 +50,7 @@ glm::vec3 gCameraPosition;
 static float gCameraSpeed = 0.1f;
 static float gMovementSpeed = 0.2f;
 
+bool captureMouse = false;
 bool mouseButtons[3] = {false, false, false};
 bool movement[4] = {false, false, false, false};
 
@@ -141,9 +142,11 @@ void handleEvent(SDL_Event *event) {
 		//Lock cursor
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 		SDL_SetRelativeMouseMode(SDL_TRUE);
+		captureMouse = true;
 	}
 	if (event->type == SDL_APP_WILLENTERBACKGROUND) {
 		SDL_SetRelativeMouseMode(SDL_FALSE);
+		captureMouse = false;
 	}
 	//Key events, movement
 	if (event->type == SDL_KEYDOWN) {
@@ -156,6 +159,7 @@ void handleEvent(SDL_Event *event) {
 			case SDL_SCANCODE_ESCAPE:
 				//Unlock cursor
 				SDL_SetRelativeMouseMode(SDL_FALSE);
+				captureMouse = false;
 				break;
 		}
 	} else if (event->type == SDL_KEYUP) {
@@ -168,8 +172,10 @@ void handleEvent(SDL_Event *event) {
 	}
 	//Mouse for rotation
 	if (event->type == SDL_MOUSEMOTION) {
-		gYaw += (GLfloat)((SDL_MouseMotionEvent *)event)->xrel * gCameraSpeed;
-		gPitch += (GLfloat)((SDL_MouseMotionEvent *)event)->yrel * gCameraSpeed;
+		if (captureMouse) {
+			gYaw += (GLfloat)((SDL_MouseMotionEvent *)event)->xrel * gCameraSpeed;
+			gPitch += (GLfloat)((SDL_MouseMotionEvent *)event)->yrel * gCameraSpeed;
+		}
 	}
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
 		mouseButtons[((SDL_MouseButtonEvent *)event)->button] = true;
@@ -210,6 +216,7 @@ bool init() {
 
 	//Lock cursor
 	SDL_SetRelativeMouseMode(SDL_TRUE);
+	captureMouse = true;
 
 	//Initialize OpenGL
 	if (!initGL()) {
