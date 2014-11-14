@@ -123,7 +123,7 @@ bool initGL() {
 	//Initialize Projection Matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(90.0f, aspect, 0.1f, 1000.f);
+	glMultMatrixf(&glm::perspective(90.f, aspect, 0.1f, 500.f)[0][0]);
 
 	return glGetError() == GL_NO_ERROR;
 }
@@ -262,7 +262,7 @@ void run() {
 		long long start = startTime.tv_usec + (startTime.tv_sec * 1000000ULL);
 		long long end = endTime.tv_usec + (endTime.tv_sec * 1000000ULL);
 
-		printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
+//		printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
 	}
 
 	//Clean up (duh)
