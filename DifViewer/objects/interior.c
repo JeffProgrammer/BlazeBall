@@ -303,6 +303,7 @@ Interior *interior_read_file(FILE *file, String directory) {
 
 			//If we can't find it, just chuck the lot and keep going.
 			if (!isfile(imageFile)) {
+				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", interior->material[i]);
 				interior->texture[i] = NULL;
 				free(base);
 				free(imageFile);
@@ -313,13 +314,26 @@ Interior *interior_read_file(FILE *file, String directory) {
 			U8 *bitmap;
 			Point2I dims;
 
+			bool (*readFn)(String file, U8 **bitmap, Point2I *dims);
+
 			//Try to read the image based on format
 			if (type == BitmapTypePNG)
-				mngReadImage(imageFile, &bitmap, &dims);
+				readFn = mngReadImage;
 			else if (type == BitmapTypeJPEG)
-				jpegReadImage(imageFile, &bitmap, &dims);
+				readFn = jpegReadImage;
 			else {
 				// ?!
+				readFn = mngReadImage;
+			}
+
+			if (!readFn(imageFile, &bitmap, &dims)) {
+				fprintf(stderr, "Error in reading bitmap: %s Other error\n", imageFile);
+				interior->texture[i] = NULL;
+
+				free(bitmap);
+				free(base);
+				free(imageFile);
+				continue;
 			}
 
 			//Create a texture from the bitmap (copies bitmap)
