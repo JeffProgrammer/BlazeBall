@@ -76,13 +76,6 @@ Interior *interior_read_file(FILE *file, String directory) {
 	READTOVAR(interior->materialListVersion, U8); //version
 	READLOOPVAR(interior->numMaterials, interior->material, String) {
 		READTOVAR(interior->material[i], String); //material
-
-		//Chop off any paths from the material. Constructor likes to save albums in the materials
-		// and it royally breaks this program.
-		if (strstr(interior->material[i], "/")) {
-			//Hacky but effective method
-			strcpy(interior->material[i], strstr(interior->material[i], "/") + 1);
-		}
 	}
 	READLOOPVAR(interior->numWindings, interior->index, U32) {
 		READTOVAR(interior->index[i], U32); //index
@@ -162,12 +155,12 @@ Interior *interior_read_file(FILE *file, String directory) {
 		READTOVAR(interior->nullSurface[i].windingCount, U8); //windingCount
 	}
 	READLOOPVAR(interior->numLightMaps, interior->lightMap, LightMap) {
-		READ(PNG); //lightMap
+		READTOVAR(interior->lightMap[i].lightMap, PNG); //lightMap
 		/*
 		 Not in MB
 		 READTOVAR(interior->lightDirMap[i], PNG); //lightDirMap
 		 */
-		READ(U8); //keepLightMap
+		READTOVAR(interior->lightMap[i].keepLightMap, U8); //keepLightMap
 	}
 	READLOOPVAR(interior->numSolidLeafSurfaces, interior->solidLeafSurface, U32) {
 		READTOVAR(interior->solidLeafSurface[i], U32); //solidLeafSurface
@@ -280,6 +273,16 @@ Interior *interior_read_file(FILE *file, String directory) {
 	if (interior->numMaterials) {
 		interior->texture = malloc(sizeof(Texture *) * interior->numMaterials);
 		for (U32 i = 0; i < interior->numMaterials; i ++) {
+			String material = malloc(sizeof(U8) * strlen((const char *)interior->material[i] + 1));
+			strcpy((char *)material, (const char *)interior->material[i]);
+			//Chop off any paths from the material. Constructor likes to save albums in the materials
+			// and it royally breaks this program.
+			if (strstr((const char *)material, "/")) {
+				//Hacky but effective method
+				strcpy((char *)material, strstr((const char *)material, "/") + 1);
+			}
+
+
 			BitmapType type = BitmapTypePNG;
 
 			//For some reason these two like to become the same.
@@ -360,6 +363,162 @@ Interior *interior_read_file(FILE *file, String directory) {
 	return interior;
 }
 
+bool interior_write_file(FILE *file, Interior *interior) {
+	WRITECHECK(U32, interior->interiorFileVersion); //interiorFileVersion
+	WRITECHECK(U32, interior->detailLevel); //detailLevel
+	WRITECHECK(U32, interior->minPixels); //minPixels
+	WRITECHECK(BoxF, interior->boundingBox); //boundingBox
+	WRITECHECK(SphereF, interior->boundingSphere); //boundingSphere
+	WRITECHECK(U8, interior->hasAlarmState); //hasAlarmState
+	WRITECHECK(U32, interior->numLightStateEntries); //numLightStateEntries
+	WRITELOOPVAR(Point3F, interior->numNormals, interior->normal); //normal
+	WRITELOOP(interior->numPlanes) { //numPlanes
+		WRITECHECK(U16, interior->plane[i].normalIndex); //normalIndex
+		WRITECHECK(F32, interior->plane[i].planeDistance); //planeDistance
+	}
+	WRITELOOPVAR(Point3F, interior->numPoints, interior->point); //point
+	WRITELOOPVAR(U8, interior->numPointVisibilities, interior->pointVisibility); //pointVisibility
+	WRITELOOP(interior->numTexGenEqs) { //numTexGenEqs
+		WRITECHECK(PlaneF, interior->texGenEq[i].planeX); //planeX
+		WRITECHECK(PlaneF, interior->texGenEq[i].planeY); //planeY
+	}
+	WRITELOOP(interior->numBSPNodes) { //numBSPNodes
+		WRITECHECK(U16, interior->BSPNode[i].planeIndex); //planeIndex
+		WRITECHECK(U16, interior->BSPNode[i].frontIndex); //frontIndex
+		WRITECHECK(U16, interior->BSPNode[i].backIndex); //backIndex
+	}
+	WRITELOOP(interior->numBSPSolidLeaves) { //numBSPSolidLeaves
+		WRITECHECK(U32, interior->BSPSolidLeaf[i].surfaceIndex); //surfaceIndex
+		WRITECHECK(U16, interior->BSPSolidLeaf[i].surfaceCount); //surfaceCount
+	}
+	WRITECHECK(U8, interior->materialListVersion); //materialListVersion
+	WRITELOOP(interior->numMaterials) { //numMaterials
+		WRITE(String, interior->material[i]); //material
+	}
+	WRITELOOPVAR(U32, interior->numWindings, interior->index); //index
+	WRITELOOP(interior->numWindingIndices) { //numWindingIndices
+		WRITECHECK(U32, interior->windingIndex[i].windingStart); //windingStart
+		WRITECHECK(U32, interior->windingIndex[i].windingCount); //windingCount
+	}
+	WRITELOOP(interior->numZones) { //numZones
+		WRITECHECK(U16, interior->zone[i].portalStart); //portalStart
+		WRITECHECK(U16, interior->zone[i].portalCount); //portalCount
+		WRITECHECK(U32, interior->zone[i].surfaceStart); //surfaceStart
+		WRITECHECK(U32, interior->zone[i].surfaceCount); //surfaceCount
+	}
+	WRITELOOPVAR(U16, interior->numZoneSurfaces, interior->zoneSurface); //zoneSurface
+	WRITELOOPVAR(U16, interior->numZonePortalList, interior->zonePortalList); //zonePortalList
+	WRITELOOP(interior->numPortals) { //numPortals
+		WRITECHECK(U16, interior->portal[i].planeIndex); //planeIndex
+		WRITECHECK(U16, interior->portal[i].triFanCount); //triFanCount
+		WRITECHECK(U32, interior->portal[i].triFanStart); //triFanStart
+		WRITECHECK(U16, interior->portal[i].zoneFront); //zoneFront
+		WRITECHECK(U16, interior->portal[i].zoneBack); //zoneBack
+	}
+	WRITELOOP(interior->numSurfaces) { //numSurfaces
+		WRITECHECK(U32, interior->surface[i].windingStart); //windingStart
+		WRITECHECK(U8, interior->surface[i].windingCount); //windingCount
+		WRITECHECK(U16, interior->surface[i].planeIndex); //planeIndex
+		WRITECHECK(U16, interior->surface[i].textureIndex); //textureIndex
+		WRITECHECK(U32, interior->surface[i].texGenIndex); //texGenIndex
+		WRITECHECK(U8, interior->surface[i].surfaceFlags); //surfaceFlags
+		WRITECHECK(U32, interior->surface[i].fanMask); //fanMask
+		WRITECHECK(U16, interior->surface[i].lightMap.finalWord); //finalWord
+		WRITECHECK(F32, interior->surface[i].lightMap.texGenXDistance); //texGenXDistance
+		WRITECHECK(F32, interior->surface[i].lightMap.texGenYDistance); //texGenYDistance
+		WRITECHECK(U16, interior->surface[i].lightCount); //lightCount
+		WRITECHECK(U32, interior->surface[i].lightStateInfoStart); //lightStateInfoStart
+		WRITECHECK(U8, interior->surface[i].mapOffsetX); //mapOffsetX
+		WRITECHECK(U8, interior->surface[i].mapOffsetY); //mapOffsetY
+		WRITECHECK(U8, interior->surface[i].mapSizeX); //mapSizeX
+		WRITECHECK(U8, interior->surface[i].mapSizeY); //mapSizeY
+	}
+	WRITELOOPVAR(U8, interior->numNormalLMapIndices, interior->normalLMapIndex); //normalLMapIndex
+	WRITELOOPVAR(U8, interior->numAlarmLMapIndices, interior->alarmLMapIndex); //alarmLMapIndex
+	WRITELOOP(interior->numNullSurfaces) { //numNullSurfaces
+		WRITECHECK(U32, interior->nullSurface[i].windingStart); //windingStart
+		WRITECHECK(U16, interior->nullSurface[i].planeIndex); //planeIndex
+		WRITECHECK(U8, interior->nullSurface[i].surfaceFlags); //surfaceFlags
+		WRITECHECK(U8, interior->nullSurface[i].windingCount); //windingCount
+	}
+	WRITELOOP(interior->numLightMaps) { //numLightMaps
+		WRITE(PNG, interior->lightMap[i].lightMap); //lightMap
+		WRITECHECK(U8, interior->lightMap[i].keepLightMap); //keepLightMap
+	}
+	WRITELOOPVAR(U32, interior->numSolidLeafSurfaces, interior->solidLeafSurface); //solidLeafSurface
+	WRITELOOP(interior->numAnimatedLights) { //numAnimatedLights
+		WRITECHECK(U32, interior->animatedLight[i].nameIndex); //nameIndex
+		WRITECHECK(U32, interior->animatedLight[i].stateIndex); //stateIndex
+		WRITECHECK(U16, interior->animatedLight[i].stateCount); //stateCount
+		WRITECHECK(U16, interior->animatedLight[i].flags); //flags
+		WRITECHECK(U32, interior->animatedLight[i].duration); //duration
+	}
+	WRITELOOP(interior->numLightStates) { //numLightStates
+		WRITECHECK(U8, interior->lightState[i].red); //red
+		WRITECHECK(U8, interior->lightState[i].green); //green
+		WRITECHECK(U8, interior->lightState[i].blue); //blue
+		WRITECHECK(U32, interior->lightState[i].activeTime); //activeTime
+		WRITECHECK(U32, interior->lightState[i].dataIndex); //dataIndex
+		WRITECHECK(U16, interior->lightState[i].dataCount); //dataCount
+	}
+	WRITELOOP(interior->numStateDatas) { //numStateDatas
+		WRITECHECK(U32, interior->stateData[i].surfaceIndex); //surfaceIndex
+		WRITECHECK(U32, interior->stateData[i].mapIndex); //mapIndex
+		WRITECHECK(U16, interior->stateData[i].lightStateIndex); //lightStateIndex
+	}
+	WRITELOOPVAR(U32, interior->numStateDataBuffers, interior->stateDataBuffer); //stateDataBuffer
+	WRITECHECK(U32, interior->flags); //flags
+	WRITELOOPVAR(S8, interior->numNameBuffers, interior->nameBufferCharacter); //nameBufferCharacter
+	WRITELOOP(interior->numSubObjects) { //numSubObjects
+
+	}
+	WRITELOOP(interior->numConvexHulls) { //numConvexHulls
+		WRITECHECK(U32, interior->convexHull[i].hullStart); //hullStart
+		WRITECHECK(U16, interior->convexHull[i].hullCount); //hullCount
+		WRITECHECK(F32, interior->convexHull[i].minX); //minX
+		WRITECHECK(F32, interior->convexHull[i].maxX); //maxX
+		WRITECHECK(F32, interior->convexHull[i].minY); //minY
+		WRITECHECK(F32, interior->convexHull[i].maxY); //maxY
+		WRITECHECK(F32, interior->convexHull[i].minZ); //minZ
+		WRITECHECK(F32, interior->convexHull[i].maxZ); //maxZ
+		WRITECHECK(U32, interior->convexHull[i].surfaceStart); //surfaceStart
+		WRITECHECK(U16, interior->convexHull[i].surfaceCount); //surfaceCount
+		WRITECHECK(U32, interior->convexHull[i].planeStart); //planeStart
+		WRITECHECK(U32, interior->convexHull[i].polyListPlaneStart); //polyListPlaneStart
+		WRITECHECK(U32, interior->convexHull[i].polyListPointStart); //polyListPointStart
+		WRITECHECK(U32, interior->convexHull[i].polyListStringStart); //polyListStringStart
+	}
+	WRITELOOPVAR(U8, interior->numConvexHullEmitStrings, interior->convexHullEmitStringCharacter); //convexHullEmitStringCharacter
+	WRITELOOPVAR(U32, interior->numHullIndices, interior->hullIndex); //hullIndex
+	WRITELOOPVAR(U16, interior->numHullPlaneIndices, interior->hullPlaneIndex); //hullPlaneIndex
+	WRITELOOPVAR(U32, interior->numHullEmitStringIndices, interior->hullEmitStringIndex); //hullEmitStringIndex
+	WRITELOOPVAR(U32, interior->numHullSurfaceIndices, interior->hullSurfaceIndex); //hullSurfaceIndex
+	WRITELOOPVAR(U16, interior->numPolyListPlanes, interior->polyListPlaneIndex); //polyListPlaneIndex
+	WRITELOOPVAR(U32, interior->numPolyListPoints, interior->polyListPointIndex); //polyListPointIndex
+	WRITELOOPVAR(U8, interior->numPolyListStrings, interior->polyListStringCharacter); //polyListStringCharacter
+	for (U32 i = 0; i < gNumCoordBins * gNumCoordBins; i ++) {
+		WRITECHECK(U32, interior->coordBin[i].binStart); //binStart
+		WRITECHECK(U32, interior->coordBin[i].binCount); //binCount
+	}
+	WRITELOOPVAR(U16, interior->numCoordBinIndices, interior->coordBinIndex); //coordBinIndex
+	WRITECHECK(U32, interior->coordBinMode); //coordBinMode
+	WRITECHECK(ColorI, interior->baseAmbientColor); //baseAmbientColor
+	WRITECHECK(ColorI, interior->alarmAmbientColor); //alarmAmbientColor
+	/*
+	 Static meshes (not included)
+	 */
+	WRITELOOPVAR(Point3F, interior->numTexNormals, interior->texNormal); //texNormal
+	WRITELOOP(interior->numTexMatrices) { //numTexMatrices
+		WRITECHECK(S32, interior->texMatrix[i].T); //T
+		WRITECHECK(S32, interior->texMatrix[i].N); //N
+		WRITECHECK(S32, interior->texMatrix[i].B); //B
+	}
+	WRITELOOPVAR(U32, interior->numTexMatIndices, interior->texMatIndex); //texMatIndex
+	WRITECHECK(U32, interior->extendedLightMapData); //extendedLightMapData
+	
+	return true;
+}
+
 void interior_release(Interior *interior) {
 	for (U32 i = 0; i < interior->numMaterials; i ++) {
 		releaseString(interior->material[i]);
@@ -433,23 +592,14 @@ void interior_export_obj(Interior *interior, FILE *file) {
 		U32 windingStart = surface.windingStart;
 		U8 windingCount = surface.windingCount;
 
-		//2 points are lost (first and last)
-		windingCount -= 2;
+		fprintf(file, "f");
 
 		//Triangle strips, in 0-1-2, 3-2-1, 2-3-4, 5-4-3 order
 		for (U32 index = windingStart; index < windingStart + windingCount; index ++) {
 			//Build triangles
-			U32 indices[3] = {index + 0, index + 1, index + 2};
-			if ((index - windingStart) % 2 == 0) {
-				indices[0] = index + 2;
-				indices[1] = index + 1;
-				indices[2] = index + 0;
-			}
 
-			fprintf(file, "f %d//%d %d//%d %d//%d\n",
-					  interior->index[indices[0]] + 1, interior->plane[surface.planeIndex].normalIndex + 1,
-					  interior->index[indices[1]] + 1, interior->plane[surface.planeIndex].normalIndex + 1,
-					  interior->index[indices[2]] + 1, interior->plane[surface.planeIndex].normalIndex + 1);
+			fprintf(file, " %d//%d", interior->index[index] + 1, interior->plane[surface.planeIndex].normalIndex + 1);
 		}
+		fprintf(file, "\n");
 	}
 }

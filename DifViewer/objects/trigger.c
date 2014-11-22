@@ -54,6 +54,23 @@ Trigger *trigger_read_file(FILE *file) {
 	return trigger;
 }
 
+bool trigger_write_file(FILE *file, Trigger *trigger) {
+	WRITE(String, trigger->name); //name
+	WRITE(String, trigger->datablock); //datablock
+	WRITE(Dictionary, trigger->properties); //properties
+	WRITELOOPVAR(Point3F, trigger->numPolyHedronPoints, trigger->polyHedronPoint); //polyHedronPoint
+	WRITELOOPVAR(PlaneF, trigger->numPolyHedronPlanes, trigger->polyHedronPlane); //polyHedronPlane
+	WRITELOOP(trigger->numPolyHedronEdges) { //numPolyHedronEdges
+		WRITECHECK(U32, trigger->polyHedronEdge[i].face0); //face0
+		WRITECHECK(U32, trigger->polyHedronEdge[i].face1); //face1
+		WRITECHECK(U32, trigger->polyHedronEdge[i].vertex0); //vertex0
+		WRITECHECK(U32, trigger->polyHedronEdge[i].vertex1); //vertex1
+	}
+	WRITECHECK(Point3F, trigger->offset); //offset
+
+	return true;
+}
+
 void trigger_release(Trigger *trigger) {
 	releaseString(trigger->name);
 	releaseString(trigger->datablock);

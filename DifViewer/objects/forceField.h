@@ -95,6 +95,8 @@ typedef struct {
  */
 ForceField *forceField_read_file(FILE *file);
 
+bool forceField_write_file(FILE *file, ForceField *forceField);
+
 /**
  Frees the ForceField and all memory contained within it
  @arg forceField - The ForceField to release

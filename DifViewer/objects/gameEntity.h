@@ -44,6 +44,8 @@ typedef struct {
  */
 GameEntity *gameEntity_read_file(FILE *file);
 
+bool gameEntity_write_file(FILE *file, GameEntity *gameEntity);
+
 /**
  Frees the GameEntity and all memory contained within it
  @arg gameEntity - The GameEntity to release

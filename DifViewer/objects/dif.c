@@ -79,6 +79,49 @@ DIF *dif_read_file(FILE *file, String directory) {
 	return dif;
 }
 
+bool dif_write_file(FILE *file, DIF *dif, String directory) {
+	WRITECHECK(U32, 44); //interiorResourceFileVersion
+	WRITECHECK(U8, 0); //previewIncluded
+
+	WRITELOOP(dif->numDetailLevels) {
+		if (!interior_write_file(file, dif->interior[i])) return false;
+	}
+	WRITELOOP(dif->numSubObjects) {
+		if (!interior_write_file(file, dif->subObject[i])) return false;
+	}
+	WRITELOOP(dif->numTriggers) {
+		if (!trigger_write_file(file, dif->trigger[i])) return false;
+	}
+	WRITELOOP(dif->numInteriorPathFollowers) {
+		if (!interiorPathFollower_write_file(file, dif->interiorPathFollower[i])) return false;
+	}
+	WRITELOOP(dif->numForceFields) {
+		if (!forceField_write_file(file, dif->forceField[i])) return false;
+	}
+	WRITELOOP(dif->numAISpecialNodes) {
+		if (!aiSpecialNode_write_file(file, dif->aiSpecialNode[i])) return false;
+	}
+	WRITECHECK(U32, 1);
+	vehicleCollision_write_file(file, dif->vehicleCollision);
+
+	WRITECHECK(U32, 0);
+	WRITECHECK(U32, 0);
+	WRITECHECK(U32, 0);
+	WRITECHECK(U32, 0);
+	if (dif->gameEntity){
+		WRITECHECK(U32, 2);
+		WRITELOOP(dif->numGameEntities) {
+			gameEntity_write_file(file, dif->gameEntity[i]);
+		}
+	} else {
+		WRITECHECK(U32, 0);
+	}
+
+	WRITECHECK(U32, 0);
+
+	return true;
+}
+
 void dif_release(DIF *dif) {
 	for (U32 i = 0; i < dif->numDetailLevels; i ++) {
 		interior_release(dif->interior[i]);

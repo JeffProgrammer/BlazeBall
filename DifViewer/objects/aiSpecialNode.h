@@ -42,6 +42,8 @@ typedef struct {
  */
 AISpecialNode *aiSpecialNode_read_file(FILE *file);
 
+bool aiSpecialNode_write_file(FILE *file, AISpecialNode *aiSpecialNode);
+
 /**
  Frees the AISpecialNode and all memory contained within it
  @arg aiSpecialNode - The AISpecialNode to release

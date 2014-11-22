@@ -41,6 +41,15 @@ GameEntity *gameEntity_read_file(FILE *file) {
 	return gameEntity;
 }
 
+bool gameEntity_write_file(FILE *file, GameEntity *gameEntity) {
+	WRITE(String, gameEntity->datablock); //datablock
+	WRITE(String, gameEntity->gameClass); //gameClass
+	WRITECHECK(Point3F, gameEntity->position); //position
+	WRITE(Dictionary, gameEntity->properties); //properties
+
+	return true;
+}
+
 void gameEntity_release(GameEntity *gameEntity) {
 	releaseString(gameEntity->datablock);
 	releaseString(gameEntity->gameClass);

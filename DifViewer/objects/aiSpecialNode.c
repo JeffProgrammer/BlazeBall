@@ -39,6 +39,13 @@ AISpecialNode *aiSpecialNode_read_file(FILE *file) {
 	return aiSpecialNode;
 }
 
+bool aiSpecialNode_write_file(FILE *file, AISpecialNode *aiSpecialNode) {
+	WRITE(String, aiSpecialNode->name); //name
+	WRITECHECK(Point3F, aiSpecialNode->position); //position
+
+	return true;
+}
+
 void aiSpecialNode_release(AISpecialNode *aiSpecialNode) {
 	releaseString(aiSpecialNode->name);
 	free(aiSpecialNode);

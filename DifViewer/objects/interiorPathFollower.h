@@ -60,6 +60,8 @@ typedef struct {
  */
 InteriorPathFollower *interiorPathFollower_read_file(FILE *file);
 
+bool interiorPathFollower_write_file(FILE *file, InteriorPathFollower *interiorPathFollower);
+
 /**
  Frees the InteriorPathFollower and all memory contained within it
  @arg interiorPathFollower - The InteriorPathFollower to release

@@ -95,6 +95,8 @@ typedef struct {
  */
 VehicleCollision *vehicleCollision_read_file(FILE *file);
 
+bool vehicleCollision_write_file(FILE *file, VehicleCollision *vehicleCollision);
+
 /**
  Frees the VehicleCollision and all memory contained within it
  @arg vehicleCollision - The VehicleCollision to release

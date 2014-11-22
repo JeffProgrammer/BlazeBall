@@ -82,6 +82,8 @@ typedef struct {
  */
 DIF *dif_read_file(FILE *file, String directory);
 
+bool dif_write_file(FILE *file, DIF *dif, String directory);
+
 /**
  Frees the DIF and all memory contained within it
  @arg dif - The DIF to release

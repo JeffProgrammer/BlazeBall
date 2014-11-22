@@ -51,7 +51,7 @@ static U32 gNumCoordBins = 16;
 
 typedef struct {
 	U16 normalIndex;
-	U32 planeDistance;
+	F32 planeDistance;
 } Plane;
 
 typedef struct {
@@ -94,6 +94,11 @@ typedef struct {
 	U16 finalWord;
 	F32 texGenXDistance;
 	F32 texGenYDistance;
+} LightMapF;
+
+typedef struct {
+	PNG lightMap;
+	U8 keepLightMap;
 } LightMap;
 
 typedef struct {
@@ -104,7 +109,7 @@ typedef struct {
 	U32 texGenIndex;
 	U8 surfaceFlags;
 	U32 fanMask;
-	LightMap lightMap;
+	LightMapF lightMap;
 	U16 lightCount;
 	U32 lightStateInfoStart;
 	U8 mapOffsetX;
@@ -319,6 +324,8 @@ typedef struct {
  @return An Interior
  */
 Interior *interior_read_file(FILE *file, String directory);
+
+bool interior_write_file(FILE *file, Interior *interior);
 
 /**
  Frees the Interior and all memory contained within it

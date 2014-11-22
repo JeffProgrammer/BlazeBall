@@ -45,7 +45,6 @@ typedef float F32;
 
 //Pointer types
 typedef U8 * String;
-typedef U8 * PNG; //unused
 
 //More names stolen from TGE
 typedef struct {
@@ -119,5 +118,10 @@ typedef struct {
 	String *names;
 	String *values;
 } Dictionary;
+
+typedef struct {
+	U32 size;
+	U8 *data;
+} PNG;
 
 #endif

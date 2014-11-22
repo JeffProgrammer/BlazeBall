@@ -27,9 +27,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "io.h"
 
-#if 0
+#if 1
 #define DEBUG_PRINT(...) printf(__VA_ARGS__)
 #else
 #define DEBUG_PRINT(...)
@@ -160,13 +161,17 @@ String readString(FILE **file) {
 	return value;
 }
 
-void readPNG(FILE **file) {
+PNG readPNG(FILE **file) {
 	U8 PNGFooter[8] = {0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82};
+	PNG value;
+	value.data = calloc(sizeof(U8), LIGHT_MAP_SIZE);
 
-	//Basically throw out everything. Yeah.
+	//I can't parse these, so I just read em all
+	value.size = 0;
 	for (int i = 0; i < sizeof(PNGFooter) / sizeof(PNGFooter[0]); i ++) {
-		while (readU8(file) != PNGFooter[i]);
+		while ((value.data[value.size ++] = readU8(file)) != PNGFooter[i]);
 	}
+	return value;
 }
 
 Dictionary readDictionary(FILE **file) {
@@ -183,6 +188,139 @@ Dictionary readDictionary(FILE **file) {
 	}
 
 	return value;
+}
+
+//-----------------------------------------------------------------------------
+
+U32 writeU64(FILE **file, U64 value) {
+	fpos_t pos;
+	fgetpos(*file, &pos);
+	DEBUG_PRINT("Write U64 %08llX: %llu\n", pos, value);
+
+	return (U32)fwrite(&value, sizeof(value), 1, *file) * sizeof(value);
+}
+U32 writeU32(FILE **file, U32 value) {
+	fpos_t pos;
+	fgetpos(*file, &pos);
+	DEBUG_PRINT("Write U32 %08llX: %u\n", pos, value);
+
+	return (U32)fwrite(&value, sizeof(value), 1, *file) * sizeof(value);
+}
+U32 writeU16(FILE **file, U16 value) {
+	fpos_t pos;
+	fgetpos(*file, &pos);
+	DEBUG_PRINT("Write U16 %08llX: %hu\n", pos, value);
+
+	return (U32)fwrite(&value, sizeof(value), 1, *file) * sizeof(value);
+}
+U32 writeU8(FILE **file, U8 value) {
+	fpos_t pos;
+	fgetpos(*file, &pos);
+	DEBUG_PRINT("Write U8 %08llX: %u\n", pos, value);
+
+	return (U32)fwrite(&value, sizeof(value), 1, *file) * sizeof(value);
+}
+U32 writeF32(FILE **file, F32 value) {
+	fpos_t pos;
+	fgetpos(*file, &pos);
+	DEBUG_PRINT("Write F32 %08llX: %f\n", pos, value);
+
+	return (U32)fwrite(&value, sizeof(value), 1, *file) * sizeof(value);
+}
+
+//Lazy!
+U32 writeS64(FILE **file, S64 value) { return writeU64(file, value); }
+U32 writeS32(FILE **file, S32 value) { return writeU32(file, value); }
+U32 writeS16(FILE **file, S16 value) { return writeU16(file, value); }
+U32 writeS8 (FILE **file, S8  value) { return writeU8 (file, value); }
+
+U32 writePlaneF(FILE **file, PlaneF value) {
+	U32 count = 0;
+	count += writeF32(file, value.x);
+	count += writeF32(file, value.y);
+	count += writeF32(file, value.z);
+	count += writeF32(file, value.d);
+	return count;
+}
+
+U32 writePoint3F(FILE **file, Point3F value) {
+	U32 count = 0;
+	count += writeF32(file, value.x);
+	count += writeF32(file, value.y);
+	count += writeF32(file, value.z);
+	return count;
+}
+
+U32 writeQuatF(FILE **file, QuatF value) {
+	U32 count = 0;
+	count += writeF32(file, value.w);
+	count += writeF32(file, value.x);
+	count += writeF32(file, value.y);
+	count += writeF32(file, value.z);
+	return count;
+}
+
+U32 writeBoxF(FILE **file, BoxF value) {
+	U32 count = 0;
+	count += writeF32(file, value.minX);
+	count += writeF32(file, value.minY);
+	count += writeF32(file, value.minZ);
+	count += writeF32(file, value.maxX);
+	count += writeF32(file, value.maxY);
+	count += writeF32(file, value.maxZ);
+	return count;
+}
+
+U32 writeSphereF(FILE **file, SphereF value) {
+	U32 count = 0;
+	count += writeF32(file, value.x);
+	count += writeF32(file, value.y);
+	count += writeF32(file, value.z);
+	count += writeF32(file, value.radius);
+	return count;
+}
+
+U32 writeColorI(FILE **file, ColorI value) {
+	U32 count = 0;
+	count += writeU8(file, value.red);
+	count += writeU8(file, value.green);
+	count += writeU8(file, value.blue);
+	count += writeU8(file, value.alpha);
+	return count;
+}
+
+U32 writeString(FILE **file, String value) {
+	//<length><bytes>
+	U32 count = 0;
+
+	count += writeU8(file, strlen((const char *)value));
+	for (int i = 0; i < strlen((const char *)value); i ++) {
+		count += writeU8(file, value[i]);
+	}
+	return count;
+}
+
+U32 writePNG(FILE **file, PNG value) {
+	//Basically dump out everything. Yeah.
+
+	U32 count = 0;
+	for (U32 i = 0; i < value.size; i ++) {
+		count += writeU8(file, value.data[i]);
+	}
+	return count;
+}
+
+U32 writeDictionary(FILE **file, Dictionary value) {
+	//<length>[<name><value>]...
+	U32 count = 0;
+
+	count += writeU32(file, value.size);
+	for (int i = 0; i < value.size; i ++) {
+		count += writeString(file, value.names[i]);
+		count += writeString(file, value.values[i]);
+	}
+
+	return count;
 }
 
 //Mem mgt

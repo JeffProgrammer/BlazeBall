@@ -61,6 +61,8 @@ typedef struct {
  */
 Trigger *trigger_read_file(FILE *file);
 
+bool trigger_write_file(FILE *file, Trigger *trigger);
+
 /**
  Frees the Trigger and all memory contained within it
  @arg trigger - The Trigger to release

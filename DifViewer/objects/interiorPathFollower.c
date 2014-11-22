@@ -52,6 +52,24 @@ InteriorPathFollower *interiorPathFollower_read_file(FILE *file) {
 	return interiorPathFollower;
 }
 
+bool interiorPathFollower_write_file(FILE *file, InteriorPathFollower *interiorPathFollower) {
+	WRITE(String, interiorPathFollower->name); //name
+	WRITE(String, interiorPathFollower->datablock); //datablock
+	WRITECHECK(U32, interiorPathFollower->interiorResIndex); //interiorResIndex
+	WRITECHECK(Point3F, interiorPathFollower->offset); //offset
+	WRITE(Dictionary, interiorPathFollower->properties); //properties
+	WRITELOOPVAR(U32, interiorPathFollower->numTriggerIds, interiorPathFollower->triggerId); //triggerId
+	WRITELOOP(interiorPathFollower->numWayPoints) { //numWayPoints
+		WRITECHECK(Point3F, interiorPathFollower->wayPoint[i].position); //position
+		WRITECHECK(QuatF, interiorPathFollower->wayPoint[i].rotation); //rotation
+		WRITECHECK(U32, interiorPathFollower->wayPoint[i].msToNext); //msToNext
+		WRITECHECK(U32, interiorPathFollower->wayPoint[i].smoothingType); //smoothingType
+	}
+	WRITECHECK(U32, interiorPathFollower->totalMS); //totalMS
+
+	return true;
+}
+
 void interiorPathFollower_release(InteriorPathFollower *interiorPathFollower) {
 	releaseString(interiorPathFollower->name);
 	releaseString(interiorPathFollower->datablock);

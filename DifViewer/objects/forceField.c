@@ -74,6 +74,40 @@ ForceField *forceField_read_file(FILE *file) {
 	return forceField;
 }
 
+bool forceField_write_file(FILE *file, ForceField *forceField) {
+	WRITECHECK(U32, forceField->forceFieldFileVersion); //forceFieldFileVersion
+	WRITE(String, forceField->name); //name
+	WRITELOOPVARNOCHECK(String, forceField->numTriggers, forceField->trigger); //trigger
+	WRITECHECK(BoxF, forceField->boundingBox); //boundingBox
+	WRITECHECK(SphereF, forceField->boundingSphere); //boundingSphere
+	WRITELOOPVAR(Point3F, forceField->numNormals, forceField->normal); //normal
+	WRITELOOP(forceField->numPlanes) { //numPlanes
+		WRITECHECK(U32, forceField->plane[i].normalIndex); //normalIndex
+		WRITECHECK(F32, forceField->plane[i].planeDistance); //planeDistance
+	}
+	WRITELOOP(forceField->numBSPNodes) { //numBSPNodes
+		WRITECHECK(U16, forceField->BSPNode[i].planeIndex); //planeIndex
+		WRITECHECK(U16, forceField->BSPNode[i].frontIndex); //frontIndex
+		WRITECHECK(U16, forceField->BSPNode[i].backIndex); //backIndex
+	}
+	WRITELOOP(forceField->numBSPSolidLeaves) { //numBSPSolidLeaves
+		WRITECHECK(U32, forceField->BSPSolidLeaf[i].surfaceIndex); //surfaceIndex
+		WRITECHECK(U16, forceField->BSPSolidLeaf[i].surfaceCount); //surfaceCount
+	}
+	WRITELOOPVAR(U32, forceField->numWindings, forceField->index); //index
+	WRITELOOP(forceField->numSurfaces) { //numSurfaces
+		WRITECHECK(U32, forceField->surface[i].windingStart); //windingStart
+		WRITECHECK(U8, forceField->surface[i].windingCount); //windingCount
+		WRITECHECK(U16, forceField->surface[i].planeIndex); //planeIndex
+		WRITECHECK(U8, forceField->surface[i].surfaceFlags); //surfaceFlags
+		WRITECHECK(U32, forceField->surface[i].fanMask); //fanMask
+	}
+	WRITELOOPVAR(U32, forceField->numSolidLeafSurfaces, forceField->solidLeafSurface); //solidLeafSurface
+	WRITECHECK(ColorI, forceField->color); //color
+
+	return true;
+}
+
 void forceField_release(ForceField *forceField) {
 	releaseString(forceField->name);
 	for (U32 i = 0; i < forceField->numTriggers; i ++) {
