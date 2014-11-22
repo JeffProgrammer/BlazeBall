@@ -182,15 +182,15 @@ void handleEvent(SDL_Event *event) {
 	}
 	//Mouse for rotation
 	if (event->type == SDL_MOUSEMOTION) {
-		if (captureMouse) {
+		if (mouseButtons[2]) {
 			gYaw += (GLfloat)((SDL_MouseMotionEvent *)event)->xrel * gCameraSpeed;
 			gPitch += (GLfloat)((SDL_MouseMotionEvent *)event)->yrel * gCameraSpeed;
 		}
 	}
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
-		mouseButtons[((SDL_MouseButtonEvent *)event)->button] = true;
+		mouseButtons[((SDL_MouseButtonEvent *)event)->button - 1] = true;
 	} else if (event->type == SDL_MOUSEBUTTONUP) {
-		mouseButtons[((SDL_MouseButtonEvent *)event)->button] = false;
+		mouseButtons[((SDL_MouseButtonEvent *)event)->button - 1] = false;
 	}
 }
 
