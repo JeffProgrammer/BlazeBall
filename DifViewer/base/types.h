@@ -124,4 +124,9 @@ typedef struct {
 	U8 *data;
 } PNG;
 
+typedef struct {
+	Point3F origin;
+	Point3F direction;
+} RayF;
+
 #endif

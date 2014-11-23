@@ -30,10 +30,15 @@
 
 #include "types.h"
 
-extern inline F32 planeF_distance_to_point(PlaneF plane, Point3F point);
+Point3F point3F_add_point3F(Point3F point0, Point3F point1);
+F32 point3F_dot_point3F(Point3F point0, Point3F point1);
+Point3F point3F_scale(Point3F point0, F32 scalar);
+F32 point3F_distance_to_point3F(Point3F point0, Point3F point1);
 
-inline F32 planeF_distance_to_point(PlaneF plane, Point3F point) {
-	return (plane.x * point.x + plane.y * point.y + plane.z * point.z) + plane.d;
-}
+F32 planeF_distance_to_point(PlaneF plane, Point3F point);
+bool rayF_intersects_planeF(RayF ray, PlaneF plane);
+Point3F rayF_planeF_intersection(RayF ray, PlaneF plane);
+
+S32 pnpoly(U32 nvert, Point2F *vert, Point2F test);
 
 #endif

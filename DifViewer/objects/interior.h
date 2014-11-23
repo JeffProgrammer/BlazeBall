@@ -347,4 +347,6 @@ void interior_export_obj(Interior *interior, FILE *file);
  */
 void interior_render(Interior *interior, Point3F offset);
 
+U32 interior_ray_cast(Interior *interior, RayF ray);
+
 #endif

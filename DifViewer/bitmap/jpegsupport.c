@@ -81,7 +81,7 @@ bool jpegReadImage(String file, U8 **bitmap, Point2I *dims) {
 
 	//Much more civil than MNG, 100% fewer callbacks
 	jpeg_finish_decompress(&dptr);
-	jpeg_destroy_decompress(&dptr);
+//	jpeg_destroy_decompress(&dptr);
 
 	return true;
 }

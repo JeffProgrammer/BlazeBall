@@ -57,7 +57,9 @@ GLfloat gAngle;
 float gYaw, gPitch;
 glm::vec3 gCameraPosition;
 
-static float gCameraSpeed = 0.1f;
+glm::mat4x4 gProjectionMatrix, gModelviewMatrix;
+
+static float gCameraSpeed = 0.3f;
 static float gMovementSpeed = 0.2f;
 
 bool captureMouse = false;
@@ -72,11 +74,11 @@ void render() {
 	glEnable(GL_CULL_FACE);
 
 	//Camera
-	glm::mat4x4 cameraMatrix = glm::mat4x4(1);
-	cameraMatrix = glm::rotate(cameraMatrix, gPitch, glm::vec3(1, 0, 0));
-	cameraMatrix = glm::rotate(cameraMatrix, gYaw, glm::vec3(0, 1, 0));
-	cameraMatrix = glm::translate(cameraMatrix, gCameraPosition);
-	glLoadMatrixf(&cameraMatrix[0][0]);
+	gModelviewMatrix = glm::mat4x4(1);
+	gModelviewMatrix = glm::rotate(gModelviewMatrix, gPitch, glm::vec3(1, 0, 0));
+	gModelviewMatrix = glm::rotate(gModelviewMatrix, gYaw, glm::vec3(0, 1, 0));
+	gModelviewMatrix = glm::translate(gModelviewMatrix, gCameraPosition);
+	glLoadMatrixf(&gModelviewMatrix[0][0]);
 
 	//Clear
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -133,9 +135,55 @@ bool initGL() {
 	//Initialize Projection Matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glMultMatrixf(&glm::perspective(90.f, aspect, 0.1f, 500.f)[0][0]);
+	gProjectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
+	glMultMatrixf(&gProjectionMatrix[0][0]);
 
 	return glGetError() == GL_NO_ERROR;
+}
+
+void performClick(S32 mouseX, S32 mouseY) {
+	int screenWidth, screenHeight;
+	SDL_GetWindowSize(gWindow, &screenWidth, &screenHeight);
+
+	//http://antongerdelan.net/opengl/raycasting.html
+	//(x, y) are in device coordinates. We need to convert that to model coords
+
+	//Device coords -> normalized device coords
+	float x = (((F32)mouseX * 2.0f) / (F32)screenWidth) - 1.0f;
+	float y = 1.0f - (((F32)mouseY * 2.0f) / (F32)screenHeight);
+	float z = 1.0f;
+	glm::vec3 ndc = glm::vec3(x, y, z);
+
+	//Normalized device coords -> clip coordinates
+	glm::vec4 clip = glm::vec4(ndc.x, ndc.y, -1.0f, 1.0f);
+
+	//Clip coordinates -> eye coordinates
+	glm::vec4 eye = glm::inverse(gProjectionMatrix) * clip;
+	eye = glm::vec4(eye.x, eye.y, -1.0f, 0.0f);
+
+	//Eye coordinates -> modelview coordinates
+	glm::vec3 world = glm::vec3(glm::inverse(gModelviewMatrix) * eye);
+
+	RayF ray;
+	ray.origin.x = gCameraPosition.x;
+	ray.origin.y = gCameraPosition.y;
+	ray.origin.z = gCameraPosition.z;
+
+	ray.direction.x = world.x;
+	ray.direction.y = world.y;
+	ray.direction.z = world.z;
+
+	for (U32 i = 0; i < gDifCount; i ++) {
+		DIF *dif = gDifs[i];
+		for (U32 j = 0; j < dif->numDetailLevels; j ++) {
+			Interior *interior = dif->interior[j];
+
+			U32 surfaceNum = interior_ray_cast(interior, ray);
+			if (surfaceNum != -1) {
+				interior->surface[surfaceNum].textureIndex ++;
+			}
+		}
+	}
 }
 
 void handleEvent(SDL_Event *event) {
@@ -148,16 +196,7 @@ void handleEvent(SDL_Event *event) {
 		//Just reinit (lazy)
 		initGL();
 	}
-	if (event->type == SDL_APP_DIDENTERFOREGROUND || event->type == SDL_MOUSEBUTTONDOWN) {
-		//Lock cursor
-		SDL_SetRelativeMouseMode(SDL_FALSE);
-		SDL_SetRelativeMouseMode(SDL_TRUE);
-		captureMouse = true;
-	}
-	if (event->type == SDL_APP_WILLENTERBACKGROUND) {
-		SDL_SetRelativeMouseMode(SDL_FALSE);
-		captureMouse = false;
-	}
+
 	//Key events, movement
 	if (event->type == SDL_KEYDOWN) {
 		switch (((SDL_KeyboardEvent *)event)->keysym.scancode) {
@@ -166,11 +205,6 @@ void handleEvent(SDL_Event *event) {
 			case SDL_SCANCODE_S: movement[1] = true; break;
 			case SDL_SCANCODE_A: movement[2] = true; break;
 			case SDL_SCANCODE_D: movement[3] = true; break;
-			case SDL_SCANCODE_ESCAPE:
-				//Unlock cursor
-				SDL_SetRelativeMouseMode(SDL_FALSE);
-				captureMouse = false;
-				break;
 		}
 	} else if (event->type == SDL_KEYUP) {
 		switch (((SDL_KeyboardEvent *)event)->keysym.scancode) {
@@ -189,8 +223,21 @@ void handleEvent(SDL_Event *event) {
 	}
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
 		mouseButtons[((SDL_MouseButtonEvent *)event)->button - 1] = true;
+
+		if (((SDL_MouseButtonEvent *)event)->button == 3) {
+			SDL_SetRelativeMouseMode(SDL_TRUE);
+		}
+
+		if (((SDL_MouseButtonEvent *)event)->button == 1) {
+			performClick(((SDL_MouseButtonEvent *)event)->x, ((SDL_MouseButtonEvent *)event)->y);
+		}
+
 	} else if (event->type == SDL_MOUSEBUTTONUP) {
 		mouseButtons[((SDL_MouseButtonEvent *)event)->button - 1] = false;
+
+		if (((SDL_MouseButtonEvent *)event)->button == 3) {
+			SDL_SetRelativeMouseMode(SDL_FALSE);
+		}
 	}
 }
 

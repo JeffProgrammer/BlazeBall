@@ -35,6 +35,7 @@
 #include "interior.h"
 #include "mngsupport.h"
 #include "jpegsupport.h"
+#include "math.h"
 
 Interior *interior_read_file(FILE *file, String directory) {
 	Interior *interior = (Interior *)malloc(sizeof(Interior));
@@ -282,19 +283,18 @@ Interior *interior_read_file(FILE *file, String directory) {
 				strcpy((char *)material, strstr((const char *)material, "/") + 1);
 			}
 
-
 			BitmapType type = BitmapTypePNG;
 
 			//For some reason these two like to become the same.
 			String base = (String)strdup((char *)directory);
 
 			//Allocate enough space in each of these so we can work comfortably
-			U32 pathlen = (U32)(strlen((const char *)base) + strlen((const char *)interior->material[i]) + 1);
+			U32 pathlen = (U32)(strlen((const char *)base) + strlen((const char *)material) + 1);
 			String imageFile = malloc(sizeof(U8) * pathlen + 5);
 
 			do {
 				//Init imageFile to base/file.png
-				pathlen = sprintf((char *)imageFile, "%s/%s.png", base, interior->material[i]);
+				pathlen = sprintf((char *)imageFile, "%s/%s.png", base, material);
 
 				type = BitmapTypePNG;
 
@@ -316,7 +316,7 @@ Interior *interior_read_file(FILE *file, String directory) {
 
 			//If we can't find it, just chuck the lot and keep going.
 			if (!isfile(imageFile)) {
-				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", interior->material[i]);
+				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", material);
 				interior->texture[i] = NULL;
 				free(base);
 				free(imageFile);
@@ -602,4 +602,24 @@ void interior_export_obj(Interior *interior, FILE *file) {
 		}
 		fprintf(file, "\n");
 	}
+}
+
+U32 interior_ray_cast(Interior *interior, RayF ray) {
+	for (U32 i = 0; i < interior->numSurfaces; i ++) {
+		Surface surface = interior->surface[i];
+		Plane surfPlane = interior->plane[surface.planeIndex];
+		Point3F normal = interior->normal[surfPlane.normalIndex];
+
+		PlaneF plane;
+		plane.x = normal.x;
+		plane.y = normal.y;
+		plane.z = normal.z;
+		plane.d = surfPlane.planeDistance;
+
+		if (rayF_intersects_planeF(ray, plane)) {
+			//TODO: Project intersection onto the plane, do bounds checking
+		}
+	}
+
+	return -1;
 }

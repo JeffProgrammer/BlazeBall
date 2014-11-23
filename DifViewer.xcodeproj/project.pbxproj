@@ -19,6 +19,7 @@
 		B54F9DB61A10399D00F550EA /* trigger.c in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DAA1A10399D00F550EA /* trigger.c */; };
 		B54F9DB71A10399D00F550EA /* vehicleCollision.c in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DAC1A10399D00F550EA /* vehicleCollision.c */; };
 		B566A6BC1A12EFFA003D6BEA /* libmng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B566A6951A12EE54003D6BEA /* libmng.a */; };
+		B58E54C81A215B0700304A9B /* math.c in Sources */ = {isa = PBXBuildFile; fileRef = B58E54C71A215B0700304A9B /* math.c */; };
 		B5BC0E371A1423DE00D86A8D /* interiorRender.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BC0E361A1423DE00D86A8D /* interiorRender.c */; };
 		B5CC8E9A1A13090A0037BFF7 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B5CC8E991A13090A0037BFF7 /* libz.dylib */; };
 		B5D92CA71A100DD7000A36CB /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5D92CA61A100DD7000A36CB /* SDL2.framework */; };
@@ -81,6 +82,7 @@
 		B54F9DAD1A10399D00F550EA /* vehicleCollision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vehicleCollision.h; sourceTree = "<group>"; };
 		B566A6901A12EE54003D6BEA /* mng.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = mng.xcodeproj; path = mng/mng.xcodeproj; sourceTree = "<group>"; };
 		B578BCF51A13EB4C001EF856 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = jpeg/.libs/libjpeg.a; sourceTree = "<group>"; };
+		B58E54C71A215B0700304A9B /* math.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = math.c; sourceTree = "<group>"; };
 		B5AADE6F1A142E1E0064F1E5 /* math.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = math.h; sourceTree = "<group>"; };
 		B5BC0E361A1423DE00D86A8D /* interiorRender.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = interiorRender.c; path = DifViewer/render/interiorRender.c; sourceTree = SOURCE_ROOT; };
 		B5BF4D631A0BF42900BF0956 /* DifViewer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DifViewer; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -116,6 +118,7 @@
 				B54F9D9A1A10399D00F550EA /* io.h */,
 				B54F9D9B1A10399D00F550EA /* types.h */,
 				B5AADE6F1A142E1E0064F1E5 /* math.h */,
+				B58E54C71A215B0700304A9B /* math.c */,
 			);
 			name = base;
 			path = DifViewer/base;
@@ -296,6 +299,7 @@
 				B54F9DB21A10399D00F550EA /* forceField.c in Sources */,
 				B5E0CD9D1A13F41200BB4291 /* mngsupport.c in Sources */,
 				B5E0CDA01A13F43B00BB4291 /* texture.c in Sources */,
+				B58E54C81A215B0700304A9B /* math.c in Sources */,
 				B54F9DB01A10399D00F550EA /* aiSpecialNode.c in Sources */,
 				B5BC0E371A1423DE00D86A8D /* interiorRender.c in Sources */,
 				B54F9DB61A10399D00F550EA /* trigger.c in Sources */,
