@@ -28,9 +28,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "io.h"
 
-#if 1
+#if 0
 #define DEBUG_PRINT(...) printf(__VA_ARGS__)
 #else
 #define DEBUG_PRINT(...)
@@ -83,6 +84,8 @@ F32 readF32(FILE **file) {
 	fread(&value, sizeof(value), 1, *file);
 
 	DEBUG_PRINT("Read F32 %08llX: %f\n", pos, value);
+
+	value = floorf(value * 1000.0f) / 1000.0f;
 
 	return value;
 }

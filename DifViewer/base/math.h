@@ -28,8 +28,11 @@
 #ifndef math_h
 #define math_h
 
-#include "types.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+#include "types.h"
 
 Point3F point3F_add_point3F(Point3F point0, Point3F point1);
 Point3F point3F_subtract_point3F(Point3F point0, Point3F point1);
@@ -47,15 +50,10 @@ F32 planeF_distance_to_point(PlaneF plane, Point3F point);
 bool rayF_intersects_planeF(RayF ray, PlaneF plane);
 Point3F rayF_planeF_intersection(RayF ray, PlaneF plane);
 
-typedef enum {
-	IntersectionTypeVertex,
-	IntersectionTypeAC,
-	IntersectionTypeBC,
-	IntersectionTypeAB,
-	IntersectionTypeInside,
-	IntersectionTypeOutside
-} IntersectionType;
+F32 rayF_intersects_triangle(RayF ray, TriangleF triangle);
 
-IntersectionType rayF_intersects_triangle(RayF ray, TriangleF triangle);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

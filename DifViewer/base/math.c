@@ -52,9 +52,9 @@ F32 point3F_dot_point3F(Point3F point0, Point3F point1) {
 }
 
 Point3F point3F_cross_point3F(Point3F point0, Point3F point1) {
-	return (Point3F){(point0.y * point1.z) - (point0.z - point1.y),
-	                 (point0.z * point1.x) - (point0.x - point1.z),
-	                 (point0.x * point1.y) - (point0.y - point1.x)};
+	return (Point3F){(point0.y * point1.z) - (point0.z * point1.y),
+	                 (point0.z * point1.x) - (point0.x * point1.z),
+	                 (point0.x * point1.y) - (point0.y * point1.x)};
 }
 
 Point3F point3F_convert_to_torque(Point3F point) {
@@ -63,36 +63,6 @@ Point3F point3F_convert_to_torque(Point3F point) {
 
 Point3F point3F_convert_from_torque(Point3F point) {
 	return (Point3F){point.x, point.z, point.y};
-}
-
-F32 tetrahedronF_area(TetrahetronF tetrahedron) {
-	//Tetrahedron volume:
-	//V = ((a-d) dot ((b - d) cross (c - d))) / 6
-
-	return (point3F_dot_point3F(point3F_subtract_point3F(tetrahedron.point0, tetrahedron.point3), point3F_cross_point3F(point3F_subtract_point3F(tetrahedron.point1, tetrahedron.point3), point3F_subtract_point3F(tetrahedron.point2, tetrahedron.point3)))) / 6;
-}
-
-F32 tetrahedronF_signed_volume(TetrahetronF tetrahedron) {
-	//Tetrahedron signed volume:
-	//
-	// 1   [xa - xd, ya - yd, za - zd]
-	// - * [xb - xd, yb - yd, zb - zd]
-	// 6   [xc - xd, yc - yd, zc - zd]
-	//
-
-	F32 a = tetrahedron.point0.x - tetrahedron.point3.x;
-	F32 b = tetrahedron.point0.y - tetrahedron.point3.y;
-	F32 c = tetrahedron.point0.z - tetrahedron.point3.z;
-	F32 d = tetrahedron.point1.x - tetrahedron.point3.x;
-	F32 e = tetrahedron.point1.y - tetrahedron.point3.y;
-	F32 f = tetrahedron.point1.z - tetrahedron.point3.z;
-	F32 g = tetrahedron.point2.x - tetrahedron.point3.x;
-	F32 h = tetrahedron.point2.y - tetrahedron.point3.y;
-	F32 i = tetrahedron.point2.z - tetrahedron.point3.z;
-
-	//(aei + bfg + cdh) - (ceg + bdi + afh)
-
-	return ((a*e*i)+(b*f*g)*(c*d*h))-((c*e*g)+(b*d*i)+(a*f*h));
 }
 
 F32 point3F_distance_to_point3F(Point3F point0, Point3F point1) {
@@ -150,33 +120,80 @@ Point3F rayF_planeF_intersection(RayF ray, PlaneF plane) {
 	}
 }
 
-IntersectionType rayF_intersects_triangle(RayF ray, TriangleF triangle) {
-	//Intersection algorithm from
-	//http://147.228.63.9/wscg2001/papers_2001/r75.pdf
-	//Rafael J. Segura, Francisco R. Feito
+Point3F point3F_sub_point3F(Point3F point0, Point3F point1) {
+	return point3F_add_point3F(point0, point3F_scale(point1, -1.0f));
+}
 
-	Point3F q = ray.origin;
-	Point3F qp = point3F_add_point3F(ray.origin, point3F_scale(ray.direction, 100));
-	Point3F a = triangle.point0;
-	Point3F b = triangle.point1;
-	Point3F c = triangle.point2;
+Point3F point3F_proj_point3F(Point3F point0, Point3F point1) {
+	return point3F_scale(point1, point3F_dot_point3F(point0, point1) / point3F_dot_point3F(point1, point1));
+}
 
-	F32 i = Sign3d(tetrahedronF_signed_volume((TetrahetronF){q, qp, a, c}));
-	F32 j = Sign3d(tetrahedronF_signed_volume((TetrahetronF){q, qp, b, c}));
-	F32 k = Sign3d(tetrahedronF_signed_volume((TetrahetronF){q, qp, a, b}));
+Point3F point3F_rej_point3F(Point3F point0, Point3F point1) {
+	return point3F_sub_point3F(point0, point3F_proj_point3F(point0, point1));
+}
 
-	if ((i == 0 && j == 0) ||
-		(j == 0 && k == 0) ||
-		(k == 0 && i == 0)) {
-		return IntersectionTypeVertex;
+F32 point3F_len(Point3F point0) {
+	return point0.x*point0.x + point0.y*point0.y + point0.z*point0.z;
+}
+
+F32 rayF_intersects_triangle(RayF ray, TriangleF triangle) {
+	Point3F ab = point3F_sub_point3F(triangle.point1, triangle.point0);
+	Point3F ac = point3F_sub_point3F(triangle.point2, triangle.point0);
+	Point3F nor = point3F_cross_point3F(ab, ac);
+	Point3F oa = point3F_sub_point3F(triangle.point0, ray.origin);
+	F32 num = point3F_dot_point3F(nor, oa);
+	F32 denom = point3F_dot_point3F(nor, ray.direction);
+	if (denom == 0.0f)
+		return -1.0f;
+	F32 r = num/denom;
+	if (r < 0.0f)
+		return -1.0f;
+	Point3F p = point3F_add_point3F(ray.origin, point3F_scale(ray.direction, r));
+	Point3F ap = point3F_sub_point3F(p, triangle.point0);
+	bool canXY = true, canYZ = true, canZX = true;
+	if (ab.x*ac.y - ab.y*ac.x == 0.0f)
+		canXY = false;
+	if (ab.x*ac.z - ab.z*ac.x == 0.0f)
+		canZX = false;
+	if (ab.y*ac.z - ab.z*ac.y == 0.0f)
+		canYZ = false;
+	F32 kc1, lc1, kc2, lc2, c1, c2;
+	if (canXY) {
+		kc1 = ab.x;
+		kc2 = ab.y;
+		lc1 = ac.x;
+		lc2 = ac.y;
+		c1 = ap.x;
+		c2 = ap.y;
 	}
-	if ((i == 0) && (i == k))
-		return IntersectionTypeAC;
-	if ((j == 0) && (i == k))
-		return IntersectionTypeBC;
-	if ((k == 0) && (i == j))
-		return IntersectionTypeAB;
-	if ((i == j) && (j == k))
-		return IntersectionTypeInside;
-	return IntersectionTypeOutside;
+	else if (canZX) {
+		kc1 = ab.x;
+		kc2 = ab.z;
+		lc1 = ac.x;
+		lc2 = ac.z;
+		c1 = ap.x;
+		c2 = ap.z;
+	}
+	else if (canYZ) {
+		kc1 = ab.z;
+		kc2 = ab.y;
+		lc1 = ac.z;
+		lc2 = ac.y;
+		c1 = ap.z;
+		c2 = ap.y;
+	}
+	else if (point3F_len(point3F_cross_point3F(ab,ac)) == 0.0f) {
+		return -1.0f;
+	}
+	else {
+		fprintf(stderr, "WTF IS UP WITH THIS TRIANGLE?\n%f %f %f\n%f %f %f\n%f %f %f\n", ab.x, ab.y, ab.z, ac.x, ac.y, ac.z, ap.x, ap.y, ap.z);
+	}
+	F32 kld = kc1*lc2 - kc2*lc1;
+	F32 kn = c1*lc2 - c2*lc1;
+	F32 ln = kc1*c2 - kc2*c1;
+	F32 k = kn/kld;
+	F32 l = ln/kld;
+	if (k >= 0.0f && l >= 0.0f && k + l <= 1.0f)
+		return point3F_len(point3F_sub_point3F(p, ray.origin));
+	return -1.0f;
 }
