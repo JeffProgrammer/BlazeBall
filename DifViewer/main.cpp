@@ -55,8 +55,6 @@ SDL_Window *gWindow;
 SDL_GLContext gContext;
 GLfloat gAngle;
 
-RayF gRay;
-
 float gYaw, gPitch;
 glm::vec3 gCameraPosition;
 
@@ -96,14 +94,6 @@ void render() {
 	}
 
 	glDisable(GL_CULL_FACE);
-
-	glBegin(GL_QUADS);
-	glVertex3f(gRay.origin.x, gRay.origin.y, gRay.origin.z);
-	glVertex3f(gRay.origin.x, gRay.origin.y, gRay.origin.z + 0.05);
-	glVertex3f(gRay.origin.x + gRay.direction.x * 100, gRay.origin.y + gRay.direction.y * 100, gRay.origin.z + gRay.direction.z * 100);
-	glVertex3f(gRay.origin.x + gRay.direction.x * 100, gRay.origin.y + gRay.direction.y * 100, gRay.origin.z + gRay.direction.z * 100 + 0.05);
-
-	glEnd();
 }
 
 void loop() {
@@ -184,8 +174,6 @@ void performClick(S32 mouseX, S32 mouseY) {
 	ray.direction.y = world.y;
 	ray.direction.z = world.z;
 
-	gRay = ray;
-
 	for (U32 i = 0; i < gDifCount; i ++) {
 		DIF *dif = gDifs[i];
 		for (U32 j = 0; j < dif->numDetailLevels; j ++) {
@@ -219,6 +207,7 @@ void handleEvent(SDL_Event *event) {
 			case SDL_SCANCODE_S: movement[1] = true; break;
 			case SDL_SCANCODE_A: movement[2] = true; break;
 			case SDL_SCANCODE_D: movement[3] = true; break;
+			default: break;
 		}
 	} else if (event->type == SDL_KEYUP) {
 		switch (((SDL_KeyboardEvent *)event)->keysym.scancode) {
@@ -226,13 +215,7 @@ void handleEvent(SDL_Event *event) {
 			case SDL_SCANCODE_S: movement[1] = false; break;
 			case SDL_SCANCODE_A: movement[2] = false; break;
 			case SDL_SCANCODE_D: movement[3] = false; break;
-			case SDL_SCANCODE_Q:
-				RayF ray = (RayF){{-7.530198,7.292177,6.605670},{0.730610,-0.364977,-0.584720}};
-				TriangleF triangle = (TriangleF){{-3.999998,8.000000,8.000000},{-3.999998,16.000000,6.000000},{-3.999998,8.000000,0.000000}};
-
-				printf("%f\n", rayF_intersects_triangle(ray, triangle));
-				
-				break;
+			default: break;
 		}
 	}
 	//Mouse for rotation
