@@ -50,6 +50,7 @@ U32 gDifCount;
 DIF **gDifs;
 
 bool gRunning;
+bool gPrintFPS;
 
 SDL_Window *gWindow;
 SDL_GLContext gContext;
@@ -320,10 +321,12 @@ void run() {
 		//Profiling
 		gettimeofday(&endTime, NULL);
 
-		long long start = startTime.tv_usec + (startTime.tv_sec * 1000000ULL);
-		long long end = endTime.tv_usec + (endTime.tv_sec * 1000000ULL);
+		if (gPrintFPS) {
+			long long start = startTime.tv_usec + (startTime.tv_sec * 1000000ULL);
+			long long end = endTime.tv_usec + (endTime.tv_sec * 1000000ULL);
 
-//		printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
+			printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
+		}
 	}
 
 	//Clean up (duh)
