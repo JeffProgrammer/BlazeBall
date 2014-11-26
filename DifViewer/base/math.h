@@ -30,15 +30,32 @@
 
 #include "types.h"
 
+
 Point3F point3F_add_point3F(Point3F point0, Point3F point1);
+Point3F point3F_subtract_point3F(Point3F point0, Point3F point1);
 F32 point3F_dot_point3F(Point3F point0, Point3F point1);
 Point3F point3F_scale(Point3F point0, F32 scalar);
 F32 point3F_distance_to_point3F(Point3F point0, Point3F point1);
+Point3F point3F_cross_point3F(Point3F point0, Point3F point1);
+
+Point3F point3F_convert_to_torque(Point3F point);
+Point3F point3F_convert_from_torque(Point3F point);
+
+F32 tetrahedronF_area(TetrahetronF tetrahedron);
 
 F32 planeF_distance_to_point(PlaneF plane, Point3F point);
 bool rayF_intersects_planeF(RayF ray, PlaneF plane);
 Point3F rayF_planeF_intersection(RayF ray, PlaneF plane);
 
-S32 pnpoly(U32 nvert, Point2F *vert, Point2F test);
+typedef enum {
+	IntersectionTypeVertex,
+	IntersectionTypeAC,
+	IntersectionTypeBC,
+	IntersectionTypeAB,
+	IntersectionTypeInside,
+	IntersectionTypeOutside
+} IntersectionType;
+
+IntersectionType rayF_intersects_triangle(RayF ray, TriangleF triangle);
 
 #endif

@@ -129,4 +129,17 @@ typedef struct {
 	Point3F direction;
 } RayF;
 
+typedef struct {
+	Point3F point0;
+	Point3F point1;
+	Point3F point2;
+} TriangleF;
+
+typedef struct {
+	Point3F point0;
+	Point3F point1;
+	Point3F point2;
+	Point3F point3;
+} TetrahetronF;
+
 #endif

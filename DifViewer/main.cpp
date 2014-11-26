@@ -165,9 +165,9 @@ void performClick(S32 mouseX, S32 mouseY) {
 	glm::vec3 world = glm::vec3(glm::inverse(gModelviewMatrix) * eye);
 
 	RayF ray;
-	ray.origin.x = gCameraPosition.x;
-	ray.origin.y = gCameraPosition.y;
-	ray.origin.z = gCameraPosition.z;
+	ray.origin.x = -gCameraPosition.x;
+	ray.origin.y = -gCameraPosition.y;
+	ray.origin.z = -gCameraPosition.z;
 
 	ray.direction.x = world.x;
 	ray.direction.y = world.y;

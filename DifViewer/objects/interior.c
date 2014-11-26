@@ -274,7 +274,7 @@ Interior *interior_read_file(FILE *file, String directory) {
 	if (interior->numMaterials) {
 		interior->texture = malloc(sizeof(Texture *) * interior->numMaterials);
 		for (U32 i = 0; i < interior->numMaterials; i ++) {
-			String material = malloc(sizeof(U8) * strlen((const char *)interior->material[i] + 1));
+			String material = malloc(sizeof(U8) * strlen((const char *)interior->material[i]) + 1);
 			strcpy((char *)material, (const char *)interior->material[i]);
 			//Chop off any paths from the material. Constructor likes to save albums in the materials
 			// and it royally breaks this program.
@@ -605,6 +605,11 @@ void interior_export_obj(Interior *interior, FILE *file) {
 }
 
 U32 interior_ray_cast(Interior *interior, RayF ray) {
+	ray = (RayF){point3F_convert_to_torque(ray.origin), point3F_convert_to_torque(ray.direction)};
+
+	U32 closest = -1;
+	F32 closestDistance = UINT32_MAX;
+	Point3F closestIntersection;
 	for (U32 i = 0; i < interior->numSurfaces; i ++) {
 		Surface surface = interior->surface[i];
 		Plane surfPlane = interior->plane[surface.planeIndex];
@@ -617,9 +622,34 @@ U32 interior_ray_cast(Interior *interior, RayF ray) {
 		plane.d = surfPlane.planeDistance;
 
 		if (rayF_intersects_planeF(ray, plane)) {
-			//TODO: Project intersection onto the plane, do bounds checking
+			Point3F intersection = rayF_planeF_intersection(ray, plane);
+
+			//Test the point against the triangles in the plane
+			bool foundIntersection = 0;
+			for (U32 j = 0; j < surface.windingCount - 2; j ++) {
+				TriangleF triangle;
+				triangle.point0 = interior->point[interior->index[surface.windingStart + j]];
+				triangle.point1 = interior->point[interior->index[surface.windingStart + j + 1]];
+				triangle.point2 = interior->point[interior->index[surface.windingStart + j + 2]];
+
+				if (rayF_intersects_triangle(ray, triangle) == IntersectionTypeInside) {
+					foundIntersection = true;
+					break;
+				}
+			}
+
+			if (foundIntersection) {
+				F32 distance = point3F_distance_to_point3F(ray.origin, intersection);
+				if (closestDistance > distance) {
+					closestDistance = distance;
+					closest = i;
+					closestIntersection = intersection;
+				}
+			}
 		}
 	}
 
-	return -1;
+//	interior->surface[interior->index[interior->surface[closest].windingStart]] = closestIntersection;
+
+	return closest;
 }
