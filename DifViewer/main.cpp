@@ -55,7 +55,7 @@ String *gFilenames;
 bool gRunning;
 bool gPrintFPS = true;
 
-F32 maxFPS = 60.0f;
+F32 gMaxFPS = 60.0f;
 
 SDL_Window *gWindow;
 SDL_GLContext gContext;
@@ -374,8 +374,8 @@ void run() {
 		//If our app is in the background, OS X just ignores all render calls and immediately pushes through.
 		//This is bad. This means that we get ~4000 "FPS" because no frames are actually drawn.
 		//This code here mitigates that by sleeping away the extra frames that OS X skips.
-		if (end - start < (1000000.0f / maxFPS)) {
-			usleep((1000000.0f / maxFPS) - (end - start));
+		if (end - start < (1000000.0f / gMaxFPS)) {
+			usleep((1000000.0f / gMaxFPS) - (end - start));
 		}
 
 		//Profiling
