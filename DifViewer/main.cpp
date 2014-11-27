@@ -30,6 +30,7 @@
 #include <stdbool.h>
 #include <sys/time.h>
 #include <libgen.h>
+#include <unistd.h>
 #include "math.h"
 #include "types.h"
 #include "io.h"
@@ -52,7 +53,9 @@ DIF **gDifs;
 String *gFilenames;
 
 bool gRunning;
-bool gPrintFPS;
+bool gPrintFPS = true;
+
+F32 maxFPS = 60.0f;
 
 SDL_Window *gWindow;
 SDL_GLContext gContext;
@@ -359,13 +362,22 @@ void run() {
 		//Flip buffers
 		SDL_GL_SwapWindow(gWindow);
 
+		//Count how long a frame took
+		gettimeofday(&endTime, NULL);
+		long long start = startTime.tv_usec + (startTime.tv_sec * 1000000ULL);
+		long long end = endTime.tv_usec + (endTime.tv_sec * 1000000ULL);
+
+		//If our app is in the background, OS X just ignores all render calls and immediately pushes through.
+		//This is bad. This means that we get ~4000 "FPS" because no frames are actually drawn.
+		//This code here mitigates that by sleeping away the extra frames that OS X skips.
+		if (end - start < (1000000.0f / maxFPS)) {
+			usleep((1000000.0f / maxFPS) - (end - start));
+		}
+
 		//Profiling
 		gettimeofday(&endTime, NULL);
-
+		end = endTime.tv_usec + (endTime.tv_sec * 1000000ULL);
 		if (gPrintFPS) {
-			long long start = startTime.tv_usec + (startTime.tv_sec * 1000000ULL);
-			long long end = endTime.tv_usec + (endTime.tv_sec * 1000000ULL);
-
 			printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
 		}
 	}
