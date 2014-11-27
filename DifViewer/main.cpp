@@ -64,11 +64,13 @@ glm::vec3 gCameraPosition;
 glm::mat4x4 gProjectionMatrix, gModelviewMatrix;
 
 static float gCameraSpeed = 0.3f;
+static float gKeyCameraSpeed = 3.f;
 static float gMovementSpeed = 0.2f;
 
 bool captureMouse = false;
 bool mouseButtons[3] = {false, false, false};
-bool movement[4] = {false, false, false, false};
+bool movement[8] = {false, false, false, false, false, false, false, false};
+
 void render();
 void loop();
 bool initGL();
@@ -112,6 +114,11 @@ void render() {
 void loop() {
 	//Basic movement
 	glm::mat4x4 delta = glm::mat4x4(1);
+
+	if (movement[4]) gPitch -= gKeyCameraSpeed;
+	if (movement[5]) gPitch += gKeyCameraSpeed;
+	if (movement[6]) gYaw -= gKeyCameraSpeed;
+	if (movement[7]) gYaw += gKeyCameraSpeed;
 
 	delta = glm::rotate(delta, -gYaw, glm::vec3(0, 1, 0));
 	delta = glm::rotate(delta, -gPitch, glm::vec3(1, 0, 0));
@@ -232,14 +239,24 @@ void handleEvent(SDL_Event *event) {
 				break;
 			case SDL_SCANCODE_A: movement[2] = true; break;
 			case SDL_SCANCODE_D: movement[3] = true; break;
+			case SDL_SCANCODE_UP:    movement[4] = true; break;
+			case SDL_SCANCODE_DOWN:  movement[5] = true; break;
+			case SDL_SCANCODE_LEFT:  movement[6] = true; break;
+			case SDL_SCANCODE_RIGHT: movement[7] = true; break;
 			default: break;
 		}
 	} else if (event->type == SDL_KEYUP) {
 		switch (((SDL_KeyboardEvent *)event)->keysym.scancode) {
 			case SDL_SCANCODE_W: movement[0] = false; break;
-			case SDL_SCANCODE_S: movement[1] = false; break;
+			case SDL_SCANCODE_S:
+				movement[1] = false;
+				break;
 			case SDL_SCANCODE_A: movement[2] = false; break;
 			case SDL_SCANCODE_D: movement[3] = false; break;
+			case SDL_SCANCODE_UP:    movement[4] = false; break;
+			case SDL_SCANCODE_DOWN:  movement[5] = false; break;
+			case SDL_SCANCODE_LEFT:  movement[6] = false; break;
+			case SDL_SCANCODE_RIGHT: movement[7] = false; break;
 			default: break;
 		}
 	}
