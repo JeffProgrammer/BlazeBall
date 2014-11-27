@@ -67,6 +67,16 @@ static float gMovementSpeed = 0.2f;
 bool captureMouse = false;
 bool mouseButtons[3] = {false, false, false};
 bool movement[4] = {false, false, false, false};
+void render();
+void loop();
+bool initGL();
+bool init();
+void cleanup();
+void run();
+
+void performClick(S32 mouseX, S32 mouseY);
+void handleEvent(SDL_Event *event);
+const char *openFile();
 
 void render() {
 	//Load the model matrix
