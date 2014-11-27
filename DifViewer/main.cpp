@@ -49,6 +49,8 @@
 U32 gDifCount;
 DIF **gDifs;
 
+String *gFilenames;
+
 bool gRunning;
 bool gPrintFPS;
 
@@ -215,7 +217,19 @@ void handleEvent(SDL_Event *event) {
 		switch (((SDL_KeyboardEvent *)event)->keysym.scancode) {
 			//Same for Colemak...
 			case SDL_SCANCODE_W: movement[0] = true; break;
-			case SDL_SCANCODE_S: movement[1] = true; break;
+			case SDL_SCANCODE_S:
+				if (((SDL_KeyboardEvent *)event)->keysym.mod & KMOD_LGUI) { //LGUI -> LCmd
+					//Save
+					for (U32 i = 0; i < gDifCount; i ++) {
+						String directory = (String)dirname((char *)gFilenames[i]);
+
+						FILE *output = fopen((const char *)gFilenames[i], "w");
+						dif_write_file(output, gDifs[i], directory);
+					}
+				} else {
+					movement[1] = true;
+				}
+				break;
 			case SDL_SCANCODE_A: movement[2] = true; break;
 			case SDL_SCANCODE_D: movement[3] = true; break;
 			default: break;
@@ -359,6 +373,8 @@ int main(int argc, const char * argv[])
 
 	gDifCount = 0;
 	gDifs = (DIF **)malloc(sizeof(DIF *) * (argc - argstart));
+	gFilenames = (String *)malloc(sizeof(String) * (argc - argstart));
+
 	for (U32 i = 0; i < (argc - argstart); i ++) {
 		String directory = (String)dirname((char *)argv[i + argstart]);
 
@@ -373,6 +389,8 @@ int main(int argc, const char * argv[])
 
 		//Clean up
 		fclose(file);
+
+		gFilenames[i] = (String)argv[i + argstart];
 	}
 
 	if (!strcmp(argv[1], "-o")) {
