@@ -53,7 +53,7 @@ DIF **gDifs;
 String *gFilenames;
 
 bool gRunning;
-bool gPrintFPS = true;
+bool gPrintFPS = false;
 
 F32 gMaxFPS = 60.0f;
 
@@ -65,6 +65,12 @@ float gYaw, gPitch;
 glm::vec3 gCameraPosition;
 
 glm::mat4x4 gProjectionMatrix, gModelviewMatrix;
+
+struct {
+	bool hasSelection;
+	U32 surfaceIndex;
+	Interior *interior;
+} gSelection;
 
 static float gCameraSpeed = 0.3f;
 static float gKeyCameraSpeed = 3.f;
@@ -91,6 +97,8 @@ void render() {
 	glLoadIdentity();
 
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Camera
 	gModelviewMatrix = glm::mat4x4(1);
@@ -110,8 +118,26 @@ void render() {
 			interior_render(gDifs[index]->interior[intIndex], offset);
 		}
 	}
-
 	glDisable(GL_CULL_FACE);
+
+	if (gSelection.hasSelection) {
+		glPushMatrix();
+		glOrtho(-1, 1, -1, 1, -100, 100);
+		glLoadIdentity();
+		glBegin(GL_TRIANGLE_STRIP);
+		glColor4f(1.0f, 1.0f, 0.0f, 0.4f);
+		Surface surface = gSelection.interior->surface[gSelection.surfaceIndex];
+		Point3F first = gSelection.interior->point[gSelection.interior->index[surface.windingStart]];
+		for (U32 i = 0; i < surface.windingCount; i ++) {
+			Point3F vert = gSelection.interior->point[gSelection.interior->index[surface.windingStart + i]];
+			Point3F off = point3F_subtract_point3F(vert, first);
+			Point3F normal = gSelection.interior->normal[gSelection.interior->plane[surface.planeIndex].normalIndex];
+			Point3F point = point3F_proj_point3F(normal, off);
+			glVertex3f(point.x, point.z, point.y);
+		}
+		glEnd();
+		glPopMatrix();
+	}
 }
 
 void loop() {
@@ -204,15 +230,15 @@ void performClick(S32 mouseX, S32 mouseY) {
 
 			U32 surfaceNum = interior_ray_cast(interior, ray);
 			if (surfaceNum != -1) {
-				interior->surface[surfaceNum].textureIndex ++;
-				interior->surface[surfaceNum].textureIndex %= interior->numMaterials;
-				while (interior->texture[interior->surface[surfaceNum].textureIndex] == NULL) {
-					interior->surface[surfaceNum].textureIndex ++;
-					interior->surface[surfaceNum].textureIndex %= interior->numMaterials;
-				}
+				gSelection.hasSelection = true;
+				gSelection.surfaceIndex = surfaceNum;
+				gSelection.interior = interior;
+				return;
 			}
 		}
 	}
+
+	gSelection.hasSelection = false;
 }
 
 void handleEvent(SDL_Event *event) {

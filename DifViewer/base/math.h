@@ -40,6 +40,8 @@ F32 point3F_dot_point3F(Point3F point0, Point3F point1);
 Point3F point3F_scale(Point3F point0, F32 scalar);
 F32 point3F_distance_to_point3F(Point3F point0, Point3F point1);
 Point3F point3F_cross_point3F(Point3F point0, Point3F point1);
+Point3F point3F_proj_point3F(Point3F point0, Point3F point1);
+Point3F point3F_rej_point3F(Point3F point0, Point3F point1);
 
 Point3F point3F_convert_to_torque(Point3F point);
 Point3F point3F_convert_from_torque(Point3F point);
