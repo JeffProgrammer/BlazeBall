@@ -206,6 +206,10 @@ void performClick(S32 mouseX, S32 mouseY) {
 			if (surfaceNum != -1) {
 				interior->surface[surfaceNum].textureIndex ++;
 				interior->surface[surfaceNum].textureIndex %= interior->numMaterials;
+				while (interior->texture[interior->surface[surfaceNum].textureIndex] == NULL) {
+					interior->surface[surfaceNum].textureIndex ++;
+					interior->surface[surfaceNum].textureIndex %= interior->numMaterials;
+				}
 			}
 		}
 	}
