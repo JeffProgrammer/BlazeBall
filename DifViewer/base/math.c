@@ -69,6 +69,12 @@ F32 point3F_distance_to_point3F(Point3F point0, Point3F point1) {
 	return sqrt((point0.x * point1.x) + (point0.y * point1.y) + (point0.z * point1.z));
 }
 
+Point3F point3F_round_thousands(Point3F point) {
+	return (Point3F){floorf(point.x * 1000.0f) / 1000.f,
+	                 floorf(point.y * 1000.0f) / 1000.f,
+	                 floorf(point.z * 1000.0f) / 1000.f};
+}
+
 bool rayF_intersects_planeF(RayF ray, PlaneF plane) {
 	//http://antongerdelan.net/opengl/raycasting.html
 	//t = (RayOrigin • PlaneNormal + PlaneOffset) / (RayDirection • PlaneNormal)
@@ -137,6 +143,10 @@ F32 point3F_len(Point3F point0) {
 }
 
 F32 rayF_intersects_triangle(RayF ray, TriangleF triangle) {
+	triangle.point0 = point3F_round_thousands(triangle.point0);
+	triangle.point1 = point3F_round_thousands(triangle.point1);
+	triangle.point2 = point3F_round_thousands(triangle.point2);
+
 	Point3F ab = point3F_sub_point3F(triangle.point1, triangle.point0);
 	Point3F ac = point3F_sub_point3F(triangle.point2, triangle.point0);
 	Point3F nor = point3F_cross_point3F(ab, ac);

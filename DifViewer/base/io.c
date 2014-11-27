@@ -85,8 +85,6 @@ F32 readF32(FILE **file) {
 
 	DEBUG_PRINT("Read F32 %08llX: %f\n", pos, value);
 
-	value = floorf(value * 1000.0f) / 1000.0f;
-
 	return value;
 }
 
