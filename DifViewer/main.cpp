@@ -85,6 +85,9 @@ bool captureMouse = false;
 bool mouseButtons[3] = {false, false, false};
 bool movement[8] = {false, false, false, false, false, false, false, false};
 
+GLuint gDisplayList = 0;
+bool gListNeedsDisplay = false;
+
 void render();
 void loop();
 bool initGL();
@@ -120,11 +123,20 @@ void render() {
 
 	Point3F offset = {0.f, 0.f, 0.f};
 
-	for (U32 index = 0; index < gDifCount; index ++) {
-		for (U32 intIndex = 0; intIndex < gDifs[index]->numDetailLevels; intIndex ++) {
-			interior_render(gDifs[index]->interior[intIndex], offset);
+	if (gListNeedsDisplay) {
+		gDisplayList = glGenLists(1);
+		glNewList(gDisplayList, GL_COMPILE_AND_EXECUTE);
+		for (U32 index = 0; index < gDifCount; index ++) {
+			for (U32 intIndex = 0; intIndex < gDifs[index]->numDetailLevels; intIndex ++) {
+				interior_render(gDifs[index]->interior[intIndex], offset);
+			}
 		}
+		glEndList();
+		gListNeedsDisplay = false;
+	} else {
+		glCallList(gDisplayList);
 	}
+
 	glDisable(GL_CULL_FACE);
 
 	if (gSelection.hasSelection) {
@@ -306,6 +318,7 @@ void handleEvent(SDL_Event *event) {
 			case SDL_SCANCODE_DOWN:  movement[5] = false; break;
 			case SDL_SCANCODE_LEFT:  movement[6] = false; break;
 			case SDL_SCANCODE_RIGHT: movement[7] = false; break;
+			case SDL_SCANCODE_Q: gListNeedsDisplay = true; break;
 			default: break;
 		}
 	}
@@ -338,6 +351,7 @@ void handleEvent(SDL_Event *event) {
 
 bool init() {
 	gRunning = true;
+	gListNeedsDisplay = true;
 
 	//Init SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
