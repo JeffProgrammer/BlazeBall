@@ -109,6 +109,7 @@ void render() {
 	gModelviewMatrix = glm::mat4x4(1);
 	gModelviewMatrix = glm::rotate(gModelviewMatrix, gPitch, glm::vec3(1, 0, 0));
 	gModelviewMatrix = glm::rotate(gModelviewMatrix, gYaw, glm::vec3(0, 1, 0));
+	gModelviewMatrix = glm::rotate(gModelviewMatrix, -90.0f, glm::vec3(1, 0, 0));
 	gModelviewMatrix = glm::translate(gModelviewMatrix, gCameraPosition);
 	glLoadMatrixf(&gModelviewMatrix[0][0]);
 
@@ -155,15 +156,15 @@ void loop() {
 	if (movement[6]) gYaw -= gKeyCameraSpeed;
 	if (movement[7]) gYaw += gKeyCameraSpeed;
 
-	delta = glm::rotate(delta, -gYaw, glm::vec3(0, 1, 0));
+	delta = glm::rotate(delta, -gYaw, glm::vec3(0, 0, 1));
 	delta = glm::rotate(delta, -gPitch, glm::vec3(1, 0, 0));
 
 	float speed = gMovementSpeed;
 	if (mouseButtons[1])
 		speed *= 2.f;
 
-	if (movement[0]) delta = glm::translate(delta, glm::vec3(0, 0, speed));
-	if (movement[1]) delta = glm::translate(delta, glm::vec3(0, 0, -speed));
+	if (movement[0]) delta = glm::translate(delta, glm::vec3(0, -speed, 0));
+	if (movement[1]) delta = glm::translate(delta, glm::vec3(0, speed, 0));
 	if (movement[2]) delta = glm::translate(delta, glm::vec3(speed, 0, 0));
 	if (movement[3]) delta = glm::translate(delta, glm::vec3(-speed, 0, 0));
 
