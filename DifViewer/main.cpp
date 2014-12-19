@@ -76,6 +76,11 @@ static float gCameraSpeed = 0.3f;
 static float gKeyCameraSpeed = 3.f;
 static float gMovementSpeed = 0.2f;
 
+static F32 gLightColor[4]     = {1.400000f, 1.200000f, 0.400000f, 1.000000f};
+static F32 gLightDirection[4] = {0.60f, 0.40f, 1.0f, 0.0f};
+static F32 gAmbientColor[4]   = {0.300000f, 0.300000f, 0.400000f, 1.000000f};
+static F32 gDiffuseColor[4]   = {0.300000f, 0.300000f, 0.400000f, 1.000000f};
+
 bool captureMouse = false;
 bool mouseButtons[3] = {false, false, false};
 bool movement[8] = {false, false, false, false, false, false, false, false};
@@ -109,7 +114,8 @@ void render() {
 
 	//Clear
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.5f, 0.5f, 0.5f, -1.0f);
+	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+	glLightfv(GL_LIGHT0, GL_POSITION, gLightDirection);
 
 	Point3F offset = {0.f, 0.f, 0.f};
 
@@ -171,7 +177,7 @@ bool initGL() {
 
 	//Enable and set some shit for rendering
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
+	glDepthFunc(GL_LESS);
 	glShadeModel(GL_SMOOTH);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
@@ -187,6 +193,15 @@ bool initGL() {
 	glLoadIdentity();
 	gProjectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
 	glMultMatrixf(&gProjectionMatrix[0][0]);
+
+	glMaterialfv(GL_FRONT, GL_AMBIENT, gAmbientColor);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, gDiffuseColor);
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, gLightColor);
+	glLightfv(GL_LIGHT0, GL_POSITION, gLightDirection);
 
 	return glGetError() == GL_NO_ERROR;
 }
