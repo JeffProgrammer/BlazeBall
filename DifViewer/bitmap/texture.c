@@ -89,13 +89,11 @@ void texture_activate(Texture *texture) {
 	if (!texture->generated)
 		return;
 	//Activate and bind the buffer
-	glEnable(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE0);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glBindTexture(GL_TEXTURE_2D, texture->buffer);
 }
 
 void texture_deactivate(Texture *texture) {
 	//Haha, this method is just BS. Fooled you.
-	glDisable(GL_TEXTURE_2D);
 }
