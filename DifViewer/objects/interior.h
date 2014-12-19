@@ -105,6 +105,7 @@ typedef struct {
 	U32 windingStart;
 	U8 windingCount;
 	U16 planeIndex;
+	U8 planeFlipped;
 	U16 textureIndex;
 	U32 texGenIndex;
 	U8 surfaceFlags;

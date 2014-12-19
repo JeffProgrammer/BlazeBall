@@ -122,7 +122,12 @@ Interior *interior_read_file(FILE *file, String directory) {
 	READLOOPVAR(interior->numSurfaces, interior->surface, Surface) {
 		READTOVAR(interior->surface[i].windingStart, U32); //windingStart
 		READTOVAR(interior->surface[i].windingCount, U8); //windingCount
-		READTOVAR(interior->surface[i].planeIndex, U16); //planeIndex
+		//Fucking GarageGames. Sometimes the plane is | 0x8000 because WHY NOT
+		READTOVAR(S16 plane, S16); //planeIndex
+		//Ugly hack
+		interior->surface[i].planeFlipped = (plane >> 15 != 0);
+		plane &= ~0x8000;
+		interior->surface[i].planeIndex = plane;
 		READTOVAR(interior->surface[i].textureIndex, U16); //textureIndex
 		READTOVAR(interior->surface[i].texGenIndex, U32); //texGenIndex
 		READTOVAR(interior->surface[i].surfaceFlags, U8); //surfaceFlags
