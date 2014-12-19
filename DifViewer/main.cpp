@@ -140,21 +140,49 @@ void render() {
 	glDisable(GL_CULL_FACE);
 
 	if (gSelection.hasSelection) {
-		glPushMatrix();
-		glOrtho(-1, 1, -1, 1, -100, 100);
-		glLoadIdentity();
-		glBegin(GL_TRIANGLE_STRIP);
-		glColor4f(1.0f, 1.0f, 0.0f, 0.4f);
 		Surface surface = gSelection.interior->surface[gSelection.surfaceIndex];
+		TexGenEq texGenEq = gSelection.interior->texGenEq[surface.texGenIndex];
 		Point3F first = gSelection.interior->point[gSelection.interior->index[surface.windingStart]];
+		F32 len = 0;
+
+		glBegin(GL_TRIANGLE_STRIP);
 		for (U32 i = 0; i < surface.windingCount; i ++) {
 			Point3F vert = gSelection.interior->point[gSelection.interior->index[surface.windingStart + i]];
-			Point3F off = point3F_subtract_point3F(vert, first);
-			Point3F normal = gSelection.interior->normal[gSelection.interior->plane[surface.planeIndex].normalIndex];
-			Point3F point = point3F_proj_point3F(normal, off);
-			glVertex3f(point.x, point.z, point.y);
+
+			glVertex3f(vert.x, vert.y, vert.z);
+
+			F32 distance = point3F_distance_to_point3F(first, vert);
+			len = (distance > len ? distance : len);
 		}
 		glEnd();
+
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+		glOrtho(-1, 1, -1, 1, -100, 100);
+		glMatrixMode(GL_MODELVIEW);
+		glLightfv(GL_LIGHT0, GL_POSITION, (float[]){0, 0, 1});
+		glLoadIdentity();
+
+		texture_activate(gSelection.interior->texture[surface.textureIndex]);
+		glBegin(GL_TRIANGLE_STRIP);
+
+
+		for (U32 i = 0; i < surface.windingCount; i ++) {
+			Point3F vert = gSelection.interior->point[gSelection.interior->index[surface.windingStart + i]];
+			Point3F normal = gSelection.interior->normal[gSelection.interior->plane[surface.planeIndex].normalIndex];
+			if (surface.planeFlipped)
+				normal = point3F_scale(normal, -1);
+
+			glTexCoord2f(planeF_distance_to_point(texGenEq.planeX, vert), planeF_distance_to_point(texGenEq.planeY, vert));
+
+			Point2F point = point3F_project_plane(vert, normal, first);
+
+			glVertex3f(point.x / len, point.y / len, 0);
+		}
+		glEnd();
+		texture_deactivate(gSelection.interior->texture[surface.textureIndex]);
+		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
 	}
 }

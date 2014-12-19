@@ -75,6 +75,55 @@ Point3F point3F_round_thousands(Point3F point) {
 	                 floorf(point.z * 1000.0f) / 1000.f};
 }
 
+Point3F point3F_sub_point3F(Point3F point0, Point3F point1) {
+	return point3F_add_point3F(point0, point3F_scale(point1, -1.0f));
+}
+
+Point3F point3F_proj_point3F(Point3F point0, Point3F point1) {
+	return point3F_scale(point1, point3F_dot_point3F(point0, point1) / point3F_dot_point3F(point1, point1));
+}
+
+Point3F point3F_rej_point3F(Point3F point0, Point3F point1) {
+	return point3F_sub_point3F(point0, point3F_proj_point3F(point0, point1));
+}
+
+F32 point2F_len(Point2F point0) {
+	return sqrtf(point0.x*point0.x + point0.y*point0.y);
+}
+
+F32 point3F_len(Point3F point0) {
+	return sqrtf(point0.x*point0.x + point0.y*point0.y + point0.z*point0.z);
+}
+
+F32 point3F_angle_to_point3F(Point3F point0, Point3F point1) {
+	return acosf(point3F_dot_point3F(point0, point1) / point3F_len(point0) / point3F_len(point1));
+}
+
+Point2F point3F_project_plane(Point3F point, Point3F normal, Point3F origin) {
+	if (point3F_len(point3F_cross_point3F(normal, (Point3F){0, 0, 1})) == 0) {
+		return (Point2F){point.x, point.y};
+	}
+	Point3F xcross = point3F_cross_point3F(normal, (Point3F){0, 0, 1});
+	Point3F ycross = point3F_cross_point3F(normal, xcross);
+
+	xcross = point3F_scale(xcross, 1.0f / point3F_len(xcross));
+	ycross = point3F_scale(ycross, 1.0f / point3F_len(ycross));
+
+	Point3F distance = point3F_sub_point3F(point, origin);
+	F32 hypotenuse = point3F_len(distance);
+
+	if (hypotenuse == 0)
+		return (Point2F){0, 0};
+
+	F32 theta = point3F_angle_to_point3F(distance, xcross);
+	//cos theta = adjacent / hypotenuse
+	//adjacent = cos theta * hypotenuse
+	F32 adjacent = cosf(theta) * hypotenuse;
+	F32 opposite = sinf(theta) * hypotenuse;
+
+	return (Point2F){adjacent, opposite};
+}
+
 bool rayF_intersects_planeF(RayF ray, PlaneF plane) {
 	//http://antongerdelan.net/opengl/raycasting.html
 	//t = (RayOrigin • PlaneNormal + PlaneOffset) / (RayDirection • PlaneNormal)
@@ -124,22 +173,6 @@ Point3F rayF_planeF_intersection(RayF ray, PlaneF plane) {
 	} else {
 		return (Point3F){INT32_MIN, INT32_MIN, INT32_MIN};
 	}
-}
-
-Point3F point3F_sub_point3F(Point3F point0, Point3F point1) {
-	return point3F_add_point3F(point0, point3F_scale(point1, -1.0f));
-}
-
-Point3F point3F_proj_point3F(Point3F point0, Point3F point1) {
-	return point3F_scale(point1, point3F_dot_point3F(point0, point1) / point3F_dot_point3F(point1, point1));
-}
-
-Point3F point3F_rej_point3F(Point3F point0, Point3F point1) {
-	return point3F_sub_point3F(point0, point3F_proj_point3F(point0, point1));
-}
-
-F32 point3F_len(Point3F point0) {
-	return point0.x*point0.x + point0.y*point0.y + point0.z*point0.z;
 }
 
 F32 rayF_intersects_triangle(RayF ray, TriangleF triangle) {

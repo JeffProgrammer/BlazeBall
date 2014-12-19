@@ -46,6 +46,11 @@ Point3F point3F_rej_point3F(Point3F point0, Point3F point1);
 Point3F point3F_convert_to_torque(Point3F point);
 Point3F point3F_convert_from_torque(Point3F point);
 
+F32 point2F_len(Point2F point0);
+F32 point3F_len(Point3F point0);
+
+Point2F point3F_project_plane(Point3F point, Point3F normal, Point3F origin);
+
 F32 tetrahedronF_area(TetrahetronF tetrahedron);
 
 F32 planeF_distance_to_point(PlaneF plane, Point3F point);
