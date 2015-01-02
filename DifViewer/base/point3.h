@@ -39,6 +39,7 @@ public:
 
 	Point3() : x(0), y(0), z(0) {};
 	Point3(T x, T y, T z) : x(x), y(y), z(z) {};
+	Point3(const Point3 &point) : x((T) point.x), y((T) point.y), z((T) point.z) {}
 
 	bool operator==(const Point3<T> &point) const;
 	bool operator!=(const Point3<T> &point) const;

@@ -40,6 +40,7 @@ public:
 
 	Point4() : w(0), x(0), y(0), z(0) {};
 	Point4(T w, T x, T y, T z) : w(w), x(x), y(y), z(z) {};
+	Point4(const Point4 &point) : w((T) point.w), x((T) point.x), y((T) point.y), z((T) point.z) {}
 
 	bool operator==(const Point4<T> &point) const;
 	bool operator!=(const Point4<T> &point) const;

@@ -38,6 +38,7 @@ public:
 
 	Point2() : x(0), y(0) {};
 	Point2(T x, T y) : x(x), y(y) {};
+	Point2(const Point2 &point) : x((T) point.x), y((T) point.y) {};
 
 	bool operator==(const Point2<T> &point) const;
 	bool operator!=(const Point2<T> &point) const;
