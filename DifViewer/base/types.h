@@ -47,17 +47,9 @@ typedef double F64;
 //Pointer types
 typedef U8 * String;
 
-class Point2I {
-public:
-	U16 x; //Should be enough
-	U16 y;
-};
-
-class Point2F {
-public:
-	F32 x;
-	F32 y;
-};
+#include "point2.h"
+typedef Point2<U16> Point2I;
+typedef Point2<F32> Point2F;
 #include "point3.h"
 typedef Point3<U32> Point3I;
 typedef Point3<F32> Point3F;

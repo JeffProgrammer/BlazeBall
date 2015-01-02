@@ -30,7 +30,6 @@
 
 #include "types.h"
 
-F32 point2F_len(Point2F point0);
 Point2F point3F_project_plane(Point3F point, Point3F normal, Point3F origin);
 F32 tetrahedronF_area(TetrahetronF tetrahedron);
 

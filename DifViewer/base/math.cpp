@@ -35,10 +35,6 @@ F32 planeF_distance_to_point(PlaneF plane, Point3F point) {
 	return (plane.x * point.x + plane.y * point.y + plane.z * point.z) + plane.d;
 }
 
-F32 point2F_len(Point2F point0) {
-	return sqrtf(point0.x*point0.x + point0.y*point0.y);
-}
-
 Point2F point3F_project_plane(Point3F point, Point3F normal, Point3F origin) {
 	if (normal.cross(Point3F(0, 0, 1)).length() == 0) {
 		return (Point2F){point.x, point.y};

@@ -46,7 +46,7 @@ typedef struct {
 } MNGInfo;
 
 static mng_handle gMNG = MNG_NULL;
-static MNGInfo gMNGInfo = (MNGInfo) {false, NULL, NULL, {0, 0}, NULL};
+static MNGInfo gMNGInfo;
 
 bool initMNG();
 void closeMNG();
