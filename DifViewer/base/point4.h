@@ -52,6 +52,8 @@ public:
 	Point4 &operator*=(const T scalar);
 	Point4  operator/ (const T scalar) const;
 	Point4 &operator/=(const T scalar);
+	Point4 operator+() const;
+	Point4 operator-() const;
 
 	T length() const;
 	T lengthSquared() const;
@@ -112,6 +114,16 @@ template <typename T>
 inline Point4<T> &Point4<T>::operator/=(const T scalar) {
 	w /= scalar, x /= scalar, y /= scalar, z /= scalar;
 	return *this;
+}
+
+template <typename T>
+inline Point4<T> Point4<T>::operator+() const {
+	return Point4(+w, +x, +y, +z);
+}
+
+template <typename T>
+inline Point4<T> Point4<T>::operator-() const {
+	return Point4(-w, -x, -y, -z);
 }
 
 template <typename T>

@@ -50,6 +50,8 @@ public:
 	Point2 &operator*=(const T scalar);
 	Point2  operator/ (const T scalar) const;
 	Point2 &operator/=(const T scalar);
+	Point2 operator+() const;
+	Point2 operator-() const;
 
 	T length() const;
 	T lengthSquared() const;
@@ -110,6 +112,16 @@ template <typename T>
 inline Point2<T> &Point2<T>::operator/=(const T scalar) {
 	x /= scalar, y /= scalar;
 	return *this;
+}
+
+template <typename T>
+inline Point2<T> Point2<T>::operator+() const {
+	return Point2(+x, +y);
+}
+
+template <typename T>
+inline Point2<T> Point2<T>::operator-() const {
+	return Point2(-x, -y);
 }
 
 template <typename T>

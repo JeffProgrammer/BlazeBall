@@ -51,6 +51,8 @@ public:
 	Point3 &operator*=(const T scalar);
 	Point3  operator/ (const T scalar) const;
 	Point3 &operator/=(const T scalar);
+	Point3 operator+() const;
+	Point3 operator-() const;
 
 	T dot(const Point3<T> &point) const;
 	Point3 cross(const Point3<T> &point) const;
@@ -118,6 +120,16 @@ template <typename T>
 inline Point3<T> &Point3<T>::operator/=(const T scalar) {
 	x /= scalar, y /= scalar, z /= scalar;
 	return *this;
+}
+
+template <typename T>
+inline Point3<T> Point3<T>::operator+() const {
+	return Point3(+x, +y, +z);
+}
+
+template <typename T>
+inline Point3<T> Point3<T>::operator-() const {
+	return Point3(-x, -y, -z);
 }
 
 template <typename T>
