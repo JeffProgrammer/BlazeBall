@@ -41,6 +41,8 @@ public:
 	Point4() : w(0), x(0), y(0), z(0) {};
 	Point4(T w, T x, T y, T z) : w(w), x(x), y(y), z(z) {};
 
+	bool operator==(const Point4<T> &point) const;
+	bool operator!=(const Point4<T> &point) const;
 	Point4  operator+ (const Point4<T> &point) const;
 	Point4 &operator+=(const Point4<T> &point);
 	Point4  operator- (const Point4<T> &point) const;
@@ -55,6 +57,16 @@ public:
 
 	Point4<T> roundThousands() const;
 };
+
+template <typename T>
+inline bool Point4<T>::operator==(const Point4<T> &point) const {
+	return (w == point.w && x == point.x && y == point.y && z == point.z);
+}
+
+template <typename T>
+inline bool Point4<T>::operator!=(const Point4<T> &point) const {
+	return !operator==(point);
+}
 
 template <typename T>
 inline Point4<T> Point4<T>::operator+(const Point4<T> &point) const {

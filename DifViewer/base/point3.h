@@ -40,6 +40,8 @@ public:
 	Point3() : x(0), y(0), z(0) {};
 	Point3(T x, T y, T z) : x(x), y(y), z(z) {};
 
+	bool operator==(const Point3<T> &point) const;
+	bool operator!=(const Point3<T> &point) const;
 	Point3  operator+ (const Point3<T> &point) const;
 	Point3 &operator+=(const Point3<T> &point);
 	Point3  operator- (const Point3<T> &point) const;
@@ -61,6 +63,16 @@ public:
 	Point3<T> convert() const;
 	Point3<T> roundThousands() const;
 };
+
+template <typename T>
+inline bool Point3<T>::operator==(const Point3<T> &point) const {
+	return (x == point.x && y == point.y && z == point.z);
+}
+
+template <typename T>
+inline bool Point3<T>::operator!=(const Point3<T> &point) const {
+	return !operator==(point);
+}
 
 template <typename T>
 inline Point3<T> Point3<T>::operator+(const Point3<T> &point) const {

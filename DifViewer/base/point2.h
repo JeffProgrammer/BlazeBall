@@ -39,6 +39,8 @@ public:
 	Point2() : x(0), y(0) {};
 	Point2(T x, T y) : x(x), y(y) {};
 
+	bool operator==(const Point2<T> &point) const;
+	bool operator!=(const Point2<T> &point) const;
 	Point2  operator+ (const Point2<T> &point) const;
 	Point2 &operator+=(const Point2<T> &point);
 	Point2  operator- (const Point2<T> &point) const;
@@ -53,6 +55,16 @@ public:
 
 	Point2<T> roundThousands() const;
 };
+
+template <typename T>
+inline bool Point2<T>::operator==(const Point2<T> &point) const {
+	return (x == point.x && y == point.y);
+}
+
+template <typename T>
+inline bool Point2<T>::operator!=(const Point2<T> &point) const {
+	return !operator==(point);
+}
 
 template <typename T>
 inline Point2<T> Point2<T>::operator+(const Point2<T> &point) const {
