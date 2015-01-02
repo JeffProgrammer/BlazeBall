@@ -42,11 +42,11 @@ typedef signed int       S32;
 typedef signed long long S64;
 
 typedef float F32;
+typedef double F64;
 
 //Pointer types
 typedef U8 * String;
 
-//More names stolen from TGE
 class Point2I {
 public:
 	U16 x; //Should be enough
@@ -58,15 +58,12 @@ public:
 	F32 x;
 	F32 y;
 };
-
-class Point3I {
-public:
-	U32 x;
-	U32 y;
-	U32 z;
-};
-
 #include "point3.h"
+typedef Point3<U32> Point3I;
+typedef Point3<F32> Point3F;
+typedef Point3<F64> Point3D;
+
+//More names stolen from TGE
 
 class QuatF {
 public:

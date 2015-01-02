@@ -62,8 +62,6 @@ public:
 	Point3<T> roundThousands() const;
 };
 
-typedef Point3<F32> Point3F;
-
 template <typename T>
 inline Point3<T> Point3<T>::operator+(const Point3<T> &point) const {
 	return Point3<T>(x + point.x, y + point.y, z + point.z);
