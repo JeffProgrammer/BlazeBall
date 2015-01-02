@@ -30,14 +30,16 @@
 
 #include "types.h"
 
-typedef struct {
+class WayPoint {
+public:
 	Point3F position;
 	QuatF rotation;
 	U32 msToNext;
 	U32 smoothingType;
-} WayPoint;
+};
 
-typedef struct {
+class InteriorPathFollower {
+public:
 	String name;
 	String datablock;
 	U32 interiorResIndex;
@@ -51,21 +53,16 @@ typedef struct {
 	WayPoint *wayPoint;
 
 	U32 totalMS;
-} InteriorPathFollower;
 
-/**
- Reads an InteriorPathFollower from a FILE
- @arg file - The FILE to read from (updates position)
- @return An InteriorPathFollower
- */
-InteriorPathFollower *interiorPathFollower_read_file(FILE *file);
+	/**
+	 Reads an InteriorPathFollower from a FILE
+	 @arg file - The FILE to read from (updates position)
+	 @return An InteriorPathFollower
+	 */
+	InteriorPathFollower(FILE *file);
+	~InteriorPathFollower();
 
-bool interiorPathFollower_write_file(FILE *file, InteriorPathFollower *interiorPathFollower);
-
-/**
- Frees the InteriorPathFollower and all memory contained within it
- @arg interiorPathFollower - The InteriorPathFollower to release
- */
-void interiorPathFollower_release(InteriorPathFollower *interiorPathFollower);
+	bool write(FILE *file);
+};
 
 #endif

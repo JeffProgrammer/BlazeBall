@@ -30,29 +30,24 @@
 #include "io.h"
 #include "gameEntity.h"
 
-GameEntity *gameEntity_read_file(FILE *file) {
-	GameEntity *gameEntity = malloc(sizeof(GameEntity));
-
-	READTOVAR(gameEntity->datablock, String); //datablock
-	READTOVAR(gameEntity->gameClass, String); //gameClass
-	READTOVAR(gameEntity->position, Point3F); //position
-	READTOVAR(gameEntity->properties, Dictionary); //properties
-
-	return gameEntity;
+GameEntity::GameEntity(FILE *file) {
+	READTOVAR(datablock, String); //datablock
+	READTOVAR(gameClass, String); //gameClass
+	READTOVAR(position, Point3F); //position
+	READTOVAR(properties, Dictionary); //properties
 }
 
-bool gameEntity_write_file(FILE *file, GameEntity *gameEntity) {
-	WRITE(String, gameEntity->datablock); //datablock
-	WRITE(String, gameEntity->gameClass); //gameClass
-	WRITECHECK(Point3F, gameEntity->position); //position
-	WRITE(Dictionary, gameEntity->properties); //properties
+bool GameEntity::write(FILE *file) {
+	WRITE(String, datablock); //datablock
+	WRITE(String, gameClass); //gameClass
+	WRITECHECK(Point3F, position); //position
+	WRITE(Dictionary, properties); //properties
 
 	return true;
 }
 
-void gameEntity_release(GameEntity *gameEntity) {
-	releaseString(gameEntity->datablock);
-	releaseString(gameEntity->gameClass);
-	releaseDictionary(gameEntity->properties);
-	free(gameEntity);
+GameEntity::~GameEntity() {
+	releaseString(datablock);
+	releaseString(gameClass);
+	releaseDictionary(properties);
 }

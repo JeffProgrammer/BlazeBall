@@ -30,53 +30,47 @@
 #include "io.h"
 #include "interiorPathFollower.h"
 
-InteriorPathFollower *interiorPathFollower_read_file(FILE *file) {
-	InteriorPathFollower *interiorPathFollower = malloc(sizeof(InteriorPathFollower));
-
-	READTOVAR(interiorPathFollower->name, String); //name
-	READTOVAR(interiorPathFollower->datablock, String); //datablock
-	READTOVAR(interiorPathFollower->interiorResIndex, U32); //interiorResIndex
-	READTOVAR(interiorPathFollower->offset, Point3F); //offset
-	READTOVAR(interiorPathFollower->properties, Dictionary); //properties
-	READLOOPVAR(interiorPathFollower->numTriggerIds, interiorPathFollower->triggerId, U32) {
-		READTOVAR(interiorPathFollower->triggerId[i], U32); //triggerId
+InteriorPathFollower::InteriorPathFollower(FILE *file) {
+	READTOVAR(name, String); //name
+	READTOVAR(datablock, String); //datablock
+	READTOVAR(interiorResIndex, U32); //interiorResIndex
+	READTOVAR(offset, Point3F); //offset
+	READTOVAR(properties, Dictionary); //properties
+	READLOOPVAR(numTriggerIds, triggerId, U32) {
+		READTOVAR(triggerId[i], U32); //triggerId
 	}
-	READLOOPVAR(interiorPathFollower->numWayPoints, interiorPathFollower->wayPoint, WayPoint) {
-		READTOVAR(interiorPathFollower->wayPoint[i].position, Point3F); //position
-		READTOVAR(interiorPathFollower->wayPoint[i].rotation, QuatF); //rotation
-		READTOVAR(interiorPathFollower->wayPoint[i].msToNext, U32); //msToNext
-		READTOVAR(interiorPathFollower->wayPoint[i].smoothingType, U32); //smoothingType
+	READLOOPVAR(numWayPoints, wayPoint, WayPoint) {
+		READTOVAR(wayPoint[i].position, Point3F); //position
+		READTOVAR(wayPoint[i].rotation, QuatF); //rotation
+		READTOVAR(wayPoint[i].msToNext, U32); //msToNext
+		READTOVAR(wayPoint[i].smoothingType, U32); //smoothingType
 	}
-	READTOVAR(interiorPathFollower->totalMS, U32); //totalMS
-
-	return interiorPathFollower;
+	READTOVAR(totalMS, U32); //totalMS
 }
 
-bool interiorPathFollower_write_file(FILE *file, InteriorPathFollower *interiorPathFollower) {
-	WRITE(String, interiorPathFollower->name); //name
-	WRITE(String, interiorPathFollower->datablock); //datablock
-	WRITECHECK(U32, interiorPathFollower->interiorResIndex); //interiorResIndex
-	WRITECHECK(Point3F, interiorPathFollower->offset); //offset
-	WRITE(Dictionary, interiorPathFollower->properties); //properties
-	WRITELOOPVAR(U32, interiorPathFollower->numTriggerIds, interiorPathFollower->triggerId); //triggerId
-	WRITELOOP(interiorPathFollower->numWayPoints) { //numWayPoints
-		WRITECHECK(Point3F, interiorPathFollower->wayPoint[i].position); //position
-		WRITECHECK(QuatF, interiorPathFollower->wayPoint[i].rotation); //rotation
-		WRITECHECK(U32, interiorPathFollower->wayPoint[i].msToNext); //msToNext
-		WRITECHECK(U32, interiorPathFollower->wayPoint[i].smoothingType); //smoothingType
+bool InteriorPathFollower::write(FILE *file) {
+	WRITE(String, name); //name
+	WRITE(String, datablock); //datablock
+	WRITECHECK(U32, interiorResIndex); //interiorResIndex
+	WRITECHECK(Point3F, offset); //offset
+	WRITE(Dictionary, properties); //properties
+	WRITELOOPVAR(U32, numTriggerIds, triggerId); //triggerId
+	WRITELOOP(numWayPoints) { //numWayPoints
+		WRITECHECK(Point3F, wayPoint[i].position); //position
+		WRITECHECK(QuatF, wayPoint[i].rotation); //rotation
+		WRITECHECK(U32, wayPoint[i].msToNext); //msToNext
+		WRITECHECK(U32, wayPoint[i].smoothingType); //smoothingType
 	}
-	WRITECHECK(U32, interiorPathFollower->totalMS); //totalMS
+	WRITECHECK(U32, totalMS); //totalMS
 
 	return true;
 }
 
-void interiorPathFollower_release(InteriorPathFollower *interiorPathFollower) {
-	releaseString(interiorPathFollower->name);
-	releaseString(interiorPathFollower->datablock);
-	releaseDictionary(interiorPathFollower->properties);
+InteriorPathFollower::~InteriorPathFollower() {
+	releaseString(name);
+	releaseString(datablock);
+	releaseDictionary(properties);
 
-	free(interiorPathFollower->triggerId);
-	free(interiorPathFollower->wayPoint);
-
-	free(interiorPathFollower);
+	free(triggerId);
+	free(wayPoint);
 }

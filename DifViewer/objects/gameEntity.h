@@ -30,26 +30,27 @@
 
 #include "types.h"
 
-typedef struct {
+class GameEntity {
+public:
 	String datablock;
 	String gameClass;
 	Point3F position;
 	Dictionary properties;
-} GameEntity;
 
-/**
- Reads a GameEntity from a FILE
- @arg file - The FILE to read from (updates position)
- @return A GameEntity
- */
-GameEntity *gameEntity_read_file(FILE *file);
+	/**
+	 Reads a GameEntity from a FILE
+	 @arg file - The FILE to read from (updates position)
+	 @return A GameEntity
+	 */
+	GameEntity(FILE *file);
 
-bool gameEntity_write_file(FILE *file, GameEntity *gameEntity);
+	bool write(FILE *file);
 
-/**
- Frees the GameEntity and all memory contained within it
- @arg gameEntity - The GameEntity to release
- */
-void gameEntity_release(GameEntity *gameEntity);
+	/**
+	 Frees the GameEntity and all memory contained within it
+	 @arg gameEntity - The GameEntity to release
+	 */
+	~GameEntity();
+};
 
 #endif

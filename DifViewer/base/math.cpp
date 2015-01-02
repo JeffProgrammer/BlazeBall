@@ -162,7 +162,7 @@ Point3F rayF_planeF_intersection(RayF ray, PlaneF plane) {
 
 	F32 denominator = point3F_dot_point3F(ray.direction, normal);
 	if (denominator == 0) {
-		return (Point3F){INT32_MIN, INT32_MIN, INT32_MIN};
+		return (Point3F){-0x80000000, -0x80000000, -0x80000000};
 	}
 
 	F32 numerator = (point3F_dot_point3F(ray.origin, normal) + plane.d);
@@ -171,7 +171,7 @@ Point3F rayF_planeF_intersection(RayF ray, PlaneF plane) {
 		//xyz = RayOrigin + (RayNormal * t)
 		return point3F_add_point3F(ray.origin, point3F_scale(ray.direction, -numerator / denominator));
 	} else {
-		return (Point3F){INT32_MIN, INT32_MIN, INT32_MIN};
+		return (Point3F){-0x80000000, -0x80000000, -0x80000000};
 	}
 }
 

@@ -33,26 +33,22 @@
 
 #define TEXTURE_MAX_SIZE 1024
 
-Texture *texture_create_from_pixels(U8 *pixels, Point2I extent) {
+Texture::Texture(U8 *pixels, Point2I extent) {
 	if (extent.x > TEXTURE_MAX_SIZE || extent.y > TEXTURE_MAX_SIZE) {
 		printf("Texture too large! (%d, %d) > (%d, %d). Bug HiGuy to make textures larger.", extent.x, extent.y, TEXTURE_MAX_SIZE, TEXTURE_MAX_SIZE);
-		return NULL;
+		return;
 	}
 
-	Texture *texture = malloc(sizeof(Texture));
-
 	//Set some fields
-	texture->extent = extent;
-	texture->generated = false;
+	this->extent = extent;
+	generated = false;
 
-	//Load pixels into texture->pixels (assume RGBA)
-	texture->pixels = malloc(sizeof(U8) * extent.x * extent.y * 4);
-	memcpy(texture->pixels, pixels, sizeof(U8) * extent.x * extent.y * 4);
-
-	return texture;
+	//Load pixels into pixels (assume RGBA)
+	this->pixels = new U8[extent.x * extent.y * 4];
+	memcpy(this->pixels, pixels, sizeof(U8) * extent.x * extent.y * 4);
 }
 
-void texture_generate_buffer(Texture *texture) {
+void Texture::generateBuffer() {
 	//Just in case
 	glEnable(GL_TEXTURE_2D);
 
@@ -60,8 +56,8 @@ void texture_generate_buffer(Texture *texture) {
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 	//Generate the texture buffer
-	glGenTextures(1, &texture->buffer);
-	glBindTexture(GL_TEXTURE_2D, texture->buffer);
+	glGenTextures(1, &buffer);
+	glBindTexture(GL_TEXTURE_2D, buffer);
 
 	//Set some flags
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -70,30 +66,29 @@ void texture_generate_buffer(Texture *texture) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	//Actually create the texture
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->extent.x, texture->extent.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, extent.x, extent.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
-	texture->generated = true;
+	generated = true;
 }
 
-void texture_release(Texture *texture) {
+Texture::~Texture() {
 	//Clean up
-	if (texture->generated)
-		glDeleteTextures(1, &texture->buffer);
+	if (generated)
+		glDeleteTextures(1, &buffer);
 
-	free(texture->pixels);
-	free(texture);
+	free(pixels);
 }
 
-void texture_activate(Texture *texture) {
+void Texture::activate() {
 	//Error check
-	if (!texture->generated)
+	if (!generated)
 		return;
 	//Activate and bind the buffer
 	glActiveTexture(GL_TEXTURE0);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glBindTexture(GL_TEXTURE_2D, texture->buffer);
+	glBindTexture(GL_TEXTURE_2D, buffer);
 }
 
-void texture_deactivate(Texture *texture) {
+void Texture::deactivate() {
 	//Haha, this method is just BS. Fooled you.
 }

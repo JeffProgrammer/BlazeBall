@@ -30,106 +30,101 @@
 #include "io.h"
 #include "vehicleCollision.h"
 
-VehicleCollision *vehicleCollision_read_file(FILE *file) {
-	VehicleCollision *vehicleCollision = malloc(sizeof(VehicleCollision));
-
-	READTOVAR(vehicleCollision->vehicleCollisionFileVersion, U32); //vehicleCollisionFileVersion
-	READLOOPVAR(vehicleCollision->numVehicleConvexHulls, vehicleCollision->vehicleConvexHull, VehicleConvexHull) {
-		READTOVAR(vehicleCollision->vehicleConvexHull[i].hullStart, U32); //hullStart
-		READTOVAR(vehicleCollision->vehicleConvexHull[i].hullCount, U16); //hullCount
-		READTOVAR(vehicleCollision->vehicleConvexHull[i].minX, F32); //minX
-		READTOVAR(vehicleCollision->vehicleConvexHull[i].maxX, F32); //maxX
-		READTOVAR(vehicleCollision->vehicleConvexHull[i].minY, F32); //minY
-		READTOVAR(vehicleCollision->vehicleConvexHull[i].maxY, F32); //maxY
-		READTOVAR(vehicleCollision->vehicleConvexHull[i].minZ, F32); //minZ
-		READTOVAR(vehicleCollision->vehicleConvexHull[i].maxZ, F32); //maxZ
-		READTOVAR(vehicleCollision->vehicleConvexHull[i].surfaceStart, U32); //surfaceStart
-		READTOVAR(vehicleCollision->vehicleConvexHull[i].surfaceCount, U16); //surfaceCount
-		READTOVAR(vehicleCollision->vehicleConvexHull[i].planeStart, U32); //planeStart
-		READTOVAR(vehicleCollision->vehicleConvexHull[i].polyListPlaneStart, U32); //polyListPlaneStart
-		READTOVAR(vehicleCollision->vehicleConvexHull[i].polyListPointStart, U32); //polyListPointStart
-		READTOVAR(vehicleCollision->vehicleConvexHull[i].polyListStringStart, U32); //polyListStringStart
+VehicleCollision::VehicleCollision(FILE *file) {
+	READTOVAR(vehicleCollisionFileVersion, U32); //vehicleCollisionFileVersion
+	READLOOPVAR(numVehicleConvexHulls, vehicleConvexHull, VehicleConvexHull) {
+		READTOVAR(vehicleConvexHull[i].hullStart, U32); //hullStart
+		READTOVAR(vehicleConvexHull[i].hullCount, U16); //hullCount
+		READTOVAR(vehicleConvexHull[i].minX, F32); //minX
+		READTOVAR(vehicleConvexHull[i].maxX, F32); //maxX
+		READTOVAR(vehicleConvexHull[i].minY, F32); //minY
+		READTOVAR(vehicleConvexHull[i].maxY, F32); //maxY
+		READTOVAR(vehicleConvexHull[i].minZ, F32); //minZ
+		READTOVAR(vehicleConvexHull[i].maxZ, F32); //maxZ
+		READTOVAR(vehicleConvexHull[i].surfaceStart, U32); //surfaceStart
+		READTOVAR(vehicleConvexHull[i].surfaceCount, U16); //surfaceCount
+		READTOVAR(vehicleConvexHull[i].planeStart, U32); //planeStart
+		READTOVAR(vehicleConvexHull[i].polyListPlaneStart, U32); //polyListPlaneStart
+		READTOVAR(vehicleConvexHull[i].polyListPointStart, U32); //polyListPointStart
+		READTOVAR(vehicleConvexHull[i].polyListStringStart, U32); //polyListStringStart
 	}
-	READLOOPVAR(vehicleCollision->numVehicleConvexHullEmitStrings, vehicleCollision->vehicleConvexHullEmitStringCharacter, U8) {
-		READTOVAR(vehicleCollision->vehicleConvexHullEmitStringCharacter[i], U8); //vehicleConvexHullEmitStringCharacter
+	READLOOPVAR(numVehicleConvexHullEmitStrings, vehicleConvexHullEmitStringCharacter, U8) {
+		READTOVAR(vehicleConvexHullEmitStringCharacter[i], U8); //vehicleConvexHullEmitStringCharacter
 	}
-	READLOOPVAR(vehicleCollision->numVehicleHullIndices, vehicleCollision->vehicleHullIndex, U32) {
-		READTOVAR(vehicleCollision->vehicleHullIndex[i], U32); //vehicleHullIndex
+	READLOOPVAR(numVehicleHullIndices, vehicleHullIndex, U32) {
+		READTOVAR(vehicleHullIndex[i], U32); //vehicleHullIndex
 	}
-	READLOOPVAR(vehicleCollision->numVehicleHullPlaneIndices, vehicleCollision->vehicleHullPlaneIndex, U16) {
-		READTOVAR(vehicleCollision->vehicleHullPlaneIndex[i], U16); //vehicleHullPlaneIndex
+	READLOOPVAR(numVehicleHullPlaneIndices, vehicleHullPlaneIndex, U16) {
+		READTOVAR(vehicleHullPlaneIndex[i], U16); //vehicleHullPlaneIndex
 	}
-	READLOOPVAR(vehicleCollision->numVehicleHullEmitStringIndices, vehicleCollision->vehicleHullEmitStringIndex, U32) {
-		READTOVAR(vehicleCollision->vehicleHullEmitStringIndex[i], U32); //vehicleHullEmitStringIndex
+	READLOOPVAR(numVehicleHullEmitStringIndices, vehicleHullEmitStringIndex, U32) {
+		READTOVAR(vehicleHullEmitStringIndex[i], U32); //vehicleHullEmitStringIndex
 	}
-	READLOOPVAR(vehicleCollision->numVehicleHullSurfaceIndices, vehicleCollision->vehicleHullSurfaceIndex, U32) {
-		READTOVAR(vehicleCollision->vehicleHullSurfaceIndex[i], U32); //vehicleHullSurfaceIndex
+	READLOOPVAR(numVehicleHullSurfaceIndices, vehicleHullSurfaceIndex, U32) {
+		READTOVAR(vehicleHullSurfaceIndex[i], U32); //vehicleHullSurfaceIndex
 	}
-	READLOOPVAR(vehicleCollision->numVehiclePolyListPlanes, vehicleCollision->vehiclePolyListPlaneIndex, U16) {
-		READTOVAR(vehicleCollision->vehiclePolyListPlaneIndex[i], U16); //vehiclePolyListPlaneIndex
+	READLOOPVAR(numVehiclePolyListPlanes, vehiclePolyListPlaneIndex, U16) {
+		READTOVAR(vehiclePolyListPlaneIndex[i], U16); //vehiclePolyListPlaneIndex
 	}
-	READLOOPVAR(vehicleCollision->numVehiclePolyListPoints, vehicleCollision->vehiclePolyListPointIndex, U32) {
-		READTOVAR(vehicleCollision->vehiclePolyListPointIndex[i], U32); //vehiclePolyListPointIndex
+	READLOOPVAR(numVehiclePolyListPoints, vehiclePolyListPointIndex, U32) {
+		READTOVAR(vehiclePolyListPointIndex[i], U32); //vehiclePolyListPointIndex
 	}
-	READLOOPVAR(vehicleCollision->numVehiclePolyListStrings, vehicleCollision->vehiclePolyListStringCharacter, U8) {
-		READTOVAR(vehicleCollision->vehiclePolyListStringCharacter[i], U8); //vehiclePolyListStringCharacter
+	READLOOPVAR(numVehiclePolyListStrings, vehiclePolyListStringCharacter, U8) {
+		READTOVAR(vehiclePolyListStringCharacter[i], U8); //vehiclePolyListStringCharacter
 	}
-	READLOOPVAR(vehicleCollision->numVehicleNullSurfaces, vehicleCollision->vehicleNullSurface, VehicleNullSurface) {
-		READTOVAR(vehicleCollision->vehicleNullSurface[i].windingStart, U32); //windingStart
-		READTOVAR(vehicleCollision->vehicleNullSurface[i].planeIndex, U16); //planeIndex
-		READTOVAR(vehicleCollision->vehicleNullSurface[i].surfaceFlags, U8); //surfaceFlags
-		READTOVAR(vehicleCollision->vehicleNullSurface[i].windingCount, U32); //windingCount
+	READLOOPVAR(numVehicleNullSurfaces, vehicleNullSurface, VehicleNullSurface) {
+		READTOVAR(vehicleNullSurface[i].windingStart, U32); //windingStart
+		READTOVAR(vehicleNullSurface[i].planeIndex, U16); //planeIndex
+		READTOVAR(vehicleNullSurface[i].surfaceFlags, U8); //surfaceFlags
+		READTOVAR(vehicleNullSurface[i].windingCount, U32); //windingCount
 	}
-
-	return vehicleCollision;
 }
 
-bool vehicleCollision_write_file(FILE *file, VehicleCollision *vehicleCollision) {
-	WRITECHECK(U32, vehicleCollision->vehicleCollisionFileVersion);
-	WRITELOOP(vehicleCollision->numVehicleConvexHulls) {
-		WRITECHECK(U32, vehicleCollision->vehicleConvexHull[i].hullStart); //hullStart
-		WRITECHECK(U16, vehicleCollision->vehicleConvexHull[i].hullCount); //hullCount
-		WRITECHECK(F32, vehicleCollision->vehicleConvexHull[i].minX); //minX
-		WRITECHECK(F32, vehicleCollision->vehicleConvexHull[i].maxX); //maxX
-		WRITECHECK(F32, vehicleCollision->vehicleConvexHull[i].minY); //minY
-		WRITECHECK(F32, vehicleCollision->vehicleConvexHull[i].maxY); //maxY
-		WRITECHECK(F32, vehicleCollision->vehicleConvexHull[i].minZ); //minZ
-		WRITECHECK(F32, vehicleCollision->vehicleConvexHull[i].maxZ); //maxZ
-		WRITECHECK(U32, vehicleCollision->vehicleConvexHull[i].surfaceStart); //surfaceStart
-		WRITECHECK(U16, vehicleCollision->vehicleConvexHull[i].surfaceCount); //surfaceCount
-		WRITECHECK(U32, vehicleCollision->vehicleConvexHull[i].planeStart); //planeStart
-		WRITECHECK(U32, vehicleCollision->vehicleConvexHull[i].polyListPlaneStart); //polyListPlaneStart
-		WRITECHECK(U32, vehicleCollision->vehicleConvexHull[i].polyListPointStart); //polyListPointStart
-		WRITECHECK(U32, vehicleCollision->vehicleConvexHull[i].polyListStringStart); //polyListStringStart
+bool VehicleCollision::write(FILE *file) {
+	WRITECHECK(U32, vehicleCollisionFileVersion);
+	WRITELOOP(numVehicleConvexHulls) {
+		WRITECHECK(U32, vehicleConvexHull[i].hullStart); //hullStart
+		WRITECHECK(U16, vehicleConvexHull[i].hullCount); //hullCount
+		WRITECHECK(F32, vehicleConvexHull[i].minX); //minX
+		WRITECHECK(F32, vehicleConvexHull[i].maxX); //maxX
+		WRITECHECK(F32, vehicleConvexHull[i].minY); //minY
+		WRITECHECK(F32, vehicleConvexHull[i].maxY); //maxY
+		WRITECHECK(F32, vehicleConvexHull[i].minZ); //minZ
+		WRITECHECK(F32, vehicleConvexHull[i].maxZ); //maxZ
+		WRITECHECK(U32, vehicleConvexHull[i].surfaceStart); //surfaceStart
+		WRITECHECK(U16, vehicleConvexHull[i].surfaceCount); //surfaceCount
+		WRITECHECK(U32, vehicleConvexHull[i].planeStart); //planeStart
+		WRITECHECK(U32, vehicleConvexHull[i].polyListPlaneStart); //polyListPlaneStart
+		WRITECHECK(U32, vehicleConvexHull[i].polyListPointStart); //polyListPointStart
+		WRITECHECK(U32, vehicleConvexHull[i].polyListStringStart); //polyListStringStart
 	}
-	WRITELOOPVAR(U8, vehicleCollision->numVehicleConvexHullEmitStrings, vehicleCollision->vehicleConvexHullEmitStringCharacter); //vehicleConvexHullEmitStringCharacter
-	WRITELOOPVAR(U32, vehicleCollision->numVehicleHullIndices, vehicleCollision->vehicleHullIndex); //vehicleHullIndex
-	WRITELOOPVAR(U16, vehicleCollision->numVehicleHullPlaneIndices, vehicleCollision->vehicleHullPlaneIndex); //vehicleHullPlaneIndex
-	WRITELOOPVAR(U32, vehicleCollision->numVehicleHullEmitStringIndices, vehicleCollision->vehicleHullEmitStringIndex); //vehicleHullEmitStringIndex
-	WRITELOOPVAR(U32, vehicleCollision->numVehicleHullSurfaceIndices, vehicleCollision->vehicleHullSurfaceIndex); //vehicleHullSurfaceIndex
-	WRITELOOPVAR(U16, vehicleCollision->numVehiclePolyListPlanes, vehicleCollision->vehiclePolyListPlaneIndex); //vehiclePolyListPlaneIndex
-	WRITELOOPVAR(U32, vehicleCollision->numVehiclePolyListPoints, vehicleCollision->vehiclePolyListPointIndex); //vehiclePolyListPointIndex
-	WRITELOOPVAR(U8, vehicleCollision->numVehiclePolyListStrings, vehicleCollision->vehiclePolyListStringCharacter); //vehiclePolyListStringCharacter
-	WRITELOOP(vehicleCollision->numVehicleNullSurfaces) {
-		WRITECHECK(U32, vehicleCollision->vehicleNullSurface[i].windingStart); //windingStart
-		WRITECHECK(U16, vehicleCollision->vehicleNullSurface[i].planeIndex); //planeIndex
-		WRITECHECK(U8, vehicleCollision->vehicleNullSurface[i].surfaceFlags); //surfaceFlags
-		WRITECHECK(U32, vehicleCollision->vehicleNullSurface[i].windingCount); //windingCount
+	WRITELOOPVAR(U8, numVehicleConvexHullEmitStrings, vehicleConvexHullEmitStringCharacter); //vehicleConvexHullEmitStringCharacter
+	WRITELOOPVAR(U32, numVehicleHullIndices, vehicleHullIndex); //vehicleHullIndex
+	WRITELOOPVAR(U16, numVehicleHullPlaneIndices, vehicleHullPlaneIndex); //vehicleHullPlaneIndex
+	WRITELOOPVAR(U32, numVehicleHullEmitStringIndices, vehicleHullEmitStringIndex); //vehicleHullEmitStringIndex
+	WRITELOOPVAR(U32, numVehicleHullSurfaceIndices, vehicleHullSurfaceIndex); //vehicleHullSurfaceIndex
+	WRITELOOPVAR(U16, numVehiclePolyListPlanes, vehiclePolyListPlaneIndex); //vehiclePolyListPlaneIndex
+	WRITELOOPVAR(U32, numVehiclePolyListPoints, vehiclePolyListPointIndex); //vehiclePolyListPointIndex
+	WRITELOOPVAR(U8, numVehiclePolyListStrings, vehiclePolyListStringCharacter); //vehiclePolyListStringCharacter
+	WRITELOOP(numVehicleNullSurfaces) {
+		WRITECHECK(U32, vehicleNullSurface[i].windingStart); //windingStart
+		WRITECHECK(U16, vehicleNullSurface[i].planeIndex); //planeIndex
+		WRITECHECK(U8, vehicleNullSurface[i].surfaceFlags); //surfaceFlags
+		WRITECHECK(U32, vehicleNullSurface[i].windingCount); //windingCount
 	}
 
 	return true;
 }
 
-void vehicleCollision_release(VehicleCollision *vehicleCollision) {
-	free(vehicleCollision->vehicleConvexHull);
-	free(vehicleCollision->vehicleConvexHullEmitStringCharacter);
-	free(vehicleCollision->vehicleHullIndex);
-	free(vehicleCollision->vehicleHullPlaneIndex);
-	free(vehicleCollision->vehicleHullEmitStringIndex);
-	free(vehicleCollision->vehicleHullSurfaceIndex);
-	free(vehicleCollision->vehiclePolyListPlaneIndex);
-	free(vehicleCollision->vehiclePolyListPointIndex);
-	free(vehicleCollision->vehiclePolyListStringCharacter);
-	free(vehicleCollision->vehicleNullSurface);
-	free(vehicleCollision);
+VehicleCollision::~VehicleCollision() {
+	free(vehicleConvexHull);
+	free(vehicleConvexHullEmitStringCharacter);
+	free(vehicleHullIndex);
+	free(vehicleHullPlaneIndex);
+	free(vehicleHullEmitStringIndex);
+	free(vehicleHullSurfaceIndex);
+	free(vehiclePolyListPlaneIndex);
+	free(vehiclePolyListPointIndex);
+	free(vehiclePolyListStringCharacter);
+	free(vehicleNullSurface);
 }

@@ -29,7 +29,7 @@
 #include "interior.h"
 #include "math.h"
 
-void interior_render(Interior *interior, Point3F offset) {
+void Interior::render(Point3F offset) {
 	//Actual rendering is here (GL 1.1 in a 2.1 context. Take THAT, good practice!)
 
 	glEnable(GL_TEXTURE_2D);
@@ -37,21 +37,21 @@ void interior_render(Interior *interior, Point3F offset) {
 
 	//Draw all the surfaces
 	glBegin(GL_TRIANGLES);
-	for (U32 i = 0; i < interior->numSurfaces; i ++) {
-		Surface surface = interior->surface[i];
+	for (U32 i = 0; i < numSurfaces; i ++) {
+		Surface surface = this->surface[i];
 
-		Texture *texture = interior->texture[surface.textureIndex];
+		Texture *texture = this->texture[surface.textureIndex];
 		//Make sure our texture is active before drawing
 		if (texture && texture != currentTexture) {
 			glEnd();
 			if (currentTexture)
-				texture_deactivate(currentTexture);
+				currentTexture->deactivate();
 
 			//Generate if needed
 			if (!texture->generated) {
-				texture_generate_buffer(texture);
+				texture->generateBuffer();
 			}
-			texture_activate(texture);
+			texture->activate();
 
 			currentTexture = texture;
 			glBegin(GL_TRIANGLES);
@@ -59,22 +59,22 @@ void interior_render(Interior *interior, Point3F offset) {
 
 		//New and improved rendering with actual Triangle Strips this time
 		for (U32 j = surface.windingStart + 2; j < surface.windingStart + surface.windingCount; j ++) {
-			Point3F n = interior->normal[interior->plane[surface.planeIndex].normalIndex];
+			Point3F n = normal[plane[surface.planeIndex].normalIndex];
 			if (surface.planeFlipped)
 				n = point3F_scale(n, -1);
 			Point3F u0, u1, u2;
 
 			if ((j - (surface.windingStart + 2)) % 2 == 0) {
-				u0 = interior->point[interior->index[j]];
-				u1 = interior->point[interior->index[j - 1]];
-				u2 = interior->point[interior->index[j - 2]];
+				u0 = point[index[j]];
+				u1 = point[index[j - 1]];
+				u2 = point[index[j - 2]];
 			} else {
-				u0 = interior->point[interior->index[j - 2]];
-				u1 = interior->point[interior->index[j - 1]];
-				u2 = interior->point[interior->index[j]];
+				u0 = point[index[j - 2]];
+				u1 = point[index[j - 1]];
+				u2 = point[index[j]];
 			}
 
-			TexGenEq texGenEq = interior->texGenEq[surface.texGenIndex];
+			TexGenEq texGenEq = this->texGenEq[surface.texGenIndex];
 
 			//Reference: TGE InteriorRender.cc
 			glNormal3f(n.x, n.y, n.z);
@@ -91,7 +91,7 @@ void interior_render(Interior *interior, Point3F offset) {
 	glEnd();
 
 	//Don't forget to deactivate the last texture
-	texture_deactivate(currentTexture);
+	currentTexture->deactivate();
 
 	glDisable(GL_TEXTURE_2D);
 }

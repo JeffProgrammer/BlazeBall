@@ -36,7 +36,7 @@ typedef enum {
 	BitmapTypeJPEG,
 } BitmapType;
 
-typedef struct {
+struct Triangle {
 	Point3F point0;
 	Point3F point1;
 	Point3F point2;
@@ -45,7 +45,7 @@ typedef struct {
 	ColorF color;
 
 	Texture *texture;
-} Triangle;
+};
 
 static U32 gNumCoordBins = 16;
 
@@ -177,7 +177,8 @@ typedef struct {
 	S32 B;
 } TexMatrix;
 
-typedef struct {
+class Interior {
+public:
 	U32 interiorFileVersion;
 	U32 detailLevel;
 	U32 minPixels;
@@ -316,38 +317,32 @@ typedef struct {
 
 	U32 extendedLightMapData;
 	U32 lightMapBorderSize;
-} Interior;
 
-/**
- Reads an Interior from a FILE
- @arg file - The FILE to read from (updates position)
- @arg directory - The base directory for images
- @return An Interior
- */
-Interior *interior_read_file(FILE *file, String directory);
+	/**
+	 Reads an Interior from a FILE
+	 @arg file - The FILE to read from (updates position)
+	 @arg directory - The base directory for images
+	 @return An Interior
+	 */
+	Interior(FILE *file, String directory);
+	~Interior();
 
-bool interior_write_file(FILE *file, Interior *interior);
+	bool write(FILE *file);
 
-/**
- Frees the Interior and all memory contained within it
- @arg interior - The Interior to release
- */
-void interior_release(Interior *interior);
+	/**
+	 Exports an interior into a Wavefront .obj file
+	 @arg file - The FILE to export to
+	 */
+	void exportObj(FILE *file);
 
-/**
- Exports an interior into a Wavefront .obj file
- @arg interior - The Interior to export from
- @arg file - The FILE to export to
- */
-void interior_export_obj(Interior *interior, FILE *file);
+	/**
+	 Renders an interior with OpenGL at an offset
+	 @arg offset - The offset from the origin from which to render
+	 */
+	void render(Point3F offset);
 
-/**
- Renders an interior with OpenGL at an offset
- @arg interior - The Interior to render
- @arg offset - The offset from the origin from which to render
- */
-void interior_render(Interior *interior, Point3F offset);
-
-U32 interior_ray_cast(Interior *interior, RayF ray);
+	U32 rayCast(RayF ray);
+	
+};
 
 #endif

@@ -30,23 +30,18 @@
 #include "io.h"
 #include "aiSpecialNode.h"
 
-AISpecialNode *aiSpecialNode_read_file(FILE *file) {
-	AISpecialNode *aiSpecialNode = malloc(sizeof(AISpecialNode));
-
-	READTOVAR(aiSpecialNode->name, String); //name
-	READTOVAR(aiSpecialNode->position, Point3F); //position
-
-	return aiSpecialNode;
+AISpecialNode::AISpecialNode(FILE *file) {
+	READTOVAR(name, String); //name
+	READTOVAR(position, Point3F); //position
 }
 
-bool aiSpecialNode_write_file(FILE *file, AISpecialNode *aiSpecialNode) {
-	WRITE(String, aiSpecialNode->name); //name
-	WRITECHECK(Point3F, aiSpecialNode->position); //position
+bool AISpecialNode::write(FILE *file) {
+	WRITE(String, name); //name
+	WRITECHECK(Point3F, position); //position
 
 	return true;
 }
 
-void aiSpecialNode_release(AISpecialNode *aiSpecialNode) {
-	releaseString(aiSpecialNode->name);
-	free(aiSpecialNode);
+AISpecialNode::~AISpecialNode() {
+	releaseString(name);
 }

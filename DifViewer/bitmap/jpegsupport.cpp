@@ -41,7 +41,7 @@ bool jpegReadImage(String file, U8 **bitmap, Point2I *dims) {
 	jpeg_create_decompress(&dptr);
 	jpeg_stdio_src(&dptr, stream);
 
-	jpeg_read_header(&dptr, true);
+	jpeg_read_header(&dptr, TRUE);
 	jpeg_start_decompress(&dptr);
 	dims->x = dptr.output_width;
 	dims->y = dptr.output_height;
@@ -51,12 +51,12 @@ bool jpegReadImage(String file, U8 **bitmap, Point2I *dims) {
 		return false;
 	}
 
-	*bitmap = malloc(sizeof(U8) * dims->x * dims->y * 4);
+	*bitmap = new U8[dims->x * dims->y * 4];
 
 	U8 *b = *bitmap;
 
 	for (U32 y = 0; y < dims->y; y ++) {
-		JSAMPROW row = calloc(dims->x, sizeof(U8) * 4);
+		JSAMPROW row = new U8[dims->x * 4];
 		jpeg_read_scanlines(&dptr, &row, 1);
 
 		for (U32 x = 0; x < dims->x; x ++) {

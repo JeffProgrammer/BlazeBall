@@ -30,24 +30,24 @@
 
 #include "types.h"
 
-typedef struct {
+class AISpecialNode {
+public:
 	String name;
 	Point3F position;
-} AISpecialNode;
 
-/**
- Reads an AISpecialNode from a FILE
- @arg file - The FILE to read from (updates position)
- @return An AISpecialNode
- */
-AISpecialNode *aiSpecialNode_read_file(FILE *file);
 
-bool aiSpecialNode_write_file(FILE *file, AISpecialNode *aiSpecialNode);
+	/**
+	 Reads an AISpecialNode from a FILE
+	 @arg file - The FILE to read from (updates position)
+	 */
+	AISpecialNode(FILE *file);
 
-/**
- Frees the AISpecialNode and all memory contained within it
- @arg aiSpecialNode - The AISpecialNode to release
- */
-void aiSpecialNode_release(AISpecialNode *aiSpecialNode);
+	bool write(FILE *file);
+
+	/**
+	 Frees the AISpecialNode and all memory contained within it
+	 */
+	~AISpecialNode();
+};
 
 #endif

@@ -128,7 +128,7 @@ void render() {
 		glNewList(gDisplayList, GL_COMPILE_AND_EXECUTE);
 		for (U32 index = 0; index < gDifCount; index ++) {
 			for (U32 intIndex = 0; intIndex < gDifs[index]->numDetailLevels; intIndex ++) {
-				interior_render(gDifs[index]->interior[intIndex], offset);
+				gDifs[index]->interior[intIndex]->render(offset);
 			}
 		}
 		glEndList();
@@ -164,7 +164,7 @@ void render() {
 		glLightfv(GL_LIGHT0, GL_POSITION, (float[]){0, 0, 1});
 		glLoadIdentity();
 
-		texture_activate(gSelection.interior->texture[surface.textureIndex]);
+		gSelection.interior->texture[surface.textureIndex]->activate();
 		glBegin(GL_TRIANGLE_STRIP);
 
 
@@ -181,7 +181,7 @@ void render() {
 			glVertex3f(point.x / len, point.y / len, 0);
 		}
 		glEnd();
-		texture_deactivate(gSelection.interior->texture[surface.textureIndex]);
+		gSelection.interior->texture[surface.textureIndex]->deactivate();
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
 	}
@@ -284,7 +284,7 @@ void performClick(S32 mouseX, S32 mouseY) {
 		for (U32 j = 0; j < dif->numDetailLevels; j ++) {
 			Interior *interior = dif->interior[j];
 
-			U32 surfaceNum = interior_ray_cast(interior, ray);
+			U32 surfaceNum = interior->rayCast(ray);
 			if (surfaceNum != -1) {
 				gSelection.hasSelection = true;
 				gSelection.surfaceIndex = surfaceNum;
@@ -320,7 +320,7 @@ void handleEvent(SDL_Event *event) {
 						String directory = (String)dirname((char *)gFilenames[i]);
 
 						FILE *output = fopen((const char *)gFilenames[i], "w");
-						dif_write_file(output, gDifs[i], directory);
+						gDifs[i]->write(output, directory);
 					}
 				} else {
 					movement[1] = true;
@@ -489,8 +489,8 @@ int main(int argc, const char * argv[])
 	}
 
 	gDifCount = 0;
-	gDifs = (DIF **)malloc(sizeof(DIF *) * (argc - argstart));
-	gFilenames = (String *)malloc(sizeof(String) * (argc - argstart));
+	gDifs = new DIF*[argc - argstart];
+	gFilenames = new String[argc - argstart];
 
 	for (U32 i = 0; i < (argc - argstart); i ++) {
 		String directory = (String)dirname((char *)argv[i + argstart]);
@@ -499,7 +499,7 @@ int main(int argc, const char * argv[])
 		FILE *file = fopen(argv[i + argstart], "r");
 
 		//Read the .dif
-		gDifs[i] = dif_read_file(file, directory);
+		gDifs[i] = new DIF(file, directory);
 		if (gDifs[i]) {
 			gDifCount ++;
 		}
@@ -512,7 +512,7 @@ int main(int argc, const char * argv[])
 
 	if (!strcmp(argv[1], "-o")) {
 		FILE *test = fopen(argv[2], "w");
-		interior_export_obj(gDifs[0]->interior[0], test);
+		gDifs[0]->interior[0]->exportObj(test);
 		fclose(test);
 	} else {
 		//Init SDL and go!
@@ -520,10 +520,7 @@ int main(int argc, const char * argv[])
 	}
 
 	//Clean up
-	for (U32 i = 0; i < gDifCount; i ++) {
-		dif_release(gDifs[i]);
-	}
-	free(gDifs);
+	delete [] gDifs;
 
 	return 0;
 }

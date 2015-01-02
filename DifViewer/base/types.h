@@ -47,99 +47,114 @@ typedef float F32;
 typedef U8 * String;
 
 //More names stolen from TGE
-typedef struct {
+class Point2I {
+public:
 	U16 x; //Should be enough
 	U16 y;
-} Point2I;
+};
 
-typedef struct {
+class Point2F {
+public:
 	F32 x;
 	F32 y;
-} Point2F;
+};
 
-typedef struct {
+class Point3I {
+public:
 	U32 x;
 	U32 y;
 	U32 z;
-} Point3I;
+};
 
-typedef struct {
+class Point3F {
+public:
 	F32 x;
 	F32 y;
 	F32 z;
-} Point3F;
+};
 
-typedef struct {
+class QuatF {
+public:
 	F32 w;
 	F32 x;
 	F32 y;
 	F32 z;
-} QuatF;
+};
 
-typedef struct {
+class PlaneF {
+public:
 	F32 x;
 	F32 y;
 	F32 z;
 	F32 d;
-} PlaneF;
+};
 
-typedef struct {
+class BoxF {
+public:
 	F32 minX;
 	F32 minY;
 	F32 minZ;
 	F32 maxX;
 	F32 maxY;
 	F32 maxZ;
-} BoxF;
+};
 
-typedef struct {
+class SphereF {
+public:
 	F32 x;
 	F32 y;
 	F32 z;
 	F32 radius;
-} SphereF;
+};
 
-typedef struct {
+class ColorI {
+public:
 	U8 red;
 	U8 green;
 	U8 blue;
 	U8 alpha;
-} ColorI;
+};
 
-typedef struct {
+class ColorF {
+public:
 	F32 red;
 	F32 green;
 	F32 blue;
 	F32 alpha;
-} ColorF;
+};
 
-typedef struct {
+class Dictionary {
+public:
 	U32 size;
 	String *names;
 	String *values;
-} Dictionary;
+};
 
-typedef struct {
+class PNG {
+public:
 	U32 size;
 	U8 *data;
-} PNG;
+};
 
-typedef struct {
+class RayF {
+public:
 	Point3F origin;
 	Point3F direction;
-} RayF;
+};
 
-typedef struct {
+class TriangleF {
+public:
 	Point3F point0;
 	Point3F point1;
 	Point3F point2;
-} TriangleF;
+};
 
-typedef struct {
+class TetrahetronF {
+public:
 	Point3F point0;
 	Point3F point1;
 	Point3F point2;
 	Point3F point3;
-} TetrahetronF;
+};
 
 #endif

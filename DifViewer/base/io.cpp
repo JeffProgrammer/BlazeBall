@@ -37,7 +37,24 @@
 #define DEBUG_PRINT(...)
 #endif
 
-U64 readU64(FILE **file) {
+IO *IO::getIO() {
+	static IO *gIO;
+
+	if (gIO == nullptr) {
+		gIO = new IO;
+	}
+	return gIO;
+}
+
+IO::IO() {
+
+}
+
+IO::~IO() {
+	
+}
+
+U64 IO::readU64(FILE **file) {
 	U64 value = -1;
 	fpos_t pos;
 	fgetpos(*file, &pos);
@@ -47,7 +64,7 @@ U64 readU64(FILE **file) {
 
 	return value;
 }
-U32 readU32(FILE **file) {
+U32 IO::readU32(FILE **file) {
 	U32 value = -1;
 	fpos_t pos;
 	fgetpos(*file, &pos);
@@ -57,7 +74,7 @@ U32 readU32(FILE **file) {
 
 	return value;
 }
-U16 readU16(FILE **file) {
+U16 IO::readU16(FILE **file) {
 	U16 value = -1;
 	fpos_t pos;
 	fgetpos(*file, &pos);
@@ -67,7 +84,7 @@ U16 readU16(FILE **file) {
 
 	return value;
 }
-U8 readU8(FILE **file) {
+U8 IO::readU8(FILE **file) {
 	U8 value = -1;
 	fpos_t pos;
 	fgetpos(*file, &pos);
@@ -77,7 +94,7 @@ U8 readU8(FILE **file) {
 
 	return value;
 }
-F32 readF32(FILE **file) {
+F32 IO::readF32(FILE **file) {
 	F32 value = -1;
 	fpos_t pos;
 	fgetpos(*file, &pos);
@@ -89,12 +106,12 @@ F32 readF32(FILE **file) {
 }
 
 //Lazy!
-S64 readS64(FILE **file) { return (S64)readU64(file); }
-S32 readS32(FILE **file) { return (S32)readU32(file); }
-S16 readS16(FILE **file) { return (S16)readU16(file); }
-S8  readS8 (FILE **file) { return  (S8)readU8 (file); }
+S64 IO::readS64(FILE **file) { return (S64)readU64(file); }
+S32 IO::readS32(FILE **file) { return (S32)readU32(file); }
+S16 IO::readS16(FILE **file) { return (S16)readU16(file); }
+S8  IO::readS8 (FILE **file) { return  (S8)readU8 (file); }
 
-PlaneF readPlaneF(FILE **file) {
+PlaneF IO::readPlaneF(FILE **file) {
 	PlaneF value;
 	value.x = readF32(file);
 	value.y = readF32(file);
@@ -103,7 +120,7 @@ PlaneF readPlaneF(FILE **file) {
 	return value;
 }
 
-Point3F readPoint3F(FILE **file) {
+Point3F IO::readPoint3F(FILE **file) {
 	Point3F value;
 	value.x = readF32(file);
 	value.y = readF32(file);
@@ -111,7 +128,7 @@ Point3F readPoint3F(FILE **file) {
 	return value;
 }
 
-QuatF readQuatF(FILE **file) {
+QuatF IO::readQuatF(FILE **file) {
 	QuatF value;
 	value.w = readF32(file);
 	value.x = readF32(file);
@@ -120,7 +137,7 @@ QuatF readQuatF(FILE **file) {
 	return value;
 }
 
-BoxF readBoxF(FILE **file) {
+BoxF IO::readBoxF(FILE **file) {
 	BoxF value;
 	value.minX = readF32(file);
 	value.minY = readF32(file);
@@ -131,7 +148,7 @@ BoxF readBoxF(FILE **file) {
 	return value;
 }
 
-SphereF readSphereF(FILE **file) {
+SphereF IO::readSphereF(FILE **file) {
 	SphereF value;
 	value.x = readF32(file);
 	value.y = readF32(file);
@@ -140,7 +157,7 @@ SphereF readSphereF(FILE **file) {
 	return value;
 }
 
-ColorI readColorI(FILE **file) {
+ColorI IO::readColorI(FILE **file) {
 	ColorI value;
 	value.red = readU8(file);
 	value.green = readU8(file);
@@ -149,11 +166,11 @@ ColorI readColorI(FILE **file) {
 	return value;
 }
 
-String readString(FILE **file) {
+String IO::readString(FILE **file) {
 	//<length><bytes>
 
 	U8 length = readU8(file);
-	String value = (String)malloc(length + 1);
+	String value = new U8[length + 1];
 	for (int i = 0; i < length; i ++) {
 		value[i] = readU8(file);
 	}
@@ -162,10 +179,10 @@ String readString(FILE **file) {
 	return value;
 }
 
-PNG readPNG(FILE **file) {
+PNG IO::readPNG(FILE **file) {
 	U8 PNGFooter[8] = {0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82};
 	PNG value;
-	value.data = calloc(sizeof(U8), LIGHT_MAP_SIZE);
+	value.data = new U8[LIGHT_MAP_SIZE];
 
 	//I can't parse these, so I just read em all
 	value.size = 0;
@@ -175,13 +192,13 @@ PNG readPNG(FILE **file) {
 	return value;
 }
 
-Dictionary readDictionary(FILE **file) {
+Dictionary IO::readDictionary(FILE **file) {
 	//<length>[<name><value>]...
 	Dictionary value;
 	U32 size = readU32(file);
 	value.size = size;
-	value.names = malloc(sizeof(String) * size);
-	value.values = malloc(sizeof(String) * size);
+	value.names = new String[size];
+	value.values = new String[size];
 
 	for (int i = 0; i < size; i ++) {
 		value.names[i]  = readString(file);
@@ -193,35 +210,35 @@ Dictionary readDictionary(FILE **file) {
 
 //-----------------------------------------------------------------------------
 
-U32 writeU64(FILE **file, U64 value) {
+U32 IO::writeU64(FILE **file, U64 value) {
 	fpos_t pos;
 	fgetpos(*file, &pos);
 	DEBUG_PRINT("Write U64 %08llX: %llu\n", pos, value);
 
 	return (U32)fwrite(&value, sizeof(value), 1, *file) * sizeof(value);
 }
-U32 writeU32(FILE **file, U32 value) {
+U32 IO::writeU32(FILE **file, U32 value) {
 	fpos_t pos;
 	fgetpos(*file, &pos);
 	DEBUG_PRINT("Write U32 %08llX: %u\n", pos, value);
 
 	return (U32)fwrite(&value, sizeof(value), 1, *file) * sizeof(value);
 }
-U32 writeU16(FILE **file, U16 value) {
+U32 IO::writeU16(FILE **file, U16 value) {
 	fpos_t pos;
 	fgetpos(*file, &pos);
 	DEBUG_PRINT("Write U16 %08llX: %hu\n", pos, value);
 
 	return (U32)fwrite(&value, sizeof(value), 1, *file) * sizeof(value);
 }
-U32 writeU8(FILE **file, U8 value) {
+U32 IO::writeU8(FILE **file, U8 value) {
 	fpos_t pos;
 	fgetpos(*file, &pos);
 	DEBUG_PRINT("Write U8 %08llX: %u\n", pos, value);
 
 	return (U32)fwrite(&value, sizeof(value), 1, *file) * sizeof(value);
 }
-U32 writeF32(FILE **file, F32 value) {
+U32 IO::writeF32(FILE **file, F32 value) {
 	fpos_t pos;
 	fgetpos(*file, &pos);
 	DEBUG_PRINT("Write F32 %08llX: %f\n", pos, value);
@@ -230,12 +247,12 @@ U32 writeF32(FILE **file, F32 value) {
 }
 
 //Lazy!
-U32 writeS64(FILE **file, S64 value) { return writeU64(file, value); }
-U32 writeS32(FILE **file, S32 value) { return writeU32(file, value); }
-U32 writeS16(FILE **file, S16 value) { return writeU16(file, value); }
-U32 writeS8 (FILE **file, S8  value) { return writeU8 (file, value); }
+U32 IO::writeS64(FILE **file, S64 value) { return writeU64(file, (U64)value); }
+U32 IO::writeS32(FILE **file, S32 value) { return writeU32(file, (U32)value); }
+U32 IO::writeS16(FILE **file, S16 value) { return writeU16(file, (U16)value); }
+U32 IO::writeS8 (FILE **file, S8  value) { return writeU8 (file, (U8) value); }
 
-U32 writePlaneF(FILE **file, PlaneF value) {
+U32 IO::writePlaneF(FILE **file, PlaneF value) {
 	U32 count = 0;
 	count += writeF32(file, value.x);
 	count += writeF32(file, value.y);
@@ -244,7 +261,7 @@ U32 writePlaneF(FILE **file, PlaneF value) {
 	return count;
 }
 
-U32 writePoint3F(FILE **file, Point3F value) {
+U32 IO::writePoint3F(FILE **file, Point3F value) {
 	U32 count = 0;
 	count += writeF32(file, value.x);
 	count += writeF32(file, value.y);
@@ -252,7 +269,7 @@ U32 writePoint3F(FILE **file, Point3F value) {
 	return count;
 }
 
-U32 writeQuatF(FILE **file, QuatF value) {
+U32 IO::writeQuatF(FILE **file, QuatF value) {
 	U32 count = 0;
 	count += writeF32(file, value.w);
 	count += writeF32(file, value.x);
@@ -261,7 +278,7 @@ U32 writeQuatF(FILE **file, QuatF value) {
 	return count;
 }
 
-U32 writeBoxF(FILE **file, BoxF value) {
+U32 IO::writeBoxF(FILE **file, BoxF value) {
 	U32 count = 0;
 	count += writeF32(file, value.minX);
 	count += writeF32(file, value.minY);
@@ -272,7 +289,7 @@ U32 writeBoxF(FILE **file, BoxF value) {
 	return count;
 }
 
-U32 writeSphereF(FILE **file, SphereF value) {
+U32 IO::writeSphereF(FILE **file, SphereF value) {
 	U32 count = 0;
 	count += writeF32(file, value.x);
 	count += writeF32(file, value.y);
@@ -281,7 +298,7 @@ U32 writeSphereF(FILE **file, SphereF value) {
 	return count;
 }
 
-U32 writeColorI(FILE **file, ColorI value) {
+U32 IO::writeColorI(FILE **file, ColorI value) {
 	U32 count = 0;
 	count += writeU8(file, value.red);
 	count += writeU8(file, value.green);
@@ -290,18 +307,18 @@ U32 writeColorI(FILE **file, ColorI value) {
 	return count;
 }
 
-U32 writeString(FILE **file, String value) {
+U32 IO::writeString(FILE **file, String value) {
 	//<length><bytes>
 	U32 count = 0;
 
-	count += writeU8(file, strlen((const char *)value));
+	count += writeU8(file, (U8)strlen((const char *)value));
 	for (int i = 0; i < strlen((const char *)value); i ++) {
 		count += writeU8(file, value[i]);
 	}
 	return count;
 }
 
-U32 writePNG(FILE **file, PNG value) {
+U32 IO::writePNG(FILE **file, PNG value) {
 	//Basically dump out everything. Yeah.
 
 	U32 count = 0;
@@ -311,7 +328,7 @@ U32 writePNG(FILE **file, PNG value) {
 	return count;
 }
 
-U32 writeDictionary(FILE **file, Dictionary value) {
+U32 IO::writeDictionary(FILE **file, Dictionary value) {
 	//<length>[<name><value>]...
 	U32 count = 0;
 

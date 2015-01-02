@@ -54,7 +54,8 @@ typedef struct {
 	U32 windingCount;
 } VehicleNullSurface;
 
-typedef struct {
+class VehicleCollision {
+public:
 	U32 vehicleCollisionFileVersion;
 
 	U32 numVehicleConvexHulls;
@@ -86,21 +87,19 @@ typedef struct {
 
 	U32 numVehicleNullSurfaces;
 	VehicleNullSurface *vehicleNullSurface;
-} VehicleCollision;
 
-/**
- Reads a VehicleCollision from a FILE
- @arg file - The FILE to read from (updates position)
- @return A VehicleCollision
- */
-VehicleCollision *vehicleCollision_read_file(FILE *file);
+	/**
+	 Reads a VehicleCollision from a FILE
+	 @arg file - The FILE to read from (updates position)
+	 */
+	VehicleCollision(FILE *file);
 
-bool vehicleCollision_write_file(FILE *file, VehicleCollision *vehicleCollision);
+	bool write(FILE *file);
 
-/**
- Frees the VehicleCollision and all memory contained within it
- @arg vehicleCollision - The VehicleCollision to release
- */
-void vehicleCollision_release(VehicleCollision *vehicleCollision);
+	/**
+	 Frees the VehicleCollision and all memory contained within it
+	 */
+	~VehicleCollision();
+};
 
 #endif

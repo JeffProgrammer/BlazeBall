@@ -31,52 +31,47 @@
 #include "io.h"
 #include "trigger.h"
 
-Trigger *trigger_read_file(FILE *file) {
-	Trigger *trigger = malloc(sizeof(Trigger));
-
-	READTOVAR(trigger->name, String); //name
-	READTOVAR(trigger->datablock, String); //datablock
-	READTOVAR(trigger->properties, Dictionary); //properties
-	READLOOPVAR(trigger->numPolyHedronPoints, trigger->polyHedronPoint, Point3F) {
-		READTOVAR(trigger->polyHedronPoint[i], Point3F); //point
+Trigger::Trigger(FILE *file) {
+	READTOVAR(name, String); //name
+	READTOVAR(datablock, String); //datablock
+	READTOVAR(properties, Dictionary); //properties
+	READLOOPVAR(numPolyHedronPoints, polyHedronPoint, Point3F) {
+		READTOVAR(polyHedronPoint[i], Point3F); //point
 	}
-	READLOOPVAR(trigger->numPolyHedronPlanes, trigger->polyHedronPlane, PlaneF) {
-		READTOVAR(trigger->polyHedronPlane[i], PlaneF); //plane
+	READLOOPVAR(numPolyHedronPlanes, polyHedronPlane, PlaneF) {
+		READTOVAR(polyHedronPlane[i], PlaneF); //plane
 	}
-	READLOOPVAR(trigger->numPolyHedronEdges, trigger->polyHedronEdge, PolyHedronEdge) {
-		READTOVAR(trigger->polyHedronEdge[i].face0, U32); //face0
-		READTOVAR(trigger->polyHedronEdge[i].face1, U32); //face1
-		READTOVAR(trigger->polyHedronEdge[i].vertex0, U32); //vertex0
-		READTOVAR(trigger->polyHedronEdge[i].vertex1, U32); //vertex1
+	READLOOPVAR(numPolyHedronEdges, polyHedronEdge, PolyHedronEdge) {
+		READTOVAR(polyHedronEdge[i].face0, U32); //face0
+		READTOVAR(polyHedronEdge[i].face1, U32); //face1
+		READTOVAR(polyHedronEdge[i].vertex0, U32); //vertex0
+		READTOVAR(polyHedronEdge[i].vertex1, U32); //vertex1
 	}
-	READTOVAR(trigger->offset, Point3F); //offset
-
-	return trigger;
+	READTOVAR(offset, Point3F); //offset
 }
 
-bool trigger_write_file(FILE *file, Trigger *trigger) {
-	WRITE(String, trigger->name); //name
-	WRITE(String, trigger->datablock); //datablock
-	WRITE(Dictionary, trigger->properties); //properties
-	WRITELOOPVAR(Point3F, trigger->numPolyHedronPoints, trigger->polyHedronPoint); //polyHedronPoint
-	WRITELOOPVAR(PlaneF, trigger->numPolyHedronPlanes, trigger->polyHedronPlane); //polyHedronPlane
-	WRITELOOP(trigger->numPolyHedronEdges) { //numPolyHedronEdges
-		WRITECHECK(U32, trigger->polyHedronEdge[i].face0); //face0
-		WRITECHECK(U32, trigger->polyHedronEdge[i].face1); //face1
-		WRITECHECK(U32, trigger->polyHedronEdge[i].vertex0); //vertex0
-		WRITECHECK(U32, trigger->polyHedronEdge[i].vertex1); //vertex1
+bool Trigger::write(FILE *file) {
+	WRITE(String, name); //name
+	WRITE(String, datablock); //datablock
+	WRITE(Dictionary, properties); //properties
+	WRITELOOPVAR(Point3F, numPolyHedronPoints, polyHedronPoint); //polyHedronPoint
+	WRITELOOPVAR(PlaneF, numPolyHedronPlanes, polyHedronPlane); //polyHedronPlane
+	WRITELOOP(numPolyHedronEdges) { //numPolyHedronEdges
+		WRITECHECK(U32, polyHedronEdge[i].face0); //face0
+		WRITECHECK(U32, polyHedronEdge[i].face1); //face1
+		WRITECHECK(U32, polyHedronEdge[i].vertex0); //vertex0
+		WRITECHECK(U32, polyHedronEdge[i].vertex1); //vertex1
 	}
-	WRITECHECK(Point3F, trigger->offset); //offset
+	WRITECHECK(Point3F, offset); //offset
 
 	return true;
 }
 
-void trigger_release(Trigger *trigger) {
-	releaseString(trigger->name);
-	releaseString(trigger->datablock);
-	releaseDictionary(trigger->properties);
-	free(trigger->polyHedronPoint);
-	free(trigger->polyHedronPlane);
-	free(trigger->polyHedronEdge);
-	free(trigger);
+Trigger::~Trigger() {
+	releaseString(name);
+	releaseString(datablock);
+	releaseDictionary(properties);
+	free(polyHedronPoint);
+	free(polyHedronPlane);
+	free(polyHedronEdge);
 }

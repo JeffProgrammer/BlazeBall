@@ -28,10 +28,6 @@
 #ifndef dif_h
 #define dif_h
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "types.h"
 #include "interior.h"
 #include "trigger.h"
@@ -41,7 +37,8 @@ extern "C" {
 #include "vehicleCollision.h"
 #include "gameEntity.h"
 
-typedef struct {
+class DIF {
+public:
 	U32 numDetailLevels;
 	Interior **interior;
 
@@ -73,25 +70,21 @@ typedef struct {
 	GameEntity **gameEntity;
 
 	U32 dummy;
-} DIF;
 
-/**
- Reads a DIF from a FILE
- @arg file - The FILE to read from (updates position)
- @return A DIF
- */
-DIF *dif_read_file(FILE *file, String directory);
+	/**
+	 Reads a DIF from a FILE
+	 @arg file - The FILE to read from (updates position)
+	 @return A DIF
+	 */
+	DIF(FILE *file, String directory);
 
-bool dif_write_file(FILE *file, DIF *dif, String directory);
+	bool write(FILE *file, String directory);
 
-/**
- Frees the DIF and all memory contained within it
- @arg dif - The DIF to release
- */
-void dif_release(DIF *dif);
-
-#ifdef __cplusplus
-}
-#endif
+	/**
+	 Frees the DIF and all memory contained within it
+	 @arg dif - The DIF to release
+	 */
+	~DIF();
+};
 
 #endif

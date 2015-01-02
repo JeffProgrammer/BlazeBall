@@ -30,96 +30,91 @@
 #include "io.h"
 #include "forceField.h"
 
-ForceField *forceField_read_file(FILE *file) {
-	ForceField *forceField = malloc(sizeof(ForceField));
-
-	READTOVAR(forceField->forceFieldFileVersion, U32); //forceFieldFileVersion
-	READTOVAR(forceField->name, String); //name
-	READLOOPVAR(forceField->numTriggers, forceField->trigger, String) {
-		READTOVAR(forceField->trigger[i], String); //trigger
+ForceField::ForceField(FILE *file) {
+	READTOVAR(forceFieldFileVersion, U32); //forceFieldFileVersion
+	READTOVAR(name, String); //name
+	READLOOPVAR(numTriggers, trigger, String) {
+		READTOVAR(trigger[i], String); //trigger
 	}
-	READTOVAR(forceField->boundingBox, BoxF); //boundingBox
-	READTOVAR(forceField->boundingSphere, SphereF); //boundingSphere
-	READLOOPVAR(forceField->numNormals, forceField->normal, Point3F) {
-		READTOVAR(forceField->normal[i], Point3F); //normal
+	READTOVAR(boundingBox, BoxF); //boundingBox
+	READTOVAR(boundingSphere, SphereF); //boundingSphere
+	READLOOPVAR(numNormals, normal, Point3F) {
+		READTOVAR(normal[i], Point3F); //normal
 	}
-	READLOOPVAR(forceField->numPlanes, forceField->plane, Plane_FF) {
-		READTOVAR(forceField->plane[i].normalIndex, U32); //normalIndex
-		READTOVAR(forceField->plane[i].planeDistance, F32); //planeDistance
+	READLOOPVAR(numPlanes, plane, Plane_FF) {
+		READTOVAR(plane[i].normalIndex, U32); //normalIndex
+		READTOVAR(plane[i].planeDistance, F32); //planeDistance
 	}
-	READLOOPVAR(forceField->numBSPNodes, forceField->BSPNode, BSPNode_FF) {
-		READTOVAR(forceField->BSPNode[i].planeIndex, U16); //planeIndex
-		READTOVAR(forceField->BSPNode[i].frontIndex, U16); //frontIndex
-		READTOVAR(forceField->BSPNode[i].backIndex, U16); //backIndex
+	READLOOPVAR(numBSPNodes, BSPNode, BSPNode_FF) {
+		READTOVAR(BSPNode[i].planeIndex, U16); //planeIndex
+		READTOVAR(BSPNode[i].frontIndex, U16); //frontIndex
+		READTOVAR(BSPNode[i].backIndex, U16); //backIndex
 	}
-	READLOOPVAR(forceField->numBSPSolidLeaves, forceField->BSPSolidLeaf, BSPSolidLeaf_FF) {
-		READTOVAR(forceField->BSPSolidLeaf[i].surfaceIndex, U32); //surfaceIndex
-		READTOVAR(forceField->BSPSolidLeaf[i].surfaceCount, U16); //surfaceCount
+	READLOOPVAR(numBSPSolidLeaves, BSPSolidLeaf, BSPSolidLeaf_FF) {
+		READTOVAR(BSPSolidLeaf[i].surfaceIndex, U32); //surfaceIndex
+		READTOVAR(BSPSolidLeaf[i].surfaceCount, U16); //surfaceCount
 	}
-	READLOOPVAR(forceField->numWindings, forceField->index, U32) {
-		READTOVAR(forceField->index[i], U32); //index
+	READLOOPVAR(numWindings, index, U32) {
+		READTOVAR(index[i], U32); //index
 	}
-	READLOOPVAR(forceField->numSurfaces, forceField->surface, Surface_FF) {
-		READTOVAR(forceField->surface[i].windingStart, U32); //windingStart
-		READTOVAR(forceField->surface[i].windingCount, U8); //windingCount
-		READTOVAR(forceField->surface[i].planeIndex, U16); //planeIndex
-		READTOVAR(forceField->surface[i].surfaceFlags, U8); //surfaceFlags
-		READTOVAR(forceField->surface[i].fanMask, U32); //fanMask
+	READLOOPVAR(numSurfaces, surface, Surface_FF) {
+		READTOVAR(surface[i].windingStart, U32); //windingStart
+		READTOVAR(surface[i].windingCount, U8); //windingCount
+		READTOVAR(surface[i].planeIndex, U16); //planeIndex
+		READTOVAR(surface[i].surfaceFlags, U8); //surfaceFlags
+		READTOVAR(surface[i].fanMask, U32); //fanMask
 	}
-	READLOOPVAR(forceField->numSolidLeafSurfaces, forceField->solidLeafSurface, U32) {
-		READTOVAR(forceField->solidLeafSurface[i], U32); //solidLeafSurface
+	READLOOPVAR(numSolidLeafSurfaces, solidLeafSurface, U32) {
+		READTOVAR(solidLeafSurface[i], U32); //solidLeafSurface
 	}
-	READTOVAR(forceField->color, ColorI); //color
-
-	return forceField;
+	READTOVAR(color, ColorI); //color
 }
 
-bool forceField_write_file(FILE *file, ForceField *forceField) {
-	WRITECHECK(U32, forceField->forceFieldFileVersion); //forceFieldFileVersion
-	WRITE(String, forceField->name); //name
-	WRITELOOPVARNOCHECK(String, forceField->numTriggers, forceField->trigger); //trigger
-	WRITECHECK(BoxF, forceField->boundingBox); //boundingBox
-	WRITECHECK(SphereF, forceField->boundingSphere); //boundingSphere
-	WRITELOOPVAR(Point3F, forceField->numNormals, forceField->normal); //normal
-	WRITELOOP(forceField->numPlanes) { //numPlanes
-		WRITECHECK(U32, forceField->plane[i].normalIndex); //normalIndex
-		WRITECHECK(F32, forceField->plane[i].planeDistance); //planeDistance
+bool ForceField::write(FILE *file) {
+	WRITECHECK(U32, forceFieldFileVersion); //forceFieldFileVersion
+	WRITE(String, name); //name
+	WRITELOOPVARNOCHECK(String, numTriggers, trigger); //trigger
+	WRITECHECK(BoxF, boundingBox); //boundingBox
+	WRITECHECK(SphereF, boundingSphere); //boundingSphere
+	WRITELOOPVAR(Point3F, numNormals, normal); //normal
+	WRITELOOP(numPlanes) { //numPlanes
+		WRITECHECK(U32, plane[i].normalIndex); //normalIndex
+		WRITECHECK(F32, plane[i].planeDistance); //planeDistance
 	}
-	WRITELOOP(forceField->numBSPNodes) { //numBSPNodes
-		WRITECHECK(U16, forceField->BSPNode[i].planeIndex); //planeIndex
-		WRITECHECK(U16, forceField->BSPNode[i].frontIndex); //frontIndex
-		WRITECHECK(U16, forceField->BSPNode[i].backIndex); //backIndex
+	WRITELOOP(numBSPNodes) { //numBSPNodes
+		WRITECHECK(U16, BSPNode[i].planeIndex); //planeIndex
+		WRITECHECK(U16, BSPNode[i].frontIndex); //frontIndex
+		WRITECHECK(U16, BSPNode[i].backIndex); //backIndex
 	}
-	WRITELOOP(forceField->numBSPSolidLeaves) { //numBSPSolidLeaves
-		WRITECHECK(U32, forceField->BSPSolidLeaf[i].surfaceIndex); //surfaceIndex
-		WRITECHECK(U16, forceField->BSPSolidLeaf[i].surfaceCount); //surfaceCount
+	WRITELOOP(numBSPSolidLeaves) { //numBSPSolidLeaves
+		WRITECHECK(U32, BSPSolidLeaf[i].surfaceIndex); //surfaceIndex
+		WRITECHECK(U16, BSPSolidLeaf[i].surfaceCount); //surfaceCount
 	}
-	WRITELOOPVAR(U32, forceField->numWindings, forceField->index); //index
-	WRITELOOP(forceField->numSurfaces) { //numSurfaces
-		WRITECHECK(U32, forceField->surface[i].windingStart); //windingStart
-		WRITECHECK(U8, forceField->surface[i].windingCount); //windingCount
-		WRITECHECK(U16, forceField->surface[i].planeIndex); //planeIndex
-		WRITECHECK(U8, forceField->surface[i].surfaceFlags); //surfaceFlags
-		WRITECHECK(U32, forceField->surface[i].fanMask); //fanMask
+	WRITELOOPVAR(U32, numWindings, index); //index
+	WRITELOOP(numSurfaces) { //numSurfaces
+		WRITECHECK(U32, surface[i].windingStart); //windingStart
+		WRITECHECK(U8, surface[i].windingCount); //windingCount
+		WRITECHECK(U16, surface[i].planeIndex); //planeIndex
+		WRITECHECK(U8, surface[i].surfaceFlags); //surfaceFlags
+		WRITECHECK(U32, surface[i].fanMask); //fanMask
 	}
-	WRITELOOPVAR(U32, forceField->numSolidLeafSurfaces, forceField->solidLeafSurface); //solidLeafSurface
-	WRITECHECK(ColorI, forceField->color); //color
+	WRITELOOPVAR(U32, numSolidLeafSurfaces, solidLeafSurface); //solidLeafSurface
+	WRITECHECK(ColorI, color); //color
 
 	return true;
 }
 
-void forceField_release(ForceField *forceField) {
-	releaseString(forceField->name);
-	for (U32 i = 0; i < forceField->numTriggers; i ++) {
-		releaseString(forceField->trigger[i]);
+ForceField::~ForceField() {
+	releaseString(name);
+	for (U32 i = 0; i < numTriggers; i ++) {
+		releaseString(trigger[i]);
 	}
-	free(forceField->trigger);
-	free(forceField->normal);
-	free(forceField->plane);
-	free(forceField->BSPNode);
-	free(forceField->BSPSolidLeaf);
-	free(forceField->index);
-	free(forceField->surface);
-	free(forceField->solidLeafSurface);
-	free(forceField);
+	free(trigger);
+	free(normal);
+	free(plane);
+	free(BSPNode);
+	free(BSPSolidLeaf);
+	free(index);
+	free(surface);
+	free(solidLeafSurface);
 }

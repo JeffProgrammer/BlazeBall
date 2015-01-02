@@ -62,7 +62,7 @@ void mng__memfree(mng_ptr ptr, mng_size_t len) {
 
 mng_bool mng__openstream(mng_handle handle) {
 	//Init info
-	MNGInfo *info = mng_get_userdata(handle);
+	MNGInfo *info = (MNGInfo *)mng_get_userdata(handle);
 	info->extent.x = 0;
 	info->extent.y = 0;
 
@@ -74,7 +74,7 @@ mng_bool mng__closestream(mng_handle handle) {
 }
 
 mng_bool mng__readdata(mng_handle handle, mng_ptr data, mng_uint32 length, mng_uint32p bytesread) {
-	MNGInfo *info = mng_get_userdata(handle);
+	MNGInfo *info = (MNGInfo *)mng_get_userdata(handle);
 	if (info->stream == NULL) {
 		return false;
 	}
@@ -86,7 +86,7 @@ mng_bool mng__readdata(mng_handle handle, mng_ptr data, mng_uint32 length, mng_u
 }
 
 mng_bool mng__processheader(mng_handle handle, mng_uint32 width, mng_uint32 height) {
-	MNGInfo *info = mng_get_userdata(handle);
+	MNGInfo *info = (MNGInfo *)mng_get_userdata(handle);
 
 	//Set extent
 	info->extent.x = width;
@@ -125,13 +125,13 @@ mng_bool mng__processheader(mng_handle handle, mng_uint32 width, mng_uint32 heig
 	}
 
 	//Allocate the image
-	*info->pixels = malloc(sizeof(U8) * width * height * info->format);
+	*info->pixels = new U8[width * height * info->format];
 
 	return MNG_TRUE;
 }
 
 mng_ptr mng__getcanvasline(mng_handle handle, mng_uint32 line) {
-	MNGInfo *info = mng_get_userdata(handle);
+	MNGInfo *info = (MNGInfo *)mng_get_userdata(handle);
 
 	return *info->pixels + (line * gMNGInfo.extent.x * info->format);
 }

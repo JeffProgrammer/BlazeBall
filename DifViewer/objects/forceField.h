@@ -54,7 +54,8 @@ typedef struct {
 	U32 fanMask;
 } Surface_FF;
 
-typedef struct {
+class ForceField{
+public:
 	U32 forceFieldFileVersion;
 	String name;
 
@@ -86,21 +87,19 @@ typedef struct {
 	U32 *solidLeafSurface;
 
 	ColorI color;
-} ForceField;
 
-/**
- Reads a ForceField from a FILE
- @arg file - The FILE to read from (updates position)
- @return A ForceField
- */
-ForceField *forceField_read_file(FILE *file);
+	/**
+	 Reads a ForceField from a FILE
+	 @arg file - The FILE to read from (updates position)
+	 */
+	ForceField(FILE *file);
 
-bool forceField_write_file(FILE *file, ForceField *forceField);
+	bool write(FILE *file);
 
-/**
- Frees the ForceField and all memory contained within it
- @arg forceField - The ForceField to release
- */
-void forceField_release(ForceField *forceField);
+	/**
+	 Frees the ForceField and all memory contained within it
+	 */
+	~ForceField();
+};
 
 #endif

@@ -30,88 +30,84 @@
 #include "io.h"
 #include "dif.h"
 
-DIF *dif_read_file(FILE *file, String directory) {
+DIF::DIF(FILE *file, String directory) {
 	//http://rustycode.com/tutorials/DIF_File_Format_44_14.html
 	// Someone give that guy all the cookies.
-
-	DIF *dif = malloc(sizeof(DIF));
 
 	READCHECK(U32, 44); //interiorResourceFileVersion
 	if (READ(U8)) { //previewIncluded
 		READ(PNG); //previewBitmap
 	}
 
-	READLOOPVAR(dif->numDetailLevels, dif->interior, Interior *) {
-		dif->interior[i] = interior_read_file(file, directory);
+	READLOOPVAR(numDetailLevels, interior, Interior *) {
+		interior[i] = new Interior(file, directory);
 	}
-	READLOOPVAR(dif->numSubObjects, dif->subObject, Interior *) {
-		dif->subObject[i] = interior_read_file(file, directory);
+	READLOOPVAR(numSubObjects, subObject, Interior *) {
+		subObject[i] = new Interior(file, directory);
 	}
-	READLOOPVAR(dif->numTriggers, dif->trigger, Trigger *) {
-		dif->trigger[i] = trigger_read_file(file);
+	READLOOPVAR(numTriggers, trigger, Trigger *) {
+		trigger[i] = new Trigger(file);
 	}
-	READLOOPVAR(dif->numInteriorPathFollowers, dif->interiorPathFollower, InteriorPathFollower *) {
-		dif->interiorPathFollower[i] = interiorPathFollower_read_file(file);
+	READLOOPVAR(numInteriorPathFollowers, interiorPathFollower, InteriorPathFollower *) {
+		interiorPathFollower[i] = new InteriorPathFollower(file);
 	}
-	READLOOPVAR(dif->numForceFields, dif->forceField, ForceField *) {
-		dif->forceField[i] = forceField_read_file(file);
+	READLOOPVAR(numForceFields, forceField, ForceField *) {
+		forceField[i] = new ForceField(file);
 	}
-	READLOOPVAR(dif->numAISpecialNodes, dif->aiSpecialNode, AISpecialNode *) {
-		dif->aiSpecialNode[i] = aiSpecialNode_read_file(file);
+	READLOOPVAR(numAISpecialNodes, aiSpecialNode, AISpecialNode *) {
+		aiSpecialNode[i] = new AISpecialNode(file);
 	}
 	if (READ(U32) == 1) { //readVehicleCollision
-		dif->vehicleCollision = vehicleCollision_read_file(file);
+		vehicleCollision = new VehicleCollision(file);
 	}
 	READ(U32); //unknown
 	READ(U32); //unknown
 	READ(U32); //unknown
 	READ(U32); //unknown
 	if (READ(U32) == 2) { //readGameEntities
-		READLOOPVAR(dif->numGameEntities, dif->gameEntity, GameEntity *) {
-			dif->gameEntity[i] = gameEntity_read_file(file);
+		READLOOPVAR(numGameEntities, gameEntity, GameEntity *) {
+			gameEntity[i] = new GameEntity(file);
 		}
 	} else {
-		dif->numGameEntities = 0;
-		dif->gameEntity = NULL;
+		numGameEntities = 0;
+		gameEntity = NULL;
 	}
 	READ(U32); //dummy
-
-	return dif;
 }
 
-bool dif_write_file(FILE *file, DIF *dif, String directory) {
+bool DIF::write(FILE *file, String directory) {
 	WRITECHECK(U32, 44); //interiorResourceFileVersion
 	WRITECHECK(U8, 0); //previewIncluded
 
-	WRITELOOP(dif->numDetailLevels) {
-		if (!interior_write_file(file, dif->interior[i])) return false;
+	WRITELOOP(numDetailLevels) {
+		if (!interior[i]->write(file)) return false;
 	}
-	WRITELOOP(dif->numSubObjects) {
-		if (!interior_write_file(file, dif->subObject[i])) return false;
+	WRITELOOP(numSubObjects) {
+		if (!subObject[i]->write(file)) return false;
 	}
-	WRITELOOP(dif->numTriggers) {
-		if (!trigger_write_file(file, dif->trigger[i])) return false;
+	WRITELOOP(numTriggers) {
+		if (!trigger[i]->write(file)) return false;
 	}
-	WRITELOOP(dif->numInteriorPathFollowers) {
-		if (!interiorPathFollower_write_file(file, dif->interiorPathFollower[i])) return false;
+	WRITELOOP(numInteriorPathFollowers) {
+		if (!interiorPathFollower[i]->write(file)) return false;
 	}
-	WRITELOOP(dif->numForceFields) {
-		if (!forceField_write_file(file, dif->forceField[i])) return false;
+	WRITELOOP(numForceFields) {
+		if (!forceField[i]->write(file)) return false;
 	}
-	WRITELOOP(dif->numAISpecialNodes) {
-		if (!aiSpecialNode_write_file(file, dif->aiSpecialNode[i])) return false;
+	WRITELOOP(numAISpecialNodes) {
+		if (!aiSpecialNode[i]->write(file)) return false;
 	}
 	WRITECHECK(U32, 1);
-	vehicleCollision_write_file(file, dif->vehicleCollision);
+	vehicleCollision->write(file);
 
 	WRITECHECK(U32, 0);
 	WRITECHECK(U32, 0);
 	WRITECHECK(U32, 0);
 	WRITECHECK(U32, 0);
-	if (dif->gameEntity){
+	if (gameEntity){
 		WRITECHECK(U32, 2);
-		WRITELOOP(dif->numGameEntities) {
-			gameEntity_write_file(file, dif->gameEntity[i]);
+		WRITELOOP(numGameEntities) {
+			gameEntity[i]->write(file);
 		}
 	} else {
 		WRITECHECK(U32, 0);
@@ -122,43 +118,13 @@ bool dif_write_file(FILE *file, DIF *dif, String directory) {
 	return true;
 }
 
-void dif_release(DIF *dif) {
-	for (U32 i = 0; i < dif->numDetailLevels; i ++) {
-		interior_release(dif->interior[i]);
-	}
-	free(dif->interior);
-
-	for (U32 i = 0; i < dif->numSubObjects; i ++) {
-		interior_release(dif->subObject[i]);
-	}
-	free(dif->subObject);
-
-	for (U32 i = 0; i < dif->numTriggers; i ++) {
-		trigger_release(dif->trigger[i]);
-	}
-	free(dif->trigger);
-
-	for (U32 i = 0; i < dif->numInteriorPathFollowers; i ++) {
-		interiorPathFollower_release(dif->interiorPathFollower[i]);
-	}
-	free(dif->interiorPathFollower);
-
-	for (U32 i = 0; i < dif->numForceFields; i ++) {
-		forceField_release(dif->forceField[i]);
-	}
-	free(dif->forceField);
-
-	for (U32 i = 0; i < dif->numAISpecialNodes; i ++) {
-		aiSpecialNode_release(dif->aiSpecialNode[i]);
-	}
-	free(dif->aiSpecialNode);
-
-	vehicleCollision_release(dif->vehicleCollision);
-
-	for (U32 i = 0; i < dif->numGameEntities; i ++) {
-		gameEntity_release(dif->gameEntity[i]);
-	}
-	free(dif->gameEntity);
-
-	free(dif);
+DIF::~DIF() {
+	delete [] interior;
+	delete [] subObject;
+	delete [] trigger;
+	delete [] interiorPathFollower;
+	delete [] forceField;
+	delete [] aiSpecialNode;
+	delete vehicleCollision;
+	delete [] gameEntity;
 }
