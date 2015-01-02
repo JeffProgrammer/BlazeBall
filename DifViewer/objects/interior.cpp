@@ -604,7 +604,7 @@ void Interior::exportObj(FILE *file) {
 }
 
 U32 Interior::rayCast(RayF ray) {
-	ray = (RayF){point3F_convert_to_torque(ray.origin), point3F_convert_to_torque(ray.direction)};
+	ray = (RayF){ray.origin.convert(), ray.direction.convert()};
 
 	U32 closest = -1;
 	F32 closestDistance = UINT32_MAX;

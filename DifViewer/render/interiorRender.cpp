@@ -61,7 +61,7 @@ void Interior::render(Point3F offset) {
 		for (U32 j = surface.windingStart + 2; j < surface.windingStart + surface.windingCount; j ++) {
 			Point3F n = normal[plane[surface.planeIndex].normalIndex];
 			if (surface.planeFlipped)
-				n = point3F_scale(n, -1);
+				n *= -1;
 			Point3F u0, u1, u2;
 
 			if ((j - (surface.windingStart + 2)) % 2 == 0) {

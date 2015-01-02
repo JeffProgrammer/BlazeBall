@@ -151,7 +151,7 @@ void render() {
 
 			glVertex3f(vert.x, vert.y, vert.z);
 
-			F32 distance = point3F_distance_to_point3F(first, vert);
+			F32 distance = first.distance(vert);
 			len = (distance > len ? distance : len);
 		}
 		glEnd();
@@ -172,7 +172,7 @@ void render() {
 			Point3F vert = gSelection.interior->point[gSelection.interior->index[surface.windingStart + i]];
 			Point3F normal = gSelection.interior->normal[gSelection.interior->plane[surface.planeIndex].normalIndex];
 			if (surface.planeFlipped)
-				normal = point3F_scale(normal, -1);
+				normal *= -1;
 
 			glTexCoord2f(planeF_distance_to_point(texGenEq.planeX, vert), planeF_distance_to_point(texGenEq.planeY, vert));
 

@@ -66,12 +66,7 @@ public:
 	U32 z;
 };
 
-class Point3F {
-public:
-	F32 x;
-	F32 y;
-	F32 z;
-};
+#include "point3F.h"
 
 class QuatF {
 public:
