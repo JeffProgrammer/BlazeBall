@@ -96,6 +96,8 @@
 		B5E0CD9F1A13F43B00BB4291 /* texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = texture.cpp; path = DifViewer/bitmap/texture.cpp; sourceTree = SOURCE_ROOT; };
 		B5F5AD631A567AA80030F491 /* point3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = point3.h; sourceTree = "<group>"; };
 		B5F5AD641A5685700030F491 /* point2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = point2.h; sourceTree = "<group>"; };
+		B5F5AD651A56880F0030F491 /* color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = color.h; sourceTree = "<group>"; };
+		B5F5AD661A5688FA0030F491 /* point4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = point4.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,11 +120,13 @@
 			children = (
 				B54F9D991A10399D00F550EA /* io.cpp */,
 				B54F9D9A1A10399D00F550EA /* io.h */,
+				B58E54C71A215B0700304A9B /* math.cpp */,
+				B5AADE6F1A142E1E0064F1E5 /* math.h */,
 				B54F9D9B1A10399D00F550EA /* types.h */,
 				B5F5AD641A5685700030F491 /* point2.h */,
 				B5F5AD631A567AA80030F491 /* point3.h */,
-				B58E54C71A215B0700304A9B /* math.cpp */,
-				B5AADE6F1A142E1E0064F1E5 /* math.h */,
+				B5F5AD661A5688FA0030F491 /* point4.h */,
+				B5F5AD651A56880F0030F491 /* color.h */,
 			);
 			name = base;
 			path = DifViewer/base;

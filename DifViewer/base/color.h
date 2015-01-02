@@ -25,110 +25,20 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef types_h
-#define types_h
+#ifndef color_h
+#define color_h
 
-#include <stdbool.h>
-
-//Base types (names stolen from TGE because lazy)
-typedef unsigned char      U8;
-typedef unsigned short     U16;
-typedef unsigned int       U32;
-typedef unsigned long long U64;
-
-typedef signed char      S8;
-typedef signed short     S16;
-typedef signed int       S32;
-typedef signed long long S64;
-
-typedef float F32;
-typedef double F64;
-
-//Pointer types
-typedef U8 * String;
-
-#include "point2.h"
-#include "point3.h"
-#include "point4.h"
-#include "color.h"
-
-typedef Point2<U16> Point2I;
-typedef Point2<F32> Point2F;
-typedef Point3<U32> Point3I;
-typedef Point3<F32> Point3F;
-typedef Point3<F64> Point3D;
-
-typedef Color<U8>  ColorI;
-typedef Color<F32> ColorF;
-
-//More names stolen from TGE
-
-class QuatF {
+template <typename T>
+class Color {
 public:
-	F32 w;
-	F32 x;
-	F32 y;
-	F32 z;
+	T red;
+	T green;
+	T blue;
+	T alpha;
+
+	Color() : red(0), green(0), blue(0), alpha(0) {};
+	Color(T red, T green, T blue, T alpha) : red(red), green(green), blue(blue), alpha(alpha) {};
 };
 
-class PlaneF {
-public:
-	F32 x;
-	F32 y;
-	F32 z;
-	F32 d;
-};
-
-class BoxF {
-public:
-	F32 minX;
-	F32 minY;
-	F32 minZ;
-	F32 maxX;
-	F32 maxY;
-	F32 maxZ;
-};
-
-class SphereF {
-public:
-	F32 x;
-	F32 y;
-	F32 z;
-	F32 radius;
-};
-
-class Dictionary {
-public:
-	U32 size;
-	String *names;
-	String *values;
-};
-
-class PNG {
-public:
-	U32 size;
-	U8 *data;
-};
-
-class RayF {
-public:
-	Point3F origin;
-	Point3F direction;
-};
-
-class TriangleF {
-public:
-	Point3F point0;
-	Point3F point1;
-	Point3F point2;
-};
-
-class TetrahetronF {
-public:
-	Point3F point0;
-	Point3F point1;
-	Point3F point2;
-	Point3F point3;
-};
 
 #endif
