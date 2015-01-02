@@ -57,6 +57,7 @@ public:
 	Point3 reject(const Point3<T> &point) const;
 
 	T length() const;
+	T lengthSquared() const;
 	T distance(const Point3<T> &point) const;
 	T angle(const Point3<T> &point) const;
 
@@ -143,6 +144,11 @@ inline Point3<T> Point3<T>::reject(const Point3<T> &point) const {
 template <typename T>
 inline T Point3<T>::length() const {
 	return sqrtf(x*x + y*y + z*z);
+}
+
+template <typename T>
+inline T Point3<T>::lengthSquared() const {
+	return x*x + y*y + z*z;
 }
 
 template <typename T>

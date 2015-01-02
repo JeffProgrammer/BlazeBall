@@ -53,6 +53,7 @@ public:
 	Point4 &operator/=(const T scalar);
 
 	T length() const;
+	T lengthSquared() const;
 	T distance(const Point4<T> &point) const;
 
 	Point4<T> roundThousands() const;
@@ -115,6 +116,11 @@ inline Point4<T> &Point4<T>::operator/=(const T scalar) {
 template <typename T>
 inline T Point4<T>::length() const {
 	return sqrtf(w*w + x*x + y*y + z*z);
+}
+
+template <typename T>
+inline T Point4<T>::lengthSquared() const {
+	return w*w + x*x + y*y + z*z;
 }
 
 template <typename T>
