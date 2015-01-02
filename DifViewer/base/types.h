@@ -48,9 +48,10 @@ typedef double F64;
 typedef U8 * String;
 
 #include "point2.h"
+#include "point3.h"
+#include "point4.h"
 typedef Point2<U16> Point2I;
 typedef Point2<F32> Point2F;
-#include "point3.h"
 typedef Point3<U32> Point3I;
 typedef Point3<F32> Point3F;
 typedef Point3<F64> Point3D;
