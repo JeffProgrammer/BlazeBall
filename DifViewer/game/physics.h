@@ -42,8 +42,15 @@ public:
 	static Physics *getPhysics();
 };
 
-static inline btVector3 btConvert(Point3F point) {
+template <typename from, typename to>
+static to btConvert(from point);
+
+inline static btVector3 btConvert(Point3F point) {
 	return btVector3(point.x, point.y, point.z);
+}
+
+inline static Point3F btConvert(btVector3 point) {
+	return Point3F(point.x(), point.y(), point.z());
 }
 
 #endif

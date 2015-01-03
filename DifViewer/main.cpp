@@ -118,7 +118,7 @@ void render() {
 	gModelviewMatrix = glm::rotate(gModelviewMatrix, gPitch, glm::vec3(1, 0, 0));
 	gModelviewMatrix = glm::rotate(gModelviewMatrix, gYaw, glm::vec3(0, 1, 0));
 	gModelviewMatrix = glm::rotate(gModelviewMatrix, -90.0f, glm::vec3(1, 0, 0));
-	gModelviewMatrix = glm::translate(gModelviewMatrix, gCameraPosition);
+	gModelviewMatrix = glm::translate(gModelviewMatrix, -gCameraPosition);
 	glLoadMatrixf(&gModelviewMatrix[0][0]);
 
 	//Clear
@@ -207,10 +207,10 @@ void loop() {
 	//Basic movement
 	glm::mat4x4 delta = glm::mat4x4(1);
 
-	if (movement[4]) gSphere->origin.x += 0.1; //gPitch -= gKeyCameraSpeed;
-	if (movement[5]) gSphere->origin.x -= 0.1; //gPitch += gKeyCameraSpeed;
-	if (movement[6]) gSphere->origin.z += 0.1; //gYaw -= gKeyCameraSpeed;
-	if (movement[7]) gSphere->origin.z -= 0.1; //gYaw += gKeyCameraSpeed;
+	if (movement[4]) gPitch -= gKeyCameraSpeed;
+	if (movement[5]) gPitch += gKeyCameraSpeed;
+	if (movement[6]) gYaw -= gKeyCameraSpeed;
+	if (movement[7]) gYaw += gKeyCameraSpeed;
 
 	delta = glm::rotate(delta, -gYaw, glm::vec3(0, 0, 1));
 	delta = glm::rotate(delta, -gPitch, glm::vec3(1, 0, 0));
@@ -219,12 +219,14 @@ void loop() {
 	if (mouseButtons[1])
 		speed *= 2.f;
 
-	if (movement[0]) delta = glm::translate(delta, glm::vec3(0, -speed, 0));
-	if (movement[1]) delta = glm::translate(delta, glm::vec3(0, speed, 0));
-	if (movement[2]) delta = glm::translate(delta, glm::vec3(speed, 0, 0));
-	if (movement[3]) delta = glm::translate(delta, glm::vec3(-speed, 0, 0));
+//	if (movement[0]) delta = glm::translate(delta, glm::vec3(0, -speed, 0));
+//	if (movement[1]) delta = glm::translate(delta, glm::vec3(0, speed, 0));
+//	if (movement[2]) delta = glm::translate(delta, glm::vec3(speed, 0, 0));
+//	if (movement[3]) delta = glm::translate(delta, glm::vec3(-speed, 0, 0));
 
-	gCameraPosition += glm::vec3(delta[3]);
+	Point3F pos = gSphere->getPosition();
+	gCameraPosition = glm::vec3(pos.x, pos.y, pos.z);
+	gCameraPosition += glm::vec3(glm::translate(delta, glm::vec3(0, -4, 0))[3]);
 }
 
 bool initGL() {

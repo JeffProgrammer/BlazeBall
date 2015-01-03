@@ -51,6 +51,8 @@ public:
 	Sphere(Point3F origin, F32 radius);
 
 	void render(ColorF color);
+	Point3F getPosition();
+	Point3F getPosition() const;
 };
 
 #endif

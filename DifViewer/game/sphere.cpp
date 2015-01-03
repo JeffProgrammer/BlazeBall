@@ -37,11 +37,13 @@ Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius) {
 
 	btTransform transform;
 	transform.setIdentity();
-	transform.setOrigin(btVector3(origin.x, origin.y, origin.z));
+	transform.setOrigin(btConvert(origin));
 
 	state->setWorldTransform(transform);
 
 	actor = new btRigidBody(1, state, shape);
+	actor->setRestitution(0.5f);
+	actor->setFriction(0.6f);
 	Physics::getPhysics()->addRigidBody(actor);
 }
 
@@ -81,4 +83,16 @@ void Sphere::render(ColorF color) {
 	glEnd();
 	glDisable(GL_COLOR_MATERIAL);
 	glPopMatrix();
+}
+
+Point3F Sphere::getPosition() {
+	btTransform trans;
+	actor->getMotionState()->getWorldTransform(trans);
+	return btConvert(trans.getOrigin());
+}
+
+Point3F Sphere::getPosition() const {
+	btTransform trans;
+	actor->getMotionState()->getWorldTransform(trans);
+	return btConvert(trans.getOrigin());
 }
