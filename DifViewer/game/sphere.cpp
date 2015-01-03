@@ -35,22 +35,26 @@ Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius) {
 	btMotionState *state = new btDefaultMotionState();
 	btCollisionShape *shape = new btSphereShape(radius);
 
+	btVector3 fallInertia = btVector3(0.f, 0.f, 0.f);
+	shape->calculateLocalInertia(1.0f, fallInertia);
+
 	btTransform transform;
 	transform.setIdentity();
 	transform.setOrigin(btConvert(origin));
 
 	state->setWorldTransform(transform);
 
-	btRigidBody::btRigidBodyConstructionInfo info(1, state, shape);
-	info.m_linearDamping = 0;
-	info.m_angularDamping = 0.9f;
+	btRigidBody::btRigidBodyConstructionInfo info(1, state, shape, fallInertia);
+	info.m_linearDamping = 0.1f;
+	info.m_angularDamping = 0.2f;
 	info.m_restitution = 0.7f;
 	info.m_friction = 1.1f;
+	info.m_rollingFriction = 1.1f;
 
 	actor = new btRigidBody(info);
 	actor->setActivationState(DISABLE_DEACTIVATION);
-	actor->setCcdMotionThreshold(0.5f);
-	actor->setCcdSweptSphereRadius(10.0f);
+	actor->setCcdMotionThreshold(1e-7);
+	actor->setCcdSweptSphereRadius(radius / 2.0f);
 	Physics::getPhysics()->addRigidBody(actor);
 }
 
@@ -78,9 +82,11 @@ void Sphere::render(ColorF color) {
 	glPushMatrix();
 	btTransform trans;
 	Point3F pos = getPosition();
+	AngAxisF rot = getRotation();
 	glTranslatef(pos.x, pos.y, pos.z);
+	glRotatef(rot.angle, rot.axis.x, rot.axis.y, rot.axis.z);
 	glEnable(GL_COLOR_MATERIAL);
-	glColor4fv(&color.red);
+//	glColor4fv(&rot.axis.x);
 	glBegin(GL_TRIANGLE_STRIP);
 	for (Point3F point : geometry) {
 		glNormal3fv(&point.x);
@@ -92,15 +98,33 @@ void Sphere::render(ColorF color) {
 }
 
 void Sphere::applyTorque(Point3F torque) {
-	actor->applyTorque(btConvert(torque));
+	actor->applyTorqueImpulse(btConvert(torque));
 }
 
-void Sphere::applyImpulse(Point3F force) {
-	actor->applyImpulse(btConvert(force), btVector3(0, 0, 0));
+void Sphere::applyImpulse(Point3F force, Point3F origin) {
+	actor->applyImpulse(btConvert(force), btConvert(origin));
 }
 
-void Sphere::applyForce(Point3F force) {
-	actor->applyForce(btConvert(force), btVector3(0, 0, 0));
+void Sphere::applyForce(Point3F force, Point3F origin) {
+	actor->applyForce(btConvert(force), btConvert(origin));
+}
+
+bool Sphere::colliding() {
+	btDiscreteDynamicsWorld *world = Physics::getPhysics()->getWorld();
+	U32 manifolds = world->getDispatcher()->getNumManifolds();
+
+	for (U32 i = 0; i < manifolds; i ++) {
+		btPersistentManifold *manifold = world->getDispatcher()->getManifoldByIndexInternal(i);
+		btCollisionObject *obj1 = (btCollisionObject *)manifold->getBody0();
+		btCollisionObject *obj2 = (btCollisionObject *)manifold->getBody1();
+
+		if (obj1 == actor || obj2 == actor) {
+			if (manifold->getNumContacts() > 0)
+				return true;
+		}
+	}
+
+	return false;
 }
 
 Point3F Sphere::getPosition() {
@@ -114,3 +138,17 @@ Point3F Sphere::getPosition() const {
 	actor->getMotionState()->getWorldTransform(trans);
 	return btConvert(trans.getOrigin());
 }
+
+AngAxisF Sphere::getRotation() {
+	btTransform trans;
+	actor->getMotionState()->getWorldTransform(trans);
+	return btConvert(trans.getRotation());
+}
+
+AngAxisF Sphere::getRotation() const {
+	btTransform trans;
+	actor->getMotionState()->getWorldTransform(trans);
+	return btConvert(trans.getRotation());
+}
+
+

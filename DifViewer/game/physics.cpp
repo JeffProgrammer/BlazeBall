@@ -28,13 +28,13 @@
 #include "physics.h"
 
 void Physics::init() {
-	btCollisionConfiguration *configuration = new btDefaultCollisionConfiguration();
-	btDispatcher *dispatcher = new btCollisionDispatcher(configuration);
+	btDefaultCollisionConfiguration *configuration = new btDefaultCollisionConfiguration();
+	btCollisionDispatcher *dispatcher = new btCollisionDispatcher(configuration);
 	btBroadphaseInterface *interface = new btDbvtBroadphase();
 	btConstraintSolver *solver = new btSequentialImpulseConstraintSolver();
 
 	world = new btDiscreteDynamicsWorld(dispatcher, interface, solver, configuration);
-	world->setGravity(btVector3(0, 0, -20));
+	world->setGravity(btVector3(0, 0, -40.0f));
 }
 
 void Physics::simulate(F32 delta) {
@@ -52,3 +52,5 @@ Physics *Physics::getPhysics() {
 void Physics::addRigidBody(btRigidBody *body) {
 	world->addRigidBody(body);
 }
+
+

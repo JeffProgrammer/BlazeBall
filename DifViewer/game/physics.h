@@ -39,6 +39,8 @@ public:
 	void simulate(F32 delta);
 	void addRigidBody(btRigidBody *body);
 
+	inline btDiscreteDynamicsWorld *getWorld() { return world; };
+
 	static Physics *getPhysics();
 };
 
@@ -51,6 +53,14 @@ inline static btVector3 btConvert(Point3F point) {
 
 inline static Point3F btConvert(btVector3 point) {
 	return Point3F(point.x(), point.y(), point.z());
+}
+
+inline static btQuaternion btConvert(AngAxisF point) {
+	return btQuaternion(btConvert(point.axis), point.angle);
+}
+
+inline static AngAxisF btConvert(btQuaternion point) {
+	return AngAxisF(btConvert(point.getAxis()), point.getAngle());
 }
 
 #endif

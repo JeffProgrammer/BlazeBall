@@ -66,6 +66,9 @@ public:
 
 	Point3<T> convert() const;
 	Point3<T> roundThousands() const;
+
+	template <typename to>
+	operator to() const;
 };
 
 template <typename T>

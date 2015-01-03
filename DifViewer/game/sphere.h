@@ -53,10 +53,14 @@ public:
 	void render(ColorF color);
 	Point3F getPosition();
 	Point3F getPosition() const;
+	AngAxisF getRotation();
+	AngAxisF getRotation() const;
 
 	void applyTorque(Point3F torque);
-	void applyImpulse(Point3F force);
-	void applyForce(Point3F force);
+	void applyImpulse(Point3F force, Point3F origin);
+	void applyForce(Point3F force, Point3F origin);
+
+	bool colliding();
 };
 
 #endif

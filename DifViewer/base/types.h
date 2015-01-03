@@ -57,11 +57,21 @@ typedef Point2<F32> Point2F;
 typedef Point3<U32> Point3I;
 typedef Point3<F32> Point3F;
 typedef Point3<F64> Point3D;
+typedef Point4<F32> Point4F;
 
 typedef Color<U8>  ColorI;
 typedef Color<F32> ColorF;
 
 //More names stolen from TGE
+
+class AngAxisF {
+public:
+	Point3F axis;
+	F32 angle;
+
+	AngAxisF(Point3F axis, F32 angle) : axis(axis), angle(angle) {};
+	AngAxisF(F32 angle, Point3F axis) : axis(axis), angle(angle) {};
+};
 
 class QuatF {
 public:
