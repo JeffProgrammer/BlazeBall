@@ -620,7 +620,7 @@ U32 Interior::rayCast(RayF ray) {
 			triangle.point1 = point[index[surface.windingStart + j + 1]];
 			triangle.point2 = point[index[surface.windingStart + j + 2]];
 
-			F32 distance = rayF_intersects_triangle(ray, triangle);
+			F32 distance = ray.distance(triangle);
 			if (distance > 0 && distance < closestDistance) {
 				printf("Found closest triangle (surface %d, offset %d), distance is %f\n", i, j, distance);
 				printf("Triangle: {(%f,%f,%f),(%f,%f,%f),(%f,%f,%f)}\n",triangle.point0.x,triangle.point0.y,triangle.point0.z,triangle.point1.x,triangle.point1.y,triangle.point1.z,triangle.point2.x,triangle.point2.y,triangle.point2.z);

@@ -60,7 +60,8 @@ Point2F point3F_project_plane(Point3F point, Point3F normal, Point3F origin) {
 	return (Point2F){adjacent, opposite};
 }
 
-bool rayF_intersects_planeF(RayF ray, PlaneF plane) {
+template <typename T>
+bool Ray<T>::intersects(PlaneF plane) {
 	//http://antongerdelan.net/opengl/raycasting.html
 	//t = (RayOrigin • PlaneNormal + PlaneOffset) / (RayDirection • PlaneNormal)
 	//miss if denom == 0
@@ -68,12 +69,12 @@ bool rayF_intersects_planeF(RayF ray, PlaneF plane) {
 
 	Point3F normal(plane.x, plane.y, plane.z);
 
-	F32 denominator = ray.direction.dot(normal);
+	F32 denominator = direction.dot(normal);
 	if (denominator == 0) {
 		return false;
 	}
 
-	F32 numerator = (ray.origin.dot(normal) + plane.d);
+	F32 numerator = (origin.dot(normal) + plane.d);
 
 	if (-numerator / denominator > 0) {
 		return true;
@@ -82,7 +83,8 @@ bool rayF_intersects_planeF(RayF ray, PlaneF plane) {
 	}
 }
 
-Point3F rayF_planeF_intersection(RayF ray, PlaneF plane) {
+template <typename T>
+Point3<T> Ray<T>::intersection(PlaneF plane) {
 	//http://antongerdelan.net/opengl/raycasting.html
 	//t = (RayOrigin • PlaneNormal + PlaneOffset) / (RayDirection • PlaneNormal)
 	//miss if denom == 0
@@ -90,22 +92,22 @@ Point3F rayF_planeF_intersection(RayF ray, PlaneF plane) {
 
 	Point3F normal(plane.x, plane.y, plane.z);
 
-	F32 denominator = ray.direction.dot(normal);
+	F32 denominator = direction.dot(normal);
 	if (denominator == 0) {
 		return (Point3F){-0x80000000, -0x80000000, -0x80000000};
 	}
 
-	F32 numerator = (ray.origin.dot(normal) + plane.d);
+	F32 numerator = (origin.dot(normal) + plane.d);
 
 	if (-numerator / denominator > 0) {
 		//xyz = RayOrigin + (RayNormal * t)
-		return ray.origin + ray.direction * (-numerator / denominator);
+		return origin + direction * (-numerator / denominator);
 	} else {
 		return (Point3F){-0x80000000, -0x80000000, -0x80000000};
 	}
 }
 
-F32 rayF_intersects_triangle(RayF ray, TriangleF triangle) {
+template<> F32 RayF::distance(TriangleF triangle) {
 	triangle.point0 = triangle.point0.roundThousands();
 	triangle.point1 = triangle.point1.roundThousands();
 	triangle.point2 = triangle.point2.roundThousands();
@@ -113,15 +115,15 @@ F32 rayF_intersects_triangle(RayF ray, TriangleF triangle) {
 	Point3F ab = triangle.point1 - triangle.point0;
 	Point3F ac = triangle.point2 - triangle.point0;
 	Point3F nor = ab.cross(ac);
-	Point3F oa = triangle.point0 - ray.origin;
+	Point3F oa = triangle.point0 - origin;
 	F32 num = nor.dot(oa);
-	F32 denom = nor.dot(ray.direction);
+	F32 denom = nor.dot(direction);
 	if (denom == 0.0f)
 		return -1.0f;
 	F32 r = num/denom;
 	if (r < 0.0f)
 		return -1.0f;
-	Point3F p = ray.origin + ray.direction * r;
+	Point3F p = origin + direction * r;
 	Point3F ap = p - triangle.point0;
 	bool canXY = true, canYZ = true, canZX = true;
 	if (ab.x*ac.y - ab.y*ac.x == 0.0f)
@@ -160,6 +162,7 @@ F32 rayF_intersects_triangle(RayF ray, TriangleF triangle) {
 	}
 	else {
 		fprintf(stderr, "WTF IS UP WITH THIS TRIANGLE?\n%f %f %f\n%f %f %f\n%f %f %f\n", ab.x, ab.y, ab.z, ac.x, ac.y, ac.z, ap.x, ap.y, ap.z);
+		return -1.0f;
 	}
 	F32 kld = kc1*lc2 - kc2*lc1;
 	F32 kn = c1*lc2 - c2*lc1;
@@ -167,6 +170,11 @@ F32 rayF_intersects_triangle(RayF ray, TriangleF triangle) {
 	F32 k = kn/kld;
 	F32 l = ln/kld;
 	if (k >= 0.0f && l >= 0.0f && k + l <= 1.0f)
-		return p.distance(ray.origin);
+		return p.distance(origin);
 	return -1.0f;
+}
+
+template <typename T>
+bool Ray<T>::intersects(TriangleF triangle) {
+	return distance(triangle) > 0;
 }

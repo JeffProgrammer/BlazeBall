@@ -110,12 +110,6 @@ public:
 	U8 *data;
 };
 
-class RayF {
-public:
-	Point3F origin;
-	Point3F direction;
-};
-
 class TriangleF {
 public:
 	Point3F point0;
@@ -130,5 +124,8 @@ public:
 	Point3F point2;
 	Point3F point3;
 };
+
+#include "ray.h"
+typedef Ray<F32> RayF;
 
 #endif

@@ -270,14 +270,8 @@ void performClick(S32 mouseX, S32 mouseY) {
 	//Eye coordinates -> modelview coordinates
 	glm::vec3 world = glm::vec3(glm::inverse(gModelviewMatrix) * eye);
 
-	RayF ray;
-	ray.origin.x = -gCameraPosition.x;
-	ray.origin.y = -gCameraPosition.y;
-	ray.origin.z = -gCameraPosition.z;
-
-	ray.direction.x = world.x;
-	ray.direction.y = world.y;
-	ray.direction.z = world.z;
+	RayF ray(-gCameraPosition.x, -gCameraPosition.y, -gCameraPosition.z,
+			 world.x, world.y, world.z);
 
 	for (U32 i = 0; i < gDifCount; i ++) {
 		DIF *dif = gDifs[i];
