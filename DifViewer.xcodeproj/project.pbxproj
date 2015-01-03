@@ -59,6 +59,7 @@
 
 /* Begin PBXFileReference section */
 		B5099DAE1A10127F0005DAC6 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		B51B33F61A57846100DD8D35 /* ray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ray.h; sourceTree = "<group>"; };
 		B5201D801A10403F0084D459 /* DIF_MB_SPEC.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = DIF_MB_SPEC.rtf; sourceTree = "<group>"; };
 		B54F9D991A10399D00F550EA /* io.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = io.cpp; sourceTree = "<group>"; };
 		B54F9D9A1A10399D00F550EA /* io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = io.h; sourceTree = "<group>"; };
@@ -126,6 +127,7 @@
 				B5F5AD641A5685700030F491 /* point2.h */,
 				B5F5AD631A567AA80030F491 /* point3.h */,
 				B5F5AD661A5688FA0030F491 /* point4.h */,
+				B51B33F61A57846100DD8D35 /* ray.h */,
 				B5F5AD651A56880F0030F491 /* color.h */,
 			);
 			name = base;
@@ -298,6 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B54F9DB41A10399D00F550EA /* interior.cpp in Sources */,
+				B58E54C81A215B0700304A9B /* math.cpp in Sources */,
 				B54F9DAF1A10399D00F550EA /* main.cpp in Sources */,
 				B54F9DB51A10399D00F550EA /* interiorPathFollower.cpp in Sources */,
 				B54F9DB11A10399D00F550EA /* dif.cpp in Sources */,
@@ -307,7 +310,6 @@
 				B54F9DB21A10399D00F550EA /* forceField.cpp in Sources */,
 				B5E0CD9D1A13F41200BB4291 /* mngsupport.cpp in Sources */,
 				B5E0CDA01A13F43B00BB4291 /* texture.cpp in Sources */,
-				B58E54C81A215B0700304A9B /* math.cpp in Sources */,
 				B54F9DB01A10399D00F550EA /* aiSpecialNode.cpp in Sources */,
 				B5BC0E371A1423DE00D86A8D /* interiorRender.cpp in Sources */,
 				B54F9DB61A10399D00F550EA /* trigger.cpp in Sources */,

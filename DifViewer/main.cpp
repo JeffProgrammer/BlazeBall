@@ -78,8 +78,8 @@ static float gMovementSpeed = 0.2f;
 
 static F32 gLightColor[4]     = {1.400000f, 1.200000f, 0.400000f, 1.000000f};
 static F32 gLightDirection[4] = {0.60f, 0.40f, 1.0f, 0.0f};
-static F32 gAmbientColor[4]   = {0.300000f, 0.300000f, 0.400000f, 1.000000f};
-static F32 gDiffuseColor[4]   = {0.300000f, 0.300000f, 0.400000f, 1.000000f};
+static F32 gAmbientColor[4]   = {0.600000f, 0.600000f, 0.800000f, 1.000000f};
+static F32 gDiffuseColor[4]   = {0.800000f, 0.800000f, 1.000000f, 1.000000f};
 
 bool captureMouse = false;
 bool mouseButtons[3] = {false, false, false};
@@ -106,6 +106,7 @@ void render() {
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_ALPHA);
+	glEnable(GL_MULTISAMPLE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Camera
@@ -383,6 +384,11 @@ bool init() {
 	//Use OpenGL 2.1
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 2);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
+
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	SDL_Rect bounds;
 	SDL_GetDisplayBounds(0, &bounds);
