@@ -219,18 +219,20 @@ void loop() {
 		speed *= 2.f;
 
 	glm::vec3 torque;
-	if (movement[0]) torque = glm::vec3(glm::translate(delta, glm::vec3(0, speed, 0))[3]);
-	if (movement[1]) torque = glm::vec3(glm::translate(delta, glm::vec3(0, -speed, 0))[3]);
-	if (movement[2]) torque = glm::vec3(glm::translate(delta, glm::vec3(-speed, 0, 0))[3]);
-	if (movement[3]) torque = glm::vec3(glm::translate(delta, glm::vec3(speed, 0, 0))[3]);
+	Point2F move = Point2F();
+	if (movement[0]) move.y += speed;
+	if (movement[1]) move.y -= speed;
+	if (movement[2]) move.x -= speed;
+	if (movement[3]) move.x += speed;
+	torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
 
 	delta = glm::rotate(delta, -gPitch, glm::vec3(1, 0, 0));
 
 	Point3F force = Point3F(torque.x, torque.y, torque.z);
-	force *= 5.0f;
+	force *= 2.0f;
 
-	gSphere->applyTorque(force);
-//	gSphere->applyImpulse(force);
+//	gSphere->applyTorque(force);
+	gSphere->applyImpulse(force);
 
 	Point3F pos = gSphere->getPosition();
 	gCameraPosition = glm::vec3(pos.x, pos.y, pos.z);

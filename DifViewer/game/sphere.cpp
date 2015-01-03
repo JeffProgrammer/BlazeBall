@@ -41,12 +41,16 @@ Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius) {
 
 	state->setWorldTransform(transform);
 
-	actor = new btRigidBody(1, state, shape);
-	actor->setRestitution(0.5f);
-	actor->setFriction(0.6f);
+	btRigidBody::btRigidBodyConstructionInfo info(1, state, shape);
+	info.m_linearDamping = 0;
+	info.m_angularDamping = 0.9f;
+	info.m_restitution = 0.7f;
+	info.m_friction = 1.1f;
+
+	actor = new btRigidBody(info);
 	actor->setActivationState(DISABLE_DEACTIVATION);
 	actor->setCcdMotionThreshold(0.5f);
-	actor->setCcdSweptSphereRadius(2.0f);
+	actor->setCcdSweptSphereRadius(10.0f);
 	Physics::getPhysics()->addRigidBody(actor);
 }
 

@@ -34,7 +34,7 @@ void Physics::init() {
 	btConstraintSolver *solver = new btSequentialImpulseConstraintSolver();
 
 	world = new btDiscreteDynamicsWorld(dispatcher, interface, solver, configuration);
-	world->setGravity(btVector3(0, 0, -10));
+	world->setGravity(btVector3(0, 0, -20));
 }
 
 void Physics::simulate(F32 delta) {

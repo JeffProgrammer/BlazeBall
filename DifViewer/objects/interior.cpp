@@ -388,7 +388,7 @@ Interior::Interior(FILE *file, String directory) {
 	state->setWorldTransform(transform);
 
 	actor = new btRigidBody(0, state, shape);
-	actor->setRestitution(1.0f);
+	actor->setRestitution(0.7f);
 	actor->setFriction(1.0f);
 	Physics::getPhysics()->addRigidBody(actor);
 }
