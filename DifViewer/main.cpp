@@ -227,17 +227,15 @@ void loop() {
 	torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
 	delta = glm::rotate(delta, -gPitch, glm::vec3(1, 0, 0));
 
-	torque /= 2.0;
-
+	torque /= 3.0;
 
 	Point3F force = Point3F(torque.x, torque.y, torque.z);
-	force /= 2.0f;
-
 	gSphere->applyTorque(force);
 
 	if (gSphere->colliding()) {
-		if (movement[8])
-			gSphere->applyImpulse(Point3F(0, 0, 7.5f), Point3F(0, 0, -1));
+		Point3F normal = gSphere->getCollisionNormal();
+		if (movement[8] && normal.dot(Point3F(0, 0, 1)) > 0.1)
+			gSphere->applyImpulse((normal + Point3F(0, 0, 1)) / 2.f * 7.5f, Point3F(0, 0, -1));
 	} else {
 		gSphere->applyImpulse(Point3F(torque.y, -torque.x, torque.z), Point3F(0, 0, 0));
 	}
@@ -306,7 +304,7 @@ void performClick(S32 mouseX, S32 mouseY) {
 	//Eye coordinates -> modelview coordinates
 	glm::vec3 world = glm::vec3(glm::inverse(gModelviewMatrix) * eye);
 
-	RayF ray(-gCameraPosition.x, -gCameraPosition.y, -gCameraPosition.z,
+	RayF ray(gCameraPosition.x, gCameraPosition.y, gCameraPosition.z,
 			 world.x, world.y, world.z);
 
 	for (U32 i = 0; i < gDifCount; i ++) {

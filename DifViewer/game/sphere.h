@@ -33,6 +33,7 @@
 #include "types.h"
 #include "interior.h"
 #include "physics.h"
+#include <OpenGL/gl.h>
 
 class Sphere {
 protected:
@@ -41,6 +42,8 @@ public:
 	btRigidBody *actor;
 	Point3F origin;
 	F32 radius;
+
+	GLuint displayList;
 private:
 	void generate();
 	const static U32 segments = 36;
@@ -61,6 +64,7 @@ public:
 	void applyForce(Point3F force, Point3F origin);
 
 	bool colliding();
+	Point3F getCollisionNormal();
 };
 
 #endif

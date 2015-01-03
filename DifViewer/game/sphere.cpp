@@ -27,11 +27,8 @@
 
 #include "sphere.h"
 #include "math.h"
-#include <OpenGL/gl.h>
 
-Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius) {
-	generate();
-
+Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), displayList(0) {
 	btMotionState *state = new btDefaultMotionState();
 	btCollisionShape *shape = new btSphereShape(radius);
 
@@ -45,8 +42,8 @@ Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius) {
 	state->setWorldTransform(transform);
 
 	btRigidBody::btRigidBodyConstructionInfo info(1, state, shape, fallInertia);
-	info.m_linearDamping = 0.1f;
-	info.m_angularDamping = 0.2f;
+	info.m_linearDamping = 0.3f;
+	info.m_angularDamping = 0.4f;
 	info.m_restitution = 0.7f;
 	info.m_friction = 1.1f;
 	info.m_rollingFriction = 1.1f;
@@ -62,6 +59,11 @@ void Sphere::generate() {
 	S32 segments2 = segments / 2;
 	S32 slices2 = slices / 2;
 
+	displayList = glGenLists(1);
+	glNewList(displayList, GL_COMPILE_AND_EXECUTE);
+	glEnable(GL_COLOR_MATERIAL);
+	glBegin(GL_TRIANGLE_STRIP);
+
 	for (S32 y = -slices2; y < slices2; y ++) {
 		float cosy = cos(y * step);
 		float cosy1 = cos((y + 1) * step);
@@ -72,10 +74,25 @@ void Sphere::generate() {
 			float cosi = cos(i * step);
 			float sini = sin(i * step);
 
-			geometry.push_back(Point3F(radius * cosi * cosy, radius * siny, radius * sini * cosy));
-			geometry.push_back(Point3F(radius * cosi * cosy1, radius * siny1, radius * sini * cosy1));
+			Point3F point0 = Point3F(radius * cosi * cosy, radius * siny, radius * sini * cosy);
+			Point3F point1 = Point3F(radius * cosi * cosy1, radius * siny1, radius * sini * cosy1);
+			Point4F color0 = Point4F(fabs(point0.x), fabs(point0.y), fabs(point0.z), radius);
+			Point4F color1 = Point4F(fabs(point1.x), fabs(point1.y), fabs(point1.z), radius);
+
+			color0 /= radius;
+			color1 /= radius;
+
+			glNormal3fv(&point0.x);
+			glVertex3fv(&point0.x);
+			glColor4fv(&color0.w);
+			glNormal3fv(&point1.x);
+			glVertex3fv(&point1.x);
+			glColor4fv(&color1.w);
 		}
 	}
+	glEnd();
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glEndList();
 }
 
 void Sphere::render(ColorF color) {
@@ -84,16 +101,14 @@ void Sphere::render(ColorF color) {
 	Point3F pos = getPosition();
 	AngAxisF rot = getRotation();
 	glTranslatef(pos.x, pos.y, pos.z);
-	glRotatef(rot.angle, rot.axis.x, rot.axis.y, rot.axis.z);
-	glEnable(GL_COLOR_MATERIAL);
-//	glColor4fv(&rot.axis.x);
-	glBegin(GL_TRIANGLE_STRIP);
-	for (Point3F point : geometry) {
-		glNormal3fv(&point.x);
-		glVertex3fv(&point.x);
+	glRotatef(rot.angle * (360.f / (M_PI * 2.f)), rot.axis.x, rot.axis.y, rot.axis.z);
+
+	if (displayList == 0) {
+		generate();
+	} else {
+		glCallList(displayList);
 	}
-	glEnd();
-	glDisable(GL_COLOR_MATERIAL);
+
 	glPopMatrix();
 }
 
@@ -125,6 +140,35 @@ bool Sphere::colliding() {
 	}
 
 	return false;
+}
+
+Point3F Sphere::getCollisionNormal() {
+	btDiscreteDynamicsWorld *world = Physics::getPhysics()->getWorld();
+	U32 manifolds = world->getDispatcher()->getNumManifolds();
+
+	Point3F best = Point3F(0.0f, 0.0f, 0.0f);
+	F32 dot = 0;
+
+	for (U32 i = 0; i < manifolds; i ++) {
+		btPersistentManifold *manifold = world->getDispatcher()->getManifoldByIndexInternal(i);
+		btCollisionObject *obj1 = (btCollisionObject *)manifold->getBody0();
+		btCollisionObject *obj2 = (btCollisionObject *)manifold->getBody1();
+
+		if (obj1 == actor || obj2 == actor) {
+			U32 contacts = manifold->getNumContacts();
+			for (U32 j = 0; j < contacts; j ++) {
+				Point3F normal = btConvert(manifold->getContactPoint(j).m_normalWorldOnB);
+				if (obj2 == actor)
+					normal *= -1;
+				if (normal.dot(Point3F(0, 0, 1)) > dot) {
+					best = normal;
+					dot = normal.dot(Point3F(0, 0, 1));
+				}
+			}
+		}
+	}
+
+	return best;
 }
 
 Point3F Sphere::getPosition() {
