@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		B5099DAF1A10127F0005DAC6 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5099DAE1A10127F0005DAC6 /* OpenGL.framework */; };
+		B51B33FA1A57916100DD8D35 /* sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B51B33F81A57916100DD8D35 /* sphere.cpp */; };
+		B51B350E1A57AABF00DD8D35 /* libLinearMath.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B51B350D1A57AABF00DD8D35 /* libLinearMath.a */; };
+		B51B35111A57AC0400DD8D35 /* physics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B51B350F1A57AC0400DD8D35 /* physics.cpp */; };
+		B51B35131A57AF5100DD8D35 /* libBulletCollision.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B51B35121A57AF5100DD8D35 /* libBulletCollision.a */; };
+		B51B35151A57AF5700DD8D35 /* libBulletDynamics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B51B35141A57AF5700DD8D35 /* libBulletDynamics.a */; };
 		B54F9DAE1A10399D00F550EA /* io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9D991A10399D00F550EA /* io.cpp */; };
 		B54F9DAF1A10399D00F550EA /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9D9C1A10399D00F550EA /* main.cpp */; };
 		B54F9DB01A10399D00F550EA /* aiSpecialNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9D9E1A10399D00F550EA /* aiSpecialNode.cpp */; };
@@ -60,6 +65,13 @@
 /* Begin PBXFileReference section */
 		B5099DAE1A10127F0005DAC6 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		B51B33F61A57846100DD8D35 /* ray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ray.h; sourceTree = "<group>"; };
+		B51B33F81A57916100DD8D35 /* sphere.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sphere.cpp; path = DifViewer/game/sphere.cpp; sourceTree = SOURCE_ROOT; };
+		B51B33F91A57916100DD8D35 /* sphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sphere.h; path = DifViewer/game/sphere.h; sourceTree = SOURCE_ROOT; };
+		B51B350D1A57AABF00DD8D35 /* libLinearMath.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLinearMath.a; path = bullet3/src/LinearMath/Debug/libLinearMath.a; sourceTree = "<group>"; };
+		B51B350F1A57AC0400DD8D35 /* physics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = physics.cpp; path = DifViewer/game/physics.cpp; sourceTree = SOURCE_ROOT; };
+		B51B35101A57AC0400DD8D35 /* physics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physics.h; path = DifViewer/game/physics.h; sourceTree = SOURCE_ROOT; };
+		B51B35121A57AF5100DD8D35 /* libBulletCollision.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBulletCollision.a; path = bullet3/src/BulletCollision/Debug/libBulletCollision.a; sourceTree = "<group>"; };
+		B51B35141A57AF5700DD8D35 /* libBulletDynamics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBulletDynamics.a; path = bullet3/src/BulletDynamics/Debug/libBulletDynamics.a; sourceTree = "<group>"; };
 		B5201D801A10403F0084D459 /* DIF_MB_SPEC.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = DIF_MB_SPEC.rtf; sourceTree = "<group>"; };
 		B54F9D991A10399D00F550EA /* io.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = io.cpp; sourceTree = "<group>"; };
 		B54F9D9A1A10399D00F550EA /* io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = io.h; sourceTree = "<group>"; };
@@ -107,6 +119,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5CC8E9A1A13090A0037BFF7 /* libz.dylib in Frameworks */,
+				B51B35151A57AF5700DD8D35 /* libBulletDynamics.a in Frameworks */,
+				B51B350E1A57AABF00DD8D35 /* libLinearMath.a in Frameworks */,
+				B51B35131A57AF5100DD8D35 /* libBulletCollision.a in Frameworks */,
 				B566A6BC1A12EFFA003D6BEA /* libmng.a in Frameworks */,
 				B5099DAF1A10127F0005DAC6 /* OpenGL.framework in Frameworks */,
 				B5D92CA71A100DD7000A36CB /* SDL2.framework in Frameworks */,
@@ -116,6 +131,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B51B33F71A57915100DD8D35 /* game */ = {
+			isa = PBXGroup;
+			children = (
+				B51B33F81A57916100DD8D35 /* sphere.cpp */,
+				B51B33F91A57916100DD8D35 /* sphere.h */,
+				B51B350F1A57AC0400DD8D35 /* physics.cpp */,
+				B51B35101A57AC0400DD8D35 /* physics.h */,
+			);
+			name = game;
+			sourceTree = "<group>";
+		};
 		B54F9D981A10399D00F550EA /* base */ = {
 			isa = PBXGroup;
 			children = (
@@ -161,6 +187,9 @@
 		B566A61D1A12ED06003D6BEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B51B35121A57AF5100DD8D35 /* libBulletCollision.a */,
+				B51B35141A57AF5700DD8D35 /* libBulletDynamics.a */,
+				B51B350D1A57AABF00DD8D35 /* libLinearMath.a */,
 				B578BCF51A13EB4C001EF856 /* libjpeg.a */,
 				B5CC8E991A13090A0037BFF7 /* libz.dylib */,
 				B5099DAE1A10127F0005DAC6 /* OpenGL.framework */,
@@ -208,6 +237,7 @@
 			isa = PBXGroup;
 			children = (
 				B54F9D9C1A10399D00F550EA /* main.cpp */,
+				B51B33F71A57915100DD8D35 /* game */,
 				B5AADE701A143C950064F1E5 /* render */,
 				B54F9D981A10399D00F550EA /* base */,
 				B5E0CD971A13F3EC00BB4291 /* bitmap */,
@@ -299,8 +329,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B51B35111A57AC0400DD8D35 /* physics.cpp in Sources */,
 				B54F9DB41A10399D00F550EA /* interior.cpp in Sources */,
 				B58E54C81A215B0700304A9B /* math.cpp in Sources */,
+				B51B33FA1A57916100DD8D35 /* sphere.cpp in Sources */,
 				B54F9DAF1A10399D00F550EA /* main.cpp in Sources */,
 				B54F9DB51A10399D00F550EA /* interiorPathFollower.cpp in Sources */,
 				B54F9DB11A10399D00F550EA /* dif.cpp in Sources */,
@@ -412,10 +444,19 @@
 					"$(PROJECT_DIR)/glm",
 					"$(PROJECT_DIR)/",
 					"$(PROJECT_DIR)/jpeg",
+					"$(PROJECT_DIR)/bullet3/src/**",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(INHERITED)",
 					"$(PROJECT_DIR)/jpeg/.libs",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Collision/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Common/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Dynamics/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Geometry/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3OpenCL/Debug",
+					"$(PROJECT_DIR)/bullet3/src/LinearMath/Debug",
+					"$(PROJECT_DIR)/bullet3/src/BulletCollision/Debug",
+					"$(PROJECT_DIR)/bullet3/src/BulletDynamics/Debug",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -436,10 +477,19 @@
 					"$(PROJECT_DIR)/glm",
 					"$(PROJECT_DIR)/",
 					"$(PROJECT_DIR)/jpeg",
+					"$(PROJECT_DIR)/bullet3/src/**",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(INHERITED)",
 					"$(PROJECT_DIR)/jpeg/.libs",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Collision/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Common/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Dynamics/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Geometry/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3OpenCL/Debug",
+					"$(PROJECT_DIR)/bullet3/src/LinearMath/Debug",
+					"$(PROJECT_DIR)/bullet3/src/BulletCollision/Debug",
+					"$(PROJECT_DIR)/bullet3/src/BulletDynamics/Debug",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";

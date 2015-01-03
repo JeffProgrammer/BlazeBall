@@ -30,6 +30,7 @@
 
 #include "types.h"
 #include "texture.h"
+#include "physics.h"
 
 enum BitmapType {
 	BitmapTypePNG,
@@ -317,6 +318,8 @@ public:
 
 	U32 extendedLightMapData;
 	U32 lightMapBorderSize;
+
+	btRigidBody *actor;
 
 	/**
 	 Reads an Interior from a FILE

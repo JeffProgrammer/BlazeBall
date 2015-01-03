@@ -362,6 +362,33 @@ Interior::Interior(FILE *file, String directory) {
 			free(imageFile);
 		}
 	}
+
+	//Create body
+	btMotionState *state = new btDefaultMotionState();
+	btTriangleMesh *mesh = new btTriangleMesh();
+	for (U32 i = 0; i < numSurfaces; i ++) {
+		Surface surface = this->surface[i];
+
+		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
+			TriangleF triangle;
+			triangle.point0 = point[index[surface.windingStart + j]];
+			triangle.point1 = point[index[surface.windingStart + j + 1]];
+			triangle.point2 = point[index[surface.windingStart + j + 2]];
+
+			mesh->addTriangle(btConvert(triangle.point0), btConvert(triangle.point1), btConvert(triangle.point2));
+		}
+	}
+
+	btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(mesh, true, true);
+
+	btTransform transform;
+	transform.setIdentity();
+	transform.setOrigin(btVector3(0, 0, 0));
+
+	state->setWorldTransform(transform);
+
+	actor = new btRigidBody(0, state, shape);
+	Physics::getPhysics()->addRigidBody(actor);
 }
 
 bool Interior::write(FILE *file) {
@@ -612,7 +639,7 @@ U32 Interior::rayCast(RayF ray) {
 	U32 closest = -1;
 	F32 closestDistance = UINT32_MAX;
 
-	printf("Ray: {(%f,%f,%f),(%f,%f,%f)}\n",ray.origin.x,ray.origin.y,ray.origin.z,ray.direction.x,ray.direction.y,ray.direction.z);
+//	printf("Ray: {(%f,%f,%f),(%f,%f,%f)}\n",ray.origin.x,ray.origin.y,ray.origin.z,ray.direction.x,ray.direction.y,ray.direction.z);
 
 	for (U32 i = 0; i < numSurfaces; i ++) {
 		Surface surface = this->surface[i];
@@ -625,8 +652,8 @@ U32 Interior::rayCast(RayF ray) {
 
 			F32 distance = ray.distance(triangle);
 			if (distance > 0 && distance < closestDistance) {
-				printf("Found closest triangle (surface %d, offset %d), distance is %f\n", i, j, distance);
-				printf("Triangle: {(%f,%f,%f),(%f,%f,%f),(%f,%f,%f)}\n",triangle.point0.x,triangle.point0.y,triangle.point0.z,triangle.point1.x,triangle.point1.y,triangle.point1.z,triangle.point2.x,triangle.point2.y,triangle.point2.z);
+//				printf("Found closest triangle (surface %d, offset %d), distance is %f\n", i, j, distance);
+//				printf("Triangle: {(%f,%f,%f),(%f,%f,%f),(%f,%f,%f)}\n",triangle.point0.x,triangle.point0.y,triangle.point0.z,triangle.point1.x,triangle.point1.y,triangle.point1.z,triangle.point2.x,triangle.point2.y,triangle.point2.z);
 				closestDistance = distance;
 				closest = i;
 			}

@@ -36,6 +36,8 @@
 #include "io.h"
 #include "dif.h"
 #include "texture.h"
+#include "sphere.h"
+#include "physics.h"
 
 #include <SDL2/SDL.h>
 #include <OpenGL/gl.h>
@@ -49,6 +51,8 @@
 
 U32 gDifCount;
 DIF **gDifs;
+
+Sphere *gSphere;
 
 String *gFilenames;
 
@@ -138,11 +142,13 @@ void render() {
 		glCallList(gDisplayList);
 	}
 
+	gSphere->render(ColorF(1, 1, 0, 1));
 	glDisable(GL_CULL_FACE);
 
 	if (gSelection.hasSelection) {
 		Surface surface = gSelection.interior->surface[gSelection.surfaceIndex];
 		TexGenEq texGenEq = gSelection.interior->texGenEq[surface.texGenIndex];
+		Point3F normal = gSelection.interior->normal[gSelection.interior->plane[surface.planeIndex].normalIndex];
 		Point3F first = gSelection.interior->point[gSelection.interior->index[surface.windingStart]];
 		F32 len = 0;
 
@@ -152,7 +158,8 @@ void render() {
 
 			glVertex3f(vert.x, vert.y, vert.z);
 
-			F32 distance = first.distance(vert);
+			Point2F point = point3F_project_plane(vert, normal, first);
+			F32 distance = point.length();
 			len = (distance > len ? distance : len);
 		}
 		glEnd();
@@ -162,16 +169,20 @@ void render() {
 		glLoadIdentity();
 		glOrtho(-1, 1, -1, 1, -100, 100);
 		glMatrixMode(GL_MODELVIEW);
-		glLightfv(GL_LIGHT0, GL_POSITION, (float[]){0, 0, 1});
+		glDisable(GL_LIGHTING);
+		glEnable(GL_TEXTURE_2D);
 		glLoadIdentity();
 
-		gSelection.interior->texture[surface.textureIndex]->activate();
-		glBegin(GL_TRIANGLE_STRIP);
+		Texture *texture = gSelection.interior->texture[surface.textureIndex];
+		if (!texture->generated) {
+			texture->generateBuffer();
+		}
+		texture->activate();
 
+		glBegin(GL_TRIANGLE_STRIP);
 
 		for (U32 i = 0; i < surface.windingCount; i ++) {
 			Point3F vert = gSelection.interior->point[gSelection.interior->index[surface.windingStart + i]];
-			Point3F normal = gSelection.interior->normal[gSelection.interior->plane[surface.planeIndex].normalIndex];
 			if (surface.planeFlipped)
 				normal *= -1;
 
@@ -182,7 +193,11 @@ void render() {
 			glVertex3f(point.x / len, point.y / len, 0);
 		}
 		glEnd();
+		texture->deactivate();
+
 		gSelection.interior->texture[surface.textureIndex]->deactivate();
+		glDisable(GL_TEXTURE_2D);
+		glEnable(GL_LIGHTING);
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
 	}
@@ -192,10 +207,10 @@ void loop() {
 	//Basic movement
 	glm::mat4x4 delta = glm::mat4x4(1);
 
-	if (movement[4]) gPitch -= gKeyCameraSpeed;
-	if (movement[5]) gPitch += gKeyCameraSpeed;
-	if (movement[6]) gYaw -= gKeyCameraSpeed;
-	if (movement[7]) gYaw += gKeyCameraSpeed;
+	if (movement[4]) gSphere->origin.x += 0.1; //gPitch -= gKeyCameraSpeed;
+	if (movement[5]) gSphere->origin.x -= 0.1; //gPitch += gKeyCameraSpeed;
+	if (movement[6]) gSphere->origin.z += 0.1; //gYaw -= gKeyCameraSpeed;
+	if (movement[7]) gSphere->origin.z -= 0.1; //gYaw += gKeyCameraSpeed;
 
 	delta = glm::rotate(delta, -gYaw, glm::vec3(0, 0, 1));
 	delta = glm::rotate(delta, -gPitch, glm::vec3(1, 0, 0));
@@ -376,6 +391,8 @@ bool init() {
 	gRunning = true;
 	gListNeedsDisplay = true;
 
+	gSphere = new Sphere(Point3F(0, 15, 20), 1);
+
 	//Init SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		return false;
@@ -468,6 +485,8 @@ void run() {
 		if (gPrintFPS) {
 			printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
 		}
+
+		Physics::getPhysics()->simulate((end - start) / 1000000.0f);
 	}
 
 	//Clean up (duh)
@@ -481,6 +500,8 @@ int main(int argc, const char * argv[])
 		printf("Usage: %s <file>\n", argv[0]);
 		return 1;
 	}
+
+	Physics::getPhysics()->init();
 
 	U32 argstart = 1;
 
