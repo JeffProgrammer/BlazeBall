@@ -92,7 +92,8 @@ void Interior::render(Point3F offset) {
 	glEnd();
 
 	//Don't forget to deactivate the last texture
-	currentTexture->deactivate();
+	if (currentTexture)
+		currentTexture->deactivate();
 
 	glDisable(GL_TEXTURE_2D);
 }
