@@ -607,7 +607,7 @@ void Interior::exportObj(FILE *file) {
 }
 
 U32 Interior::rayCast(RayF ray) {
-	ray = (RayF){ray.origin.convert(), ray.direction.convert()};
+//	ray = RayF(ray.origin.convert(), ray.direction.convert());
 
 	U32 closest = -1;
 	F32 closestDistance = UINT32_MAX;
