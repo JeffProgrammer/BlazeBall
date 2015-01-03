@@ -389,6 +389,7 @@ Interior::Interior(FILE *file, String directory) {
 
 	actor = new btRigidBody(0, state, shape);
 	actor->setRestitution(1.0f);
+	actor->setFriction(1.0f);
 	Physics::getPhysics()->addRigidBody(actor);
 }
 

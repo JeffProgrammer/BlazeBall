@@ -44,6 +44,9 @@ Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius) {
 	actor = new btRigidBody(1, state, shape);
 	actor->setRestitution(0.5f);
 	actor->setFriction(0.6f);
+	actor->setActivationState(DISABLE_DEACTIVATION);
+	actor->setCcdMotionThreshold(0.5f);
+	actor->setCcdSweptSphereRadius(2.0f);
 	Physics::getPhysics()->addRigidBody(actor);
 }
 
@@ -70,9 +73,8 @@ void Sphere::generate() {
 void Sphere::render(ColorF color) {
 	glPushMatrix();
 	btTransform trans;
-	actor->getMotionState()->getWorldTransform(trans);
-	btVector3 position = trans.getOrigin();
-	glTranslatef(position.x(), position.y(), position.z());
+	Point3F pos = getPosition();
+	glTranslatef(pos.x, pos.y, pos.z);
 	glEnable(GL_COLOR_MATERIAL);
 	glColor4fv(&color.red);
 	glBegin(GL_TRIANGLE_STRIP);
@@ -83,6 +85,18 @@ void Sphere::render(ColorF color) {
 	glEnd();
 	glDisable(GL_COLOR_MATERIAL);
 	glPopMatrix();
+}
+
+void Sphere::applyTorque(Point3F torque) {
+	actor->applyTorque(btConvert(torque));
+}
+
+void Sphere::applyImpulse(Point3F force) {
+	actor->applyImpulse(btConvert(force), btVector3(0, 0, 0));
+}
+
+void Sphere::applyForce(Point3F force) {
+	actor->applyForce(btConvert(force), btVector3(0, 0, 0));
 }
 
 Point3F Sphere::getPosition() {

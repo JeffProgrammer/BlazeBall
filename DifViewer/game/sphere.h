@@ -53,6 +53,10 @@ public:
 	void render(ColorF color);
 	Point3F getPosition();
 	Point3F getPosition() const;
+
+	void applyTorque(Point3F torque);
+	void applyImpulse(Point3F force);
+	void applyForce(Point3F force);
 };
 
 #endif

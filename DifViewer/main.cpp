@@ -213,16 +213,24 @@ void loop() {
 	if (movement[7]) gYaw += gKeyCameraSpeed;
 
 	delta = glm::rotate(delta, -gYaw, glm::vec3(0, 0, 1));
-	delta = glm::rotate(delta, -gPitch, glm::vec3(1, 0, 0));
 
 	float speed = gMovementSpeed;
 	if (mouseButtons[1])
 		speed *= 2.f;
 
-//	if (movement[0]) delta = glm::translate(delta, glm::vec3(0, -speed, 0));
-//	if (movement[1]) delta = glm::translate(delta, glm::vec3(0, speed, 0));
-//	if (movement[2]) delta = glm::translate(delta, glm::vec3(speed, 0, 0));
-//	if (movement[3]) delta = glm::translate(delta, glm::vec3(-speed, 0, 0));
+	glm::vec3 torque;
+	if (movement[0]) torque = glm::vec3(glm::translate(delta, glm::vec3(0, speed, 0))[3]);
+	if (movement[1]) torque = glm::vec3(glm::translate(delta, glm::vec3(0, -speed, 0))[3]);
+	if (movement[2]) torque = glm::vec3(glm::translate(delta, glm::vec3(-speed, 0, 0))[3]);
+	if (movement[3]) torque = glm::vec3(glm::translate(delta, glm::vec3(speed, 0, 0))[3]);
+
+	delta = glm::rotate(delta, -gPitch, glm::vec3(1, 0, 0));
+
+	Point3F force = Point3F(torque.x, torque.y, torque.z);
+	force *= 5.0f;
+
+	gSphere->applyTorque(force);
+//	gSphere->applyImpulse(force);
 
 	Point3F pos = gSphere->getPosition();
 	gCameraPosition = glm::vec3(pos.x, pos.y, pos.z);
@@ -359,6 +367,7 @@ void handleEvent(SDL_Event *event) {
 			case SDL_SCANCODE_LEFT:  movement[6] = false; break;
 			case SDL_SCANCODE_RIGHT: movement[7] = false; break;
 			case SDL_SCANCODE_Q: gListNeedsDisplay = true; break;
+			case SDL_SCANCODE_SPACE: gSphere->applyImpulse(Point3F(0, 0, 10.0f));
 			default: break;
 		}
 	}
@@ -393,7 +402,7 @@ bool init() {
 	gRunning = true;
 	gListNeedsDisplay = true;
 
-	gSphere = new Sphere(Point3F(0, 15, 20), 1);
+	gSphere = new Sphere(Point3F(0, 15, 20), 0.25);
 
 	//Init SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
