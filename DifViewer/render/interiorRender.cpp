@@ -60,8 +60,9 @@ void Interior::render(Point3F offset) {
 		//New and improved rendering with actual Triangle Strips this time
 		for (U32 j = surface.windingStart + 2; j < surface.windingStart + surface.windingCount; j ++) {
 			Point3F n = normal[plane[surface.planeIndex].normalIndex];
-			if (surface.planeFlipped)
+			if (surface.planeFlipped) {
 				n *= -1;
+			}
 			Point3F u0, u1, u2;
 
 			if ((j - (surface.windingStart + 2)) % 2 == 0) {

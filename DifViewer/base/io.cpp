@@ -355,7 +355,7 @@ void releaseDictionary(Dictionary dictionary) {
 	free(dictionary.values);
 }
 
-bool isfile(String file) {
+bool IO::isfile(String file) {
 	FILE *stream = fopen((const char *)file, "r");
 	if (stream) {
 		fclose(stream);

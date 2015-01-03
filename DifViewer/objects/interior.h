@@ -31,10 +31,10 @@
 #include "types.h"
 #include "texture.h"
 
-typedef enum {
+enum BitmapType {
 	BitmapTypePNG,
 	BitmapTypeJPEG,
-} BitmapType;
+};
 
 struct Triangle {
 	Point3F point0;
@@ -49,59 +49,59 @@ struct Triangle {
 
 static U32 gNumCoordBins = 16;
 
-typedef struct {
+struct Plane {
 	U16 normalIndex;
 	F32 planeDistance;
-} Plane;
+};
 
-typedef struct {
+struct TexGenEq {
 	PlaneF planeX;
 	PlaneF planeY;
-} TexGenEq;
+};
 
-typedef struct {
+struct BSPNode {
 	U16 planeIndex;
 	U16 frontIndex;
 	U16 backIndex;
-} BSPNode;
+};
 
-typedef struct {
+struct BSPSolidLeaf {
 	U32 surfaceIndex;
 	U16 surfaceCount;
-} BSPSolidLeaf;
+};
 
-typedef struct {
+struct WindingIndex {
 	U32 windingStart;
 	U32 windingCount;
-} WindingIndex;
+};
 
-typedef struct {
+struct Zone {
 	U16 portalStart;
 	U16 portalCount;
 	U32 surfaceStart;
 	U32 surfaceCount;
-} Zone;
+};
 
-typedef struct {
+struct Portal {
 	U16 planeIndex;
 	U16 triFanCount;
 	U32 triFanStart;
 	U16 zoneFront;
 	U16 zoneBack;
-} Portal;
+};
 
-typedef struct {
+struct LightMapF {
 	U16 finalWord;
 	F32 texGenXDistance;
 	F32 texGenYDistance;
-} LightMapF;
+};
 
-typedef struct {
+struct LightMap {
 	PNG lightMap;
 	U8 keepLightMap;
-} LightMap;
+};
 
-typedef struct {
+struct Surface {
 	U32 windingStart;
 	U8 windingCount;
 	U16 planeIndex;
@@ -117,39 +117,39 @@ typedef struct {
 	U8 mapOffsetY;
 	U8 mapSizeX;
 	U8 mapSizeY;
-} Surface;
+};
 
-typedef struct {
+struct NullSurface {
 	U32 windingStart;
 	U16 planeIndex;
 	U8 surfaceFlags;
 	U8 windingCount;
-} NullSurface;
+};
 
-typedef struct {
+struct AnimatedLight {
 	U32 nameIndex;
 	U32 stateIndex;
 	U16 stateCount;
 	U16 flags;
 	U32 duration;
-} AnimatedLight;
+};
 
-typedef struct {
+struct LightState {
 	U8 red;
 	U8 green;
 	U8 blue;
 	U32 activeTime;
 	U32 dataIndex;
 	U16 dataCount;
-} LightState;
+};
 
-typedef struct {
+struct StateData {
 	U32 surfaceIndex;
 	U32 mapIndex;
 	U16 lightStateIndex;
-} StateData;
+};
 
-typedef struct {
+struct ConvexHull {
 	U32 hullStart;
 	U16 hullCount;
 	F32 minX;
@@ -164,18 +164,18 @@ typedef struct {
 	U32 polyListPlaneStart;
 	U32 polyListPointStart;
 	U32 polyListStringStart;
-} ConvexHull;
+};
 
-typedef struct {
+struct CoordBin {
 	U32 binStart;
 	U32 binCount;
-} CoordBin;
+};
 
-typedef struct {
+struct TexMatrix {
 	S32 T;
 	S32 N;
 	S32 B;
-} TexMatrix;
+};
 
 class Interior {
 public:

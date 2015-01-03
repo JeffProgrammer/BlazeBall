@@ -31,6 +31,7 @@
 #include "types.h"
 
 #define LIGHT_MAP_SIZE 0x400
+#define io IO::getIO()
 
 /*
  Read number types from a file
@@ -101,6 +102,8 @@ public:
 	U32 writeString(FILE **file, String value);
 	U32 writePNG(FILE **file, PNG value);
 	U32 writeDictionary(FILE **file, Dictionary value);
+
+	bool isfile(String file);
 };
 
 //Memory management
@@ -108,22 +111,22 @@ void releaseString(String string);
 void releaseDictionary(Dictionary dictionary);
 
 //Macros to speed up file reading
-#define READ(type) IO::getIO()->read##type(&file)
-#define READVAR(name, type) type name = IO::getIO()->read##type(&file)
-#define READTOVAR(name, type) name = IO::getIO()->read##type(&file)
+#define READ(type) io->read##type(&file)
+#define READVAR(name, type) type name = io->read##type(&file)
+#define READTOVAR(name, type) name = io->read##type(&file)
 #define READCHECK(type, value) { if (READ(type) != value) return; }
 
 #define READLOOPVAR(countvar, listvar, type) \
-countvar = IO::getIO()->readU32(&file); \
+countvar = io->readU32(&file); \
 listvar = new type[countvar]; \
 for (U32 i = 0; i < countvar; i ++)
 
 #define READLOOP(name, type) \
-type name##_length = IO::getIO()->read##type(&file); \
+type name##_length = io->read##type(&file); \
 for (U32 i = 0; i < name##_length; i ++)
 
 //Macros to speed up file reading
-#define WRITE(type, value) IO::getIO()->write##type(&file, value)
+#define WRITE(type, value) io->write##type(&file, value)
 #define WRITECHECK(type, value) { if (WRITE(type, value) != sizeof(type)) return 0; }
 
 #define WRITELOOPVAR(type, countvar, listvar) \
@@ -141,7 +144,5 @@ for (U32 i = 0; i < countvar; i ++) { \
 #define WRITELOOP(countvar) \
 WRITECHECK(U32, countvar);\
 for (U32 i = 0; i < countvar; i ++)\
-
-bool isfile(String file);
 
 #endif

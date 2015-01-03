@@ -303,7 +303,7 @@ Interior::Interior(FILE *file, String directory) {
 
 				//If we can't find the PNG, try for JPEG
 				//TODO: BMP Support?
-				if (!isfile(imageFile)) {
+				if (!io->isfile(imageFile)) {
 					//Swap the last 3 chars with jpg
 					memcpy(imageFile + pathlen - 3, "jpg", 3);
 					type = BitmapTypeJPEG;
@@ -313,12 +313,12 @@ Interior::Interior(FILE *file, String directory) {
 					break;
 
 				//If we still can't find it, recurse (hacky but effective method)
-				if (!isfile(imageFile))
+				if (!io->isfile(imageFile))
 					*strrchr((const char *)base, '/') = 0;
-			} while (!isfile(imageFile) && strcmp((const char *)base, ""));
+			} while (!io->isfile(imageFile) && strcmp((const char *)base, ""));
 
 			//If we can't find it, just chuck the lot and keep going.
-			if (!isfile(imageFile)) {
+			if (!io->isfile(imageFile)) {
 				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", material);
 				texture[i] = NULL;
 				free(base);
