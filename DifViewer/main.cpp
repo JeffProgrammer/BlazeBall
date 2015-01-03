@@ -87,7 +87,7 @@ static F32 gDiffuseColor[4]   = {0.800000f, 0.800000f, 1.000000f, 1.000000f};
 
 bool captureMouse = false;
 bool mouseButtons[3] = {false, false, false};
-bool movement[8] = {false, false, false, false, false, false, false, false};
+bool movement[9] = {false, false, false, false, false, false, false, false, false};
 
 GLuint gDisplayList = 0;
 bool gListNeedsDisplay = false;
@@ -220,23 +220,31 @@ void loop() {
 
 	glm::vec3 torque;
 	Point2F move = Point2F();
-	if (movement[0]) move.y += speed;
-	if (movement[1]) move.y -= speed;
-	if (movement[2]) move.x -= speed;
-	if (movement[3]) move.x += speed;
+	if (movement[0]) move.x -= speed;
+	if (movement[1]) move.x += speed;
+	if (movement[2]) move.y -= speed;
+	if (movement[3]) move.y += speed;
 	torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
-
 	delta = glm::rotate(delta, -gPitch, glm::vec3(1, 0, 0));
 
-	Point3F force = Point3F(torque.x, torque.y, torque.z);
-	force *= 2.0f;
+	torque /= 2.0;
 
-//	gSphere->applyTorque(force);
-	gSphere->applyImpulse(force);
+
+	Point3F force = Point3F(torque.x, torque.y, torque.z);
+	force /= 2.0f;
+
+	gSphere->applyTorque(force);
+
+	if (gSphere->colliding()) {
+		if (movement[8])
+			gSphere->applyImpulse(Point3F(0, 0, 7.5f), Point3F(0, 0, -1));
+	} else {
+		gSphere->applyImpulse(Point3F(torque.y, -torque.x, torque.z), Point3F(0, 0, 0));
+	}
 
 	Point3F pos = gSphere->getPosition();
 	gCameraPosition = glm::vec3(pos.x, pos.y, pos.z);
-	gCameraPosition += glm::vec3(glm::translate(delta, glm::vec3(0, -4, 0))[3]);
+	gCameraPosition += glm::vec3(glm::translate(delta, glm::vec3(0, -2.5, 0))[3]);
 }
 
 bool initGL() {
@@ -354,6 +362,7 @@ void handleEvent(SDL_Event *event) {
 			case SDL_SCANCODE_DOWN:  movement[5] = true; break;
 			case SDL_SCANCODE_LEFT:  movement[6] = true; break;
 			case SDL_SCANCODE_RIGHT: movement[7] = true; break;
+			case SDL_SCANCODE_SPACE: movement[8] = true; break;
 			default: break;
 		}
 	} else if (event->type == SDL_KEYUP) {
@@ -369,7 +378,7 @@ void handleEvent(SDL_Event *event) {
 			case SDL_SCANCODE_LEFT:  movement[6] = false; break;
 			case SDL_SCANCODE_RIGHT: movement[7] = false; break;
 			case SDL_SCANCODE_Q: gListNeedsDisplay = true; break;
-			case SDL_SCANCODE_SPACE: gSphere->applyImpulse(Point3F(0, 0, 10.0f));
+			case SDL_SCANCODE_SPACE: movement[8] = false; break;
 			default: break;
 		}
 	}
@@ -404,7 +413,7 @@ bool init() {
 	gRunning = true;
 	gListNeedsDisplay = true;
 
-	gSphere = new Sphere(Point3F(0, 15, 20), 0.25);
+	gSphere = new Sphere(Point3F(0, 15, 20), 0.2f);
 
 	//Init SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
