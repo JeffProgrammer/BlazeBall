@@ -419,7 +419,10 @@ bool Interior::write(FILE *file) {
 	WRITELOOP(numSurfaces) { //numSurfaces
 		WRITECHECK(U32, surface[i].windingStart); //windingStart
 		WRITECHECK(U8, surface[i].windingCount); //windingCount
-		WRITECHECK(U16, surface[i].planeIndex); //planeIndex
+		U16 index = surface[i].planeIndex;
+		if (surface[i].planeFlipped)
+			index |= 0x8000;
+		WRITECHECK(U16, index); //planeIndex
 		WRITECHECK(U16, surface[i].textureIndex); //textureIndex
 		WRITECHECK(U32, surface[i].texGenIndex); //texGenIndex
 		WRITECHECK(U8, surface[i].surfaceFlags); //surfaceFlags
