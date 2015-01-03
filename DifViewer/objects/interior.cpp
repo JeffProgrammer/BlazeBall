@@ -365,32 +365,27 @@ Interior::Interior(FILE *file, String directory) {
 
 	//Create body
 	btMotionState *state = new btDefaultMotionState();
-	btTriangleMesh *mesh = new btTriangleMesh();
-	for (U32 i = 0; i < numSurfaces; i ++) {
-		Surface surface = this->surface[i];
 
-		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
-			TriangleF triangle;
-			triangle.point0 = point[index[surface.windingStart + j]];
-			triangle.point1 = point[index[surface.windingStart + j + 1]];
-			triangle.point2 = point[index[surface.windingStart + j + 2]];
+	for (U32 i = 0; i < numConvexHulls; i ++) {
+		ConvexHull hull = convexHull[i];
+		btConvexHullShape *shape = new btConvexHullShape();
 
-			mesh->addTriangle(btConvert(triangle.point0), btConvert(triangle.point1), btConvert(triangle.point2));
+		for (U32 j = 0; j < hull.hullCount; j ++) {
+			Point3F point = this->point[this->hullIndex[j + hull.hullStart]];
+			shape->addPoint(btConvert(point));
 		}
+
+		btTransform transform;
+		transform.setIdentity();
+		transform.setOrigin(btVector3(0, 0, 0));
+
+		state->setWorldTransform(transform);
+
+		actor = new btRigidBody(0, state, shape);
+		actor->setRestitution(0.7f);
+		actor->setFriction(1.0f);
+		Physics::getPhysics()->addRigidBody(actor);
 	}
-
-	btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(mesh, true, true);
-
-	btTransform transform;
-	transform.setIdentity();
-	transform.setOrigin(btVector3(0, 0, 0));
-
-	state->setWorldTransform(transform);
-
-	actor = new btRigidBody(0, state, shape);
-	actor->setRestitution(0.7f);
-	actor->setFriction(1.0f);
-	Physics::getPhysics()->addRigidBody(actor);
 }
 
 bool Interior::write(FILE *file) {
