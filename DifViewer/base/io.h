@@ -45,6 +45,8 @@ public:
 
 	static IO *getIO();
 
+	void reverse(FILE **file, U32 bytes);
+
 	//Unsigned ints
 	U64 readU64(FILE **file);
 	U64 readU64(FILE **file, String name);
@@ -129,6 +131,7 @@ void releaseString(String string);
 void releaseDictionary(Dictionary dictionary);
 
 //Macros to speed up file reading
+#define REVERSE(size) io->reverse(&file, size)
 #define READ(type) io->read##type(&file, (String)"garbage")
 #define READVAR(name, type) type name = io->read##type(&file, (String)#name)
 #define READTOVAR(name, type) name = io->read##type(&file, (String)#name)

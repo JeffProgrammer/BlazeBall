@@ -54,6 +54,12 @@ IO::~IO() {
 	
 }
 
+void IO::reverse(FILE **file, U32 bytes) {
+	fpos_t pos = ftell(*file);
+	pos -= bytes;
+	fsetpos(*file, &pos);
+}
+
 U64 IO::readU64(FILE **file, String name) {
 	U64 value = -1;
 	fpos_t pos;
