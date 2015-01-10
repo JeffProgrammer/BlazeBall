@@ -321,6 +321,7 @@ public:
 
 	btRigidBody *actor;
 
+	Interior() {};
 	/**
 	 Reads an Interior from a FILE
 	 @arg file - The FILE to read from (updates position)
@@ -339,10 +340,9 @@ public:
 	void exportObj(FILE *file);
 
 	/**
-	 Renders an interior with OpenGL at an offset
-	 @arg offset - The offset from the origin from which to render
+	 Renders an interior with OpenGL
 	 */
-	void render(Point3F offset);
+	void render();
 
 	U32 rayCast(RayF ray);
 	

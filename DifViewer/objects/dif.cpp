@@ -128,3 +128,12 @@ DIF::~DIF() {
 	delete vehicleCollision;
 	delete [] gameEntity;
 }
+
+void DIF::render() {
+	for (U32 i = 0; i < numDetailLevels; i ++) {
+		interior[i]->render();
+	}
+	for (U32 i = 0; i < numSubObjects; i ++) {
+		subObject[i]->render();
+	}
+}
