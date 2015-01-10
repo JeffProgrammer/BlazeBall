@@ -29,6 +29,7 @@
 #define point2_h
 
 #include <math.h>
+#include <limits>
 
 template <typename T>
 class Point2 {
@@ -57,12 +58,13 @@ public:
 	T lengthSquared() const;
 	T distance(const Point2<T> &point) const;
 
+	Point2<T> normalize() const;
 	Point2<T> roundThousands() const;
 };
 
 template <typename T>
 inline bool Point2<T>::operator==(const Point2<T> &point) const {
-	return (x == point.x && y == point.y);
+	return (this - point).length() < std::numeric_limits<T>::epsillon();
 }
 
 template <typename T>
@@ -137,6 +139,11 @@ inline T Point2<T>::lengthSquared() const {
 template <typename T>
 inline T Point2<T>::distance(const Point2<T> &point) const {
 	return (*this - point).length();
+}
+
+template <typename T>
+inline Point2<T> Point2<T>::normalize() const {
+	return *this / (*this).length();
 }
 
 template <typename T>
