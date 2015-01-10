@@ -25,7 +25,12 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "physics.h"
+#include "physics.h"	
+
+bool cb_ContactAddedCallback(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1) {
+//	printf("%d %d %f, %f, %f\n", colObj0Wrap->m_shape, colObj1Wrap->m_shape, cp.m_normalWorldOnB.x(), cp.m_normalWorldOnB.y(), cp.m_normalWorldOnB.z());
+	return true;
+}
 
 void Physics::init() {
 	btDefaultCollisionConfiguration *configuration = new btDefaultCollisionConfiguration();
@@ -34,7 +39,9 @@ void Physics::init() {
 	btConstraintSolver *solver = new btSequentialImpulseConstraintSolver();
 
 	world = new btDiscreteDynamicsWorld(dispatcher, interface, solver, configuration);
-	world->setGravity(btVector3(0, 0, -40.0f));
+	world->setGravity(btVector3(0, 0, -30.0f));
+
+	gContactAddedCallback = cb_ContactAddedCallback;
 }
 
 void Physics::simulate(F32 delta) {
@@ -50,7 +57,6 @@ Physics *Physics::getPhysics() {
 }
 
 void Physics::addRigidBody(btRigidBody *body) {
+	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 	world->addRigidBody(body);
 }
-
-

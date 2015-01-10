@@ -409,7 +409,7 @@ bool init() {
 	gRunning = true;
 	gListNeedsDisplay = true;
 
-	gSphere = new Sphere(Point3F(0, 15, 20), 0.2f);
+	gSphere = new Sphere(Point3F(0, 30, 60), 0.2f);
 
 	//Init SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
