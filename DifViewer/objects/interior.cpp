@@ -128,17 +128,11 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(portal[i].zoneBack, U16); //zoneBack
 	}
 	READLOOPVAR(numSurfaces, surface, Surface) {
-		if (this->interiorFileVersion == 4 && i != 0) {
-			READ(U32); //Extra bytes used for some unknown purpose
-			READTOVAR(surface[i].windingStart, U32); //windingStart
-			READTOVAR(surface[i].windingCount, U8); //windingCount
+		READTOVAR(surface[i].windingStart, U32); //windingStart
+		if (this->interiorFileVersion >= 13) {
+			READTOVAR(surface[i].windingCount, U32); //windingCount
 		} else {
-			READTOVAR(surface[i].windingStart, U32); //windingStart
-			if (this->interiorFileVersion >= 13) {
-				READTOVAR(surface[i].windingCount, U32); //windingCount
-			} else {
-				READTOVAR(surface[i].windingCount, U8); //windingCount
-			}
+			READTOVAR(surface[i].windingCount, U8); //windingCount
 		}
 		//Fucking GarageGames. Sometimes the plane is | 0x8000 because WHY NOT
 		READTOVAR(S16 plane, S16); //planeIndex
@@ -172,10 +166,10 @@ Interior::Interior(FILE *file, String directory) {
 
 		if (this->interiorFileVersion >= 1) {
 			READ(U8); //unused
+			READ(U32); //Extra bytes used for some unknown purpose
 		}
 	}
-	if (this->interiorFileVersion >= 1) {
-		READ(U32);
+	if (this->interiorFileVersion >= 2) {
 		READLOOP(numIndicesOfSomeSort, U32) {
 			//Potentially brush data for constructor... I don't know
 
@@ -187,6 +181,8 @@ Interior::Interior(FILE *file, String directory) {
 			READ(U32); // maxy?
 			READ(U32); // maxz?
 		}
+	}
+	if (this->interiorFileVersion >= 4) {
 		READLOOP(numPointsOfSomeKind, U32) {
 			//May be brush points, normals, no clue
 			READ(Point3F); //Not sure, normals of some sort
@@ -199,7 +195,7 @@ Interior::Interior(FILE *file, String directory) {
 	READLOOPVAR(numNormalLMapIndices, normalLMapIndex, U8) {
 		READTOVAR(normalLMapIndex[i], U8); //normalLMapIndex
 	}
-	if (this->interiorFileVersion == 0) {
+	if (this->interiorFileVersion < 4) {
 		READLOOPVAR(numAlarmLMapIndices, alarmLMapIndex, U8) {
 			READTOVAR(alarmLMapIndex[i], U8); //alarmLMapIndex
 		}
@@ -210,13 +206,12 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(nullSurface[i].surfaceFlags, U8); //surfaceFlags
 		READTOVAR(nullSurface[i].windingCount, U8); //windingCount
 	}
-	if (this->interiorFileVersion == 0) {
+	if (this->interiorFileVersion < 4) {
 		READLOOPVAR(numLightMaps, lightMap, LightMap) {
 			READTOVAR(lightMap[i].lightMap, PNG); //lightMap
-			/*
-			 Not in MB
-			 READTOVAR(lightDirMap[i], PNG); //lightDirMap
-			 */
+			if (this->interiorFileVersion >= 2) {
+				READTOVAR(lightMap[i].lightDirMap, PNG); //lightDirMap
+			}
 			READTOVAR(lightMap[i].keepLightMap, U8); //keepLightMap
 		}
 	}
@@ -238,7 +233,7 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(lightState[i].dataIndex, U32); //dataIndex
 		READTOVAR(lightState[i].dataCount, U16); //dataCount
 	}
-	if (this->interiorFileVersion == 0) {
+	if (this->interiorFileVersion < 4) {
 		READLOOPVAR(numStateDatas, stateData, StateData) {
 			READTOVAR(stateData[i].surfaceIndex, U32); //surfaceIndex
 			READTOVAR(stateData[i].mapIndex, U32); //mapIndex
@@ -308,7 +303,7 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(coordBinIndex[i], U16); //coordBinIndex
 	}
 	READTOVAR(coordBinMode, U32); //coordBinMode
-	if (this->interiorFileVersion == 0) {
+	if (this->interiorFileVersion < 4) {
 		READTOVAR(baseAmbientColor, ColorI); //baseAmbientColor
 		READTOVAR(alarmAmbientColor, ColorI); //alarmAmbientColor
 		/*

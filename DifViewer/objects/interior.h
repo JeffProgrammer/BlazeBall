@@ -108,6 +108,7 @@ struct LightMapF {
 
 struct LightMap {
 	PNG lightMap;
+	PNG lightDirMap;
 	U8 keepLightMap;
 };
 
