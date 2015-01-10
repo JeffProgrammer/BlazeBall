@@ -55,7 +55,10 @@ Interior::Interior(FILE *file, String directory) {
 	READLOOPVAR(numPoints, point, Point3F) {
 		READTOVAR(point[i], Point3F); //point
 	}
-	if (this->interiorFileVersion != 4) { //They exist in 0, 2, 3 but not 4
+	if (this->interiorFileVersion == 4) { //They exist in 0, 2, 3 but not 4
+		//Probably defaulted to FF but uncertain
+		numPointVisibilities = 0;
+	} else {
 		READLOOPVAR(numPointVisibilities, pointVisibility, U8) {
 			READTOVAR(pointVisibility[i], U8); //pointVisibility
 		}
@@ -101,6 +104,8 @@ Interior::Interior(FILE *file, String directory) {
 			READTOVAR(edge[i].surfaceIndex0, S32); //surfaceIndex0
 			READTOVAR(edge[i].surfaceIndex1, S32); //surfaceIndex1
 		}
+	} else {
+		numEdges = 0;
 	}
 	READLOOPVAR(numZones, zone, Zone) {
 		READTOVAR(zone[i].portalStart, U16); //portalStart
@@ -111,6 +116,10 @@ Interior::Interior(FILE *file, String directory) {
 			READTOVAR(zone[i].staticMeshStart, U32); //staticMeshStart
 			READTOVAR(zone[i].staticMeshCount, U32); //staticMeshCount
 			READTOVAR(zone[i].flags, U16); //flags
+		} else {
+			zone[i].staticMeshStart = 0;
+			zone[i].staticMeshCount = 0;
+			zone[i].flags = 0;
 		}
 	}
 	READLOOPVAR2(numZoneSurfaces, zoneSurface, U16) {
@@ -120,6 +129,8 @@ Interior::Interior(FILE *file, String directory) {
 		READLOOPVAR(numZoneStaticMeshes, zoneStaticMesh, U32) {
 			READTOVAR(zoneStaticMesh[i], U32); //zoneStaticMesh
 		}
+	} else {
+		numZoneStaticMeshes = 0;
 	}
 	READLOOPVAR2(numZonePortalList, zonePortalList, U16) {
 		READTOVAR(zonePortalList[i], U16); //zonePortalList
@@ -215,7 +226,9 @@ Interior::Interior(FILE *file, String directory) {
 	READLOOPVAR(numNormalLMapIndices, normalLMapIndex, U8) {
 		READTOVAR(normalLMapIndex[i], U8); //normalLMapIndex
 	}
-	if (this->interiorFileVersion != 4) { //Found in 0, 2, 3, and TGE (14)
+	if (this->interiorFileVersion == 4) { //Found in 0, 2, 3, and TGE (14)
+		numAlarmLMapIndices = 0;
+	} else {
 		READLOOPVAR(numAlarmLMapIndices, alarmLMapIndex, U8) {
 			READTOVAR(alarmLMapIndex[i], U8); //alarmLMapIndex
 		}
@@ -226,7 +239,9 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(nullSurface[i].surfaceFlags, U8); //surfaceFlags
 		READTOVAR(nullSurface[i].windingCount, U8); //windingCount
 	}
-	if (this->interiorFileVersion != 4) { //Also found in 0, 2, 3, 14
+	if (this->interiorFileVersion == 4) { //Also found in 0, 2, 3, 14
+		numLightMaps = 0;
+	} else {
 		READLOOPVAR(numLightMaps, lightMap, LightMap) {
 			READTOVAR(lightMap[i].lightMap, PNG); //lightMap
 			if (this->interiorFileVersion >= 2) {
@@ -258,7 +273,13 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(lightState[i].dataIndex, U32); //dataIndex
 		READTOVAR(lightState[i].dataCount, U16); //dataCount
 	}
-	if (this->interiorFileVersion != 4) { //Yet more things found in 0, 2, 3, 14
+	if (this->interiorFileVersion == 4) { //Yet more things found in 0, 2, 3, 14
+		numStateDatas = 0;
+		numStateDataBuffers = 0;
+		flags = 0;
+		numNameBuffers = 0;
+		numSubObjects = 0;
+	} else {
 		READLOOPVAR(numStateDatas, stateData, StateData) {
 			READTOVAR(stateData[i].surfaceIndex, U32); //surfaceIndex
 			READTOVAR(stateData[i].mapIndex, U32); //mapIndex
@@ -293,6 +314,8 @@ Interior::Interior(FILE *file, String directory) {
 
 		if (this->interiorFileVersion >= 12) {
 			READTOVAR(convexHull[i].staticMesh, U8); //staticMesh
+		} else {
+			convexHull[i].staticMesh = 0;
 		}
 	}
 	READLOOPVAR(numConvexHullEmitStrings, convexHullEmitStringCharacter, U8) {
@@ -359,6 +382,14 @@ Interior::Interior(FILE *file, String directory) {
 	}
 	READTOVAR(coordBinMode, U32); //coordBinMode
 	if (this->interiorFileVersion == 4) { //All of this is missing in v4 as well. Saves no space.
+		baseAmbientColor = ColorI(0, 0, 0, 255);
+		alarmAmbientColor = ColorI(0, 0, 0, 255);
+		numTexNormals = 0;
+		numTexMatrices = 0;
+		numTexMatIndices = 0;
+		extendedLightMapData = 0;
+		lightMapBorderSize = 0;
+	} else {
 		READTOVAR(baseAmbientColor, ColorI); //baseAmbientColor
 		READTOVAR(alarmAmbientColor, ColorI); //alarmAmbientColor
 		/*
@@ -378,6 +409,8 @@ Interior::Interior(FILE *file, String directory) {
 		if ((READTOVAR(extendedLightMapData, U32))) { //extendedLightMapData
 			READTOVAR(lightMapBorderSize, U32); //lightMapBorderSize
 			READ(U32); //dummy
+		} else {
+			lightMapBorderSize = 0;
 		}
 	}
 
