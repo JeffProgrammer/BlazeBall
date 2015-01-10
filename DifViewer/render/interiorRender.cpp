@@ -29,7 +29,7 @@
 #include "interior.h"
 #include "math.h"
 
-void Interior::render(Point3F offset) {
+void Interior::render() {
 	//Actual rendering is here (GL 1.1 in a 2.1 context. Take THAT, good practice!)
 
 	glEnable(GL_TEXTURE_2D);
@@ -80,13 +80,13 @@ void Interior::render(Point3F offset) {
 			//Reference: TGE InteriorRender.cc
 			glNormal3f(n.x, n.y, n.z);
 			glTexCoord2f(planeF_distance_to_point(texGenEq.planeX, u0), planeF_distance_to_point(texGenEq.planeY, u0));
-			glVertex3f(u0.x + offset.x, u0.y + offset.y, u0.z + offset.z);
+			glVertex3f(u0.x, u0.y, u0.z);
 
 			glTexCoord2f(planeF_distance_to_point(texGenEq.planeX, u1), planeF_distance_to_point(texGenEq.planeY, u1));
-			glVertex3f(u1.x + offset.x, u1.y + offset.y, u1.z + offset.z);
+			glVertex3f(u1.x, u1.y, u1.z);
 
 			glTexCoord2f(planeF_distance_to_point(texGenEq.planeX, u2), planeF_distance_to_point(texGenEq.planeY, u2));
-			glVertex3f(u2.x + offset.x, u2.y + offset.y, u2.z + offset.z);
+			glVertex3f(u2.x, u2.y, u2.z);
 		}
 	}
 	glEnd();
