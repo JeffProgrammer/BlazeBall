@@ -55,7 +55,7 @@ Interior::Interior(FILE *file, String directory) {
 	READLOOPVAR(numPoints, point, Point3F) {
 		READTOVAR(point[i], Point3F); //point
 	}
-	if (this->interiorFileVersion != 4) {
+	if (this->interiorFileVersion != 4) { //They exist in 0, 2, 3 but not 4
 		READLOOPVAR(numPointVisibilities, pointVisibility, U8) {
 			READTOVAR(pointVisibility[i], U8); //pointVisibility
 		}
@@ -84,7 +84,7 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(material[i], String); //material
 	}
 	READLOOPVAR2(numWindings, index, U32) {
-		if (readnumWindings2) {
+		if (readnumWindings2) { //These are sometimes U16s in MBU Xbox DIF files, probably to save space
 			READTOVAR(index[i], U16); //index
 		} else {
 			READTOVAR(index[i], U32); //index
@@ -118,7 +118,7 @@ Interior::Interior(FILE *file, String directory) {
 	}
 	if (this->interiorFileVersion >= 12) {
 		READLOOPVAR(numZoneStaticMeshes, zoneStaticMesh, U32) {
-			READTOVAR(zoneStaticMesh[i], U32);
+			READTOVAR(zoneStaticMesh[i], U32); //zoneStaticMesh
 		}
 	}
 	READLOOPVAR2(numZonePortalList, zonePortalList, U16) {
@@ -170,14 +170,17 @@ Interior::Interior(FILE *file, String directory) {
 
 		if (this->interiorFileVersion >= 1) {
 			READ(U8); //unused
-			READ(U32); //Extra bytes used for some unknown purpose
+			if (this->interiorFileVersion <= 4) {
+				READ(U32); //Extra bytes used for some unknown purpose, seen in versions 2, 3, 4
+			}
 		}
 	}
-	if (this->interiorFileVersion >= 2) {
+	if (this->interiorFileVersion >= 2 && this->interiorFileVersion <= 4) {
+		//Extra data that I've seen in MBU interiors (v2, 3, 4)
 		READLOOP(numIndicesOfSomeSort, U32) {
 			//Potentially brush data for constructor... I don't know
 
-			//Totally guessing these names
+			//I really don't know what these are, only their size
 			READ(U32);
 			READ(U32);
 			READ(U32);
@@ -189,25 +192,30 @@ Interior::Interior(FILE *file, String directory) {
 				READ(U32);
 			}
 		}
-	}
-	if (this->interiorFileVersion >= 4) {
-		READLOOP(numPointsOfSomeKind, U32) {
-			//May be brush points, normals, no clue
-			READ(Point3F); //Not sure, normals of some sort
-		}
-		READLOOP2(numSomethingElses, U32) {
-			//Looks like indcies of some sort, can't seem to make them out though
-			if (readnumSomethingElses2 && readnumSomethingElsesparam == 0) {
-				READ(U8);
-			} else {
-				READ(U16);
+		//v4 has some extra points and indices, no clue what these are either
+		if (this->interiorFileVersion == 4) {
+			READLOOP(numPointsOfSomeKind, U32) {
+				//May be brush points, normals, no clue
+				READ(Point3F); //Not sure, normals of some sort
+			}
+			READLOOP2(numSomethingElses, U32) {
+				//Looks like indcies of some sort, can't seem to make them out though
+
+				//Unlike anywhere else, these actually take the param into account.
+				// If it's read2 and param == 0, then they use U8s, if param == 1, they use U16s
+				// Not really sure why, haven't seen this anywhere else.
+				if (readnumSomethingElses2 && readnumSomethingElsesparam == 0) {
+					READ(U8);
+				} else {
+					READ(U16);
+				}
 			}
 		}
 	}
 	READLOOPVAR(numNormalLMapIndices, normalLMapIndex, U8) {
 		READTOVAR(normalLMapIndex[i], U8); //normalLMapIndex
 	}
-	if (this->interiorFileVersion < 4) {
+	if (this->interiorFileVersion != 4) { //Found in 0, 2, 3, and TGE (14)
 		READLOOPVAR(numAlarmLMapIndices, alarmLMapIndex, U8) {
 			READTOVAR(alarmLMapIndex[i], U8); //alarmLMapIndex
 		}
@@ -218,7 +226,7 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(nullSurface[i].surfaceFlags, U8); //surfaceFlags
 		READTOVAR(nullSurface[i].windingCount, U8); //windingCount
 	}
-	if (this->interiorFileVersion < 4) {
+	if (this->interiorFileVersion != 4) { //Also found in 0, 2, 3, 14
 		READLOOPVAR(numLightMaps, lightMap, LightMap) {
 			READTOVAR(lightMap[i].lightMap, PNG); //lightMap
 			if (this->interiorFileVersion >= 2) {
@@ -228,6 +236,7 @@ Interior::Interior(FILE *file, String directory) {
 		}
 	}
 	READLOOPVAR2(numSolidLeafSurfaces, solidLeafSurface, U32) {
+		//All of these "index-type" lists have U16 versions in MBU, for extra space
 		if (readnumSolidLeafSurfaces2) {
 			READTOVAR(solidLeafSurface[i], U16); //solidLeafSurface
 		} else {
@@ -249,7 +258,7 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(lightState[i].dataIndex, U32); //dataIndex
 		READTOVAR(lightState[i].dataCount, U16); //dataCount
 	}
-	if (this->interiorFileVersion < 4) {
+	if (this->interiorFileVersion != 4) { //Yet more things found in 0, 2, 3, 14
 		READLOOPVAR(numStateDatas, stateData, StateData) {
 			READTOVAR(stateData[i].surfaceIndex, U32); //surfaceIndex
 			READTOVAR(stateData[i].mapIndex, U32); //mapIndex
@@ -281,14 +290,26 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(convexHull[i].polyListPlaneStart, U32); //polyListPlaneStart
 		READTOVAR(convexHull[i].polyListPointStart, U32); //polyListPointStart
 		READTOVAR(convexHull[i].polyListStringStart, U32); //polyListStringStart
-		/*
-		 Not in MB
-		 READTOVAR(staticMesh[i], U8); //staticMesh
-		 */
+
+		if (this->interiorFileVersion >= 12) {
+			READTOVAR(convexHull[i].staticMesh, U8); //staticMesh
+		}
 	}
 	READLOOPVAR(numConvexHullEmitStrings, convexHullEmitStringCharacter, U8) {
 		READTOVAR(convexHullEmitStringCharacter[i], U8); //convexHullEmitStringCharacter
 	}
+
+	//-------------------------------------------------------------------------
+	// Lots of index lists here that have U16 or U32 versions based on loop2.
+	// The actual bytes of the interior have 0x80s at the ends (negative bit)
+	// which seems to specify that these take a smaller type. They managed to
+	// save ~50KB/interior, but was it worth the pain?
+	//
+	// Also fun fact: the U16 lists have literally no reason for the 0x80, as
+	// they're already using U16s. However, GG still puts them in. What the
+	// fuck, GarageGames?
+	//-------------------------------------------------------------------------
+
 	READLOOPVAR2(numHullIndices, hullIndex, U32) {
 		if (readnumHullIndices2) {
 			READTOVAR(hullIndex[i], U16); //hullIndex
@@ -323,6 +344,8 @@ Interior::Interior(FILE *file, String directory) {
 			READTOVAR(polyListPointIndex[i], U32); //polyListPointIndex
 		}
 	}
+	//Not sure if this should be a READLOOPVAR2, but I haven't seen any evidence
+	// of needing that for U8 lists.
 	READLOOPVAR(numPolyListStrings, polyListStringCharacter, U8) {
 		READTOVAR(polyListStringCharacter[i], U8); //polyListStringCharacter
 	}
@@ -335,7 +358,7 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(coordBinIndex[i], U16); //coordBinIndex
 	}
 	READTOVAR(coordBinMode, U32); //coordBinMode
-	if (this->interiorFileVersion < 4) {
+	if (this->interiorFileVersion == 4) { //All of this is missing in v4 as well. Saves no space.
 		READTOVAR(baseAmbientColor, ColorI); //baseAmbientColor
 		READTOVAR(alarmAmbientColor, ColorI); //alarmAmbientColor
 		/*
@@ -450,6 +473,8 @@ Interior::Interior(FILE *file, String directory) {
 }
 
 bool Interior::write(FILE *file) {
+	//We can only write version 0 maps at the moment.
+
 	WRITECHECK(U32, 0); //interiorFileVersion
 	WRITECHECK(U32, detailLevel); //detailLevel
 	WRITECHECK(U32, minPixels); //minPixels

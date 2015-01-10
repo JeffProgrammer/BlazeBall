@@ -175,6 +175,7 @@ struct ConvexHull {
 	U32 polyListPlaneStart;
 	U32 polyListPointStart;
 	U32 polyListStringStart;
+	U8 staticMesh;
 };
 
 struct CoordBin {
