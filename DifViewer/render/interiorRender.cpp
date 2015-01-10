@@ -40,21 +40,27 @@ void Interior::render() {
 	for (U32 i = 0; i < numSurfaces; i ++) {
 		Surface surface = this->surface[i];
 
-		Texture *texture = this->texture[surface.textureIndex];
-		//Make sure our texture is active before drawing
-		if (texture && texture != currentTexture) {
-			glEnd();
-			if (currentTexture)
-				currentTexture->deactivate();
+		if (this->texture) {
+			Texture *texture = this->texture[surface.textureIndex];
+			//Make sure our texture is active before drawing
+			if (texture && texture != currentTexture) {
+				glEnd();
+				if (currentTexture)
+					currentTexture->deactivate();
 
-			//Generate if needed
-			if (!texture->generated) {
-				texture->generateBuffer();
+				if (surface.textureIndex < numMaterials) {
+					//Generate if needed
+					if (!texture->generated) {
+						texture->generateBuffer();
+					}
+					texture->activate();
+				} else {
+					glDisable(GL_LIGHTING);
+				}
+
+				currentTexture = texture;
+				glBegin(GL_TRIANGLES);
 			}
-			texture->activate();
-
-			currentTexture = texture;
-			glBegin(GL_TRIANGLES);
 		}
 
 		//New and improved rendering with actual Triangle Strips this time
