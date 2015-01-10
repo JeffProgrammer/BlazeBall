@@ -28,7 +28,7 @@
 #include "sphere.h"
 #include "math.h"
 
-Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), displayList(0) {
+Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), displayList(0), maxAngVel(360.0f) {
 	//Motion state and shape
 	btMotionState *state = new btDefaultMotionState();
 	btCollisionShape *shape = new btSphereShape(radius);
@@ -122,6 +122,12 @@ void Sphere::render(ColorF color) {
 
 void Sphere::applyTorque(Point3F torque) {
 	actor->applyTorqueImpulse(btConvert(torque));
+	Point3F ang = btConvert(actor->getAngularVelocity());
+
+	if (ang.length() > maxAngVel)
+		ang = ang.normalize(maxAngVel);
+	
+	actor->setAngularVelocity(btConvert(ang));
 }
 
 void Sphere::applyImpulse(Point3F force, Point3F origin) {

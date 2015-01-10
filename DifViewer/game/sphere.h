@@ -42,6 +42,7 @@ public:
 	btRigidBody *actor;
 	Point3F origin;
 	F32 radius;
+	F32 maxAngVel;
 
 	GLuint displayList;
 private:
