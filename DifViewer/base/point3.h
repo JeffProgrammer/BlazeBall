@@ -29,6 +29,7 @@
 #define point3F_h
 
 #include <math.h>
+#include <limits>
 
 template <typename T>
 class Point3 {
@@ -66,14 +67,12 @@ public:
 
 	Point3<T> convert() const;
 	Point3<T> roundThousands() const;
-
-	template <typename to>
-	operator to() const;
+	Point3<T> normalize() const;
 };
 
 template <typename T>
 inline bool Point3<T>::operator==(const Point3<T> &point) const {
-	return (x == point.x && y == point.y && z == point.z);
+	return (this - point).length() < std::numeric_limits<T>::epsillon();
 }
 
 template <typename T>
@@ -180,6 +179,11 @@ inline T Point3<T>::angle(const Point3<T> &point) const {
 template <typename T>
 inline Point3<T> Point3<T>::convert() const {
 	return Point3<T>(x, z, y);
+}
+
+template <typename T>
+inline Point3<T> Point3<T>::normalize() const {
+	return *this / (*this).length();
 }
 
 template <typename T>
