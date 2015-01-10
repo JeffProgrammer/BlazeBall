@@ -141,6 +141,7 @@ void render() {
 	if (gSelection.hasSelection) {
 		Surface surface = gSelection.interior->surface[gSelection.surfaceIndex];
 		TexGenEq texGenEq = gSelection.interior->texGenEq[surface.texGenIndex];
+		Point3F normal = gSelection.interior->normal[gSelection.interior->plane[surface.planeIndex].normalIndex];
 		Point3F first = gSelection.interior->point[gSelection.interior->index[surface.windingStart]];
 		F32 len = 0;
 
@@ -150,7 +151,8 @@ void render() {
 
 			glVertex3f(vert.x, vert.y, vert.z);
 
-			F32 distance = first.distance(vert);
+			Point2F point = point3F_project_plane(vert, normal, first);
+			F32 distance = point.length();
 			len = (distance > len ? distance : len);
 		}
 		glEnd();
@@ -160,27 +162,38 @@ void render() {
 		glLoadIdentity();
 		glOrtho(-1, 1, -1, 1, -100, 100);
 		glMatrixMode(GL_MODELVIEW);
-		glLightfv(GL_LIGHT0, GL_POSITION, (float[]){0, 0, 1});
+		glDisable(GL_LIGHTING);
+		glEnable(GL_TEXTURE_2D);
 		glLoadIdentity();
 
-		gSelection.interior->texture[surface.textureIndex]->activate();
+		Texture *texture = gSelection.interior->texture[surface.textureIndex];
+		if (!texture->generated) {
+			texture->generateBuffer();
+		}
+		texture->activate();
+
 		glBegin(GL_TRIANGLE_STRIP);
 
+		int w, h;
+		SDL_GetWindowSize(gWindow, &w, &h);
+
+		GLfloat aspect = (GLfloat)w / (GLfloat)h;
 
 		for (U32 i = 0; i < surface.windingCount; i ++) {
 			Point3F vert = gSelection.interior->point[gSelection.interior->index[surface.windingStart + i]];
-			Point3F normal = gSelection.interior->normal[gSelection.interior->plane[surface.planeIndex].normalIndex];
-			if (surface.planeFlipped)
-				normal *= -1;
 
-			glTexCoord2f(planeF_distance_to_point(texGenEq.planeX, vert), planeF_distance_to_point(texGenEq.planeY, vert));
+			Point2F texuv = Point2F(planeF_distance_to_point(texGenEq.planeX, vert), planeF_distance_to_point(texGenEq.planeY, vert));
+			glTexCoord2fv(&texuv.x);
 
-			Point2F point = point3F_project_plane(vert, normal, first);
-
-			glVertex3f(point.x / len, point.y / len, 0);
+			Point2F point = point3F_project_plane(vert, (surface.planeFlipped ? normal * -1 : normal), first);
+			glVertex3f(point.x / len / aspect, point.y / len, 0);
 		}
 		glEnd();
+		texture->deactivate();
+
 		gSelection.interior->texture[surface.textureIndex]->deactivate();
+		glDisable(GL_TEXTURE_2D);
+		glEnable(GL_LIGHTING);
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
 	}
