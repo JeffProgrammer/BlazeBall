@@ -68,6 +68,7 @@ public:
 	Point3<T> convert() const;
 	Point3<T> roundThousands() const;
 	Point3<T> normalize() const;
+	Point3<T> normalize(T scalar) const;
 };
 
 template <typename T>
@@ -184,6 +185,11 @@ inline Point3<T> Point3<T>::convert() const {
 template <typename T>
 inline Point3<T> Point3<T>::normalize() const {
 	return *this / (*this).length();
+}
+
+template <typename T>
+inline Point3<T> Point3<T>::normalize(T scalar) const {
+	return *this / (*this).length() * scalar;
 }
 
 template <typename T>
