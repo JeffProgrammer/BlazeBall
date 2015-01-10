@@ -55,8 +55,10 @@ Interior::Interior(FILE *file, String directory) {
 	READLOOPVAR(numPoints, point, Point3F) {
 		READTOVAR(point[i], Point3F); //point
 	}
-	READLOOPVAR(numPointVisibilities, pointVisibility, U8) {
-		READTOVAR(pointVisibility[i], U8); //pointVisibility
+	if (this->interiorFileVersion != 4) {
+		READLOOPVAR(numPointVisibilities, pointVisibility, U8) {
+			READTOVAR(pointVisibility[i], U8); //pointVisibility
+		}
 	}
 	READLOOPVAR(numTexGenEqs, texGenEq, TexGenEq) {
 		READTOVAR(texGenEq[i].planeX, PlaneF); //planeX
@@ -64,8 +66,13 @@ Interior::Interior(FILE *file, String directory) {
 	}
 	READLOOPVAR(numBSPNodes, BSPNode, ::BSPNode) {
 		READTOVAR(BSPNode[i].planeIndex, U16); //planeIndex
-		READTOVAR(BSPNode[i].frontIndex, U16); //frontIndex
-		READTOVAR(BSPNode[i].backIndex, U16); //backIndex
+		if (this->interiorFileVersion >= 14) {
+			READTOVAR(BSPNode[i].frontIndex, U32); //frontIndex
+			READTOVAR(BSPNode[i].backIndex, U32); //backIndex
+		} else {
+			READTOVAR(BSPNode[i].frontIndex, U16); //frontIndex
+			READTOVAR(BSPNode[i].backIndex, U16); //backIndex
+		}
 	}
 	READLOOPVAR(numBSPSolidLeaves, BSPSolidLeaf, ::BSPSolidLeaf) {
 		READTOVAR(BSPSolidLeaf[i].surfaceIndex, U32); //surfaceIndex
@@ -83,29 +90,32 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(windingIndex[i].windingStart, U32); //windingStart
 		READTOVAR(windingIndex[i].windingCount, U32); //windingCount
 	}
-	/*
-	 Not in MB
-	 READLOOP(numEdges, U32) {
-	 READ(S32); //pointIndex0
-	 READ(S32); //pointIndex1
-	 READ(S32); //surfaceIndex0
-	 READ(S32); //surfaceIndex1
-	 }
-	 */
+	if (this->interiorFileVersion >= 12) {
+		READLOOPVAR(numEdges, edge, Edge) {
+			READTOVAR(edge[i].pointIndex0, S32); //pointIndex0
+			READTOVAR(edge[i].pointIndex1, S32); //pointIndex1
+			READTOVAR(edge[i].surfaceIndex0, S32); //surfaceIndex0
+			READTOVAR(edge[i].surfaceIndex1, S32); //surfaceIndex1
+		}
+	}
 	READLOOPVAR(numZones, zone, Zone) {
 		READTOVAR(zone[i].portalStart, U16); //portalStart
 		READTOVAR(zone[i].portalCount, U16); //portalCount
 		READTOVAR(zone[i].surfaceStart, U32); //surfaceStart
 		READTOVAR(zone[i].surfaceCount, U32); //surfaceCount
-		/*
-		 Not in MB
-		 READTOVAR(staticMeshStart[i], U32); //staticMeshStart
-		 READTOVAR(staticMeshCount[i], U32); //staticMeshCount
-		 READTOVAR(flags[i], U16); //flags
-		 */
+		if (this->interiorFileVersion >= 12) {
+			READTOVAR(zone[i].staticMeshStart, U32); //staticMeshStart
+			READTOVAR(zone[i].staticMeshCount, U32); //staticMeshCount
+			READTOVAR(zone[i].flags, U16); //flags
+		}
 	}
 	READLOOPVAR(numZoneSurfaces, zoneSurface, U16) {
 		READTOVAR(zoneSurface[i], U16); //zoneSurface
+	}
+	if (this->interiorFileVersion >= 12) {
+		READLOOPVAR(numZoneStaticMeshes, zoneStaticMesh, U32) {
+			READTOVAR(zoneStaticMesh[i], U32);
+		}
 	}
 	READLOOPVAR(numZonePortalList, zonePortalList, U16) {
 		READTOVAR(zonePortalList[i], U16); //zonePortalList
@@ -118,8 +128,18 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(portal[i].zoneBack, U16); //zoneBack
 	}
 	READLOOPVAR(numSurfaces, surface, Surface) {
-		READTOVAR(surface[i].windingStart, U32); //windingStart
-		READTOVAR(surface[i].windingCount, U8); //windingCount
+		if (this->interiorFileVersion == 4 && i != 0) {
+			READ(U32); //Extra bytes used for some unknown purpose
+			READTOVAR(surface[i].windingStart, U32); //windingStart
+			READTOVAR(surface[i].windingCount, U8); //windingCount
+		} else {
+			READTOVAR(surface[i].windingStart, U32); //windingStart
+			if (this->interiorFileVersion >= 13) {
+				READTOVAR(surface[i].windingCount, U32); //windingCount
+			} else {
+				READTOVAR(surface[i].windingCount, U8); //windingCount
+			}
+		}
 		//Fucking GarageGames. Sometimes the plane is | 0x8000 because WHY NOT
 		READTOVAR(S16 plane, S16); //planeIndex
 		//Ugly hack
@@ -137,20 +157,52 @@ Interior::Interior(FILE *file, String directory) {
 		}
 		READTOVAR(surface[i].lightCount, U16); //lightCount
 		READTOVAR(surface[i].lightStateInfoStart, U32); //lightStateInfoStart
-		READTOVAR(surface[i].mapOffsetX, U8); //mapOffsetX
-		READTOVAR(surface[i].mapOffsetY, U8); //mapOffsetY
-		READTOVAR(surface[i].mapSizeX, U8); //mapSizeX
-		READTOVAR(surface[i].mapSizeY, U8); //mapSizeY
-		/*
-		 Not in MB
-		 READTOVAR(unused[i], U8); //unused
-		 */
+
+		if (this->interiorFileVersion >= 13) {
+			READTOVAR(surface[i].mapOffsetX, U32); //mapOffsetX
+			READTOVAR(surface[i].mapOffsetY, U32); //mapOffsetY
+			READTOVAR(surface[i].mapSizeX, U32); //mapSizeX
+			READTOVAR(surface[i].mapSizeY, U32); //mapSizeY
+		} else {
+			READTOVAR(surface[i].mapOffsetX, U8); //mapOffsetX
+			READTOVAR(surface[i].mapOffsetY, U8); //mapOffsetY
+			READTOVAR(surface[i].mapSizeX, U8); //mapSizeX
+			READTOVAR(surface[i].mapSizeY, U8); //mapSizeY
+		}
+
+		if (this->interiorFileVersion >= 1) {
+			READ(U8); //unused
+		}
+	}
+	if (this->interiorFileVersion >= 1) {
+		READ(U32);
+		READLOOP(numIndicesOfSomeSort, U32) {
+			//Potentially brush data for constructor... I don't know
+
+			//Totally guessing these names
+			READ(U32); // minx?
+			READ(U32); // miny?
+			READ(U32); // minz?
+			READ(U32); // maxx?
+			READ(U32); // maxy?
+			READ(U32); // maxz?
+		}
+		READLOOP(numPointsOfSomeKind, U32) {
+			//May be brush points, normals, no clue
+			READ(Point3F); //Not sure, normals of some sort
+		}
+		READLOOP(numSomethingElses, U32) {
+			//Looks like indcies of some sort, can't seem to make them out though
+			READ(U16);
+		}
 	}
 	READLOOPVAR(numNormalLMapIndices, normalLMapIndex, U8) {
 		READTOVAR(normalLMapIndex[i], U8); //normalLMapIndex
 	}
-	READLOOPVAR(numAlarmLMapIndices, alarmLMapIndex, U8) {
-		READTOVAR(alarmLMapIndex[i], U8); //alarmLMapIndex
+	if (this->interiorFileVersion == 0) {
+		READLOOPVAR(numAlarmLMapIndices, alarmLMapIndex, U8) {
+			READTOVAR(alarmLMapIndex[i], U8); //alarmLMapIndex
+		}
 	}
 	READLOOPVAR(numNullSurfaces, nullSurface, NullSurface) {
 		READTOVAR(nullSurface[i].windingStart, U32); //windingStart
@@ -158,13 +210,15 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(nullSurface[i].surfaceFlags, U8); //surfaceFlags
 		READTOVAR(nullSurface[i].windingCount, U8); //windingCount
 	}
-	READLOOPVAR(numLightMaps, lightMap, LightMap) {
-		READTOVAR(lightMap[i].lightMap, PNG); //lightMap
-		/*
-		 Not in MB
-		 READTOVAR(lightDirMap[i], PNG); //lightDirMap
-		 */
-		READTOVAR(lightMap[i].keepLightMap, U8); //keepLightMap
+	if (this->interiorFileVersion == 0) {
+		READLOOPVAR(numLightMaps, lightMap, LightMap) {
+			READTOVAR(lightMap[i].lightMap, PNG); //lightMap
+			/*
+			 Not in MB
+			 READTOVAR(lightDirMap[i], PNG); //lightDirMap
+			 */
+			READTOVAR(lightMap[i].keepLightMap, U8); //keepLightMap
+		}
 	}
 	READLOOPVAR(numSolidLeafSurfaces, solidLeafSurface, U32) {
 		READTOVAR(solidLeafSurface[i], U32); //solidLeafSurface
@@ -184,20 +238,22 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(lightState[i].dataIndex, U32); //dataIndex
 		READTOVAR(lightState[i].dataCount, U16); //dataCount
 	}
-	READLOOPVAR(numStateDatas, stateData, StateData) {
-		READTOVAR(stateData[i].surfaceIndex, U32); //surfaceIndex
-		READTOVAR(stateData[i].mapIndex, U32); //mapIndex
-		READTOVAR(stateData[i].lightStateIndex, U16); //lightStateIndex
-	}
-	READLOOPVAR(numStateDataBuffers, stateDataBuffer, U8) {
-		READTOVAR(stateDataBuffer[i], U8); //stateDataBuffer
-	}
-	READTOVAR(flags, U32); //flags
-	READLOOPVAR(numNameBuffers, nameBufferCharacter, U8) {
-		READTOVAR(nameBufferCharacter[i], U8); //character
-	}
-	READLOOP(numSubObjects, U32) {
-		//NFC
+	if (this->interiorFileVersion == 0) {
+		READLOOPVAR(numStateDatas, stateData, StateData) {
+			READTOVAR(stateData[i].surfaceIndex, U32); //surfaceIndex
+			READTOVAR(stateData[i].mapIndex, U32); //mapIndex
+			READTOVAR(stateData[i].lightStateIndex, U16); //lightStateIndex
+		}
+		READLOOPVAR(numStateDataBuffers, stateDataBuffer, U8) {
+			READTOVAR(stateDataBuffer[i], U8); //stateDataBuffer
+		}
+		READTOVAR(flags, U32); //flags
+		READLOOPVAR(numNameBuffers, nameBufferCharacter, U8) {
+			READTOVAR(nameBufferCharacter[i], U8); //character
+		}
+		READLOOP(numSubObjects, U32) {
+			//NFC
+		}
 	}
 	READLOOPVAR(numConvexHulls, convexHull, ConvexHull) {
 		READTOVAR(convexHull[i].hullStart, U32); //hullStart
@@ -252,25 +308,27 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(coordBinIndex[i], U16); //coordBinIndex
 	}
 	READTOVAR(coordBinMode, U32); //coordBinMode
-	READTOVAR(baseAmbientColor, ColorI); //baseAmbientColor
-	READTOVAR(alarmAmbientColor, ColorI); //alarmAmbientColor
-	/*
-	 There's a long list of static meshes here, but I'm too lazy to add it just to comment it out. Oh and I'd have to implement Point2I / Point2F. See DIF_MB_SPEC.rtf if you want to implement it.
-	 */
-	READLOOPVAR(numTexNormals, texNormal, Point3F) {
-		READTOVAR(texNormal[i], Point3F); //texNormal
-	}
-	READLOOPVAR(numTexMatrices, texMatrix, TexMatrix) {
-		READTOVAR(texMatrix[i].T, S32); //T
-		READTOVAR(texMatrix[i].N, S32); //N
-		READTOVAR(texMatrix[i].B, S32); //B
-	}
-	READLOOPVAR(numTexMatIndices, texMatIndex, U32) {
-		READTOVAR(texMatIndex[i], U32); //texMatIndex
-	}
-	if ((READTOVAR(extendedLightMapData, U32))) { //extendedLightMapData
-		READTOVAR(lightMapBorderSize, U32); //lightMapBorderSize
-		READ(U32); //dummy
+	if (this->interiorFileVersion == 0) {
+		READTOVAR(baseAmbientColor, ColorI); //baseAmbientColor
+		READTOVAR(alarmAmbientColor, ColorI); //alarmAmbientColor
+		/*
+		 There's a long list of static meshes here, but I'm too lazy to add it just to comment it out. Oh and I'd have to implement Point2I / Point2F. See DIF_MB_SPEC.rtf if you want to implement it.
+		 */
+		READLOOPVAR(numTexNormals, texNormal, Point3F) {
+			READTOVAR(texNormal[i], Point3F); //texNormal
+		}
+		READLOOPVAR(numTexMatrices, texMatrix, TexMatrix) {
+			READTOVAR(texMatrix[i].T, S32); //T
+			READTOVAR(texMatrix[i].N, S32); //N
+			READTOVAR(texMatrix[i].B, S32); //B
+		}
+		READLOOPVAR(numTexMatIndices, texMatIndex, U32) {
+			READTOVAR(texMatIndex[i], U32); //texMatIndex
+		}
+		if ((READTOVAR(extendedLightMapData, U32))) { //extendedLightMapData
+			READTOVAR(lightMapBorderSize, U32); //lightMapBorderSize
+			READ(U32); //dummy
+		}
 	}
 
 	//Allocate all textures for the interior
@@ -365,7 +423,7 @@ Interior::Interior(FILE *file, String directory) {
 }
 
 bool Interior::write(FILE *file) {
-	WRITECHECK(U32, interiorFileVersion); //interiorFileVersion
+	WRITECHECK(U32, 0); //interiorFileVersion
 	WRITECHECK(U32, detailLevel); //detailLevel
 	WRITECHECK(U32, minPixels); //minPixels
 	WRITECHECK(BoxF, boundingBox); //boundingBox

@@ -75,11 +75,21 @@ struct WindingIndex {
 	U32 windingCount;
 };
 
+struct Edge {
+	S32 pointIndex0;
+	S32 pointIndex1;
+	S32 surfaceIndex0;
+	S32 surfaceIndex1;
+};
+
 struct Zone {
 	U16 portalStart;
 	U16 portalCount;
 	U32 surfaceStart;
 	U32 surfaceCount;
+	U32 staticMeshStart;
+	U32 staticMeshCount;
+	U16 flags;
 };
 
 struct Portal {
@@ -219,11 +229,17 @@ public:
 	U32 numWindingIndices;
 	WindingIndex *windingIndex;
 
+	U32 numEdges;
+	Edge *edge;
+
 	U32 numZones;
 	Zone *zone;
 
 	U32 numZoneSurfaces;
 	U16 *zoneSurface;
+
+	U32 numZoneStaticMeshes;
+	U32 *zoneStaticMesh;
 
 	U32 numZonePortalList;
 	U16 *zonePortalList;
