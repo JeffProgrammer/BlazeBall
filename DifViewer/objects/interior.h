@@ -318,6 +318,7 @@ public:
 	U32 extendedLightMapData;
 	U32 lightMapBorderSize;
 
+	Interior() {};
 	/**
 	 Reads an Interior from a FILE
 	 @arg file - The FILE to read from (updates position)
