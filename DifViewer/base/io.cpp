@@ -31,7 +31,7 @@
 #include <math.h>
 #include "io.h"
 
-#if 0
+#if 1
 #define DEBUG_PRINT(...) printf(__VA_ARGS__)
 #else
 #define DEBUG_PRINT(...)
@@ -54,110 +54,116 @@ IO::~IO() {
 	
 }
 
-U64 IO::readU64(FILE **file) {
+void IO::reverse(FILE **file, U32 bytes) {
+	fpos_t pos = ftell(*file);
+	pos -= bytes;
+	fsetpos(*file, &pos);
+}
+
+U64 IO::readU64(FILE **file, String name) {
 	U64 value = -1;
 	fpos_t pos;
 	fgetpos(*file, &pos);
 	fread(&value, sizeof(value), 1, *file);
 
-	DEBUG_PRINT("Read U64 %08llX: %llu\n", pos, value);
+	DEBUG_PRINT("Read U64 (%s) 0x%08llX %lld: 0x%016llX / %llu\n", name, pos, pos, __builtin_bswap64(value), value);
 
 	return value;
 }
-U32 IO::readU32(FILE **file) {
+U32 IO::readU32(FILE **file, String name) {
 	U32 value = -1;
 	fpos_t pos;
 	fgetpos(*file, &pos);
 	fread(&value, sizeof(value), 1, *file);
 
-	DEBUG_PRINT("Read U32 %08llX: %u\n", pos, value);
+	DEBUG_PRINT("Read U32 (%s) 0x%08llX %lld: 0x%08X / %u\n", name, pos, pos, __builtin_bswap32(value), value);
 
 	return value;
 }
-U16 IO::readU16(FILE **file) {
+U16 IO::readU16(FILE **file, String name) {
 	U16 value = -1;
 	fpos_t pos;
 	fgetpos(*file, &pos);
 	fread(&value, sizeof(value), 1, *file);
 
-	DEBUG_PRINT("Read U16 %08llX: %hu\n", pos, value);
+	DEBUG_PRINT("Read U16 (%s) 0x%08llX %lld: 0x%04hX / %hu\n", name, pos, pos, _OSSwapInt16(value), value);
 
 	return value;
 }
-U8 IO::readU8(FILE **file) {
+U8 IO::readU8(FILE **file, String name) {
 	U8 value = -1;
 	fpos_t pos;
 	fgetpos(*file, &pos);
 	fread(&value, sizeof(value), 1, *file);
 
-	DEBUG_PRINT("Read U8 %08llX: %u\n", pos, value);
+	DEBUG_PRINT("Read U8 (%s) 0x%08llX %lld: 0x%02hhX / %u\n", name, pos, pos, value, value);
 
 	return value;
 }
-F32 IO::readF32(FILE **file) {
+F32 IO::readF32(FILE **file, String name) {
 	F32 value = -1;
 	fpos_t pos;
 	fgetpos(*file, &pos);
 	fread(&value, sizeof(value), 1, *file);
 
-	DEBUG_PRINT("Read F32 %08llX: %f\n", pos, value);
+	DEBUG_PRINT("Read F32 (%s) 0x%08llX %lld: 0x%08X %f\n", name, pos, pos, __builtin_bswap32(*(U32 *)&value), value);
 
 	return value;
 }
 
 //Lazy!
-S64 IO::readS64(FILE **file) { return (S64)readU64(file); }
-S32 IO::readS32(FILE **file) { return (S32)readU32(file); }
-S16 IO::readS16(FILE **file) { return (S16)readU16(file); }
-S8  IO::readS8 (FILE **file) { return  (S8)readU8 (file); }
+S64 IO::readS64(FILE **file, String name) { return (S64)readU64(file, name); }
+S32 IO::readS32(FILE **file, String name) { return (S32)readU32(file, name); }
+S16 IO::readS16(FILE **file, String name) { return (S16)readU16(file, name); }
+S8  IO::readS8 (FILE **file, String name) { return  (S8)readU8 (file, name); }
 
-PlaneF IO::readPlaneF(FILE **file) {
+PlaneF IO::readPlaneF(FILE **file, String name) {
 	PlaneF value;
-	value.x = readF32(file);
-	value.y = readF32(file);
-	value.z = readF32(file);
-	value.d = readF32(file);
+	value.x = readF32(file, (String)"x");
+	value.y = readF32(file, (String)"y");
+	value.z = readF32(file, (String)"z");
+	value.d = readF32(file, (String)"d");
 	return value;
 }
 
-Point3F IO::readPoint3F(FILE **file) {
+Point3F IO::readPoint3F(FILE **file, String name) {
 	Point3F value;
-	value.x = readF32(file);
-	value.y = readF32(file);
-	value.z = readF32(file);
+	value.x = readF32(file, (String)"x");
+	value.y = readF32(file, (String)"y");
+	value.z = readF32(file, (String)"z");
 	return value;
 }
 
-QuatF IO::readQuatF(FILE **file) {
+QuatF IO::readQuatF(FILE **file, String name) {
 	QuatF value;
-	value.w = readF32(file);
-	value.x = readF32(file);
-	value.y = readF32(file);
-	value.z = readF32(file);
+	value.w = readF32(file, (String)"w");
+	value.x = readF32(file, (String)"x");
+	value.y = readF32(file, (String)"y");
+	value.z = readF32(file, (String)"z");
 	return value;
 }
 
-BoxF IO::readBoxF(FILE **file) {
+BoxF IO::readBoxF(FILE **file, String name) {
 	BoxF value;
-	value.minX = readF32(file);
-	value.minY = readF32(file);
-	value.minZ = readF32(file);
-	value.maxX = readF32(file);
-	value.maxY = readF32(file);
-	value.maxZ = readF32(file);
+	value.minX = readF32(file, (String)"minX");
+	value.minY = readF32(file, (String)"minY");
+	value.minZ = readF32(file, (String)"minZ");
+	value.maxX = readF32(file, (String)"maxX");
+	value.maxY = readF32(file, (String)"maxY");
+	value.maxZ = readF32(file, (String)"maxZ");
 	return value;
 }
 
-SphereF IO::readSphereF(FILE **file) {
+SphereF IO::readSphereF(FILE **file, String name) {
 	SphereF value;
-	value.x = readF32(file);
-	value.y = readF32(file);
-	value.z = readF32(file);
-	value.radius = readF32(file);
+	value.x = readF32(file, (String)"x");
+	value.y = readF32(file, (String)"y");
+	value.z = readF32(file, (String)"z");
+	value.radius = readF32(file, (String)"radius");
 	return value;
 }
 
-ColorI IO::readColorI(FILE **file) {
+ColorI IO::readColorI(FILE **file, String name) {
 	ColorI value;
 	value.red = readU8(file);
 	value.green = readU8(file);
@@ -166,7 +172,7 @@ ColorI IO::readColorI(FILE **file) {
 	return value;
 }
 
-String IO::readString(FILE **file) {
+String IO::readString(FILE **file, String name) {
 	//<length><bytes>
 
 	U8 length = readU8(file);
@@ -179,7 +185,7 @@ String IO::readString(FILE **file) {
 	return value;
 }
 
-PNG IO::readPNG(FILE **file) {
+PNG IO::readPNG(FILE **file, String name) {
 	U8 PNGFooter[8] = {0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82};
 	PNG value;
 	value.data = new U8[LIGHT_MAP_SIZE];
@@ -192,7 +198,7 @@ PNG IO::readPNG(FILE **file) {
 	return value;
 }
 
-Dictionary IO::readDictionary(FILE **file) {
+Dictionary IO::readDictionary(FILE **file, String name) {
 	//<length>[<name><value>]...
 	Dictionary value;
 	U32 size = readU32(file);
@@ -207,6 +213,26 @@ Dictionary IO::readDictionary(FILE **file) {
 
 	return value;
 }
+
+
+U64 IO::readU64(FILE **file) { return readU64(file, (String) ""); }
+U32 IO::readU32(FILE **file) { return readU32(file, (String) ""); }
+U16 IO::readU16(FILE **file) { return readU16(file, (String) ""); }
+U8  IO::readU8 (FILE **file) { return readU8 (file, (String) ""); }
+S64 IO::readS64(FILE **file) { return readS64(file, (String) ""); }
+S32 IO::readS32(FILE **file) { return readS32(file, (String) ""); }
+S16 IO::readS16(FILE **file) { return readS16(file, (String) ""); }
+S8  IO::readS8 (FILE **file) { return readS8 (file, (String) ""); }
+F32 IO::readF32(FILE **file) { return readF32(file, (String) ""); }
+PlaneF     IO::readPlaneF(FILE **file)     { return readPlaneF(file,     (String) ""); }
+Point3F    IO::readPoint3F(FILE **file)    { return readPoint3F(file,    (String) ""); }
+QuatF      IO::readQuatF(FILE **file)      { return readQuatF(file,      (String) ""); }
+BoxF       IO::readBoxF(FILE **file)       { return readBoxF(file,       (String) ""); }
+SphereF    IO::readSphereF(FILE **file)    { return readSphereF(file,    (String) ""); }
+ColorI     IO::readColorI(FILE **file)     { return readColorI(file,     (String) ""); }
+String     IO::readString(FILE **file)     { return readString(file,     (String) ""); }
+PNG        IO::readPNG(FILE **file)        { return readPNG(file,        (String) ""); }
+Dictionary IO::readDictionary(FILE **file) { return readDictionary(file, (String) ""); }
 
 //-----------------------------------------------------------------------------
 
