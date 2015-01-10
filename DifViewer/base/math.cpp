@@ -108,9 +108,9 @@ Point3<T> Ray<T>::intersection(PlaneF plane) {
 }
 
 template<> F32 RayF::distance(TriangleF triangle) {
-	triangle.point0 = triangle.point0.roundThousands();
-	triangle.point1 = triangle.point1.roundThousands();
-	triangle.point2 = triangle.point2.roundThousands();
+//	triangle.point0 = triangle.point0.roundThousands();
+//	triangle.point1 = triangle.point1.roundThousands();
+//	triangle.point2 = triangle.point2.roundThousands();
 
 	Point3F ab = triangle.point1 - triangle.point0;
 	Point3F ac = triangle.point2 - triangle.point0;
