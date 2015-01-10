@@ -128,9 +128,7 @@ void render() {
 		gDisplayList = glGenLists(1);
 		glNewList(gDisplayList, GL_COMPILE_AND_EXECUTE);
 		for (U32 index = 0; index < gDifCount; index ++) {
-			for (U32 intIndex = 0; intIndex < gDifs[index]->numDetailLevels; intIndex ++) {
-				gDifs[index]->interior[intIndex]->render(offset);
-			}
+			gDifs[index]->render();
 		}
 		glEndList();
 		gListNeedsDisplay = false;

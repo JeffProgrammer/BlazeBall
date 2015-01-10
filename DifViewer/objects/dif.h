@@ -30,6 +30,7 @@
 
 #include "types.h"
 #include "interior.h"
+#include "pathedInterior.h"
 #include "trigger.h"
 #include "interiorPathFollower.h"
 #include "forceField.h"
@@ -85,6 +86,8 @@ public:
 	 @arg dif - The DIF to release
 	 */
 	~DIF();
+
+	void render();
 };
 
 #endif
