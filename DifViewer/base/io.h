@@ -47,29 +47,47 @@ public:
 
 	//Unsigned ints
 	U64 readU64(FILE **file);
+	U64 readU64(FILE **file, String name);
 	U32 readU32(FILE **file);
+	U32 readU32(FILE **file, String name);
 	U16 readU16(FILE **file);
+	U16 readU16(FILE **file, String name);
 	U8  readU8 (FILE **file);
+	U8  readU8 (FILE **file, String name);
 	
 	//Signed ints
 	S64 readS64(FILE **file);
+	S64 readS64(FILE **file, String name);
 	S32 readS32(FILE **file);
+	S32 readS32(FILE **file, String name);
 	S16 readS16(FILE **file);
+	S16 readS16(FILE **file, String name);
 	S8  readS8 (FILE **file);
+	S8  readS8 (FILE **file, String name);
 
 	//Floats
 	F32 readF32(FILE **file);
+	F32 readF32(FILE **file, String name);
 
 	//Structures
 	PlaneF     readPlaneF(FILE **file);
+	PlaneF     readPlaneF(FILE **file, String name);
 	Point3F    readPoint3F(FILE **file);
+	Point3F    readPoint3F(FILE **file, String name);
 	QuatF      readQuatF(FILE **file);
+	QuatF      readQuatF(FILE **file, String name);
 	BoxF       readBoxF(FILE **file);
+	BoxF       readBoxF(FILE **file, String name);
 	SphereF    readSphereF(FILE **file);
+	SphereF    readSphereF(FILE **file, String name);
 	ColorI     readColorI(FILE **file);
+	ColorI     readColorI(FILE **file, String name);
 	String     readString(FILE **file);
+	String     readString(FILE **file, String name);
 	PNG        readPNG(FILE **file);
+	PNG        readPNG(FILE **file, String name);
 	Dictionary readDictionary(FILE **file);
+	Dictionary readDictionary(FILE **file, String name);
 
 	/*
 	 Write number types to a file
@@ -111,18 +129,18 @@ void releaseString(String string);
 void releaseDictionary(Dictionary dictionary);
 
 //Macros to speed up file reading
-#define READ(type) io->read##type(&file)
-#define READVAR(name, type) type name = io->read##type(&file)
-#define READTOVAR(name, type) name = io->read##type(&file)
+#define READ(type) io->read##type(&file, (String)"garbage")
+#define READVAR(name, type) type name = io->read##type(&file, (String)#name)
+#define READTOVAR(name, type) name = io->read##type(&file, (String)#name)
 #define READCHECK(type, value) { if (READ(type) != value) return; }
 
 #define READLOOPVAR(countvar, listvar, type) \
-countvar = io->readU32(&file); \
+countvar = io->readU32(&file, (String)#countvar); \
 listvar = new type[countvar]; \
 for (U32 i = 0; i < countvar; i ++)
 
 #define READLOOP(name, type) \
-type name##_length = io->read##type(&file); \
+type name##_length = io->read##type(&file, (String)#name); \
 for (U32 i = 0; i < name##_length; i ++)
 
 //Macros to speed up file reading
