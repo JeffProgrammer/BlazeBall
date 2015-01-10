@@ -197,7 +197,7 @@ Interior::Interior(FILE *file, String directory) {
 		}
 		READLOOP2(numSomethingElses, U32) {
 			//Looks like indcies of some sort, can't seem to make them out though
-			if (readnumSomethingElses2) {
+			if (readnumSomethingElses2 && readnumSomethingElsesparam == 0) {
 				READ(U8);
 			} else {
 				READ(U16);

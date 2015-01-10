@@ -148,22 +148,24 @@ for (U32 i = 0; i < name##_length; i ++)
 
 #define READLOOPVAR2(countvar, listvar, type) \
 bool read##countvar##2 = false; \
+U32 read##countvar##param = 0; \
 countvar = io->readU32(&file, (String)#countvar); \
 if (countvar  & 0x80000000) { \
 	countvar ^= 0x80000000; \
 	read##countvar##2 = true; \
-	READ(U8); \
+	READTOVAR(read##countvar##param, U8); \
 } \
 listvar = new type[countvar]; \
 for (U32 i = 0; i < countvar; i ++)
 
 #define READLOOP2(name, type) \
 bool read##name##2 = false; \
+U32 read##name##param = 0; \
 type name##_length = io->read##type(&file, (String)#name); \
 if (name##_length  & 0x80000000) { \
 	name##_length ^= 0x80000000; \
 	read##name##2 = true; \
-	READ(U8); \
+	READTOVAR(read##name##param, U8); \
 } \
 for (U32 i = 0; i < name##_length; i ++)
 
