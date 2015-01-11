@@ -71,6 +71,6 @@ InteriorPathFollower::~InteriorPathFollower() {
 	releaseString(datablock);
 	releaseDictionary(properties);
 
-	free(triggerId);
-	free(wayPoint);
+	delete triggerId;
+	delete wayPoint;
 }

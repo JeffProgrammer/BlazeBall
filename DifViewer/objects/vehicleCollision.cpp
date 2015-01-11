@@ -117,14 +117,14 @@ bool VehicleCollision::write(FILE *file) {
 }
 
 VehicleCollision::~VehicleCollision() {
-	free(vehicleConvexHull);
-	free(vehicleConvexHullEmitStringCharacter);
-	free(vehicleHullIndex);
-	free(vehicleHullPlaneIndex);
-	free(vehicleHullEmitStringIndex);
-	free(vehicleHullSurfaceIndex);
-	free(vehiclePolyListPlaneIndex);
-	free(vehiclePolyListPointIndex);
-	free(vehiclePolyListStringCharacter);
-	free(vehicleNullSurface);
+	delete vehicleConvexHull;
+	delete vehicleConvexHullEmitStringCharacter;
+	delete vehicleHullIndex;
+	delete vehicleHullPlaneIndex;
+	delete vehicleHullEmitStringIndex;
+	delete vehicleHullSurfaceIndex;
+	delete vehiclePolyListPlaneIndex;
+	delete vehiclePolyListPointIndex;
+	delete vehiclePolyListStringCharacter;
+	delete vehicleNullSurface;
 }

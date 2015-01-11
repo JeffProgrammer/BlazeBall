@@ -71,7 +71,7 @@ Trigger::~Trigger() {
 	releaseString(name);
 	releaseString(datablock);
 	releaseDictionary(properties);
-	free(polyHedronPoint);
-	free(polyHedronPlane);
-	free(polyHedronEdge);
+	delete polyHedronPoint;
+	delete polyHedronPlane;
+	delete polyHedronEdge;
 }

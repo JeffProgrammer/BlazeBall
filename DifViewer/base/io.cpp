@@ -318,8 +318,8 @@ void releaseDictionary(Dictionary dictionary) {
 		releaseString(*dictionary.names[i]);
 		releaseString(*dictionary.values[i]);
 	}
-	free(dictionary.names);
-	free(dictionary.values);
+	delete [] dictionary.names;
+	delete [] dictionary.values;
 }
 
 bool IO::isfile(String *file) {

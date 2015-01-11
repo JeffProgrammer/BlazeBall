@@ -368,46 +368,46 @@ Interior::~Interior() {
 			delete texture[i];
 	}
 
-	free(normal);
-	free(plane);
-	free(point);
-	free(pointVisibility);
-	free(texGenEq);
-	free(BSPNode);
-	free(BSPSolidLeaf);
-	free(material);
-	free(texture);
-	free(index);
-	free(windingIndex);
-	free(zone);
-	free(zoneSurface);
-	free(zonePortalList);
-	free(portal);
-	free(surface);
-	free(normalLMapIndex);
-	free(alarmLMapIndex);
-	free(nullSurface);
-	free(lightMap);
-	free(solidLeafSurface);
-	free(animatedLight);
-	free(lightState);
-	free(stateData);
-	free(stateDataBuffer);
-	free(nameBufferCharacter);
-	free(convexHull);
-	free(convexHullEmitStringCharacter);
-	free(hullIndex);
-	free(hullPlaneIndex);
-	free(hullEmitStringIndex);
-	free(hullSurfaceIndex);
-	free(polyListPlaneIndex);
-	free(polyListPointIndex);
-	free(polyListStringCharacter);
-	free(coordBin);
-	free(coordBinIndex);
-	free(texNormal);
-	free(texMatrix);
-	free(texMatIndex);
+	delete normal;
+	delete plane;
+	delete point;
+	delete pointVisibility;
+	delete texGenEq;
+	delete BSPNode;
+	delete BSPSolidLeaf;
+	delete material;
+	delete texture;
+	delete index;
+	delete windingIndex;
+	delete zone;
+	delete zoneSurface;
+	delete zonePortalList;
+	delete portal;
+	delete surface;
+	delete normalLMapIndex;
+	delete alarmLMapIndex;
+	delete nullSurface;
+	delete lightMap;
+	delete solidLeafSurface;
+	delete animatedLight;
+	delete lightState;
+	delete stateData;
+	delete stateDataBuffer;
+	delete nameBufferCharacter;
+	delete convexHull;
+	delete convexHullEmitStringCharacter;
+	delete hullIndex;
+	delete hullPlaneIndex;
+	delete hullEmitStringIndex;
+	delete hullSurfaceIndex;
+	delete polyListPlaneIndex;
+	delete polyListPointIndex;
+	delete polyListStringCharacter;
+	delete coordBin;
+	delete coordBinIndex;
+	delete texNormal;
+	delete texMatrix;
+	delete texMatIndex;
 }
 
 void Interior::generateMaterials(String *directory) {
@@ -487,9 +487,9 @@ void Interior::generateMaterials(String *directory) {
 				fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)imageFile->data);
 				texture[i] = NULL;
 
-				free(bitmap);
-				free(base);
-				free(imageFile);
+				delete bitmap;
+				delete base;
+				delete imageFile;
 				continue;
 			}
 
@@ -498,9 +498,9 @@ void Interior::generateMaterials(String *directory) {
 			this->texture[i] = texture;
 
 			//Clean up bitmap (copied above, this is safe)
-			free(bitmap);
-			free(base);
-			free(imageFile);
+			delete bitmap;
+			delete base;
+			delete imageFile;
 		}
 	}
 }

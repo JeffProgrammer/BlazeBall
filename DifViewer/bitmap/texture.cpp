@@ -76,7 +76,7 @@ Texture::~Texture() {
 	if (generated)
 		glDeleteTextures(1, &buffer);
 
-	free(pixels);
+	delete pixels;
 }
 
 void Texture::activate() {

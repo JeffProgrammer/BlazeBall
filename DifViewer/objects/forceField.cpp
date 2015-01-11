@@ -111,12 +111,12 @@ ForceField::~ForceField() {
 	for (U32 i = 0; i < numTriggers; i ++) {
 		releaseString(trigger[i]);
 	}
-	free(trigger);
-	free(normal);
-	free(plane);
-	free(BSPNode);
-	free(BSPSolidLeaf);
-	free(index);
-	free(surface);
-	free(solidLeafSurface);
+	delete trigger;
+	delete normal;
+	delete plane;
+	delete BSPNode;
+	delete BSPSolidLeaf;
+	delete index;
+	delete surface;
+	delete solidLeafSurface;
 }
