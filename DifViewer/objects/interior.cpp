@@ -105,50 +105,53 @@ Interior::Interior(FILE *file, String *directory) {
 		READTOVAR(portal[i].zoneFront, U16); //zoneFront
 		READTOVAR(portal[i].zoneBack, U16); //zoneBack
 	}
+
+	//Ok so Torque needs to fuck themselves in the ass, multiple times.
+	// They have two "version 0"s, one for TGE and one for TGEA. So, you
+	// might ask, how do they tell which is which? I'll tell you: They
+	// read the surfaces, and if anything is wrong, they fall back on the
+	// old format. So guess what I get to do? Yep! That!
+
+	//Save the file position as we'll need to rewind if any reads fail
+	fpos_t pos;
+	fgetpos(file, &pos);
+
+	bool isTGEInterior = false;
+
 	READLOOPVAR(numSurfaces, surface, Surface) {
-		READTOVAR(surface[i].windingStart, U32); //windingStart
-		if (this->interiorFileVersion >= 13) {
-			READTOVAR(surface[i].windingCount, U32); //windingCount
-		} else {
-			READTOVAR(surface[i].windingCount, U8); //windingCount
+		if (!readSurface(file, surface[i], false)) {
+			isTGEInterior = true;
+			break;
 		}
-		//Fucking GarageGames. Sometimes the plane is | 0x8000 because WHY NOT
-		READVAR(plane, S16); //planeIndex
-		//Ugly hack
-		surface[i].planeFlipped = (plane >> 15 != 0);
-		plane &= ~0x8000;
-		surface[i].planeIndex = plane;
-		READTOVAR(surface[i].textureIndex, U16); //textureIndex
-		READTOVAR(surface[i].texGenIndex, U32); //texGenIndex
-		READTOVAR(surface[i].surfaceFlags, U8); //surfaceFlags
-		READTOVAR(surface[i].fanMask, U32); //fanMask
-		{ //LightMap
-			READTOVAR(surface[i].lightMap.finalWord, U16); //finalWord
-			READTOVAR(surface[i].lightMap.texGenXDistance, F32); //texGenXDistance
-			READTOVAR(surface[i].lightMap.texGenYDistance, F32); //texGenYDistance
-		}
-		READTOVAR(surface[i].lightCount, U16); //lightCount
-		READTOVAR(surface[i].lightStateInfoStart, U32); //lightStateInfoStart
+	}
+	if (isTGEInterior) {
+		if (interiorFileVersion != 0) {
+			//Oh fuck oh fuck, TGE interiors only have version 0
+			//This means that readSurface failed on a TGEA interior
 
-		if (this->interiorFileVersion >= 13) {
-			READTOVAR(surface[i].mapOffsetX, U32); //mapOffsetX
-			READTOVAR(surface[i].mapOffsetY, U32); //mapOffsetY
-			READTOVAR(surface[i].mapSizeX, U32); //mapSizeX
-			READTOVAR(surface[i].mapSizeY, U32); //mapSizeY
-		} else {
-			READTOVAR(surface[i].mapOffsetX, U8); //mapOffsetX
-			READTOVAR(surface[i].mapOffsetY, U8); //mapOffsetY
-			READTOVAR(surface[i].mapSizeX, U8); //mapSizeX
-			READTOVAR(surface[i].mapSizeY, U8); //mapSizeY
+			//Bail
+			return;
 		}
+		//Ok so we failed reading, it's *probably* a TGE interior. Let's try
+		// to read it as a TGE interior.
 
-		if (this->interiorFileVersion >= 1) {
-			READ(U8); //unused
-			if (this->interiorFileVersion <= 4) {
-				READ(U32); //Extra bytes used for some unknown purpose, seen in versions 2, 3, 4
+		//First, rewind
+		fsetpos(file, &pos);
+
+		//Second, clean up
+		numSurfaces = 0;
+		delete [] surface;
+
+		//Third, re-read
+		READLOOPVAR(numSurfaces, surface, Surface) {
+			if (!readSurface(file, surface[i], true)) {
+				//Ok this surface failed too. Bail.
+				//TODO: Blow up here
+				return;
 			}
 		}
 	}
+
 	if (this->interiorFileVersion >= 2 && this->interiorFileVersion <= 4) {
 		//Extra data that I've seen in MBU interiors (v2, 3, 4)
 		READLOOP(numIndicesOfSomeSort) {
@@ -195,7 +198,8 @@ Interior::Interior(FILE *file, String *directory) {
 	} else {
 		READLOOPVAR(numLightMaps, lightMap, LightMap) {
 			READTOVAR(lightMap[i].lightMap, PNG); //lightMap
-			if (this->interiorFileVersion >= 2) {
+			if (!isTGEInterior) {
+				//These aren't even used in the real game!
 				READTOVAR(lightMap[i].lightDirMap, PNG); //lightDirMap
 			}
 			READTOVAR(lightMap[i].keepLightMap, U8); //keepLightMap
@@ -686,6 +690,67 @@ U32 Interior::rayCast(RayF ray) {
 
 	return closest;
 }
+
+//----------------------------------------------------------------------------
+
+bool Interior::readSurface(FILE *file, Surface surface, bool isTGEInterior) {
+	READTOVAR(surface.windingStart, U32); //windingStart
+	if (this->interiorFileVersion >= 13) {
+		READTOVAR(surface.windingCount, U32); //windingCount
+	} else {
+		READTOVAR(surface.windingCount, U8); //windingCount
+	}
+	if (surface.windingStart + surface.windingCount > numWindings)
+		return false;
+
+	//Fucking GarageGames. Sometimes the plane is | 0x8000 because WHY NOT
+	READVAR(plane, S16); //planeIndex
+	//Ugly hack
+	surface.planeFlipped = (plane >> 15 != 0);
+	plane &= ~0x8000;
+	surface.planeIndex = plane;
+	if (surface.planeIndex > numPlanes)
+		return false;
+
+	READTOVAR(surface.textureIndex, U16); //textureIndex
+	if (surface.textureIndex > numMaterials)
+		return false;
+
+	READTOVAR(surface.texGenIndex, U32); //texGenIndex
+	if (surface.texGenIndex > numTexGenEqs)
+		return false;
+
+	READTOVAR(surface.surfaceFlags, U8); //surfaceFlags
+	READTOVAR(surface.fanMask, U32); //fanMask
+	{ //LightMap
+		READTOVAR(surface.lightMap.finalWord, U16); //finalWord
+		READTOVAR(surface.lightMap.texGenXDistance, F32); //texGenXDistance
+		READTOVAR(surface.lightMap.texGenYDistance, F32); //texGenYDistance
+	}
+	READTOVAR(surface.lightCount, U16); //lightCount
+	READTOVAR(surface.lightStateInfoStart, U32); //lightStateInfoStart
+
+	if (this->interiorFileVersion >= 13) {
+		READTOVAR(surface.mapOffsetX, U32); //mapOffsetX
+		READTOVAR(surface.mapOffsetY, U32); //mapOffsetY
+		READTOVAR(surface.mapSizeX, U32); //mapSizeX
+		READTOVAR(surface.mapSizeY, U32); //mapSizeY
+	} else {
+		READTOVAR(surface.mapOffsetX, U8); //mapOffsetX
+		READTOVAR(surface.mapOffsetY, U8); //mapOffsetY
+		READTOVAR(surface.mapSizeX, U8); //mapSizeX
+		READTOVAR(surface.mapSizeY, U8); //mapSizeY
+	}
+
+	if (!isTGEInterior) {
+		READ(U8); //unused
+		if (this->interiorFileVersion > 0 && this->interiorFileVersion <= 4) {
+			READ(U32); //Extra bytes used for some unknown purpose, seen in versions 2, 3, 4
+		}
+	}
+	return true;
+}
+
 //----------------------------------------------------------------------------
 
 bool Plane::read(FILE *file) {
