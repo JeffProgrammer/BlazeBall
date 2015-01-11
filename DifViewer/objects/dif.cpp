@@ -30,7 +30,7 @@
 #include "io.h"
 #include "dif.h"
 
-DIF::DIF(FILE *file, String directory) {
+DIF::DIF(FILE *file, String *directory) {
 	//http://rustycode.com/tutorials/DIF_File_Format_44_14.html
 	// Someone give that guy all the cookies.
 
@@ -75,7 +75,7 @@ DIF::DIF(FILE *file, String directory) {
 	READ(U32); //dummy
 }
 
-bool DIF::write(FILE *file, String directory) {
+bool DIF::write(FILE *file, String *directory) {
 	WRITECHECK(U32, 44); //interiorResourceFileVersion
 	WRITECHECK(U8, 0); //previewIncluded
 

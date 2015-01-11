@@ -27,7 +27,7 @@
 
 #include "pathedInterior.h"
 
-PathedInterior::PathedInterior(FILE *file, String directory) {
+PathedInterior::PathedInterior(FILE *file, String *directory) {
 	Parent(file, directory);
 }
 

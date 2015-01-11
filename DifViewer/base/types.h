@@ -69,6 +69,9 @@ struct String : public Readable, Writable {
 	String() : data(nullptr), length(0) {};
 	String(U32 length) : data(new U8[length]), length(length) {};
 	String(const char *bytes) : data((U8 *)bytes), length((U32)strlen(bytes)) {};
+	String(String *other) : data(new U8[other->length]), length(other->length) {
+		memcpy(data, other->data, length);
+	}
 
 	bool read(FILE *file);
 	bool write(FILE *file);

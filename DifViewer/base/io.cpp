@@ -209,6 +209,8 @@ bool Dictionary::read(FILE *file) {
 	values = new String*[size];
 
 	for (int i = 0; i < size; i ++) {
+		names[i] = new String();
+		values[i] = new String();
 		names[i]->read(file);
 		values[i]->read(file);
 	}
@@ -429,7 +431,7 @@ bool IO::write(FILE *file, Dictionary value) {
 
 //Mem mgt
 void releaseString(String string) {
-	delete &string;
+	free(string);
 }
 
 void releaseDictionary(Dictionary dictionary) {
@@ -441,8 +443,8 @@ void releaseDictionary(Dictionary dictionary) {
 	free(dictionary.values);
 }
 
-bool IO::isfile(String file) {
-	FILE *stream = fopen((const char *)file, "r");
+bool IO::isfile(String *file) {
+	FILE *stream = fopen((const char *)file->data, "r");
 	if (stream) {
 		fclose(stream);
 		return true;

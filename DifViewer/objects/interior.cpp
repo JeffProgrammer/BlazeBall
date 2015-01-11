@@ -37,7 +37,7 @@
 #include "jpegsupport.h"
 #include "math.h"
 
-Interior::Interior(FILE *file, String directory) {
+Interior::Interior(FILE *file, String *directory) {
 	READTOVAR(interiorFileVersion, U32); //interiorFileVersion
 	READTOVAR(detailLevel, U32); //detailLevel
 	READTOVAR(minPixels, U32); //minPixels
@@ -330,7 +330,8 @@ Interior::Interior(FILE *file, String directory) {
 			READTOVAR(texMatrix[i].B, S32); //B
 		}
 		READLISTVAR(numTexMatIndices, texMatIndex, U32);
-		if ((READTOVAR(extendedLightMapData, U32))) { //extendedLightMapData
+		READTOVAR(extendedLightMapData, U32);
+		if (extendedLightMapData) { //extendedLightMapData
 			READTOVAR(lightMapBorderSize, U32); //lightMapBorderSize
 			READ(U32); //dummy
 		} else {
@@ -342,27 +343,27 @@ Interior::Interior(FILE *file, String directory) {
 	if (numMaterials) {
 		texture = (Texture **)new Texture*[numMaterials];
 		for (U32 i = 0; i < numMaterials; i ++) {
-			String material = String(strlen((const char *)this->material[i]) + 1);
-			strcpy((char *)material, (const char *)this->material[i]);
+			String *material = new String(this->material[i].length + 1);
+			strcpy((char *)material->data, (const char *)this->material[i]);
 			//Chop off any paths from the material. Constructor likes to save albums in the materials
 			// and it royally breaks this program.
-			if (strstr((const char *)material, "/")) {
+			if (strstr((const char *)material->data, "/")) {
 				//Hacky but effective method
-				strcpy((char *)material, strstr((const char *)material, "/") + 1);
+				strcpy((char *)material->data, strstr((const char *)material->data, "/") + 1);
 			}
 
 			BitmapType type = BitmapTypePNG;
 
 			//For some reason these two like to become the same.
-			String base = (String)strdup((char *)directory);
+			String *base = new String(directory);
 
 			//Allocate enough space in each of these so we can work comfortably
-			U32 pathlen = (U32)(strlen((const char *)base) + strlen((const char *)material) + 1);
-			String imageFile = String(pathlen + 5);
+			U32 pathlen = (U32)(base->length + material->length + 1);
+			String *imageFile = new String(pathlen + 5);
 
 			do {
 				//Init imageFile to base/file.png
-				pathlen = sprintf((char *)imageFile, "%s/%s.png", (char *)base, (char *)material);
+				pathlen = sprintf((char *)imageFile->data, "%s/%s.png", (char *)base->data, (char *)material->data);
 
 				type = BitmapTypePNG;
 
@@ -370,26 +371,26 @@ Interior::Interior(FILE *file, String directory) {
 				//TODO: BMP Support?
 				if (!io->isfile(imageFile)) {
 					//Swap the last 3 chars with jpg
-					imageFile.data[pathlen - 3] = 'j';
-					imageFile.data[pathlen - 2] = 'p';
-					imageFile.data[pathlen - 1] = 'g';
+					imageFile->data[pathlen - 3] = 'j';
+					imageFile->data[pathlen - 2] = 'p';
+					imageFile->data[pathlen - 1] = 'g';
 					type = BitmapTypeJPEG;
 				}
 				//Can't recurse any further
-				if (!strrchr((const char *)base, '/'))
+				if (!strrchr((const char *)base->data, '/'))
 					break;
 
 				//If we still can't find it, recurse (hacky but effective method)
 				if (!io->isfile(imageFile))
-					*strrchr((const char *)base, '/') = 0;
-			} while (!io->isfile(imageFile) && strcmp((const char *)base, ""));
+					*strrchr((const char *)base->data, '/') = 0;
+			} while (!io->isfile(imageFile) && strcmp((const char *)base->data, ""));
 
 			//If we can't find it, just chuck the lot and keep going.
 			if (!io->isfile(imageFile)) {
-				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", (char *)material);
+				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", (char *)material->data);
 				texture[i] = NULL;
 				free(base);
-				free(imageFile);
+				delete [] imageFile;
 				continue;
 			}
 
@@ -409,8 +410,8 @@ Interior::Interior(FILE *file, String directory) {
 				readFn = mngReadImage;
 			}
 
-			if (!readFn(imageFile, &bitmap, &dims)) {
-				fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)imageFile);
+			if (!readFn(*imageFile, &bitmap, &dims)) {
+				fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)imageFile->data);
 				texture[i] = NULL;
 
 				free(bitmap);

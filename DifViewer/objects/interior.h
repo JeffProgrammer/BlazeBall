@@ -343,7 +343,7 @@ public:
 	 @arg directory - The base directory for images
 	 @return An Interior
 	 */
-	Interior(FILE *file, String directory);
+	Interior(FILE *file, String *directory);
 	~Interior();
 
 	bool write(FILE *file);

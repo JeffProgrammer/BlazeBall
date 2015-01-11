@@ -323,7 +323,7 @@ void handleEvent(SDL_Event *event) {
 				if (((SDL_KeyboardEvent *)event)->keysym.mod & KMOD_LGUI) { //LGUI -> LCmd
 					//Save
 					for (U32 i = 0; i < gDifCount; i ++) {
-						String directory = (String)dirname((char *)gFilenames[i]);
+						String *directory = new String(dirname((char *)gFilenames[i]));
 
 						FILE *output = fopen((const char *)gFilenames[i], "w");
 						gDifs[i]->write(output, directory);
@@ -507,7 +507,7 @@ int main(int argc, const char * argv[])
 	gFilenames = new String[argc - argstart];
 
 	for (U32 i = 0; i < (argc - argstart); i ++) {
-		String directory = (String)dirname((char *)argv[i + argstart]);
+		String *directory = new String(dirname((char *)argv[i + argstart]));
 
 		//Open file
 		FILE *file = fopen(argv[i + argstart], "r");
@@ -530,7 +530,7 @@ int main(int argc, const char * argv[])
 		fclose(out);
 	} else if (!strcmp(argv[1], "-c")) {
 		for (U32 i = 0; i < gDifCount; i ++) {
-			String directory = (String)dirname((char *)gFilenames[i]);
+			String *directory = new String(dirname((char *)gFilenames[i]));
 
 			FILE *output = fopen((const char *)gFilenames[i], "w");
 			gDifs[i]->write(output, directory);
@@ -542,6 +542,7 @@ int main(int argc, const char * argv[])
 
 	//Clean up
 	delete [] gDifs;
+	delete [] gFilenames;
 
 	return 0;
 }
