@@ -366,16 +366,17 @@ Interior::Interior(FILE *file, String *directory) {
 					break;
 
 				//If we still can't find it, recurse (hacky but effective method)
-				if (!io->isfile(imageFile))
+				if (!io->isfile(imageFile)) {
 					*strrchr((const char *)base->data, '/') = 0;
+				}
 			} while (!io->isfile(imageFile) && strcmp((const char *)base->data, ""));
 
 			//If we can't find it, just chuck the lot and keep going.
 			if (!io->isfile(imageFile)) {
 				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", (char *)material->data);
 				texture[i] = NULL;
-				free(base);
-				delete [] imageFile;
+				delete base;
+				delete imageFile;
 				continue;
 			}
 

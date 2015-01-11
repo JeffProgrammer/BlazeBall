@@ -109,36 +109,36 @@ bool IO::read(FILE *file, S8  *value, String name) { return read(file, (U8  *)va
 
 bool PlaneF::read(FILE *file) {
 	return
-		io->read(file, &x, (String)"x") &&
-		io->read(file, &y, (String)"x") &&
-		io->read(file, &z, (String)"x") &&
-		io->read(file, &d, (String)"x");
+		io->read(file, &x, "x") &&
+		io->read(file, &y, "x") &&
+		io->read(file, &z, "x") &&
+		io->read(file, &d, "x");
 }
 
 bool QuatF::read(FILE *file) {
 	return
-		io->read(file, &w, (String)"w") &&
-		io->read(file, &x, (String)"x") &&
-		io->read(file, &y, (String)"y") &&
-		io->read(file, &z, (String)"z");
+		io->read(file, &w, "w") &&
+		io->read(file, &x, "x") &&
+		io->read(file, &y, "y") &&
+		io->read(file, &z, "z");
 }
 
 bool BoxF::read(FILE *file) {
 	return
-		io->read(file, &minX, (String)"minX") &&
-		io->read(file, &minY, (String)"minY") &&
-		io->read(file, &minZ, (String)"minZ") &&
-		io->read(file, &maxX, (String)"maxX") &&
-		io->read(file, &maxY, (String)"maxY") &&
-		io->read(file, &maxZ, (String)"maxZ");
+		io->read(file, &minX, "minX") &&
+		io->read(file, &minY, "minY") &&
+		io->read(file, &minZ, "minZ") &&
+		io->read(file, &maxX, "maxX") &&
+		io->read(file, &maxY, "maxY") &&
+		io->read(file, &maxZ, "maxZ");
 }
 
 bool SphereF::read(FILE *file) {
 	return
-		io->read(file, &x, (String)"x") &&
-		io->read(file, &y, (String)"y") &&
-		io->read(file, &z, (String)"z") &&
-		io->read(file, &radius, (String)"radius");
+		io->read(file, &x, "x") &&
+		io->read(file, &y, "y") &&
+		io->read(file, &z, "z") &&
+		io->read(file, &radius, "radius");
 }
 
 bool String::read(FILE *file) {

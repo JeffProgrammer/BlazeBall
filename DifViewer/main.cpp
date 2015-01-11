@@ -425,8 +425,8 @@ bool init() {
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	captureMouse = true;
 
-	Point3F center = gDifs[0]->interior[0]->boundingBox.getCenter();
-	gCameraPosition = glm::vec3(center.x, center.y, center.z);
+//	Point3F center = gDifs[0]->interior[0]->boundingBox.getCenter();
+//	gCameraPosition = glm::vec3(center.x, center.y, center.z);
 
 	//Initialize OpenGL
 	if (!initGL()) {

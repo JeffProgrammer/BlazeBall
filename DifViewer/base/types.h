@@ -59,6 +59,7 @@ public:
 struct String : public Readable, Writable {
 	U8 *data;
 	U32 length;
+	bool allocated;
 
 	inline operator const char *() {
 		return (const char *)data;
@@ -78,11 +79,24 @@ struct String : public Readable, Writable {
 	inline bool operator!=(String str) {
 		return !operator==(str);
 	}
-	String() : data(nullptr), length(0) {};
-	String(U32 length) : data(new U8[length]), length(length) {};
-	String(const char *bytes) : data((U8 *)bytes), length((U32)strlen(bytes)) {};
-	String(String *other) : data(new U8[other->length]), length(other->length) {
-		memcpy(data, other->data, length);
+	String() : data(nullptr), length(0) {
+		allocated = false;
+	}
+	String(U32 length) : data(new U8[length]), length(length) {
+		allocated = true;
+	}
+	~String() {
+//		if (allocated)
+//			delete data;
+	}
+	String(const char *bytes) : data(new U8[(U32)strlen(bytes) + 1]), length((U32)strlen(bytes) + 1) {
+		memcpy(data, bytes, length);
+		allocated = true;
+	}
+	String(String *other) : data(new U8[other->length + 1]), length(other->length + 1) {
+		memcpy(data, other->data, length - 1);
+		data[length - 1] = 0;
+		allocated = true;
 	}
 
 	bool read(FILE *file);

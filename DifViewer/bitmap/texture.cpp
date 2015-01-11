@@ -91,4 +91,5 @@ void Texture::activate() {
 
 void Texture::deactivate() {
 	//Haha, this method is just BS. Fooled you.
+	glActiveTexture(0);
 }

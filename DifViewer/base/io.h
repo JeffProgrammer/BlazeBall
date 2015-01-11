@@ -106,25 +106,25 @@ public:
 template <typename T>
 bool Point2<T>::read(FILE *file) {
 	return
-	io->read(file, &x, (String)"x") &&
-	io->read(file, &y, (String)"y");
+	io->read(file, &x, "x") &&
+	io->read(file, &y, "y");
 }
 
 template <typename T>
 bool Point3<T>::read(FILE *file) {
 	return
-	io->read(file, &x, (String)"x") &&
-	io->read(file, &y, (String)"y") &&
-	io->read(file, &z, (String)"z");
+	io->read(file, &x, "x") &&
+	io->read(file, &y, "y") &&
+	io->read(file, &z, "z");
 }
 
 template <typename T>
 bool Point4<T>::read(FILE *file) {
 	return
-	io->read(file, &w, (String)"w") &&
-	io->read(file, &x, (String)"x") &&
-	io->read(file, &y, (String)"y") &&
-	io->read(file, &z, (String)"z");
+	io->read(file, &w, "w") &&
+	io->read(file, &x, "x") &&
+	io->read(file, &y, "y") &&
+	io->read(file, &z, "z");
 }
 
 template <typename T>
@@ -147,7 +147,7 @@ void releaseDictionary(Dictionary dictionary);
 template <typename T>
 inline T read(FILE *file, T *thing) {
 	T __garbage;
-	io->read(file, &__garbage, (String)"garbage");
+	io->read(file, &__garbage, "garbage");
 	return __garbage;
 }
 //I'm so sorry about (type *)file, but that's the only way to get C++ to interpret
@@ -156,8 +156,8 @@ inline T read(FILE *file, T *thing) {
 
 #define READVAR(name, type) \
 	type name; \
-	io->read(file, (type *)&name, (String)#name)
-#define READTOVAR(name, type) io->read(file, (type *)&name, (String)#name)
+	io->read(file, (type *)&name, #name)
+#define READTOVAR(name, type) io->read(file, (type *)&name, #name)
 #define READCHECK(type, value) { \
 	READVAR(check, type); \
 	if (check != value)\
