@@ -36,8 +36,8 @@ AISpecialNode::AISpecialNode(FILE *file) {
 }
 
 bool AISpecialNode::write(FILE *file) {
-	WRITE(String, name); //name
-	WRITECHECK(Point3F, position); //position
+	WRITE(name, String); //name
+	WRITECHECK(position, Point3F); //position
 
 	return true;
 }

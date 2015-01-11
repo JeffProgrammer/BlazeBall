@@ -81,36 +81,36 @@ VehicleCollision::VehicleCollision(FILE *file) {
 }
 
 bool VehicleCollision::write(FILE *file) {
-	WRITECHECK(U32, vehicleCollisionFileVersion);
+	WRITECHECK(vehicleCollisionFileVersion, U32);
 	WRITELOOP(numVehicleConvexHulls) {
-		WRITECHECK(U32, vehicleConvexHull[i].hullStart); //hullStart
-		WRITECHECK(U16, vehicleConvexHull[i].hullCount); //hullCount
-		WRITECHECK(F32, vehicleConvexHull[i].minX); //minX
-		WRITECHECK(F32, vehicleConvexHull[i].maxX); //maxX
-		WRITECHECK(F32, vehicleConvexHull[i].minY); //minY
-		WRITECHECK(F32, vehicleConvexHull[i].maxY); //maxY
-		WRITECHECK(F32, vehicleConvexHull[i].minZ); //minZ
-		WRITECHECK(F32, vehicleConvexHull[i].maxZ); //maxZ
-		WRITECHECK(U32, vehicleConvexHull[i].surfaceStart); //surfaceStart
-		WRITECHECK(U16, vehicleConvexHull[i].surfaceCount); //surfaceCount
-		WRITECHECK(U32, vehicleConvexHull[i].planeStart); //planeStart
-		WRITECHECK(U32, vehicleConvexHull[i].polyListPlaneStart); //polyListPlaneStart
-		WRITECHECK(U32, vehicleConvexHull[i].polyListPointStart); //polyListPointStart
-		WRITECHECK(U32, vehicleConvexHull[i].polyListStringStart); //polyListStringStart
+		WRITECHECK(vehicleConvexHull[i].hullStart, U32); //hullStart
+		WRITECHECK(vehicleConvexHull[i].hullCount, U16); //hullCount
+		WRITECHECK(vehicleConvexHull[i].minX, F32); //minX
+		WRITECHECK(vehicleConvexHull[i].maxX, F32); //maxX
+		WRITECHECK(vehicleConvexHull[i].minY, F32); //minY
+		WRITECHECK(vehicleConvexHull[i].maxY, F32); //maxY
+		WRITECHECK(vehicleConvexHull[i].minZ, F32); //minZ
+		WRITECHECK(vehicleConvexHull[i].maxZ, F32); //maxZ
+		WRITECHECK(vehicleConvexHull[i].surfaceStart, U32); //surfaceStart
+		WRITECHECK(vehicleConvexHull[i].surfaceCount, U16); //surfaceCount
+		WRITECHECK(vehicleConvexHull[i].planeStart, U32); //planeStart
+		WRITECHECK(vehicleConvexHull[i].polyListPlaneStart, U32); //polyListPlaneStart
+		WRITECHECK(vehicleConvexHull[i].polyListPointStart, U32); //polyListPointStart
+		WRITECHECK(vehicleConvexHull[i].polyListStringStart, U32); //polyListStringStart
 	}
-	WRITELOOPVAR(U8, numVehicleConvexHullEmitStrings, vehicleConvexHullEmitStringCharacter); //vehicleConvexHullEmitStringCharacter
-	WRITELOOPVAR(U32, numVehicleHullIndices, vehicleHullIndex); //vehicleHullIndex
-	WRITELOOPVAR(U16, numVehicleHullPlaneIndices, vehicleHullPlaneIndex); //vehicleHullPlaneIndex
-	WRITELOOPVAR(U32, numVehicleHullEmitStringIndices, vehicleHullEmitStringIndex); //vehicleHullEmitStringIndex
-	WRITELOOPVAR(U32, numVehicleHullSurfaceIndices, vehicleHullSurfaceIndex); //vehicleHullSurfaceIndex
-	WRITELOOPVAR(U16, numVehiclePolyListPlanes, vehiclePolyListPlaneIndex); //vehiclePolyListPlaneIndex
-	WRITELOOPVAR(U32, numVehiclePolyListPoints, vehiclePolyListPointIndex); //vehiclePolyListPointIndex
-	WRITELOOPVAR(U8, numVehiclePolyListStrings, vehiclePolyListStringCharacter); //vehiclePolyListStringCharacter
+	WRITELIST(numVehicleConvexHullEmitStrings, vehicleConvexHullEmitStringCharacter, U8); //vehicleConvexHullEmitStringCharacter
+	WRITELIST(numVehicleHullIndices, vehicleHullIndex, U32); //vehicleHullIndex
+	WRITELIST(numVehicleHullPlaneIndices, vehicleHullPlaneIndex, U16); //vehicleHullPlaneIndex
+	WRITELIST(numVehicleHullEmitStringIndices, vehicleHullEmitStringIndex, U32); //vehicleHullEmitStringIndex
+	WRITELIST(numVehicleHullSurfaceIndices, vehicleHullSurfaceIndex, U32); //vehicleHullSurfaceIndex
+	WRITELIST(numVehiclePolyListPlanes, vehiclePolyListPlaneIndex, U16); //vehiclePolyListPlaneIndex
+	WRITELIST(numVehiclePolyListPoints, vehiclePolyListPointIndex, U32); //vehiclePolyListPointIndex
+	WRITELIST(numVehiclePolyListStrings, vehiclePolyListStringCharacter, U8); //vehiclePolyListStringCharacter
 	WRITELOOP(numVehicleNullSurfaces) {
-		WRITECHECK(U32, vehicleNullSurface[i].windingStart); //windingStart
-		WRITECHECK(U16, vehicleNullSurface[i].planeIndex); //planeIndex
-		WRITECHECK(U8, vehicleNullSurface[i].surfaceFlags); //surfaceFlags
-		WRITECHECK(U32, vehicleNullSurface[i].windingCount); //windingCount
+		WRITECHECK(vehicleNullSurface[i].windingStart, U32); //windingStart
+		WRITECHECK(vehicleNullSurface[i].planeIndex, U16); //planeIndex
+		WRITECHECK(vehicleNullSurface[i].surfaceFlags, U8); //surfaceFlags
+		WRITECHECK(vehicleNullSurface[i].windingCount, U32); //windingCount
 	}
 
 	return true;

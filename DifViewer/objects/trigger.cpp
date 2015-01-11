@@ -51,18 +51,18 @@ Trigger::Trigger(FILE *file) {
 }
 
 bool Trigger::write(FILE *file) {
-	WRITE(String, name); //name
-	WRITE(String, datablock); //datablock
-	WRITE(Dictionary, properties); //properties
-	WRITELOOPVAR(Point3F, numPolyHedronPoints, polyHedronPoint); //polyHedronPoint
-	WRITELOOPVAR(PlaneF, numPolyHedronPlanes, polyHedronPlane); //polyHedronPlane
+	WRITE(name, String); //name
+	WRITE(datablock, String); //datablock
+	WRITE(properties, Dictionary); //properties
+	WRITELIST(numPolyHedronPoints, polyHedronPoint, Point3F); //polyHedronPoint
+	WRITELIST(numPolyHedronPlanes, polyHedronPlane, PlaneF); //polyHedronPlane
 	WRITELOOP(numPolyHedronEdges) { //numPolyHedronEdges
-		WRITECHECK(U32, polyHedronEdge[i].face0); //face0
-		WRITECHECK(U32, polyHedronEdge[i].face1); //face1
-		WRITECHECK(U32, polyHedronEdge[i].vertex0); //vertex0
-		WRITECHECK(U32, polyHedronEdge[i].vertex1); //vertex1
+		WRITECHECK(polyHedronEdge[i].face0, U32); //face0
+		WRITECHECK(polyHedronEdge[i].face1, U32); //face1
+		WRITECHECK(polyHedronEdge[i].vertex0, U32); //vertex0
+		WRITECHECK(polyHedronEdge[i].vertex1, U32); //vertex1
 	}
-	WRITECHECK(Point3F, offset); //offset
+	WRITECHECK(offset, Point3F); //offset
 
 	return true;
 }

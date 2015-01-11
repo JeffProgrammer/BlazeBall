@@ -187,35 +187,35 @@ bool Dictionary::read(FILE *file) {
 
 //-----------------------------------------------------------------------------
 
-bool IO::write(FILE *file, U64 value) {
+bool IO::write(FILE *file, U64 value, String name) {
 	fpos_t pos;
 	fgetpos(file, &pos);
 	DEBUG_PRINT("Write U64 %08llX: %llu\n", pos, value);
 	fwrite(&value, sizeof(value), 1, file);
 	return true;
 }
-bool IO::write(FILE *file, U32 value) {
+bool IO::write(FILE *file, U32 value, String name) {
 	fpos_t pos;
 	fgetpos(file, &pos);
 	DEBUG_PRINT("Write U32 %08llX: %u\n", pos, value);
 	fwrite(&value, sizeof(value), 1, file);
 	return true;
 }
-bool IO::write(FILE *file, U16 value) {
+bool IO::write(FILE *file, U16 value, String name) {
 	fpos_t pos;
 	fgetpos(file, &pos);
 	DEBUG_PRINT("Write U16 %08llX: %hu\n", pos, value);
 	fwrite(&value, sizeof(value), 1, file);
 	return true;
 }
-bool IO::write(FILE *file, U8 value) {
+bool IO::write(FILE *file, U8 value, String name) {
 	fpos_t pos;
 	fgetpos(file, &pos);
 	DEBUG_PRINT("Write U8 %08llX: %u\n", pos, value);
 	fwrite(&value, sizeof(value), 1, file);
 	return true;
 }
-bool IO::write(FILE *file, F32 value) {
+bool IO::write(FILE *file, F32 value, String name) {
 	fpos_t pos;
 	fgetpos(file, &pos);
 	DEBUG_PRINT("Write F32 %08llX: %f\n", pos, value);
@@ -224,84 +224,51 @@ bool IO::write(FILE *file, F32 value) {
 }
 
 //Lazy!
-bool IO::write(FILE *file, S64 value) { return write(file, (U64)value); }
-bool IO::write(FILE *file, S32 value) { return write(file, (U32)value); }
-bool IO::write(FILE *file, S16 value) { return write(file, (U16)value); }
-bool IO::write(FILE *file, S8  value) { return write(file, (U8) value); }
+bool IO::write(FILE *file, S64 value, String name) { return write(file, (U64)value, name); }
+bool IO::write(FILE *file, S32 value, String name) { return write(file, (U32)value, name); }
+bool IO::write(FILE *file, S16 value, String name) { return write(file, (U16)value, name); }
+bool IO::write(FILE *file, S8  value, String name) { return write(file, (U8) value, name); }
 
 bool PlaneF::write(FILE *file) {
 	return
-		io->write(file, x) &&
-		io->write(file, y) &&
-		io->write(file, z) &&
-		io->write(file, d);
-}
-
-template <typename T>
-bool Point2<T>::write(FILE *file) {
-	return
-		io->write(file, x) &&
-		io->write(file, y);
-}
-
-template <typename T>
-bool Point3<T>::write(FILE *file) {
-	return
-		io->write(file, x) &&
-		io->write(file, y) &&
-		io->write(file, z);
-}
-
-template <typename T>
-bool Point4<T>::write(FILE *file) {
-	return
-		io->write(file, w) &&
-		io->write(file, x) &&
-		io->write(file, y) &&
-		io->write(file, z);
+		io->write(file, x, "x") &&
+		io->write(file, y, "y") &&
+		io->write(file, z, "z") &&
+		io->write(file, d, "d");
 }
 
 bool QuatF::write(FILE *file) {
 	return
-		io->write(file, w) &&
-		io->write(file, x) &&
-		io->write(file, y) &&
-		io->write(file, z);
+		io->write(file, w, "w") &&
+		io->write(file, x, "x") &&
+		io->write(file, y, "y") &&
+		io->write(file, z, "z");
 }
 
 bool BoxF::write(FILE *file) {
 	return
-		io->write(file, minX) &&
-		io->write(file, minY) &&
-		io->write(file, minZ) &&
-		io->write(file, maxX) &&
-		io->write(file, maxY) &&
-		io->write(file, maxZ);
+		io->write(file, minX, "minX") &&
+		io->write(file, minY, "minY") &&
+		io->write(file, minZ, "minZ") &&
+		io->write(file, maxX, "maxX") &&
+		io->write(file, maxY, "maxY") &&
+		io->write(file, maxZ, "maxZ");
 }
 
 bool SphereF::write(FILE *file) {
 	return
-		io->write(file, x) &&
-		io->write(file, y) &&
-		io->write(file, z) &&
-		io->write(file, radius);
-}
-
-template <typename T>
-bool Color<T>::write(FILE *file) {
-	return
-		io->write(file, red);
-		io->write(file, green);
-		io->write(file, blue);
-		io->write(file, alpha);
+		io->write(file, x, "x") &&
+		io->write(file, y, "y") &&
+		io->write(file, z, "z") &&
+		io->write(file, radius, "radius");
 }
 
 bool String::write(FILE *file) {
 	//<length><bytes>
-	if (!io->write(file, (U8)length))
+	if (!io->write(file, (U8)length, "length"))
 		return false;
 	for (int i = 0; i < length; i ++) {
-		if (!io->write(file, data[i]))
+		if (!io->write(file, data[i], "data"))
 			return false;
 	}
 	return true;
@@ -311,7 +278,7 @@ bool PNG::write(FILE *file) {
 	//Basically dump out everything. Yeah.
 
 	for (U32 i = 0; i < size; i ++) {
-		if (!io->write(file, data[i]))
+		if (!io->write(file, data[i], "data"))
 			return false;
 	}
 	return true;
@@ -320,43 +287,15 @@ bool PNG::write(FILE *file) {
 bool Dictionary::write(FILE *file) {
 	//<length>[<name><value>]...
 
-	if (!io->write(file, size))
+	if (!io->write(file, size, "size"))
 		return false;
 	for (int i = 0; i < size; i ++) {
-		if (!io->write(file, *names[i]) &&
-		    !io->write(file, *values[i]))
+		if (!names[i]->write(file) &&
+		    !values[i]->write(file))
 		return false;
 	}
 
 	return true;
-}
-
-bool IO::write(FILE *file, PlaneF value) {
-	return value.write(file);
-}
-bool IO::write(FILE *file, Point3F value) {
-	return value.write(file);
-}
-bool IO::write(FILE *file, QuatF value) {
-	return value.write(file);
-}
-bool IO::write(FILE *file, BoxF value) {
-	return value.write(file);
-}
-bool IO::write(FILE *file, SphereF value) {
-	return value.write(file);
-}
-bool IO::write(FILE *file, ColorI value) {
-	return value.write(file);
-}
-bool IO::write(FILE *file, String value) {
-	return value.write(file);
-}
-bool IO::write(FILE *file, PNG value) {
-	return value.write(file);
-}
-bool IO::write(FILE *file, Dictionary value) {
-	return value.write(file);
 }
 
 //Mem mgt
