@@ -61,6 +61,8 @@ void IO::reverse(FILE **file, U32 bytes) {
 }
 
 bool IO::read(FILE *file, U64 *value, String name) {
+	if (feof(file))
+		return false;
 	fpos_t pos;
 	fgetpos(file, &pos);
 	fread(value, sizeof(*value), 1, file);
@@ -69,6 +71,8 @@ bool IO::read(FILE *file, U64 *value, String name) {
 	return true;
 }
 bool IO::read(FILE *file, U32 *value, String name) {
+	if (feof(file))
+		return false;
 	fpos_t pos;
 	fgetpos(file, &pos);
 	fread(value, sizeof(*value), 1, file);
@@ -77,6 +81,8 @@ bool IO::read(FILE *file, U32 *value, String name) {
 	return true;
 }
 bool IO::read(FILE *file, U16 *value, String name) {
+	if (feof(file))
+		return false;
 	fpos_t pos;
 	fgetpos(file, &pos);
 	fread(value, sizeof(*value), 1, file);
@@ -85,6 +91,8 @@ bool IO::read(FILE *file, U16 *value, String name) {
 	return true;
 }
 bool IO::read(FILE *file, U8 *value, String name) {
+	if (feof(file))
+		return false;
 	fpos_t pos;
 	fgetpos(file, &pos);
 	fread(value, sizeof(*value), 1, file);
@@ -93,6 +101,8 @@ bool IO::read(FILE *file, U8 *value, String name) {
 	return true;
 }
 bool IO::read(FILE *file, F32 *value, String name) {
+	if (feof(file))
+		return false;
 	fpos_t pos;
 	fgetpos(file, &pos);
 	fread(value, sizeof(*value), 1, file);
