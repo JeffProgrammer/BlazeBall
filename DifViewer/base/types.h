@@ -58,7 +58,7 @@ public:
 
 struct String : public Readable, Writable {
 	U8 *data;
-	U32 length;
+	U8 length;
 	bool allocated;
 
 	inline operator const char *() {
@@ -82,14 +82,14 @@ struct String : public Readable, Writable {
 	String() : data(nullptr), length(0) {
 		allocated = false;
 	}
-	String(U32 length) : data(new U8[length]), length(length) {
+	String(U8 length) : data(new U8[length]), length(length) {
 		allocated = true;
 	}
 	~String() {
 //		if (allocated)
 //			delete data;
 	}
-	String(const char *bytes) : data(new U8[(U32)strlen(bytes) + 1]), length((U32)strlen(bytes) + 1) {
+	String(const char *bytes) : data(new U8[(U8)strlen(bytes) + 1]), length((U8)strlen(bytes) + 1) {
 		memcpy(data, bytes, length);
 		allocated = true;
 	}
@@ -177,7 +177,7 @@ public:
 
 class Dictionary : public Readable, Writable {
 public:
-	U8 size;
+	U32 size;
 	String **names;
 	String **values;
 

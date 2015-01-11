@@ -275,8 +275,8 @@ for (U32 i = 0; i < name##_length; i ++) { \
 }
 
 //Macros to speed up file reading
-#define WRITE(value, type) io->write(file, value, String(#value))
-#define WRITECHECK(value, type) { if (WRITE(value, type)) return false; }
+#define WRITE(value, type) io->write(file, (type) value, String(#value))
+#define WRITECHECK(value, type) { if (!WRITE(value, type)) return false; }
 
 #define WRITELIST(countvar, listvar, type) \
 WRITECHECK(countvar, U32);\

@@ -144,7 +144,7 @@ bool SphereF::read(FILE *file) {
 bool String::read(FILE *file) {
 	//<length><bytes>
 
-	io->read(file, (U8 *)&length, "length");
+	io->read(file, &length, "length");
 	data = new U8[length + 1];
 	for (int i = 0; i < length; i ++) {
 		io->read(file, &(data[i]), "data");
@@ -159,19 +159,19 @@ bool PNG::read(FILE *file) {
 	data = new U8[LIGHT_MAP_SIZE];
 
 	//I can't parse these, so I just read em all
-	size = 0;
-	for (U32 i = 0; ;i ++) {
-		io->read(file, &(data[i]), "data");
-		if (i > 8 && memcmp(&data[i - 7], PNGFooter, 8) == 0)
+	for (size = 0; ;size ++) {
+		io->read(file, &(data[size]), "data");
+		if (size > 8 && memcmp(&data[size - 7], PNGFooter, 8) == 0)
 			break;
 	}
+	size ++;
 
 	return true;
 }
 
 bool Dictionary::read(FILE *file) {
 	//<length>[<name><value>]...
-	io->read(file, (U8 *)&size, "size");
+	io->read(file, &size, "size");
 	names = new String*[size];
 	values = new String*[size];
 
@@ -190,35 +190,35 @@ bool Dictionary::read(FILE *file) {
 bool IO::write(FILE *file, U64 value, String name) {
 	fpos_t pos;
 	fgetpos(file, &pos);
-	DEBUG_PRINT("Write U64 %08llX: %llu\n", pos, value);
+	DEBUG_PRINT("Write U64 (%s) 0x%08llX %lld: 0x%016llX / %llu\n", (const char *)name, pos, pos, __builtin_bswap64(value), value);
 	fwrite(&value, sizeof(value), 1, file);
 	return true;
 }
 bool IO::write(FILE *file, U32 value, String name) {
 	fpos_t pos;
 	fgetpos(file, &pos);
-	DEBUG_PRINT("Write U32 %08llX: %u\n", pos, value);
+	DEBUG_PRINT("Write U32 (%s) 0x%08llX %lld: 0x%08X / %u\n", (const char *)name, pos, pos, __builtin_bswap32(value), value);
 	fwrite(&value, sizeof(value), 1, file);
 	return true;
 }
 bool IO::write(FILE *file, U16 value, String name) {
 	fpos_t pos;
 	fgetpos(file, &pos);
-	DEBUG_PRINT("Write U16 %08llX: %hu\n", pos, value);
+	DEBUG_PRINT("Write U16 (%s) 0x%08llX %lld: 0x%04hX / %hu\n", (const char *)name, pos, pos, _OSSwapInt16(value), value);
 	fwrite(&value, sizeof(value), 1, file);
 	return true;
 }
 bool IO::write(FILE *file, U8 value, String name) {
 	fpos_t pos;
 	fgetpos(file, &pos);
-	DEBUG_PRINT("Write U8 %08llX: %u\n", pos, value);
+	DEBUG_PRINT("Write U8 (%s) 0x%08llX %lld: 0x%02hhX / %u\n", (const char *)name, pos, pos, value, value);
 	fwrite(&value, sizeof(value), 1, file);
 	return true;
 }
 bool IO::write(FILE *file, F32 value, String name) {
 	fpos_t pos;
 	fgetpos(file, &pos);
-	DEBUG_PRINT("Write F32 %08llX: %f\n", pos, value);
+	DEBUG_PRINT("Write F32 (%s) 0x%08llX %lld: 0x%08X %f\n", (const char *)name, pos, pos, __builtin_bswap32(*(U32 *)&value), value);
 	fwrite(&value, sizeof(value), 1, file);
 	return true;
 }
@@ -290,7 +290,7 @@ bool Dictionary::write(FILE *file) {
 	if (!io->write(file, size, "size"))
 		return false;
 	for (int i = 0; i < size; i ++) {
-		if (!names[i]->write(file) &&
+		if (!names[i]->write(file) ||
 		    !values[i]->write(file))
 		return false;
 	}
