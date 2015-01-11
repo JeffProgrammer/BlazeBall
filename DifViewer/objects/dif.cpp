@@ -41,12 +41,12 @@ DIF::DIF(FILE *file, String *directory) {
 
 	READLOOPVAR(numDetailLevels, interior, Interior *) {
 		interior[i] = new Interior();
-		interior[i]->read(file, directory);
+		interior[i]->read(file);
 		interior[i]->generateMaterials(directory);
 	}
 	READLOOPVAR(numSubObjects, subObject, Interior *) {
 		subObject[i] = new Interior();
-		subObject[i]->read(file, directory);
+		subObject[i]->read(file);
 		subObject[i]->generateMaterials(directory);
 	}
 	READLOOPVAR(numTriggers, trigger, Trigger *) {

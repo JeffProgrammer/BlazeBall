@@ -37,7 +37,7 @@
 #include "jpegsupport.h"
 #include "math.h"
 
-bool Interior::read(FILE *file, String *directory) {
+bool Interior::read(FILE *file) {
 	READTOVAR(interiorFileVersion, U32); //interiorFileVersion
 	READTOVAR(detailLevel, U32); //detailLevel
 	READTOVAR(minPixels, U32); //minPixels
@@ -97,7 +97,7 @@ bool Interior::read(FILE *file, String *directory) {
 	} else {
 		numZoneStaticMeshes = 0;
 	}
-	READLISTVAR(numZonePortalList, zonePortalList, U16);
+	READLISTVAR2(numZonePortalList, zonePortalList, 0, U16, U16);
 	READLISTVAR(numPortals, portal, Portal);
 
 	//Ok so Torque needs to fuck themselves in the ass, multiple times.
@@ -309,8 +309,8 @@ bool Interior::write(FILE *file) {
 	WRITELIST(numPoints, point, Point3F); //point
 	WRITELIST(numPointVisibilities, pointVisibility, U8); //pointVisibility
 	WRITELIST(numTexGenEqs, texGenEq, TexGenEq); //texGenEq
-	WRITELIST(numBSPNodes, BSPNode, BSPNode); //BSPNode
-	WRITELIST(numBSPSolidLeaves, BSPSolidLeaf, BSPSolidLeaf); //BSPSolidLeaf
+	WRITELIST(numBSPNodes, BSPNode, ::BSPNode); //BSPNode
+	WRITELIST(numBSPSolidLeaves, BSPSolidLeaf, ::BSPSolidLeaf); //BSPSolidLeaf
 	WRITECHECK(materialListVersion, U8); //materialListVersion
 	WRITELIST(numMaterials, material, String); //material
 	WRITELIST(numWindings, index, U32); //index
@@ -690,9 +690,6 @@ bool Zone::write(FILE *file) {
 	WRITECHECK(portalCount, U16); //portalCount
 	WRITECHECK(surfaceStart, U32); //surfaceStart
 	WRITECHECK(surfaceCount, U32); //surfaceCount
-	WRITECHECK(staticMeshStart, U32); //staticMeshStart
-	WRITECHECK(staticMeshCount, U32); //staticMeshCount
-	WRITECHECK(flags, U16); //flags
 	return true;
 }
 
@@ -741,9 +738,9 @@ bool Surface::write(FILE *file) {
 	WRITECHECK(texGenIndex, U32); //texGenIndex
 	WRITECHECK(surfaceFlags, U8); //surfaceFlags
 	WRITECHECK(fanMask, U32); //fanMask
-	WRITECHECK(lightMap, U16.finalWord); //finalWord
-	WRITECHECK(lightMap, F32.texGenXDistance); //texGenXDistance
-	WRITECHECK(lightMap, F32.texGenYDistance); //texGenYDistance
+	WRITECHECK(lightMap.finalWord, U16); //finalWord
+	WRITECHECK(lightMap.texGenXDistance, F32); //texGenXDistance
+	WRITECHECK(lightMap.texGenYDistance, F32); //texGenYDistance
 	WRITECHECK(lightCount, U16); //lightCount
 	WRITECHECK(lightStateInfoStart, U32); //lightStateInfoStart
 	WRITECHECK(mapOffsetX, U8); //mapOffsetX

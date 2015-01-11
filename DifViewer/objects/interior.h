@@ -240,7 +240,7 @@ struct TexMatrix : public Readable, Writable {
 	bool write(FILE *file);
 };
 
-class Interior {
+class Interior : public Readable, Writable {
 public:
 	U32 interiorFileVersion;
 	U32 detailLevel;
@@ -395,7 +395,7 @@ public:
 	 @arg file - The FILE to read from (updates position)
 	 @arg directory - The base directory for images
 	 */
-	bool read(FILE *file, String *directory);
+	bool read(FILE *file);
 	bool write(FILE *file);
 
 	/**
