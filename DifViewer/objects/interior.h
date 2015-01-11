@@ -416,7 +416,7 @@ public:
 	U32 rayCast(RayF ray);
 
 private:
-	bool readSurface(FILE *file, Surface surface, bool isTGEInterior);
+	bool readSurface(FILE *file, Surface *surface, bool isTGEInterior);
 	
 };
 

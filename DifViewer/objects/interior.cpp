@@ -119,7 +119,7 @@ Interior::Interior(FILE *file, String *directory) {
 	bool isTGEInterior = false;
 
 	READLOOPVAR(numSurfaces, surface, Surface) {
-		if (!readSurface(file, surface[i], false)) {
+		if (!readSurface(file, &surface[i], false)) {
 			isTGEInterior = true;
 			break;
 		}
@@ -144,7 +144,7 @@ Interior::Interior(FILE *file, String *directory) {
 
 		//Third, re-read
 		READLOOPVAR(numSurfaces, surface, Surface) {
-			if (!readSurface(file, surface[i], true)) {
+			if (!readSurface(file, &surface[i], true)) {
 				//Ok this surface failed too. Bail.
 				//TODO: Blow up here
 				return;
@@ -693,53 +693,53 @@ U32 Interior::rayCast(RayF ray) {
 
 //----------------------------------------------------------------------------
 
-bool Interior::readSurface(FILE *file, Surface surface, bool isTGEInterior) {
-	READTOVAR(surface.windingStart, U32); //windingStart
+bool Interior::readSurface(FILE *file, Surface *surface, bool isTGEInterior) {
+	READTOVAR(surface->windingStart, U32); //windingStart
 	if (this->interiorFileVersion >= 13) {
-		READTOVAR(surface.windingCount, U32); //windingCount
+		READTOVAR(surface->windingCount, U32); //windingCount
 	} else {
-		READTOVAR(surface.windingCount, U8); //windingCount
+		READTOVAR(surface->windingCount, U8); //windingCount
 	}
-	if (surface.windingStart + surface.windingCount > numWindings)
+	if (surface->windingStart + surface->windingCount > numWindings)
 		return false;
 
 	//Fucking GarageGames. Sometimes the plane is | 0x8000 because WHY NOT
 	READVAR(plane, S16); //planeIndex
 	//Ugly hack
-	surface.planeFlipped = (plane >> 15 != 0);
+	surface->planeFlipped = (plane >> 15 != 0);
 	plane &= ~0x8000;
-	surface.planeIndex = plane;
-	if (surface.planeIndex > numPlanes)
+	surface->planeIndex = plane;
+	if (surface->planeIndex > numPlanes)
 		return false;
 
-	READTOVAR(surface.textureIndex, U16); //textureIndex
-	if (surface.textureIndex > numMaterials)
+	READTOVAR(surface->textureIndex, U16); //textureIndex
+	if (surface->textureIndex > numMaterials)
 		return false;
 
-	READTOVAR(surface.texGenIndex, U32); //texGenIndex
-	if (surface.texGenIndex > numTexGenEqs)
+	READTOVAR(surface->texGenIndex, U32); //texGenIndex
+	if (surface->texGenIndex > numTexGenEqs)
 		return false;
 
-	READTOVAR(surface.surfaceFlags, U8); //surfaceFlags
-	READTOVAR(surface.fanMask, U32); //fanMask
+	READTOVAR(surface->surfaceFlags, U8); //surfaceFlags
+	READTOVAR(surface->fanMask, U32); //fanMask
 	{ //LightMap
-		READTOVAR(surface.lightMap.finalWord, U16); //finalWord
-		READTOVAR(surface.lightMap.texGenXDistance, F32); //texGenXDistance
-		READTOVAR(surface.lightMap.texGenYDistance, F32); //texGenYDistance
+		READTOVAR(surface->lightMap.finalWord, U16); //finalWord
+		READTOVAR(surface->lightMap.texGenXDistance, F32); //texGenXDistance
+		READTOVAR(surface->lightMap.texGenYDistance, F32); //texGenYDistance
 	}
-	READTOVAR(surface.lightCount, U16); //lightCount
-	READTOVAR(surface.lightStateInfoStart, U32); //lightStateInfoStart
+	READTOVAR(surface->lightCount, U16); //lightCount
+	READTOVAR(surface->lightStateInfoStart, U32); //lightStateInfoStart
 
 	if (this->interiorFileVersion >= 13) {
-		READTOVAR(surface.mapOffsetX, U32); //mapOffsetX
-		READTOVAR(surface.mapOffsetY, U32); //mapOffsetY
-		READTOVAR(surface.mapSizeX, U32); //mapSizeX
-		READTOVAR(surface.mapSizeY, U32); //mapSizeY
+		READTOVAR(surface->mapOffsetX, U32); //mapOffsetX
+		READTOVAR(surface->mapOffsetY, U32); //mapOffsetY
+		READTOVAR(surface->mapSizeX, U32); //mapSizeX
+		READTOVAR(surface->mapSizeY, U32); //mapSizeY
 	} else {
-		READTOVAR(surface.mapOffsetX, U8); //mapOffsetX
-		READTOVAR(surface.mapOffsetY, U8); //mapOffsetY
-		READTOVAR(surface.mapSizeX, U8); //mapSizeX
-		READTOVAR(surface.mapSizeY, U8); //mapSizeY
+		READTOVAR(surface->mapOffsetX, U8); //mapOffsetX
+		READTOVAR(surface->mapOffsetY, U8); //mapOffsetY
+		READTOVAR(surface->mapSizeX, U8); //mapSizeX
+		READTOVAR(surface->mapSizeY, U8); //mapSizeY
 	}
 
 	if (!isTGEInterior) {
