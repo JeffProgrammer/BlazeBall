@@ -167,10 +167,12 @@ void render() {
 		glLoadIdentity();
 
 		Texture *texture = gSelection.interior->texture[surface.textureIndex];
-		if (!texture->generated) {
-			texture->generateBuffer();
+		if (texture) {
+			if (!texture->generated) {
+				texture->generateBuffer();
+			}
+			texture->activate();
 		}
-		texture->activate();
 
 		glBegin(GL_TRIANGLE_STRIP);
 
@@ -189,9 +191,9 @@ void render() {
 			glVertex3f(point.x / len / aspect, point.y / len, 0);
 		}
 		glEnd();
-		texture->deactivate();
 
-		gSelection.interior->texture[surface.textureIndex]->deactivate();
+		if (texture)
+			texture->deactivate();
 		glDisable(GL_TEXTURE_2D);
 		glEnable(GL_LIGHTING);
 		glMatrixMode(GL_PROJECTION);
@@ -422,6 +424,9 @@ bool init() {
 	//Lock cursor
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	captureMouse = true;
+
+	Point3F center = gDifs[0]->interior[0]->boundingBox.getCenter();
+	gCameraPosition = glm::vec3(center.x, center.y, center.z);
 
 	//Initialize OpenGL
 	if (!initGL()) {
