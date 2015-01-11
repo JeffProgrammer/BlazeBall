@@ -66,6 +66,18 @@ struct String : public Readable, Writable {
 	inline operator char *() {
 		return (char *)data;
 	}
+	inline bool operator==(String *str) {
+		return strcmp((const char *)data, (const char *)str->data) == 0;
+	}
+	inline bool operator==(String str) {
+		return strcmp((const char *)data, (const char *)str.data) == 0;
+	}
+	inline bool operator!=(String *str) {
+		return !operator==(str);
+	}
+	inline bool operator!=(String str) {
+		return !operator==(str);
+	}
 	String() : data(nullptr), length(0) {};
 	String(U32 length) : data(new U8[length]), length(length) {};
 	String(const char *bytes) : data((U8 *)bytes), length((U32)strlen(bytes)) {};
@@ -124,6 +136,16 @@ public:
 	F32 maxY;
 	F32 maxZ;
 
+	inline Point3F getMin() {
+		return Point3F(minX, minY, minZ);
+	}
+	inline Point3F getMax() {
+		return Point3F(maxX, maxY, maxZ);
+	}
+	inline Point3F getCenter() {
+		return (getMax() + getMin()) / 2;
+	}
+
 	bool read(FILE *file);
 	bool write(FILE *file);
 };
@@ -147,6 +169,14 @@ public:
 
 	bool read(FILE *file);
 	bool write(FILE *file);
+
+	String *get(String *key) {
+		for (U32 i = 0; i < size; i ++) {
+			if (names[i] == key)
+				return values[i];
+		}
+		return nullptr;
+	}
 };
 
 class PNG : public Readable, Writable {
