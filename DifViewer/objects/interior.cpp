@@ -46,10 +46,7 @@ Interior::Interior(FILE *file, String *directory) {
 	READTOVAR(hasAlarmState, U8); //hasAlarmState
 	READTOVAR(numLightStateEntries, U32); //numLightStateEntries
 	READLISTVAR(numNormals, normal, Point3F);
-	READLOOPVAR(numPlanes, plane, Plane) {
-		READTOVAR(plane[i].normalIndex, U16); //normalIndex
-		READTOVAR(plane[i].planeDistance, F32); //planeDistance
-	}
+	READLISTVAR(numPlanes, plane, Plane);
 	READLISTVAR(numPoints, point, Point3F);
 	if (this->interiorFileVersion == 4) { //They exist in 0, 2, 3 but not 4
 		//Probably defaulted to FF but uncertain
@@ -57,10 +54,7 @@ Interior::Interior(FILE *file, String *directory) {
 	} else {
 		READLISTVAR(numPointVisibilities, pointVisibility, U8);
 	}
-	READLOOPVAR(numTexGenEqs, texGenEq, TexGenEq) {
-		READTOVAR(texGenEq[i].planeX, PlaneF); //planeX
-		READTOVAR(texGenEq[i].planeY, PlaneF); //planeY
-	}
+	READLISTVAR(numTexGenEqs, texGenEq, TexGenEq);
 	READLOOPVAR(numBSPNodes, BSPNode, ::BSPNode) {
 		READTOVAR(BSPNode[i].planeIndex, U16); //planeIndex
 		if (this->interiorFileVersion >= 14) {
@@ -71,25 +65,14 @@ Interior::Interior(FILE *file, String *directory) {
 			READTOVAR(BSPNode[i].backIndex, U16); //backIndex
 		}
 	}
-	READLOOPVAR(numBSPSolidLeaves, BSPSolidLeaf, ::BSPSolidLeaf) {
-		READTOVAR(BSPSolidLeaf[i].surfaceIndex, U32); //surfaceIndex
-		READTOVAR(BSPSolidLeaf[i].surfaceCount, U16); //surfaceCount
-	}
+	READLISTVAR(numBSPSolidLeaves, BSPSolidLeaf, ::BSPSolidLeaf);
 	//MaterialList
 	READTOVAR(materialListVersion, U8); //version
 	READLISTVAR(numMaterials, material, String);
 	READLISTVAR2(numWindings, index, readnumWindings2, U32, U16);
-	READLOOPVAR(numWindingIndices, windingIndex, WindingIndex) {
-		READTOVAR(windingIndex[i].windingStart, U32); //windingStart
-		READTOVAR(windingIndex[i].windingCount, U32); //windingCount
-	}
+	READLISTVAR(numWindingIndices, windingIndex, WindingIndex);
 	if (this->interiorFileVersion >= 12) {
-		READLOOPVAR(numEdges, edge, Edge) {
-			READTOVAR(edge[i].pointIndex0, S32); //pointIndex0
-			READTOVAR(edge[i].pointIndex1, S32); //pointIndex1
-			READTOVAR(edge[i].surfaceIndex0, S32); //surfaceIndex0
-			READTOVAR(edge[i].surfaceIndex1, S32); //surfaceIndex1
-		}
+		READLISTVAR(numEdges, edge, Edge);
 	} else {
 		numEdges = 0;
 	}
@@ -195,9 +178,7 @@ Interior::Interior(FILE *file, String *directory) {
 			READLIST2(numSomethingElses, (readnumSomethingElses2 && readnumSomethingElsesparam == 0), U16, U8);
 		}
 	}
-	READLOOPVAR(numNormalLMapIndices, normalLMapIndex, U8) {
-		READTOVAR(normalLMapIndex[i], U8); //normalLMapIndex
-	}
+	READLISTVAR(numNormalLMapIndices, normalLMapIndex, U8);
 	if (this->interiorFileVersion == 4) { //Found in 0, 2, 3, and TGE (14)
 		numAlarmLMapIndices = 0;
 	} else {
@@ -704,4 +685,69 @@ U32 Interior::rayCast(RayF ray) {
 	}
 
 	return closest;
+}
+//----------------------------------------------------------------------------
+
+bool Plane::read(FILE *file) {
+	READTOVAR(normalIndex, U16); //normalIndex
+	READTOVAR(planeDistance, F32); //planeDistance
+	return true;
+}
+
+bool Plane::write(FILE *file) {
+	WRITECHECK(U16, normalIndex); //normalIndex
+	WRITECHECK(F32, planeDistance); //planeDistance
+	return true;
+}
+
+bool TexGenEq::read(FILE *file) {
+	READTOVAR(planeX, PlaneF); //planeX
+	READTOVAR(planeY, PlaneF); //planeY
+	return true;
+}
+
+bool TexGenEq::write(FILE *file) {
+	WRITECHECK(PlaneF, planeX); //planeX
+	WRITECHECK(PlaneF, planeY); //planeY
+	return true;
+}
+
+bool BSPSolidLeaf::read(FILE *file) {
+	READTOVAR(surfaceIndex, U32); //surfaceIndex
+	READTOVAR(surfaceCount, U16); //surfaceCount
+	return true;
+}
+
+bool BSPSolidLeaf::write(FILE *file) {
+	WRITECHECK(U32, surfaceIndex); //surfaceIndex
+	WRITECHECK(U16, surfaceCount); //surfaceCount
+	return true;
+}
+
+bool WindingIndex::read(FILE *file) {
+	READTOVAR(windingStart, U32); //windingStart
+	READTOVAR(windingCount, U32); //windingCount
+	return true;
+}
+
+bool WindingIndex::write(FILE *file) {
+	WRITECHECK(U32, windingStart); //windingStart
+	WRITECHECK(U32, windingCount); //windingCount
+	return true;
+}
+
+bool Edge::read(FILE *file) {
+	READTOVAR(pointIndex0, S32); //pointIndex0
+	READTOVAR(pointIndex1, S32); //pointIndex1
+	READTOVAR(surfaceIndex0, S32); //surfaceIndex0
+	READTOVAR(surfaceIndex1, S32); //surfaceIndex1
+	return true;
+}
+
+bool Edge::write(FILE *file) {
+	WRITECHECK(S32, pointIndex0); //pointIndex0
+	WRITECHECK(S32, pointIndex1); //pointIndex1
+	WRITECHECK(S32, surfaceIndex0); //surfaceIndex0
+	WRITECHECK(S32, surfaceIndex1); //surfaceIndex1
+	return true;
 }
