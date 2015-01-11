@@ -29,6 +29,7 @@
 #define io_h
 
 #include "types.h"
+#include "math.h"
 
 #define LIGHT_MAP_SIZE 0x400
 #define io IO::getIO()
@@ -62,16 +63,10 @@ public:
 	//Floats
 	bool read(FILE *file, F32 *value, String name);
 
-	//Structures
-	bool read(FILE *file, PlaneF     *value, String name);
-	bool read(FILE *file, Point3F    *value, String name);
-	bool read(FILE *file, QuatF      *value, String name);
-	bool read(FILE *file, BoxF       *value, String name);
-	bool read(FILE *file, SphereF    *value, String name);
-	bool read(FILE *file, ColorI     *value, String name);
-	bool read(FILE *file, String     *value, String name);
-	bool read(FILE *file, PNG        *value, String name);
-	bool read(FILE *file, Dictionary *value, String name);
+	template <typename T>
+	inline bool read(FILE *file, T *value, String name) {
+		return value->read(file);
+	}
 
 	/*
 	 Write number types to a file
@@ -107,6 +102,39 @@ public:
 
 	bool isfile(String *file);
 };
+
+template <typename T>
+bool Point2<T>::read(FILE *file) {
+	return
+	io->read(file, &x, (String)"x") &&
+	io->read(file, &y, (String)"y");
+}
+
+template <typename T>
+bool Point3<T>::read(FILE *file) {
+	return
+	io->read(file, &x, (String)"x") &&
+	io->read(file, &y, (String)"y") &&
+	io->read(file, &z, (String)"z");
+}
+
+template <typename T>
+bool Point4<T>::read(FILE *file) {
+	return
+	io->read(file, &w, (String)"w") &&
+	io->read(file, &x, (String)"x") &&
+	io->read(file, &y, (String)"y") &&
+	io->read(file, &z, (String)"z");
+}
+
+template <typename T>
+bool Color<T>::read(FILE *file) {
+	return
+	io->read(file, &red, "red") &&
+	io->read(file, &green, "green") &&
+	io->read(file, &blue, "blue") &&
+	io->read(file, &alpha, "alpha");
+}
 
 //Memory management
 void releaseString(String string);
@@ -218,7 +246,7 @@ for (U32 i = 0; i < name##_length; i ++) { \
 
 //Macros to speed up file reading
 #define WRITE(type, value) io->write(file, value)
-#define WRITECHECK(type, value) { if (WRITE(type, value)) return 0; }
+#define WRITECHECK(type, value) { if (WRITE(type, value)) return false; }
 
 #define WRITELOOPVAR(type, countvar, listvar) \
 WRITECHECK(U32, countvar);\

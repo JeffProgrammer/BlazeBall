@@ -115,30 +115,6 @@ bool PlaneF::read(FILE *file) {
 		io->read(file, &d, (String)"x");
 }
 
-template <typename T>
-bool Point2<T>::read(FILE *file) {
-	return
-		io->read(file, &x, (String)"x") &&
-		io->read(file, &y, (String)"y");
-}
-
-template <typename T>
-bool Point3<T>::read(FILE *file) {
-	return
-		io->read(file, &x, (String)"x") &&
-		io->read(file, &y, (String)"y") &&
-		io->read(file, &z, (String)"z");
-}
-
-template <typename T>
-bool Point4<T>::read(FILE *file) {
-	return
-		io->read(file, &w, (String)"w") &&
-		io->read(file, &x, (String)"x") &&
-		io->read(file, &y, (String)"y") &&
-		io->read(file, &z, (String)"z");
-}
-
 bool QuatF::read(FILE *file) {
 	return
 		io->read(file, &w, (String)"w") &&
@@ -165,15 +141,6 @@ bool SphereF::read(FILE *file) {
 		io->read(file, &radius, (String)"radius");
 }
 
-template <typename T>
-bool Color<T>::read(FILE *file) {
-	return
-		io->read(file, &red, "red") &&
-		io->read(file, &green, "green") &&
-		io->read(file, &blue, "blue") &&
-		io->read(file, &alpha, "alpha");
-}
-
 bool String::read(FILE *file) {
 	//<length><bytes>
 
@@ -195,7 +162,7 @@ bool PNG::read(FILE *file) {
 	size = 0;
 	for (U32 i = 0; ;i ++) {
 		io->read(file, &(data[i]), "data");
-		if (memcmp(&data[i - 8], PNGFooter, 8) == 0)
+		if (i > 8 && memcmp(&data[i - 7], PNGFooter, 8) == 0)
 			break;
 	}
 
@@ -216,43 +183,6 @@ bool Dictionary::read(FILE *file) {
 	}
 
 	return true;
-}
-
-bool IO::read(FILE *file, PlaneF *value, String name) {
-	DEBUG_PRINT("Read PlaneF...\n   ");
-	return value->read(file);
-}
-bool IO::read(FILE *file, Point3F *value, String name) {
-	DEBUG_PRINT("Read Point3F...\n   ");
-	return value->read(file);
-}
-bool IO::read(FILE *file, QuatF *value, String name) {
-	DEBUG_PRINT("Read QuatF...\n   ");
-	return value->read(file);
-}
-bool IO::read(FILE *file, BoxF *value, String name) {
-	DEBUG_PRINT("Read BoxF...\n   ");
-	return value->read(file);
-}
-bool IO::read(FILE *file, SphereF *value, String name) {
-	DEBUG_PRINT("Read SphereF...\n   ");
-	return value->read(file);
-}
-bool IO::read(FILE *file, ColorI *value, String name) {
-	DEBUG_PRINT("Read ColorI...\n   ");
-	return value->read(file);
-}
-bool IO::read(FILE *file, String *value, String name) {
-	DEBUG_PRINT("Read String...\n   ");
-	return value->read(file);
-}
-bool IO::read(FILE *file, PNG *value, String name) {
-	DEBUG_PRINT("Read PNG...\n   ");
-	return value->read(file);
-}
-bool IO::read(FILE *file, Dictionary *value, String name) {
-	DEBUG_PRINT("Read Dictionary...\n   ");
-	return value->read(file);
 }
 
 //-----------------------------------------------------------------------------
