@@ -498,6 +498,9 @@ int main(int argc, const char * argv[])
 	if (!strcmp(argv[1], "-o")) {
 		argstart += 2;
 	}
+	if (!strcmp(argv[1], "-c")) {
+		argstart += 1;
+	}
 
 	gDifCount = 0;
 	gDifs = new DIF*[argc - argstart];
@@ -522,9 +525,16 @@ int main(int argc, const char * argv[])
 	}
 
 	if (!strcmp(argv[1], "-o")) {
-		FILE *test = fopen(argv[2], "w");
-		gDifs[0]->interior[0]->exportObj(test);
-		fclose(test);
+		FILE *out = fopen(argv[2], "w");
+		gDifs[0]->interior[0]->exportObj(out);
+		fclose(out);
+	} else if (!strcmp(argv[1], "-c")) {
+		for (U32 i = 0; i < gDifCount; i ++) {
+			String directory = (String)dirname((char *)gFilenames[i]);
+
+			FILE *output = fopen((const char *)gFilenames[i], "w");
+			gDifs[i]->write(output, directory);
+		}
 	} else {
 		//Init SDL and go!
 		run();
