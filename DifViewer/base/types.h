@@ -177,7 +177,7 @@ public:
 
 class Dictionary : public Readable, Writable {
 public:
-	U32 size;
+	U8 size;
 	String **names;
 	String **values;
 
