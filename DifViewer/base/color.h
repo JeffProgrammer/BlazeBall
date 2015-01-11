@@ -29,7 +29,7 @@
 #define color_h
 
 template <typename T>
-class Color {
+class Color : public Readable, Writable {
 public:
 	T red;
 	T green;
@@ -38,6 +38,9 @@ public:
 
 	Color() : red(0), green(0), blue(0), alpha(0) {};
 	Color(T red, T green, T blue, T alpha) : red(red), green(green), blue(blue), alpha(alpha) {};
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
 

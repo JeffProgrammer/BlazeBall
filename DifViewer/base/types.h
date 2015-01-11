@@ -29,6 +29,8 @@
 #define types_h
 
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 
 //Base types (names stolen from TGE because lazy)
 typedef unsigned char      U8;
@@ -44,8 +46,33 @@ typedef signed long long S64;
 typedef float F32;
 typedef double F64;
 
-//Pointer types
-typedef U8 * String;
+struct Readable {
+public:
+	bool read(FILE *file) { return false; };
+};
+
+struct Writable {
+public:
+	bool write(FILE *file) { return false; };
+};
+
+struct String : public Readable, Writable {
+	U8 *data;
+	U32 length;
+
+	inline operator const char *() {
+		return (const char *)data;
+	}
+	inline operator char *() {
+		return (char *)data;
+	}
+	String() : data(nullptr), length(0) {};
+	String(U32 length) : data(new U8[length]), length(length) {};
+	String(const char *bytes) : data((U8 *)bytes), length((U32)strlen(bytes)) {};
+
+	bool read(FILE *file);
+	bool write(FILE *file);
+};
 
 #include "point2.h"
 #include "point3.h"
@@ -63,23 +90,29 @@ typedef Color<F32> ColorF;
 
 //More names stolen from TGE
 
-class QuatF {
+class QuatF : public Readable, Writable {
 public:
 	F32 w;
 	F32 x;
 	F32 y;
 	F32 z;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-class PlaneF {
+class PlaneF : public Readable, Writable {
 public:
 	F32 x;
 	F32 y;
 	F32 z;
 	F32 d;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-class BoxF {
+class BoxF : public Readable, Writable {
 public:
 	F32 minX;
 	F32 minY;
@@ -87,27 +120,39 @@ public:
 	F32 maxX;
 	F32 maxY;
 	F32 maxZ;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-class SphereF {
+class SphereF : public Readable, Writable {
 public:
 	F32 x;
 	F32 y;
 	F32 z;
 	F32 radius;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-class Dictionary {
+class Dictionary : public Readable, Writable {
 public:
 	U32 size;
-	String *names;
-	String *values;
+	String **names;
+	String **values;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-class PNG {
+class PNG : public Readable, Writable {
 public:
 	U32 size;
 	U8 *data;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
 class TriangleF {

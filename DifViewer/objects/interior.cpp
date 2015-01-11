@@ -130,7 +130,7 @@ Interior::Interior(FILE *file, String directory) {
 			READTOVAR(surface[i].windingCount, U8); //windingCount
 		}
 		//Fucking GarageGames. Sometimes the plane is | 0x8000 because WHY NOT
-		READTOVAR(S16 plane, S16); //planeIndex
+		READVAR(plane, S16); //planeIndex
 		//Ugly hack
 		surface[i].planeFlipped = (plane >> 15 != 0);
 		plane &= ~0x8000;
@@ -342,7 +342,7 @@ Interior::Interior(FILE *file, String directory) {
 	if (numMaterials) {
 		texture = (Texture **)new Texture*[numMaterials];
 		for (U32 i = 0; i < numMaterials; i ++) {
-			String material = new U8[strlen((const char *)this->material[i]) + 1];
+			String material = String(strlen((const char *)this->material[i]) + 1);
 			strcpy((char *)material, (const char *)this->material[i]);
 			//Chop off any paths from the material. Constructor likes to save albums in the materials
 			// and it royally breaks this program.
@@ -358,11 +358,11 @@ Interior::Interior(FILE *file, String directory) {
 
 			//Allocate enough space in each of these so we can work comfortably
 			U32 pathlen = (U32)(strlen((const char *)base) + strlen((const char *)material) + 1);
-			String imageFile = new U8[pathlen + 5];
+			String imageFile = String(pathlen + 5);
 
 			do {
 				//Init imageFile to base/file.png
-				pathlen = sprintf((char *)imageFile, "%s/%s.png", base, material);
+				pathlen = sprintf((char *)imageFile, "%s/%s.png", (char *)base, (char *)material);
 
 				type = BitmapTypePNG;
 
@@ -370,7 +370,9 @@ Interior::Interior(FILE *file, String directory) {
 				//TODO: BMP Support?
 				if (!io->isfile(imageFile)) {
 					//Swap the last 3 chars with jpg
-					memcpy(imageFile + pathlen - 3, "jpg", 3);
+					imageFile.data[pathlen - 3] = 'j';
+					imageFile.data[pathlen - 2] = 'p';
+					imageFile.data[pathlen - 1] = 'g';
 					type = BitmapTypeJPEG;
 				}
 				//Can't recurse any further
@@ -384,7 +386,7 @@ Interior::Interior(FILE *file, String directory) {
 
 			//If we can't find it, just chuck the lot and keep going.
 			if (!io->isfile(imageFile)) {
-				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", material);
+				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", (char *)material);
 				texture[i] = NULL;
 				free(base);
 				free(imageFile);
@@ -408,7 +410,7 @@ Interior::Interior(FILE *file, String directory) {
 			}
 
 			if (!readFn(imageFile, &bitmap, &dims)) {
-				fprintf(stderr, "Error in reading bitmap: %s Other error\n", imageFile);
+				fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)imageFile);
 				texture[i] = NULL;
 
 				free(bitmap);

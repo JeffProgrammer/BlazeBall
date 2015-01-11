@@ -220,7 +220,7 @@ public:
 	U32 numBSPSolidLeaves;
 	BSPSolidLeaf *BSPSolidLeaf;
 
-	U32 materialListVersion;
+	U8 materialListVersion;
 	U32 numMaterials;
 	String *material;
 	Texture **texture;
