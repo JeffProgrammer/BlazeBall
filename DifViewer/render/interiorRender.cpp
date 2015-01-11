@@ -60,6 +60,12 @@ void Interior::render() {
 
 				currentTexture = texture;
 				glBegin(GL_TRIANGLES);
+			} else {
+				glEnd();
+				if (currentTexture)
+					currentTexture->deactivate();
+				currentTexture = nullptr;
+				glBegin(GL_TRIANGLES);
 			}
 		}
 

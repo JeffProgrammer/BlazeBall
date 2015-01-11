@@ -172,28 +172,33 @@ void render() {
 		glLoadIdentity();
 
 		Texture *texture = gSelection.interior->texture[surface.textureIndex];
-		if (!texture->generated) {
-			texture->generateBuffer();
+		if (texture) {
+			if (!texture->generated) {
+				texture->generateBuffer();
+			}
+			texture->activate();
 		}
-		texture->activate();
 
 		glBegin(GL_TRIANGLE_STRIP);
 
+		int w, h;
+		SDL_GetWindowSize(gWindow, &w, &h);
+
+		GLfloat aspect = (GLfloat)w / (GLfloat)h;
+
 		for (U32 i = 0; i < surface.windingCount; i ++) {
 			Point3F vert = gSelection.interior->point[gSelection.interior->index[surface.windingStart + i]];
-			if (surface.planeFlipped)
-				normal *= -1;
 
-			glTexCoord2f(planeF_distance_to_point(texGenEq.planeX, vert), planeF_distance_to_point(texGenEq.planeY, vert));
+			Point2F texuv = Point2F(planeF_distance_to_point(texGenEq.planeX, vert), planeF_distance_to_point(texGenEq.planeY, vert));
+			glTexCoord2fv(&texuv.x);
 
-			Point2F point = point3F_project_plane(vert, normal, first);
-
-			glVertex3f(point.x / len, point.y / len, 0);
+			Point2F point = point3F_project_plane(vert, (surface.planeFlipped ? normal * -1 : normal), first);
+			glVertex3f(point.x / len / aspect, point.y / len, 0);
 		}
 		glEnd();
-		texture->deactivate();
 
-		gSelection.interior->texture[surface.textureIndex]->deactivate();
+		if (texture)
+			texture->deactivate();
 		glDisable(GL_TEXTURE_2D);
 		glEnable(GL_LIGHTING);
 		glMatrixMode(GL_PROJECTION);
@@ -236,7 +241,7 @@ void loop() {
 			gSphere->applyImpulse((normal + Point3F(0, 0, 1)) / 2.f * 7.5f, Point3F(0, 0, -1));
 	} else {
 		gSphere->applyImpulse(Point3F(torque.y, -torque.x, torque.z), Point3F(0, 0, 0));
-	}
+}
 
 	Point3F pos = gSphere->getPosition();
 	gCameraPosition = glm::vec3(pos.x, pos.y, pos.z);
@@ -343,7 +348,7 @@ void handleEvent(SDL_Event *event) {
 				if (((SDL_KeyboardEvent *)event)->keysym.mod & KMOD_LGUI) { //LGUI -> LCmd
 					//Save
 					for (U32 i = 0; i < gDifCount; i ++) {
-						String directory = (String)dirname((char *)gFilenames[i]);
+						String *directory = new String(dirname((char *)gFilenames[i]));
 
 						FILE *output = fopen((const char *)gFilenames[i], "w");
 						gDifs[i]->write(output, directory);
@@ -447,6 +452,9 @@ bool init() {
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	captureMouse = true;
 
+//	Point3F center = gDifs[0]->interior[0]->boundingBox.getCenter();
+//	gCameraPosition = glm::vec3(center.x, center.y, center.z);
+
 	//Initialize OpenGL
 	if (!initGL()) {
 		return false;
@@ -526,13 +534,16 @@ int main(int argc, const char * argv[])
 	if (!strcmp(argv[1], "-o")) {
 		argstart += 2;
 	}
+	if (!strcmp(argv[1], "-c")) {
+		argstart += 1;
+	}
 
 	gDifCount = 0;
 	gDifs = new DIF*[argc - argstart];
 	gFilenames = new String[argc - argstart];
 
 	for (U32 i = 0; i < (argc - argstart); i ++) {
-		String directory = (String)dirname((char *)argv[i + argstart]);
+		String *directory = new String(dirname((char *)argv[i + argstart]));
 
 		//Open file
 		FILE *file = fopen(argv[i + argstart], "r");
@@ -550,9 +561,16 @@ int main(int argc, const char * argv[])
 	}
 
 	if (!strcmp(argv[1], "-o")) {
-		FILE *test = fopen(argv[2], "w");
-		gDifs[0]->interior[0]->exportObj(test);
-		fclose(test);
+		FILE *out = fopen(argv[2], "w");
+		gDifs[0]->interior[0]->exportObj(out);
+		fclose(out);
+	} else if (!strcmp(argv[1], "-c")) {
+		for (U32 i = 0; i < gDifCount; i ++) {
+			String *directory = new String(dirname((char *)gFilenames[i]));
+
+			FILE *output = fopen((const char *)gFilenames[i], "w");
+			gDifs[i]->write(output, directory);
+		}
 	} else {
 		//Init SDL and go!
 		run();
@@ -560,6 +578,7 @@ int main(int argc, const char * argv[])
 
 	//Clean up
 	delete [] gDifs;
+	delete [] gFilenames;
 
 	return 0;
 }

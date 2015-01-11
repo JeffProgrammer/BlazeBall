@@ -29,6 +29,7 @@
 #define io_h
 
 #include "types.h"
+#include "math.h"
 
 #define LIGHT_MAP_SIZE 0x400
 #define io IO::getIO()
@@ -48,48 +49,24 @@ public:
 	void reverse(FILE **file, U32 bytes);
 
 	//Unsigned ints
-	U64 readU64(FILE **file);
-	U64 readU64(FILE **file, String name);
-	U32 readU32(FILE **file);
-	U32 readU32(FILE **file, String name);
-	U16 readU16(FILE **file);
-	U16 readU16(FILE **file, String name);
-	U8  readU8 (FILE **file);
-	U8  readU8 (FILE **file, String name);
+	bool read(FILE *file, U64 *value, String name);
+	bool read(FILE *file, U32 *value, String name);
+	bool read(FILE *file, U16 *value, String name);
+	bool read(FILE *file,  U8 *value, String name);
 	
 	//Signed ints
-	S64 readS64(FILE **file);
-	S64 readS64(FILE **file, String name);
-	S32 readS32(FILE **file);
-	S32 readS32(FILE **file, String name);
-	S16 readS16(FILE **file);
-	S16 readS16(FILE **file, String name);
-	S8  readS8 (FILE **file);
-	S8  readS8 (FILE **file, String name);
+	bool read(FILE *file, S64 *value, String name);
+	bool read(FILE *file, S32 *value, String name);
+	bool read(FILE *file, S16 *value, String name);
+	bool read(FILE *file,  S8 *value, String name);
 
 	//Floats
-	F32 readF32(FILE **file);
-	F32 readF32(FILE **file, String name);
+	bool read(FILE *file, F32 *value, String name);
 
-	//Structures
-	PlaneF     readPlaneF(FILE **file);
-	PlaneF     readPlaneF(FILE **file, String name);
-	Point3F    readPoint3F(FILE **file);
-	Point3F    readPoint3F(FILE **file, String name);
-	QuatF      readQuatF(FILE **file);
-	QuatF      readQuatF(FILE **file, String name);
-	BoxF       readBoxF(FILE **file);
-	BoxF       readBoxF(FILE **file, String name);
-	SphereF    readSphereF(FILE **file);
-	SphereF    readSphereF(FILE **file, String name);
-	ColorI     readColorI(FILE **file);
-	ColorI     readColorI(FILE **file, String name);
-	String     readString(FILE **file);
-	String     readString(FILE **file, String name);
-	PNG        readPNG(FILE **file);
-	PNG        readPNG(FILE **file, String name);
-	Dictionary readDictionary(FILE **file);
-	Dictionary readDictionary(FILE **file, String name);
+	template <typename T>
+	inline bool read(FILE *file, T *value, String name) {
+		return value->read(file);
+	}
 
 	/*
 	 Write number types to a file
@@ -98,33 +75,66 @@ public:
 	 */
 
 	//Unsigned ints
-	U32 writeU64(FILE **file, U64 value);
-	U32 writeU32(FILE **file, U32 value);
-	U32 writeU16(FILE **file, U16 value);
-	U32 writeU8 (FILE **file, U8  value);
+	bool write(FILE *file, U64 value);
+	bool write(FILE *file, U32 value);
+	bool write(FILE *file, U16 value);
+	bool write(FILE *file, U8  value);
 
 	//Signed ints
-	U32 writeS64(FILE **file, S64 value);
-	U32 writeS32(FILE **file, S32 value);
-	U32 writeS16(FILE **file, S16 value);
-	U32 writeS8 (FILE **file, S8  value);
+	bool write(FILE *file, S64 value);
+	bool write(FILE *file, S32 value);
+	bool write(FILE *file, S16 value);
+	bool write(FILE *file, S8  value);
 
 	//Floats
-	U32 writeF32(FILE **file, F32 value);
+	bool write(FILE *file, F32 value);
 
 	//Structures
-	U32 writePlaneF(FILE **file, PlaneF value);
-	U32 writePoint3F(FILE **file, Point3F value);
-	U32 writeQuatF(FILE **file, QuatF value);
-	U32 writeBoxF(FILE **file, BoxF value);
-	U32 writeSphereF(FILE **file, SphereF value);
-	U32 writeColorI(FILE **file, ColorI value);
-	U32 writeString(FILE **file, String value);
-	U32 writePNG(FILE **file, PNG value);
-	U32 writeDictionary(FILE **file, Dictionary value);
+	bool write(FILE *file, PlaneF value);
+	bool write(FILE *file, Point3F value);
+	bool write(FILE *file, QuatF value);
+	bool write(FILE *file, BoxF value);
+	bool write(FILE *file, SphereF value);
+	bool write(FILE *file, ColorI value);
+	bool write(FILE *file, String value);
+	bool write(FILE *file, PNG value);
+	bool write(FILE *file, Dictionary value);
 
-	bool isfile(String file);
+	bool isfile(String *file);
 };
+
+template <typename T>
+bool Point2<T>::read(FILE *file) {
+	return
+	io->read(file, &x, "x") &&
+	io->read(file, &y, "y");
+}
+
+template <typename T>
+bool Point3<T>::read(FILE *file) {
+	return
+	io->read(file, &x, "x") &&
+	io->read(file, &y, "y") &&
+	io->read(file, &z, "z");
+}
+
+template <typename T>
+bool Point4<T>::read(FILE *file) {
+	return
+	io->read(file, &w, "w") &&
+	io->read(file, &x, "x") &&
+	io->read(file, &y, "y") &&
+	io->read(file, &z, "z");
+}
+
+template <typename T>
+bool Color<T>::read(FILE *file) {
+	return
+	io->read(file, &red, "red") &&
+	io->read(file, &green, "green") &&
+	io->read(file, &blue, "blue") &&
+	io->read(file, &alpha, "alpha");
+}
 
 //Memory management
 void releaseString(String string);
@@ -132,24 +142,54 @@ void releaseDictionary(Dictionary dictionary);
 
 //Macros to speed up file reading
 #define REVERSE(size) io->reverse(&file, size)
-#define READ(type) io->read##type(&file, (String)"garbage")
-#define READVAR(name, type) type name = io->read##type(&file, (String)#name)
-#define READTOVAR(name, type) name = io->read##type(&file, (String)#name)
-#define READCHECK(type, value) { if (READ(type) != value) return; }
+
+//Hack to get the read() macro to return a value from a function that uses a ref
+template <typename T>
+inline T read(FILE *file, T *thing) {
+	T __garbage;
+	io->read(file, &__garbage, "garbage");
+	return __garbage;
+}
+//I'm so sorry about (type *)file, but that's the only way to get C++ to interpret
+// the type and let the template work
+#define READ(type) read(file, (type *)file)
+
+#define READVAR(name, type) \
+	type name; \
+	io->read(file, (type *)&name, #name)
+#define READTOVAR(name, type) io->read(file, (type *)&name, #name)
+#define READCHECK(type, value) { \
+	READVAR(check, type); \
+	if (check != value)\
+		return;\
+}
 
 #define READLOOPVAR(countvar, listvar, type) \
-countvar = io->readU32(&file, (String)#countvar); \
+READTOVAR(countvar, U32); \
 listvar = new type[countvar]; \
 for (U32 i = 0; i < countvar; i ++)
 
-#define READLOOP(name, type) \
-type name##_length = io->read##type(&file, (String)#name); \
+#define READLISTVAR(countvar, listvar, type) \
+READTOVAR(countvar, U32); \
+listvar = new type[countvar]; \
+for (U32 i = 0; i < countvar; i ++) { \
+	READTOVAR(listvar[i], type); \
+}
+
+#define READLOOP(name) \
+READVAR(name##_length, U32); \
 for (U32 i = 0; i < name##_length; i ++)
+
+#define READLIST(name, type) \
+READVAR(name##_length, U32); \
+for (U32 i = 0; i < name##_length; i ++) { \
+	READ(type); \
+}
 
 #define READLOOPVAR2(countvar, listvar, type) \
 bool read##countvar##2 = false; \
-U32 read##countvar##param = 0; \
-countvar = io->readU32(&file, (String)#countvar); \
+U8 read##countvar##param = 0; \
+READTOVAR(countvar, U32); \
 if (countvar  & 0x80000000) { \
 	countvar ^= 0x80000000; \
 	read##countvar##2 = true; \
@@ -158,10 +198,28 @@ if (countvar  & 0x80000000) { \
 listvar = new type[countvar]; \
 for (U32 i = 0; i < countvar; i ++)
 
-#define READLOOP2(name, type) \
+#define READLISTVAR2(countvar, listvar, condition, normaltype, alternatetype) \
+bool read##countvar##2 = false; \
+U8 read##countvar##param = 0; \
+READTOVAR(countvar, U32); \
+if (countvar  & 0x80000000) { \
+	countvar ^= 0x80000000; \
+	read##countvar##2 = true; \
+	READTOVAR(read##countvar##param, U8); \
+} \
+listvar = new normaltype[countvar]; \
+for (U32 i = 0; i < countvar; i ++) { \
+	if ((condition)) { \
+		READTOVAR(listvar[i], alternatetype); \
+	} else { \
+		READTOVAR(listvar[i], normaltype); \
+	} \
+}
+
+#define READLOOP2(name) \
 bool read##name##2 = false; \
-U32 read##name##param = 0; \
-type name##_length = io->read##type(&file, (String)#name); \
+U8 read##name##param = 0; \
+READVAR(name##_length, U32); \
 if (name##_length  & 0x80000000) { \
 	name##_length ^= 0x80000000; \
 	read##name##2 = true; \
@@ -169,9 +227,26 @@ if (name##_length  & 0x80000000) { \
 } \
 for (U32 i = 0; i < name##_length; i ++)
 
+#define READLIST2(name, condition, normaltype, alternatetype) \
+bool read##name##2 = false; \
+U8 read##name##param = 0; \
+READVAR(name##_length, U32); \
+if (name##_length  & 0x80000000) { \
+	name##_length ^= 0x80000000; \
+	read##name##2 = true; \
+	READTOVAR(read##name##param, U8); \
+} \
+for (U32 i = 0; i < name##_length; i ++) { \
+	if ((condition)) { \
+		READ(alternatetype); \
+	} else { \
+		READ(normaltype); \
+	} \
+}
+
 //Macros to speed up file reading
-#define WRITE(type, value) io->write##type(&file, value)
-#define WRITECHECK(type, value) { if (WRITE(type, value) != sizeof(type)) return 0; }
+#define WRITE(type, value) io->write(file, value)
+#define WRITECHECK(type, value) { if (WRITE(type, value)) return false; }
 
 #define WRITELOOPVAR(type, countvar, listvar) \
 WRITECHECK(U32, countvar);\

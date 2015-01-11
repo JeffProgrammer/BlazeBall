@@ -465,6 +465,7 @@
 					"$(PROJECT_DIR)/bullet3/src/BulletDynamics/Debug",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_LDFLAGS = "-v";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -498,6 +499,7 @@
 					"$(PROJECT_DIR)/bullet3/src/BulletDynamics/Debug",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_LDFLAGS = "-v";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

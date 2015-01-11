@@ -50,40 +50,58 @@ struct Triangle {
 
 static U32 gNumCoordBins = 16;
 
-struct Plane {
+struct Plane : public Readable, Writable {
 	U16 normalIndex;
 	F32 planeDistance;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct TexGenEq {
+struct TexGenEq : public Readable, Writable {
 	PlaneF planeX;
 	PlaneF planeY;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct BSPNode {
+struct BSPNode : public Readable, Writable {
 	U16 planeIndex;
 	U16 frontIndex;
 	U16 backIndex;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct BSPSolidLeaf {
+struct BSPSolidLeaf : public Readable, Writable {
 	U32 surfaceIndex;
 	U16 surfaceCount;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct WindingIndex {
+struct WindingIndex : public Readable, Writable {
 	U32 windingStart;
 	U32 windingCount;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct Edge {
+struct Edge : public Readable, Writable {
 	S32 pointIndex0;
 	S32 pointIndex1;
 	S32 surfaceIndex0;
 	S32 surfaceIndex1;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct Zone {
+struct Zone : public Readable, Writable {
 	U16 portalStart;
 	U16 portalCount;
 	U32 surfaceStart;
@@ -91,29 +109,41 @@ struct Zone {
 	U32 staticMeshStart;
 	U32 staticMeshCount;
 	U16 flags;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct Portal {
+struct Portal : public Readable, Writable {
 	U16 planeIndex;
 	U16 triFanCount;
 	U32 triFanStart;
 	U16 zoneFront;
 	U16 zoneBack;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct LightMapF {
+struct LightMapF : public Readable, Writable {
 	U16 finalWord;
 	F32 texGenXDistance;
 	F32 texGenYDistance;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct LightMap {
+struct LightMap : public Readable, Writable {
 	PNG lightMap;
 	PNG lightDirMap;
 	U8 keepLightMap;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct Surface {
+struct Surface : public Readable, Writable {
 	U32 windingStart;
 	U8 windingCount;
 	U16 planeIndex;
@@ -129,39 +159,54 @@ struct Surface {
 	U8 mapOffsetY;
 	U8 mapSizeX;
 	U8 mapSizeY;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct NullSurface {
+struct NullSurface : public Readable, Writable {
 	U32 windingStart;
 	U16 planeIndex;
 	U8 surfaceFlags;
 	U8 windingCount;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct AnimatedLight {
+struct AnimatedLight : public Readable, Writable {
 	U32 nameIndex;
 	U32 stateIndex;
 	U16 stateCount;
 	U16 flags;
 	U32 duration;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct LightState {
+struct LightState : public Readable, Writable {
 	U8 red;
 	U8 green;
 	U8 blue;
 	U32 activeTime;
 	U32 dataIndex;
 	U16 dataCount;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct StateData {
+struct StateData : public Readable, Writable {
 	U32 surfaceIndex;
 	U32 mapIndex;
 	U16 lightStateIndex;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct ConvexHull {
+struct ConvexHull : public Readable, Writable {
 	U32 hullStart;
 	U16 hullCount;
 	F32 minX;
@@ -176,17 +221,27 @@ struct ConvexHull {
 	U32 polyListPlaneStart;
 	U32 polyListPointStart;
 	U32 polyListStringStart;
+	U8 staticMesh;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct CoordBin {
+struct CoordBin : public Readable, Writable {
 	U32 binStart;
 	U32 binCount;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
-struct TexMatrix {
+struct TexMatrix : public Readable, Writable {
 	S32 T;
 	S32 N;
 	S32 B;
+
+	bool read(FILE *file);
+	bool write(FILE *file);
 };
 
 class Interior {
@@ -220,7 +275,7 @@ public:
 	U32 numBSPSolidLeaves;
 	BSPSolidLeaf *BSPSolidLeaf;
 
-	U32 materialListVersion;
+	U8 materialListVersion;
 	U32 numMaterials;
 	String *material;
 	Texture **texture;
@@ -345,7 +400,7 @@ public:
 	 @arg directory - The base directory for images
 	 @return An Interior
 	 */
-	Interior(FILE *file, String directory);
+	Interior(FILE *file, String *directory);
 	~Interior();
 
 	bool write(FILE *file);
@@ -362,6 +417,9 @@ public:
 	void render();
 
 	U32 rayCast(RayF ray);
+
+private:
+	bool readSurface(FILE *file, Surface *surface, bool isTGEInterior);
 	
 };
 

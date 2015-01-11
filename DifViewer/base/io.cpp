@@ -60,311 +60,303 @@ void IO::reverse(FILE **file, U32 bytes) {
 	fsetpos(*file, &pos);
 }
 
-U64 IO::readU64(FILE **file, String name) {
-	U64 value = -1;
+bool IO::read(FILE *file, U64 *value, String name) {
 	fpos_t pos;
-	fgetpos(*file, &pos);
-	fread(&value, sizeof(value), 1, *file);
+	fgetpos(file, &pos);
+	fread(value, sizeof(*value), 1, file);
 
-	DEBUG_PRINT("Read U64 (%s) 0x%08llX %lld: 0x%016llX / %llu\n", name, pos, pos, __builtin_bswap64(value), value);
-
-	return value;
+	DEBUG_PRINT("Read U64 (%s) 0x%08llX %lld: 0x%016llX / %llu\n", (const char *)name, pos, pos, __builtin_bswap64(*value), *value);
+	return true;
 }
-U32 IO::readU32(FILE **file, String name) {
-	U32 value = -1;
+bool IO::read(FILE *file, U32 *value, String name) {
 	fpos_t pos;
-	fgetpos(*file, &pos);
-	fread(&value, sizeof(value), 1, *file);
+	fgetpos(file, &pos);
+	fread(value, sizeof(*value), 1, file);
 
-	DEBUG_PRINT("Read U32 (%s) 0x%08llX %lld: 0x%08X / %u\n", name, pos, pos, __builtin_bswap32(value), value);
-
-	return value;
+	DEBUG_PRINT("Read U32 (%s) 0x%08llX %lld: 0x%08X / %u\n", (const char *)name, pos, pos, __builtin_bswap32(*value), *value);
+	return true;
 }
-U16 IO::readU16(FILE **file, String name) {
-	U16 value = -1;
+bool IO::read(FILE *file, U16 *value, String name) {
 	fpos_t pos;
-	fgetpos(*file, &pos);
-	fread(&value, sizeof(value), 1, *file);
+	fgetpos(file, &pos);
+	fread(value, sizeof(*value), 1, file);
 
-	DEBUG_PRINT("Read U16 (%s) 0x%08llX %lld: 0x%04hX / %hu\n", name, pos, pos, _OSSwapInt16(value), value);
-
-	return value;
+	DEBUG_PRINT("Read U16 (%s) 0x%08llX %lld: 0x%04hX / %hu\n", (const char *)name, pos, pos, _OSSwapInt16(*value), *value);
+	return true;
 }
-U8 IO::readU8(FILE **file, String name) {
-	U8 value = -1;
+bool IO::read(FILE *file, U8 *value, String name) {
 	fpos_t pos;
-	fgetpos(*file, &pos);
-	fread(&value, sizeof(value), 1, *file);
+	fgetpos(file, &pos);
+	fread(value, sizeof(*value), 1, file);
 
-	DEBUG_PRINT("Read U8 (%s) 0x%08llX %lld: 0x%02hhX / %u\n", name, pos, pos, value, value);
-
-	return value;
+	DEBUG_PRINT("Read U8 (%s) 0x%08llX %lld: 0x%02hhX / %u\n", (const char *)name, pos, pos, *value, *value);
+	return true;
 }
-F32 IO::readF32(FILE **file, String name) {
-	F32 value = -1;
+bool IO::read(FILE *file, F32 *value, String name) {
 	fpos_t pos;
-	fgetpos(*file, &pos);
-	fread(&value, sizeof(value), 1, *file);
+	fgetpos(file, &pos);
+	fread(value, sizeof(*value), 1, file);
 
-	DEBUG_PRINT("Read F32 (%s) 0x%08llX %lld: 0x%08X %f\n", name, pos, pos, __builtin_bswap32(*(U32 *)&value), value);
-
-	return value;
+	DEBUG_PRINT("Read F32 (%s) 0x%08llX %lld: 0x%08X %f\n", (const char *)name, pos, pos, __builtin_bswap32(*(U32 *)value), *value);
+	return true;
 }
 
 //Lazy!
-S64 IO::readS64(FILE **file, String name) { return (S64)readU64(file, name); }
-S32 IO::readS32(FILE **file, String name) { return (S32)readU32(file, name); }
-S16 IO::readS16(FILE **file, String name) { return (S16)readU16(file, name); }
-S8  IO::readS8 (FILE **file, String name) { return  (S8)readU8 (file, name); }
+bool IO::read(FILE *file, S64 *value, String name) { return read(file, (U64 *)value, name); }
+bool IO::read(FILE *file, S32 *value, String name) { return read(file, (U32 *)value, name); }
+bool IO::read(FILE *file, S16 *value, String name) { return read(file, (U16 *)value, name); }
+bool IO::read(FILE *file, S8  *value, String name) { return read(file, (U8  *)value, name); }
 
-PlaneF IO::readPlaneF(FILE **file, String name) {
-	PlaneF value;
-	value.x = readF32(file, (String)"x");
-	value.y = readF32(file, (String)"y");
-	value.z = readF32(file, (String)"z");
-	value.d = readF32(file, (String)"d");
-	return value;
+bool PlaneF::read(FILE *file) {
+	return
+		io->read(file, &x, "x") &&
+		io->read(file, &y, "x") &&
+		io->read(file, &z, "x") &&
+		io->read(file, &d, "x");
 }
 
-Point3F IO::readPoint3F(FILE **file, String name) {
-	Point3F value;
-	value.x = readF32(file, (String)"x");
-	value.y = readF32(file, (String)"y");
-	value.z = readF32(file, (String)"z");
-	return value;
+bool QuatF::read(FILE *file) {
+	return
+		io->read(file, &w, "w") &&
+		io->read(file, &x, "x") &&
+		io->read(file, &y, "y") &&
+		io->read(file, &z, "z");
 }
 
-QuatF IO::readQuatF(FILE **file, String name) {
-	QuatF value;
-	value.w = readF32(file, (String)"w");
-	value.x = readF32(file, (String)"x");
-	value.y = readF32(file, (String)"y");
-	value.z = readF32(file, (String)"z");
-	return value;
+bool BoxF::read(FILE *file) {
+	return
+		io->read(file, &minX, "minX") &&
+		io->read(file, &minY, "minY") &&
+		io->read(file, &minZ, "minZ") &&
+		io->read(file, &maxX, "maxX") &&
+		io->read(file, &maxY, "maxY") &&
+		io->read(file, &maxZ, "maxZ");
 }
 
-BoxF IO::readBoxF(FILE **file, String name) {
-	BoxF value;
-	value.minX = readF32(file, (String)"minX");
-	value.minY = readF32(file, (String)"minY");
-	value.minZ = readF32(file, (String)"minZ");
-	value.maxX = readF32(file, (String)"maxX");
-	value.maxY = readF32(file, (String)"maxY");
-	value.maxZ = readF32(file, (String)"maxZ");
-	return value;
+bool SphereF::read(FILE *file) {
+	return
+		io->read(file, &x, "x") &&
+		io->read(file, &y, "y") &&
+		io->read(file, &z, "z") &&
+		io->read(file, &radius, "radius");
 }
 
-SphereF IO::readSphereF(FILE **file, String name) {
-	SphereF value;
-	value.x = readF32(file, (String)"x");
-	value.y = readF32(file, (String)"y");
-	value.z = readF32(file, (String)"z");
-	value.radius = readF32(file, (String)"radius");
-	return value;
-}
-
-ColorI IO::readColorI(FILE **file, String name) {
-	ColorI value;
-	value.red = readU8(file);
-	value.green = readU8(file);
-	value.blue = readU8(file);
-	value.alpha = readU8(file);
-	return value;
-}
-
-String IO::readString(FILE **file, String name) {
+bool String::read(FILE *file) {
 	//<length><bytes>
 
-	U8 length = readU8(file);
-	String value = new U8[length + 1];
+	io->read(file, (U8 *)&length, "length");
+	data = new U8[length + 1];
 	for (int i = 0; i < length; i ++) {
-		value[i] = readU8(file);
+		io->read(file, &(data[i]), "data");
 	}
 	//Null-terminate
-	value[length] = 0;
-	return value;
+	data[length] = 0;
+	return true;
 }
 
-PNG IO::readPNG(FILE **file, String name) {
+bool PNG::read(FILE *file) {
 	U8 PNGFooter[8] = {0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82};
-	PNG value;
-	value.data = new U8[LIGHT_MAP_SIZE];
+	data = new U8[LIGHT_MAP_SIZE];
 
 	//I can't parse these, so I just read em all
-	value.size = 0;
-	for (int i = 0; i < sizeof(PNGFooter) / sizeof(PNGFooter[0]); i ++) {
-		while ((value.data[value.size ++] = readU8(file)) != PNGFooter[i]);
+	size = 0;
+	for (U32 i = 0; ;i ++) {
+		io->read(file, &(data[i]), "data");
+		if (i > 8 && memcmp(&data[i - 7], PNGFooter, 8) == 0)
+			break;
 	}
-	return value;
+
+	return true;
 }
 
-Dictionary IO::readDictionary(FILE **file, String name) {
+bool Dictionary::read(FILE *file) {
 	//<length>[<name><value>]...
-	Dictionary value;
-	U32 size = readU32(file);
-	value.size = size;
-	value.names = new String[size];
-	value.values = new String[size];
+	io->read(file, (U8 *)&size, "size");
+	names = new String*[size];
+	values = new String*[size];
 
 	for (int i = 0; i < size; i ++) {
-		value.names[i]  = readString(file);
-		value.values[i] = readString(file);
+		names[i] = new String();
+		values[i] = new String();
+		names[i]->read(file);
+		values[i]->read(file);
 	}
 
-	return value;
+	return true;
 }
-
-
-U64 IO::readU64(FILE **file) { return readU64(file, (String) ""); }
-U32 IO::readU32(FILE **file) { return readU32(file, (String) ""); }
-U16 IO::readU16(FILE **file) { return readU16(file, (String) ""); }
-U8  IO::readU8 (FILE **file) { return readU8 (file, (String) ""); }
-S64 IO::readS64(FILE **file) { return readS64(file, (String) ""); }
-S32 IO::readS32(FILE **file) { return readS32(file, (String) ""); }
-S16 IO::readS16(FILE **file) { return readS16(file, (String) ""); }
-S8  IO::readS8 (FILE **file) { return readS8 (file, (String) ""); }
-F32 IO::readF32(FILE **file) { return readF32(file, (String) ""); }
-PlaneF     IO::readPlaneF(FILE **file)     { return readPlaneF(file,     (String) ""); }
-Point3F    IO::readPoint3F(FILE **file)    { return readPoint3F(file,    (String) ""); }
-QuatF      IO::readQuatF(FILE **file)      { return readQuatF(file,      (String) ""); }
-BoxF       IO::readBoxF(FILE **file)       { return readBoxF(file,       (String) ""); }
-SphereF    IO::readSphereF(FILE **file)    { return readSphereF(file,    (String) ""); }
-ColorI     IO::readColorI(FILE **file)     { return readColorI(file,     (String) ""); }
-String     IO::readString(FILE **file)     { return readString(file,     (String) ""); }
-PNG        IO::readPNG(FILE **file)        { return readPNG(file,        (String) ""); }
-Dictionary IO::readDictionary(FILE **file) { return readDictionary(file, (String) ""); }
 
 //-----------------------------------------------------------------------------
 
-U32 IO::writeU64(FILE **file, U64 value) {
+bool IO::write(FILE *file, U64 value) {
 	fpos_t pos;
-	fgetpos(*file, &pos);
+	fgetpos(file, &pos);
 	DEBUG_PRINT("Write U64 %08llX: %llu\n", pos, value);
-
-	return (U32)fwrite(&value, sizeof(value), 1, *file) * sizeof(value);
+	fwrite(&value, sizeof(value), 1, file);
+	return true;
 }
-U32 IO::writeU32(FILE **file, U32 value) {
+bool IO::write(FILE *file, U32 value) {
 	fpos_t pos;
-	fgetpos(*file, &pos);
+	fgetpos(file, &pos);
 	DEBUG_PRINT("Write U32 %08llX: %u\n", pos, value);
-
-	return (U32)fwrite(&value, sizeof(value), 1, *file) * sizeof(value);
+	fwrite(&value, sizeof(value), 1, file);
+	return true;
 }
-U32 IO::writeU16(FILE **file, U16 value) {
+bool IO::write(FILE *file, U16 value) {
 	fpos_t pos;
-	fgetpos(*file, &pos);
+	fgetpos(file, &pos);
 	DEBUG_PRINT("Write U16 %08llX: %hu\n", pos, value);
-
-	return (U32)fwrite(&value, sizeof(value), 1, *file) * sizeof(value);
+	fwrite(&value, sizeof(value), 1, file);
+	return true;
 }
-U32 IO::writeU8(FILE **file, U8 value) {
+bool IO::write(FILE *file, U8 value) {
 	fpos_t pos;
-	fgetpos(*file, &pos);
+	fgetpos(file, &pos);
 	DEBUG_PRINT("Write U8 %08llX: %u\n", pos, value);
-
-	return (U32)fwrite(&value, sizeof(value), 1, *file) * sizeof(value);
+	fwrite(&value, sizeof(value), 1, file);
+	return true;
 }
-U32 IO::writeF32(FILE **file, F32 value) {
+bool IO::write(FILE *file, F32 value) {
 	fpos_t pos;
-	fgetpos(*file, &pos);
+	fgetpos(file, &pos);
 	DEBUG_PRINT("Write F32 %08llX: %f\n", pos, value);
-
-	return (U32)fwrite(&value, sizeof(value), 1, *file) * sizeof(value);
+	fwrite(&value, sizeof(value), 1, file);
+	return true;
 }
 
 //Lazy!
-U32 IO::writeS64(FILE **file, S64 value) { return writeU64(file, (U64)value); }
-U32 IO::writeS32(FILE **file, S32 value) { return writeU32(file, (U32)value); }
-U32 IO::writeS16(FILE **file, S16 value) { return writeU16(file, (U16)value); }
-U32 IO::writeS8 (FILE **file, S8  value) { return writeU8 (file, (U8) value); }
+bool IO::write(FILE *file, S64 value) { return write(file, (U64)value); }
+bool IO::write(FILE *file, S32 value) { return write(file, (U32)value); }
+bool IO::write(FILE *file, S16 value) { return write(file, (U16)value); }
+bool IO::write(FILE *file, S8  value) { return write(file, (U8) value); }
 
-U32 IO::writePlaneF(FILE **file, PlaneF value) {
-	U32 count = 0;
-	count += writeF32(file, value.x);
-	count += writeF32(file, value.y);
-	count += writeF32(file, value.z);
-	count += writeF32(file, value.d);
-	return count;
+bool PlaneF::write(FILE *file) {
+	return
+		io->write(file, x) &&
+		io->write(file, y) &&
+		io->write(file, z) &&
+		io->write(file, d);
 }
 
-U32 IO::writePoint3F(FILE **file, Point3F value) {
-	U32 count = 0;
-	count += writeF32(file, value.x);
-	count += writeF32(file, value.y);
-	count += writeF32(file, value.z);
-	return count;
+template <typename T>
+bool Point2<T>::write(FILE *file) {
+	return
+		io->write(file, x) &&
+		io->write(file, y);
 }
 
-U32 IO::writeQuatF(FILE **file, QuatF value) {
-	U32 count = 0;
-	count += writeF32(file, value.w);
-	count += writeF32(file, value.x);
-	count += writeF32(file, value.y);
-	count += writeF32(file, value.z);
-	return count;
+template <typename T>
+bool Point3<T>::write(FILE *file) {
+	return
+		io->write(file, x) &&
+		io->write(file, y) &&
+		io->write(file, z);
 }
 
-U32 IO::writeBoxF(FILE **file, BoxF value) {
-	U32 count = 0;
-	count += writeF32(file, value.minX);
-	count += writeF32(file, value.minY);
-	count += writeF32(file, value.minZ);
-	count += writeF32(file, value.maxX);
-	count += writeF32(file, value.maxY);
-	count += writeF32(file, value.maxZ);
-	return count;
+template <typename T>
+bool Point4<T>::write(FILE *file) {
+	return
+		io->write(file, w) &&
+		io->write(file, x) &&
+		io->write(file, y) &&
+		io->write(file, z);
 }
 
-U32 IO::writeSphereF(FILE **file, SphereF value) {
-	U32 count = 0;
-	count += writeF32(file, value.x);
-	count += writeF32(file, value.y);
-	count += writeF32(file, value.z);
-	count += writeF32(file, value.radius);
-	return count;
+bool QuatF::write(FILE *file) {
+	return
+		io->write(file, w) &&
+		io->write(file, x) &&
+		io->write(file, y) &&
+		io->write(file, z);
 }
 
-U32 IO::writeColorI(FILE **file, ColorI value) {
-	U32 count = 0;
-	count += writeU8(file, value.red);
-	count += writeU8(file, value.green);
-	count += writeU8(file, value.blue);
-	count += writeU8(file, value.alpha);
-	return count;
+bool BoxF::write(FILE *file) {
+	return
+		io->write(file, minX) &&
+		io->write(file, minY) &&
+		io->write(file, minZ) &&
+		io->write(file, maxX) &&
+		io->write(file, maxY) &&
+		io->write(file, maxZ);
 }
 
-U32 IO::writeString(FILE **file, String value) {
+bool SphereF::write(FILE *file) {
+	return
+		io->write(file, x) &&
+		io->write(file, y) &&
+		io->write(file, z) &&
+		io->write(file, radius);
+}
+
+template <typename T>
+bool Color<T>::write(FILE *file) {
+	return
+		io->write(file, red);
+		io->write(file, green);
+		io->write(file, blue);
+		io->write(file, alpha);
+}
+
+bool String::write(FILE *file) {
 	//<length><bytes>
-	U32 count = 0;
-
-	count += writeU8(file, (U8)strlen((const char *)value));
-	for (int i = 0; i < strlen((const char *)value); i ++) {
-		count += writeU8(file, value[i]);
+	if (!io->write(file, (U8)length))
+		return false;
+	for (int i = 0; i < length; i ++) {
+		if (!io->write(file, data[i]))
+			return false;
 	}
-	return count;
+	return true;
 }
 
-U32 IO::writePNG(FILE **file, PNG value) {
+bool PNG::write(FILE *file) {
 	//Basically dump out everything. Yeah.
 
-	U32 count = 0;
-	for (U32 i = 0; i < value.size; i ++) {
-		count += writeU8(file, value.data[i]);
+	for (U32 i = 0; i < size; i ++) {
+		if (!io->write(file, data[i]))
+			return false;
 	}
-	return count;
+	return true;
 }
 
-U32 IO::writeDictionary(FILE **file, Dictionary value) {
+bool Dictionary::write(FILE *file) {
 	//<length>[<name><value>]...
-	U32 count = 0;
 
-	count += writeU32(file, value.size);
-	for (int i = 0; i < value.size; i ++) {
-		count += writeString(file, value.names[i]);
-		count += writeString(file, value.values[i]);
+	if (!io->write(file, size))
+		return false;
+	for (int i = 0; i < size; i ++) {
+		if (!io->write(file, *names[i]) &&
+		    !io->write(file, *values[i]))
+		return false;
 	}
 
-	return count;
+	return true;
+}
+
+bool IO::write(FILE *file, PlaneF value) {
+	return value.write(file);
+}
+bool IO::write(FILE *file, Point3F value) {
+	return value.write(file);
+}
+bool IO::write(FILE *file, QuatF value) {
+	return value.write(file);
+}
+bool IO::write(FILE *file, BoxF value) {
+	return value.write(file);
+}
+bool IO::write(FILE *file, SphereF value) {
+	return value.write(file);
+}
+bool IO::write(FILE *file, ColorI value) {
+	return value.write(file);
+}
+bool IO::write(FILE *file, String value) {
+	return value.write(file);
+}
+bool IO::write(FILE *file, PNG value) {
+	return value.write(file);
+}
+bool IO::write(FILE *file, Dictionary value) {
+	return value.write(file);
 }
 
 //Mem mgt
@@ -374,15 +366,15 @@ void releaseString(String string) {
 
 void releaseDictionary(Dictionary dictionary) {
 	for (int i = 0; i < dictionary.size; i ++) {
-		releaseString(dictionary.names[i]);
-		releaseString(dictionary.values[i]);
+		releaseString(*dictionary.names[i]);
+		releaseString(*dictionary.values[i]);
 	}
 	free(dictionary.names);
 	free(dictionary.values);
 }
 
-bool IO::isfile(String file) {
-	FILE *stream = fopen((const char *)file, "r");
+bool IO::isfile(String *file) {
+	FILE *stream = fopen((const char *)file->data, "r");
 	if (stream) {
 		fclose(stream);
 		return true;

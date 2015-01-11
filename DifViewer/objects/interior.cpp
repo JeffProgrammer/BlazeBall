@@ -37,7 +37,7 @@
 #include "jpegsupport.h"
 #include "math.h"
 
-Interior::Interior(FILE *file, String directory) {
+Interior::Interior(FILE *file, String *directory) {
 	READTOVAR(interiorFileVersion, U32); //interiorFileVersion
 	READTOVAR(detailLevel, U32); //detailLevel
 	READTOVAR(minPixels, U32); //minPixels
@@ -45,25 +45,16 @@ Interior::Interior(FILE *file, String directory) {
 	READTOVAR(boundingSphere, SphereF); //boundingSphere
 	READTOVAR(hasAlarmState, U8); //hasAlarmState
 	READTOVAR(numLightStateEntries, U32); //numLightStateEntries
-	READLOOPVAR(numNormals, normal, Point3F) {
-		READTOVAR(normal[i], Point3F); //normal
+	READLISTVAR(numNormals, normal, Point3F);
+	READLISTVAR(numPlanes, plane, Plane);
+	READLISTVAR(numPoints, point, Point3F);
+	if (this->interiorFileVersion == 4) { //They exist in 0, 2, 3 but not 4
+		//Probably defaulted to FF but uncertain
+		numPointVisibilities = 0;
+	} else {
+		READLISTVAR(numPointVisibilities, pointVisibility, U8);
 	}
-	READLOOPVAR(numPlanes, plane, Plane) {
-		READTOVAR(plane[i].normalIndex, U16); //normalIndex
-		READTOVAR(plane[i].planeDistance, F32); //planeDistance
-	}
-	READLOOPVAR(numPoints, point, Point3F) {
-		READTOVAR(point[i], Point3F); //point
-	}
-	if (this->interiorFileVersion != 4) {
-		READLOOPVAR(numPointVisibilities, pointVisibility, U8) {
-			READTOVAR(pointVisibility[i], U8); //pointVisibility
-		}
-	}
-	READLOOPVAR(numTexGenEqs, texGenEq, TexGenEq) {
-		READTOVAR(texGenEq[i].planeX, PlaneF); //planeX
-		READTOVAR(texGenEq[i].planeY, PlaneF); //planeY
-	}
+	READLISTVAR(numTexGenEqs, texGenEq, TexGenEq);
 	READLOOPVAR(numBSPNodes, BSPNode, ::BSPNode) {
 		READTOVAR(BSPNode[i].planeIndex, U16); //planeIndex
 		if (this->interiorFileVersion >= 14) {
@@ -74,33 +65,16 @@ Interior::Interior(FILE *file, String directory) {
 			READTOVAR(BSPNode[i].backIndex, U16); //backIndex
 		}
 	}
-	READLOOPVAR(numBSPSolidLeaves, BSPSolidLeaf, ::BSPSolidLeaf) {
-		READTOVAR(BSPSolidLeaf[i].surfaceIndex, U32); //surfaceIndex
-		READTOVAR(BSPSolidLeaf[i].surfaceCount, U16); //surfaceCount
-	}
+	READLISTVAR(numBSPSolidLeaves, BSPSolidLeaf, ::BSPSolidLeaf);
 	//MaterialList
 	READTOVAR(materialListVersion, U8); //version
-	READLOOPVAR(numMaterials, material, String) {
-		READTOVAR(material[i], String); //material
-	}
-	READLOOPVAR2(numWindings, index, U32) {
-		if (readnumWindings2) {
-			READTOVAR(index[i], U16); //index
-		} else {
-			READTOVAR(index[i], U32); //index
-		}
-	}
-	READLOOPVAR(numWindingIndices, windingIndex, WindingIndex) {
-		READTOVAR(windingIndex[i].windingStart, U32); //windingStart
-		READTOVAR(windingIndex[i].windingCount, U32); //windingCount
-	}
+	READLISTVAR(numMaterials, material, String);
+	READLISTVAR2(numWindings, index, readnumWindings2, U32, U16);
+	READLISTVAR(numWindingIndices, windingIndex, WindingIndex);
 	if (this->interiorFileVersion >= 12) {
-		READLOOPVAR(numEdges, edge, Edge) {
-			READTOVAR(edge[i].pointIndex0, S32); //pointIndex0
-			READTOVAR(edge[i].pointIndex1, S32); //pointIndex1
-			READTOVAR(edge[i].surfaceIndex0, S32); //surfaceIndex0
-			READTOVAR(edge[i].surfaceIndex1, S32); //surfaceIndex1
-		}
+		READLISTVAR(numEdges, edge, Edge);
+	} else {
+		numEdges = 0;
 	}
 	READLOOPVAR(numZones, zone, Zone) {
 		READTOVAR(zone[i].portalStart, U16); //portalStart
@@ -111,19 +85,19 @@ Interior::Interior(FILE *file, String directory) {
 			READTOVAR(zone[i].staticMeshStart, U32); //staticMeshStart
 			READTOVAR(zone[i].staticMeshCount, U32); //staticMeshCount
 			READTOVAR(zone[i].flags, U16); //flags
+		} else {
+			zone[i].staticMeshStart = 0;
+			zone[i].staticMeshCount = 0;
+			zone[i].flags = 0;
 		}
 	}
-	READLOOPVAR2(numZoneSurfaces, zoneSurface, U16) {
-		READTOVAR(zoneSurface[i], U16); //zoneSurface
-	}
+	READLISTVAR2(numZoneSurfaces, zoneSurface, 0, U16, U16);
 	if (this->interiorFileVersion >= 12) {
-		READLOOPVAR(numZoneStaticMeshes, zoneStaticMesh, U32) {
-			READTOVAR(zoneStaticMesh[i], U32);
-		}
+		READLISTVAR(numZoneStaticMeshes, zoneStaticMesh, U32);
+	} else {
+		numZoneStaticMeshes = 0;
 	}
-	READLOOPVAR2(numZonePortalList, zonePortalList, U16) {
-		READTOVAR(zonePortalList[i], U16); //zonePortalList
-	}
+	READLISTVAR(numZonePortalList, zonePortalList, U16);
 	READLOOPVAR(numPortals, portal, Portal) {
 		READTOVAR(portal[i].planeIndex, U16); //planeIndex
 		READTOVAR(portal[i].triFanCount, U16); //triFanCount
@@ -131,53 +105,59 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(portal[i].zoneFront, U16); //zoneFront
 		READTOVAR(portal[i].zoneBack, U16); //zoneBack
 	}
+
+	//Ok so Torque needs to fuck themselves in the ass, multiple times.
+	// They have two "version 0"s, one for TGE and one for TGEA. So, you
+	// might ask, how do they tell which is which? I'll tell you: They
+	// read the surfaces, and if anything is wrong, they fall back on the
+	// old format. So guess what I get to do? Yep! That!
+
+	//Save the file position as we'll need to rewind if any reads fail
+	fpos_t pos;
+	fgetpos(file, &pos);
+
+	bool isTGEInterior = false;
+
 	READLOOPVAR(numSurfaces, surface, Surface) {
-		READTOVAR(surface[i].windingStart, U32); //windingStart
-		if (this->interiorFileVersion >= 13) {
-			READTOVAR(surface[i].windingCount, U32); //windingCount
-		} else {
-			READTOVAR(surface[i].windingCount, U8); //windingCount
-		}
-		//Fucking GarageGames. Sometimes the plane is | 0x8000 because WHY NOT
-		READTOVAR(S16 plane, S16); //planeIndex
-		//Ugly hack
-		surface[i].planeFlipped = (plane >> 15 != 0);
-		plane &= ~0x8000;
-		surface[i].planeIndex = plane;
-		READTOVAR(surface[i].textureIndex, U16); //textureIndex
-		READTOVAR(surface[i].texGenIndex, U32); //texGenIndex
-		READTOVAR(surface[i].surfaceFlags, U8); //surfaceFlags
-		READTOVAR(surface[i].fanMask, U32); //fanMask
-		{ //LightMap
-			READTOVAR(surface[i].lightMap.finalWord, U16); //finalWord
-			READTOVAR(surface[i].lightMap.texGenXDistance, F32); //texGenXDistance
-			READTOVAR(surface[i].lightMap.texGenYDistance, F32); //texGenYDistance
-		}
-		READTOVAR(surface[i].lightCount, U16); //lightCount
-		READTOVAR(surface[i].lightStateInfoStart, U32); //lightStateInfoStart
-
-		if (this->interiorFileVersion >= 13) {
-			READTOVAR(surface[i].mapOffsetX, U32); //mapOffsetX
-			READTOVAR(surface[i].mapOffsetY, U32); //mapOffsetY
-			READTOVAR(surface[i].mapSizeX, U32); //mapSizeX
-			READTOVAR(surface[i].mapSizeY, U32); //mapSizeY
-		} else {
-			READTOVAR(surface[i].mapOffsetX, U8); //mapOffsetX
-			READTOVAR(surface[i].mapOffsetY, U8); //mapOffsetY
-			READTOVAR(surface[i].mapSizeX, U8); //mapSizeX
-			READTOVAR(surface[i].mapSizeY, U8); //mapSizeY
-		}
-
-		if (this->interiorFileVersion >= 1) {
-			READ(U8); //unused
-			READ(U32); //Extra bytes used for some unknown purpose
+		if (!readSurface(file, &surface[i], false)) {
+			isTGEInterior = true;
+			break;
 		}
 	}
-	if (this->interiorFileVersion >= 2) {
-		READLOOP(numIndicesOfSomeSort, U32) {
+	if (isTGEInterior) {
+		if (interiorFileVersion != 0) {
+			//Oh fuck oh fuck, TGE interiors only have version 0
+			//This means that readSurface failed on a TGEA interior
+
+			//Bail
+			return;
+		}
+		//Ok so we failed reading, it's *probably* a TGE interior. Let's try
+		// to read it as a TGE interior.
+
+		//First, rewind
+		fsetpos(file, &pos);
+
+		//Second, clean up
+		numSurfaces = 0;
+		delete [] surface;
+
+		//Third, re-read
+		READLOOPVAR(numSurfaces, surface, Surface) {
+			if (!readSurface(file, &surface[i], true)) {
+				//Ok this surface failed too. Bail.
+				//TODO: Blow up here
+				return;
+			}
+		}
+	}
+
+	if (this->interiorFileVersion >= 2 && this->interiorFileVersion <= 4) {
+		//Extra data that I've seen in MBU interiors (v2, 3, 4)
+		READLOOP(numIndicesOfSomeSort) {
 			//Potentially brush data for constructor... I don't know
 
-			//Totally guessing these names
+			//I really don't know what these are, only their size
 			READ(U32);
 			READ(U32);
 			READ(U32);
@@ -189,28 +169,23 @@ Interior::Interior(FILE *file, String directory) {
 				READ(U32);
 			}
 		}
-	}
-	if (this->interiorFileVersion >= 4) {
-		READLOOP(numPointsOfSomeKind, U32) {
+		//v4 has some extra points and indices, no clue what these are either
+		if (this->interiorFileVersion == 4) {
 			//May be brush points, normals, no clue
-			READ(Point3F); //Not sure, normals of some sort
-		}
-		READLOOP2(numSomethingElses, U32) {
+			READLIST(numPointsOfSomeKind, Point3F); //Not sure, normals of some sort
 			//Looks like indcies of some sort, can't seem to make them out though
-			if (readnumSomethingElses2 && readnumSomethingElsesparam == 0) {
-				READ(U8);
-			} else {
-				READ(U16);
-			}
+
+			//Unlike anywhere else, these actually take the param into account.
+			// If it's read2 and param == 0, then they use U8s, if param == 1, they use U16s
+			// Not really sure why, haven't seen this anywhere else.
+			READLIST2(numSomethingElses, (readnumSomethingElses2 && readnumSomethingElsesparam == 0), U16, U8);
 		}
 	}
-	READLOOPVAR(numNormalLMapIndices, normalLMapIndex, U8) {
-		READTOVAR(normalLMapIndex[i], U8); //normalLMapIndex
-	}
-	if (this->interiorFileVersion < 4) {
-		READLOOPVAR(numAlarmLMapIndices, alarmLMapIndex, U8) {
-			READTOVAR(alarmLMapIndex[i], U8); //alarmLMapIndex
-		}
+	READLISTVAR(numNormalLMapIndices, normalLMapIndex, U8);
+	if (this->interiorFileVersion == 4) { //Found in 0, 2, 3, and TGE (14)
+		numAlarmLMapIndices = 0;
+	} else {
+		READLISTVAR(numAlarmLMapIndices, alarmLMapIndex, U8);
 	}
 	READLOOPVAR(numNullSurfaces, nullSurface, NullSurface) {
 		READTOVAR(nullSurface[i].windingStart, U32); //windingStart
@@ -218,22 +193,19 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(nullSurface[i].surfaceFlags, U8); //surfaceFlags
 		READTOVAR(nullSurface[i].windingCount, U8); //windingCount
 	}
-	if (this->interiorFileVersion < 4) {
+	if (this->interiorFileVersion == 4) { //Also found in 0, 2, 3, 14
+		numLightMaps = 0;
+	} else {
 		READLOOPVAR(numLightMaps, lightMap, LightMap) {
 			READTOVAR(lightMap[i].lightMap, PNG); //lightMap
-			if (this->interiorFileVersion >= 2) {
+			if (!isTGEInterior) {
+				//These aren't even used in the real game!
 				READTOVAR(lightMap[i].lightDirMap, PNG); //lightDirMap
 			}
 			READTOVAR(lightMap[i].keepLightMap, U8); //keepLightMap
 		}
 	}
-	READLOOPVAR2(numSolidLeafSurfaces, solidLeafSurface, U32) {
-		if (readnumSolidLeafSurfaces2) {
-			READTOVAR(solidLeafSurface[i], U16); //solidLeafSurface
-		} else {
-			READTOVAR(solidLeafSurface[i], U32); //solidLeafSurface
-		}
-	}
+	READLISTVAR2(numSolidLeafSurfaces, solidLeafSurface, (readnumSolidLeafSurfaces2), U32, U16);
 	READLOOPVAR(numAnimatedLights, animatedLight, AnimatedLight) {
 		READTOVAR(animatedLight[i].nameIndex, U32); //nameIndex
 		READTOVAR(animatedLight[i].stateIndex, U32); //stateIndex
@@ -249,20 +221,23 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(lightState[i].dataIndex, U32); //dataIndex
 		READTOVAR(lightState[i].dataCount, U16); //dataCount
 	}
-	if (this->interiorFileVersion < 4) {
+	if (this->interiorFileVersion == 4) { //Yet more things found in 0, 2, 3, 14
+		numStateDatas = 0;
+		numStateDataBuffers = 0;
+		flags = 0;
+		numNameBuffers = 0;
+		numSubObjects = 0;
+	} else {
 		READLOOPVAR(numStateDatas, stateData, StateData) {
 			READTOVAR(stateData[i].surfaceIndex, U32); //surfaceIndex
 			READTOVAR(stateData[i].mapIndex, U32); //mapIndex
 			READTOVAR(stateData[i].lightStateIndex, U16); //lightStateIndex
 		}
-		READLOOPVAR(numStateDataBuffers, stateDataBuffer, U8) {
-			READTOVAR(stateDataBuffer[i], U8); //stateDataBuffer
-		}
+		READLISTVAR(numStateDataBuffers, stateDataBuffer, U8);
 		READTOVAR(flags, U32); //flags
-		READLOOPVAR(numNameBuffers, nameBufferCharacter, U8) {
-			READTOVAR(nameBufferCharacter[i], U8); //character
-		}
-		READLOOP(numSubObjects, U32) {
+		READLISTVAR(numNameBuffers, nameBufferCharacter, U8);
+
+		READLOOP(numSubObjects) {
 			//NFC
 		}
 	}
@@ -281,80 +256,71 @@ Interior::Interior(FILE *file, String directory) {
 		READTOVAR(convexHull[i].polyListPlaneStart, U32); //polyListPlaneStart
 		READTOVAR(convexHull[i].polyListPointStart, U32); //polyListPointStart
 		READTOVAR(convexHull[i].polyListStringStart, U32); //polyListStringStart
-		/*
-		 Not in MB
-		 READTOVAR(staticMesh[i], U8); //staticMesh
-		 */
-	}
-	READLOOPVAR(numConvexHullEmitStrings, convexHullEmitStringCharacter, U8) {
-		READTOVAR(convexHullEmitStringCharacter[i], U8); //convexHullEmitStringCharacter
-	}
-	READLOOPVAR2(numHullIndices, hullIndex, U32) {
-		if (readnumHullIndices2) {
-			READTOVAR(hullIndex[i], U16); //hullIndex
+
+		if (this->interiorFileVersion >= 12) {
+			READTOVAR(convexHull[i].staticMesh, U8); //staticMesh
 		} else {
-			READTOVAR(hullIndex[i], U32); //hullIndex
+			convexHull[i].staticMesh = 0;
 		}
 	}
-	READLOOPVAR2(numHullPlaneIndices, hullPlaneIndex, U16) {
-		READTOVAR(hullPlaneIndex[i], U16); //hullPlaneIndex
-	}
-	READLOOPVAR2(numHullEmitStringIndices, hullEmitStringIndex, U32) {
-		if (readnumHullEmitStringIndices2) {
-			READTOVAR(hullEmitStringIndex[i], U16); //hullEmitStringIndex
-		} else {
-			READTOVAR(hullEmitStringIndex[i], U32); //hullEmitStringIndex
-		}
-	}
-	READLOOPVAR2(numHullSurfaceIndices, hullSurfaceIndex, U32) {
-		if (readnumHullSurfaceIndices2) {
-			READTOVAR(hullSurfaceIndex[i], U16); //hullSurfaceIndex
-		} else {
-			READTOVAR(hullSurfaceIndex[i], U32); //hullSurfaceIndex
-		}
-	}
-	READLOOPVAR2(numPolyListPlanes, polyListPlaneIndex, U16) {
-		READTOVAR(polyListPlaneIndex[i], U16); //polyListPlaneIndex
-	}
-	READLOOPVAR2(numPolyListPoints, polyListPointIndex, U32) {
-		if (readnumPolyListPoints2) {
-			READTOVAR(polyListPointIndex[i], U16); //polyListPointIndex
-		} else {
-			READTOVAR(polyListPointIndex[i], U32); //polyListPointIndex
-		}
-	}
-	READLOOPVAR(numPolyListStrings, polyListStringCharacter, U8) {
-		READTOVAR(polyListStringCharacter[i], U8); //polyListStringCharacter
-	}
+	READLISTVAR(numConvexHullEmitStrings, convexHullEmitStringCharacter, U8);
+
+	//-------------------------------------------------------------------------
+	// Lots of index lists here that have U16 or U32 versions based on loop2.
+	// The actual bytes of the interior have 0x80s at the ends (negative bit)
+	// which seems to specify that these take a smaller type. They managed to
+	// save ~50KB/interior, but was it worth the pain?
+	//
+	// Also fun fact: the U16 lists have literally no reason for the 0x80, as
+	// they're already using U16s. However, GG still puts them in. What the
+	// fuck, GarageGames?
+	//-------------------------------------------------------------------------
+
+	READLISTVAR2(numHullIndices, hullIndex, (readnumHullIndices2), U32, U16);
+	READLISTVAR2(numHullPlaneIndices, hullPlaneIndex, 0, U16, U16);
+	READLISTVAR2(numHullEmitStringIndices, hullEmitStringIndex, (readnumHullEmitStringIndices2), U32, U16);
+	READLISTVAR2(numHullSurfaceIndices, hullSurfaceIndex, (readnumHullSurfaceIndices2), U32, U16);
+	READLISTVAR2(numPolyListPlanes, polyListPlaneIndex, 0, U16, U16);
+	READLISTVAR2(numPolyListPoints, polyListPointIndex, (readnumPolyListPoints2), U32, U16);
+	//Not sure if this should be a READLISTVAR2, but I haven't seen any evidence
+	// of needing that for U8 lists.
+	READLISTVAR(numPolyListStrings, polyListStringCharacter, U8);
+
 	coordBin = new CoordBin[gNumCoordBins * gNumCoordBins];
 	for (U32 i = 0; i < gNumCoordBins * gNumCoordBins; i ++) {
 		READTOVAR(coordBin[i].binStart, U32); //binStart
 		READTOVAR(coordBin[i].binCount, U32); //binCount
 	}
-	READLOOPVAR2(numCoordBinIndices, coordBinIndex, U16) {
-		READTOVAR(coordBinIndex[i], U16); //coordBinIndex
-	}
+
+	READLISTVAR2(numCoordBinIndices, coordBinIndex, 0, U16, U16);
 	READTOVAR(coordBinMode, U32); //coordBinMode
-	if (this->interiorFileVersion < 4) {
+	if (this->interiorFileVersion == 4) { //All of this is missing in v4 as well. Saves no space.
+		baseAmbientColor = ColorI(0, 0, 0, 255);
+		alarmAmbientColor = ColorI(0, 0, 0, 255);
+		numTexNormals = 0;
+		numTexMatrices = 0;
+		numTexMatIndices = 0;
+		extendedLightMapData = 0;
+		lightMapBorderSize = 0;
+	} else {
 		READTOVAR(baseAmbientColor, ColorI); //baseAmbientColor
 		READTOVAR(alarmAmbientColor, ColorI); //alarmAmbientColor
 		/*
 		 There's a long list of static meshes here, but I'm too lazy to add it just to comment it out. Oh and I'd have to implement Point2I / Point2F. See DIF_MB_SPEC.rtf if you want to implement it.
 		 */
-		READLOOPVAR(numTexNormals, texNormal, Point3F) {
-			READTOVAR(texNormal[i], Point3F); //texNormal
-		}
+		READLISTVAR(numTexNormals, texNormal, Point3F);
 		READLOOPVAR(numTexMatrices, texMatrix, TexMatrix) {
 			READTOVAR(texMatrix[i].T, S32); //T
 			READTOVAR(texMatrix[i].N, S32); //N
 			READTOVAR(texMatrix[i].B, S32); //B
 		}
-		READLOOPVAR(numTexMatIndices, texMatIndex, U32) {
-			READTOVAR(texMatIndex[i], U32); //texMatIndex
-		}
-		if ((READTOVAR(extendedLightMapData, U32))) { //extendedLightMapData
+		READLISTVAR(numTexMatIndices, texMatIndex, U32);
+		READTOVAR(extendedLightMapData, U32);
+		if (extendedLightMapData) { //extendedLightMapData
 			READTOVAR(lightMapBorderSize, U32); //lightMapBorderSize
 			READ(U32); //dummy
+		} else {
+			lightMapBorderSize = 0;
 		}
 	}
 
@@ -362,27 +328,27 @@ Interior::Interior(FILE *file, String directory) {
 	if (numMaterials) {
 		texture = (Texture **)new Texture*[numMaterials];
 		for (U32 i = 0; i < numMaterials; i ++) {
-			String material = new U8[strlen((const char *)this->material[i]) + 1];
-			strcpy((char *)material, (const char *)this->material[i]);
+			String *material = new String(this->material[i].length + 1);
+			strcpy((char *)material->data, (const char *)this->material[i]);
 			//Chop off any paths from the material. Constructor likes to save albums in the materials
 			// and it royally breaks this program.
-			if (strstr((const char *)material, "/")) {
+			if (strstr((const char *)material->data, "/")) {
 				//Hacky but effective method
-				strcpy((char *)material, strstr((const char *)material, "/") + 1);
+				strcpy((char *)material->data, strstr((const char *)material->data, "/") + 1);
 			}
 
 			BitmapType type = BitmapTypePNG;
 
 			//For some reason these two like to become the same.
-			String base = (String)strdup((char *)directory);
+			String *base = new String(directory);
 
 			//Allocate enough space in each of these so we can work comfortably
-			U32 pathlen = (U32)(strlen((const char *)base) + strlen((const char *)material) + 1);
-			String imageFile = new U8[pathlen + 5];
+			U32 pathlen = (U32)(base->length + material->length + 1);
+			String *imageFile = new String(pathlen + 5);
 
 			do {
 				//Init imageFile to base/file.png
-				pathlen = sprintf((char *)imageFile, "%s/%s.png", base, material);
+				pathlen = sprintf((char *)imageFile->data, "%s/%s.png", (char *)base->data, (char *)material->data);
 
 				type = BitmapTypePNG;
 
@@ -390,24 +356,27 @@ Interior::Interior(FILE *file, String directory) {
 				//TODO: BMP Support?
 				if (!io->isfile(imageFile)) {
 					//Swap the last 3 chars with jpg
-					memcpy(imageFile + pathlen - 3, "jpg", 3);
+					imageFile->data[pathlen - 3] = 'j';
+					imageFile->data[pathlen - 2] = 'p';
+					imageFile->data[pathlen - 1] = 'g';
 					type = BitmapTypeJPEG;
 				}
 				//Can't recurse any further
-				if (!strrchr((const char *)base, '/'))
+				if (!strrchr((const char *)base->data, '/'))
 					break;
 
 				//If we still can't find it, recurse (hacky but effective method)
-				if (!io->isfile(imageFile))
-					*strrchr((const char *)base, '/') = 0;
-			} while (!io->isfile(imageFile) && strcmp((const char *)base, ""));
+				if (!io->isfile(imageFile)) {
+					*strrchr((const char *)base->data, '/') = 0;
+				}
+			} while (!io->isfile(imageFile) && strcmp((const char *)base->data, ""));
 
 			//If we can't find it, just chuck the lot and keep going.
 			if (!io->isfile(imageFile)) {
-				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", material);
+				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", (char *)material->data);
 				texture[i] = NULL;
-				free(base);
-				free(imageFile);
+				delete base;
+				delete imageFile;
 				continue;
 			}
 
@@ -427,8 +396,8 @@ Interior::Interior(FILE *file, String directory) {
 				readFn = mngReadImage;
 			}
 
-			if (!readFn(imageFile, &bitmap, &dims)) {
-				fprintf(stderr, "Error in reading bitmap: %s Other error\n", imageFile);
+			if (!readFn(*imageFile, &bitmap, &dims)) {
+				fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)imageFile->data);
 				texture[i] = NULL;
 
 				free(bitmap);
@@ -474,6 +443,8 @@ Interior::Interior(FILE *file, String directory) {
 }
 
 bool Interior::write(FILE *file) {
+	//We can only write version 0 maps at the moment.
+
 	WRITECHECK(U32, 0); //interiorFileVersion
 	WRITECHECK(U32, detailLevel); //detailLevel
 	WRITECHECK(U32, minPixels); //minPixels
@@ -743,4 +714,130 @@ U32 Interior::rayCast(RayF ray) {
 	}
 
 	return closest;
+}
+
+//----------------------------------------------------------------------------
+
+bool Interior::readSurface(FILE *file, Surface *surface, bool isTGEInterior) {
+	READTOVAR(surface->windingStart, U32); //windingStart
+	if (this->interiorFileVersion >= 13) {
+		READTOVAR(surface->windingCount, U32); //windingCount
+	} else {
+		READTOVAR(surface->windingCount, U8); //windingCount
+	}
+	if (surface->windingStart + surface->windingCount > numWindings)
+		return false;
+
+	//Fucking GarageGames. Sometimes the plane is | 0x8000 because WHY NOT
+	READVAR(plane, S16); //planeIndex
+	//Ugly hack
+	surface->planeFlipped = (plane >> 15 != 0);
+	plane &= ~0x8000;
+	surface->planeIndex = plane;
+	if (surface->planeIndex > numPlanes)
+		return false;
+
+	READTOVAR(surface->textureIndex, U16); //textureIndex
+	if (surface->textureIndex > numMaterials)
+		return false;
+
+	READTOVAR(surface->texGenIndex, U32); //texGenIndex
+	if (surface->texGenIndex > numTexGenEqs)
+		return false;
+
+	READTOVAR(surface->surfaceFlags, U8); //surfaceFlags
+	READTOVAR(surface->fanMask, U32); //fanMask
+	{ //LightMap
+		READTOVAR(surface->lightMap.finalWord, U16); //finalWord
+		READTOVAR(surface->lightMap.texGenXDistance, F32); //texGenXDistance
+		READTOVAR(surface->lightMap.texGenYDistance, F32); //texGenYDistance
+	}
+	READTOVAR(surface->lightCount, U16); //lightCount
+	READTOVAR(surface->lightStateInfoStart, U32); //lightStateInfoStart
+
+	if (this->interiorFileVersion >= 13) {
+		READTOVAR(surface->mapOffsetX, U32); //mapOffsetX
+		READTOVAR(surface->mapOffsetY, U32); //mapOffsetY
+		READTOVAR(surface->mapSizeX, U32); //mapSizeX
+		READTOVAR(surface->mapSizeY, U32); //mapSizeY
+	} else {
+		READTOVAR(surface->mapOffsetX, U8); //mapOffsetX
+		READTOVAR(surface->mapOffsetY, U8); //mapOffsetY
+		READTOVAR(surface->mapSizeX, U8); //mapSizeX
+		READTOVAR(surface->mapSizeY, U8); //mapSizeY
+	}
+
+	if (!isTGEInterior) {
+		READ(U8); //unused
+		if (this->interiorFileVersion > 0 && this->interiorFileVersion <= 4) {
+			READ(U32); //Extra bytes used for some unknown purpose, seen in versions 2, 3, 4
+		}
+	}
+	return true;
+}
+
+//----------------------------------------------------------------------------
+
+bool Plane::read(FILE *file) {
+	READTOVAR(normalIndex, U16); //normalIndex
+	READTOVAR(planeDistance, F32); //planeDistance
+	return true;
+}
+
+bool Plane::write(FILE *file) {
+	WRITECHECK(U16, normalIndex); //normalIndex
+	WRITECHECK(F32, planeDistance); //planeDistance
+	return true;
+}
+
+bool TexGenEq::read(FILE *file) {
+	READTOVAR(planeX, PlaneF); //planeX
+	READTOVAR(planeY, PlaneF); //planeY
+	return true;
+}
+
+bool TexGenEq::write(FILE *file) {
+	WRITECHECK(PlaneF, planeX); //planeX
+	WRITECHECK(PlaneF, planeY); //planeY
+	return true;
+}
+
+bool BSPSolidLeaf::read(FILE *file) {
+	READTOVAR(surfaceIndex, U32); //surfaceIndex
+	READTOVAR(surfaceCount, U16); //surfaceCount
+	return true;
+}
+
+bool BSPSolidLeaf::write(FILE *file) {
+	WRITECHECK(U32, surfaceIndex); //surfaceIndex
+	WRITECHECK(U16, surfaceCount); //surfaceCount
+	return true;
+}
+
+bool WindingIndex::read(FILE *file) {
+	READTOVAR(windingStart, U32); //windingStart
+	READTOVAR(windingCount, U32); //windingCount
+	return true;
+}
+
+bool WindingIndex::write(FILE *file) {
+	WRITECHECK(U32, windingStart); //windingStart
+	WRITECHECK(U32, windingCount); //windingCount
+	return true;
+}
+
+bool Edge::read(FILE *file) {
+	READTOVAR(pointIndex0, S32); //pointIndex0
+	READTOVAR(pointIndex1, S32); //pointIndex1
+	READTOVAR(surfaceIndex0, S32); //surfaceIndex0
+	READTOVAR(surfaceIndex1, S32); //surfaceIndex1
+	return true;
+}
+
+bool Edge::write(FILE *file) {
+	WRITECHECK(S32, pointIndex0); //pointIndex0
+	WRITECHECK(S32, pointIndex1); //pointIndex1
+	WRITECHECK(S32, surfaceIndex0); //surfaceIndex0
+	WRITECHECK(S32, surfaceIndex1); //surfaceIndex1
+	return true;
 }

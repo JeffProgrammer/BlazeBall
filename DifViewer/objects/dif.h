@@ -77,9 +77,9 @@ public:
 	 @arg file - The FILE to read from (updates position)
 	 @return A DIF
 	 */
-	DIF(FILE *file, String directory);
+	DIF(FILE *file, String *directory);
 
-	bool write(FILE *file, String directory);
+	bool write(FILE *file, String *directory);
 
 	/**
 	 Frees the DIF and all memory contained within it
