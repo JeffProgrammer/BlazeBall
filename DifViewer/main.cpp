@@ -329,6 +329,8 @@ void handleEvent(SDL_Event *event) {
 
 						FILE *output = fopen((const char *)gFilenames[i], "w");
 						gDifs[i]->write(output, directory);
+						fflush(output);
+						fclose(output);
 					}
 				} else {
 					movement[1] = true;
@@ -532,6 +534,7 @@ int main(int argc, const char * argv[])
 	if (!strcmp(argv[1], "-o")) {
 		FILE *out = fopen(argv[2], "w");
 		gDifs[0]->interior[0]->exportObj(out);
+		fflush(out);
 		fclose(out);
 	} else if (!strcmp(argv[1], "-c")) {
 		for (U32 i = 0; i < gDifCount; i ++) {
@@ -539,6 +542,8 @@ int main(int argc, const char * argv[])
 
 			FILE *output = fopen((const char *)gFilenames[i], "w");
 			gDifs[i]->write(output, directory);
+			fflush(output);
+			fclose(output);
 		}
 	} else {
 		//Init SDL and go!
