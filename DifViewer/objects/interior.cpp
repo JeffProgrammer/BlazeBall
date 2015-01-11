@@ -45,23 +45,17 @@ Interior::Interior(FILE *file, String directory) {
 	READTOVAR(boundingSphere, SphereF); //boundingSphere
 	READTOVAR(hasAlarmState, U8); //hasAlarmState
 	READTOVAR(numLightStateEntries, U32); //numLightStateEntries
-	READLOOPVAR(numNormals, normal, Point3F) {
-		READTOVAR(normal[i], Point3F); //normal
-	}
+	READLISTVAR(numNormals, normal, Point3F);
 	READLOOPVAR(numPlanes, plane, Plane) {
 		READTOVAR(plane[i].normalIndex, U16); //normalIndex
 		READTOVAR(plane[i].planeDistance, F32); //planeDistance
 	}
-	READLOOPVAR(numPoints, point, Point3F) {
-		READTOVAR(point[i], Point3F); //point
-	}
+	READLISTVAR(numPoints, point, Point3F);
 	if (this->interiorFileVersion == 4) { //They exist in 0, 2, 3 but not 4
 		//Probably defaulted to FF but uncertain
 		numPointVisibilities = 0;
 	} else {
-		READLOOPVAR(numPointVisibilities, pointVisibility, U8) {
-			READTOVAR(pointVisibility[i], U8); //pointVisibility
-		}
+		READLISTVAR(numPointVisibilities, pointVisibility, U8);
 	}
 	READLOOPVAR(numTexGenEqs, texGenEq, TexGenEq) {
 		READTOVAR(texGenEq[i].planeX, PlaneF); //planeX
@@ -83,16 +77,8 @@ Interior::Interior(FILE *file, String directory) {
 	}
 	//MaterialList
 	READTOVAR(materialListVersion, U8); //version
-	READLOOPVAR(numMaterials, material, String) {
-		READTOVAR(material[i], String); //material
-	}
-	READLOOPVAR2(numWindings, index, U32) {
-		if (readnumWindings2) { //These are sometimes U16s in MBU Xbox DIF files, probably to save space
-			READTOVAR(index[i], U16); //index
-		} else {
-			READTOVAR(index[i], U32); //index
-		}
-	}
+	READLISTVAR(numMaterials, material, String);
+	READLISTVAR2(numWindings, index, readnumWindings2, U32, U16);
 	READLOOPVAR(numWindingIndices, windingIndex, WindingIndex) {
 		READTOVAR(windingIndex[i].windingStart, U32); //windingStart
 		READTOVAR(windingIndex[i].windingCount, U32); //windingCount
@@ -122,19 +108,13 @@ Interior::Interior(FILE *file, String directory) {
 			zone[i].flags = 0;
 		}
 	}
-	READLOOPVAR2(numZoneSurfaces, zoneSurface, U16) {
-		READTOVAR(zoneSurface[i], U16); //zoneSurface
-	}
+	READLISTVAR2(numZoneSurfaces, zoneSurface, 0, U16, U16);
 	if (this->interiorFileVersion >= 12) {
-		READLOOPVAR(numZoneStaticMeshes, zoneStaticMesh, U32) {
-			READTOVAR(zoneStaticMesh[i], U32); //zoneStaticMesh
-		}
+		READLISTVAR(numZoneStaticMeshes, zoneStaticMesh, U32);
 	} else {
 		numZoneStaticMeshes = 0;
 	}
-	READLOOPVAR2(numZonePortalList, zonePortalList, U16) {
-		READTOVAR(zonePortalList[i], U16); //zonePortalList
-	}
+	READLISTVAR(numZonePortalList, zonePortalList, U16);
 	READLOOPVAR(numPortals, portal, Portal) {
 		READTOVAR(portal[i].planeIndex, U16); //planeIndex
 		READTOVAR(portal[i].triFanCount, U16); //triFanCount
@@ -188,7 +168,7 @@ Interior::Interior(FILE *file, String directory) {
 	}
 	if (this->interiorFileVersion >= 2 && this->interiorFileVersion <= 4) {
 		//Extra data that I've seen in MBU interiors (v2, 3, 4)
-		READLOOP(numIndicesOfSomeSort, U32) {
+		READLOOP(numIndicesOfSomeSort) {
 			//Potentially brush data for constructor... I don't know
 
 			//I really don't know what these are, only their size
@@ -205,22 +185,14 @@ Interior::Interior(FILE *file, String directory) {
 		}
 		//v4 has some extra points and indices, no clue what these are either
 		if (this->interiorFileVersion == 4) {
-			READLOOP(numPointsOfSomeKind, U32) {
-				//May be brush points, normals, no clue
-				READ(Point3F); //Not sure, normals of some sort
-			}
-			READLOOP2(numSomethingElses, U32) {
-				//Looks like indcies of some sort, can't seem to make them out though
+			//May be brush points, normals, no clue
+			READLIST(numPointsOfSomeKind, Point3F); //Not sure, normals of some sort
+			//Looks like indcies of some sort, can't seem to make them out though
 
-				//Unlike anywhere else, these actually take the param into account.
-				// If it's read2 and param == 0, then they use U8s, if param == 1, they use U16s
-				// Not really sure why, haven't seen this anywhere else.
-				if (readnumSomethingElses2 && readnumSomethingElsesparam == 0) {
-					READ(U8);
-				} else {
-					READ(U16);
-				}
-			}
+			//Unlike anywhere else, these actually take the param into account.
+			// If it's read2 and param == 0, then they use U8s, if param == 1, they use U16s
+			// Not really sure why, haven't seen this anywhere else.
+			READLIST2(numSomethingElses, (readnumSomethingElses2 && readnumSomethingElsesparam == 0), U16, U8);
 		}
 	}
 	READLOOPVAR(numNormalLMapIndices, normalLMapIndex, U8) {
@@ -229,9 +201,7 @@ Interior::Interior(FILE *file, String directory) {
 	if (this->interiorFileVersion == 4) { //Found in 0, 2, 3, and TGE (14)
 		numAlarmLMapIndices = 0;
 	} else {
-		READLOOPVAR(numAlarmLMapIndices, alarmLMapIndex, U8) {
-			READTOVAR(alarmLMapIndex[i], U8); //alarmLMapIndex
-		}
+		READLISTVAR(numAlarmLMapIndices, alarmLMapIndex, U8);
 	}
 	READLOOPVAR(numNullSurfaces, nullSurface, NullSurface) {
 		READTOVAR(nullSurface[i].windingStart, U32); //windingStart
@@ -250,14 +220,7 @@ Interior::Interior(FILE *file, String directory) {
 			READTOVAR(lightMap[i].keepLightMap, U8); //keepLightMap
 		}
 	}
-	READLOOPVAR2(numSolidLeafSurfaces, solidLeafSurface, U32) {
-		//All of these "index-type" lists have U16 versions in MBU, for extra space
-		if (readnumSolidLeafSurfaces2) {
-			READTOVAR(solidLeafSurface[i], U16); //solidLeafSurface
-		} else {
-			READTOVAR(solidLeafSurface[i], U32); //solidLeafSurface
-		}
-	}
+	READLISTVAR2(numSolidLeafSurfaces, solidLeafSurface, (readnumSolidLeafSurfaces2), U32, U16);
 	READLOOPVAR(numAnimatedLights, animatedLight, AnimatedLight) {
 		READTOVAR(animatedLight[i].nameIndex, U32); //nameIndex
 		READTOVAR(animatedLight[i].stateIndex, U32); //stateIndex
@@ -285,14 +248,11 @@ Interior::Interior(FILE *file, String directory) {
 			READTOVAR(stateData[i].mapIndex, U32); //mapIndex
 			READTOVAR(stateData[i].lightStateIndex, U16); //lightStateIndex
 		}
-		READLOOPVAR(numStateDataBuffers, stateDataBuffer, U8) {
-			READTOVAR(stateDataBuffer[i], U8); //stateDataBuffer
-		}
+		READLISTVAR(numStateDataBuffers, stateDataBuffer, U8);
 		READTOVAR(flags, U32); //flags
-		READLOOPVAR(numNameBuffers, nameBufferCharacter, U8) {
-			READTOVAR(nameBufferCharacter[i], U8); //character
-		}
-		READLOOP(numSubObjects, U32) {
+		READLISTVAR(numNameBuffers, nameBufferCharacter, U8);
+
+		READLOOP(numSubObjects) {
 			//NFC
 		}
 	}
@@ -318,9 +278,7 @@ Interior::Interior(FILE *file, String directory) {
 			convexHull[i].staticMesh = 0;
 		}
 	}
-	READLOOPVAR(numConvexHullEmitStrings, convexHullEmitStringCharacter, U8) {
-		READTOVAR(convexHullEmitStringCharacter[i], U8); //convexHullEmitStringCharacter
-	}
+	READLISTVAR(numConvexHullEmitStrings, convexHullEmitStringCharacter, U8);
 
 	//-------------------------------------------------------------------------
 	// Lots of index lists here that have U16 or U32 versions based on loop2.
@@ -333,53 +291,23 @@ Interior::Interior(FILE *file, String directory) {
 	// fuck, GarageGames?
 	//-------------------------------------------------------------------------
 
-	READLOOPVAR2(numHullIndices, hullIndex, U32) {
-		if (readnumHullIndices2) {
-			READTOVAR(hullIndex[i], U16); //hullIndex
-		} else {
-			READTOVAR(hullIndex[i], U32); //hullIndex
-		}
-	}
-	READLOOPVAR2(numHullPlaneIndices, hullPlaneIndex, U16) {
-		READTOVAR(hullPlaneIndex[i], U16); //hullPlaneIndex
-	}
-	READLOOPVAR2(numHullEmitStringIndices, hullEmitStringIndex, U32) {
-		if (readnumHullEmitStringIndices2) {
-			READTOVAR(hullEmitStringIndex[i], U16); //hullEmitStringIndex
-		} else {
-			READTOVAR(hullEmitStringIndex[i], U32); //hullEmitStringIndex
-		}
-	}
-	READLOOPVAR2(numHullSurfaceIndices, hullSurfaceIndex, U32) {
-		if (readnumHullSurfaceIndices2) {
-			READTOVAR(hullSurfaceIndex[i], U16); //hullSurfaceIndex
-		} else {
-			READTOVAR(hullSurfaceIndex[i], U32); //hullSurfaceIndex
-		}
-	}
-	READLOOPVAR2(numPolyListPlanes, polyListPlaneIndex, U16) {
-		READTOVAR(polyListPlaneIndex[i], U16); //polyListPlaneIndex
-	}
-	READLOOPVAR2(numPolyListPoints, polyListPointIndex, U32) {
-		if (readnumPolyListPoints2) {
-			READTOVAR(polyListPointIndex[i], U16); //polyListPointIndex
-		} else {
-			READTOVAR(polyListPointIndex[i], U32); //polyListPointIndex
-		}
-	}
-	//Not sure if this should be a READLOOPVAR2, but I haven't seen any evidence
+	READLISTVAR2(numHullIndices, hullIndex, (readnumHullIndices2), U32, U16);
+	READLISTVAR2(numHullPlaneIndices, hullPlaneIndex, 0, U16, U16);
+	READLISTVAR2(numHullEmitStringIndices, hullEmitStringIndex, (readnumHullEmitStringIndices2), U32, U16);
+	READLISTVAR2(numHullSurfaceIndices, hullSurfaceIndex, (readnumHullSurfaceIndices2), U32, U16);
+	READLISTVAR2(numPolyListPlanes, polyListPlaneIndex, 0, U16, U16);
+	READLISTVAR2(numPolyListPoints, polyListPointIndex, (readnumPolyListPoints2), U32, U16);
+	//Not sure if this should be a READLISTVAR2, but I haven't seen any evidence
 	// of needing that for U8 lists.
-	READLOOPVAR(numPolyListStrings, polyListStringCharacter, U8) {
-		READTOVAR(polyListStringCharacter[i], U8); //polyListStringCharacter
-	}
+	READLISTVAR(numPolyListStrings, polyListStringCharacter, U8);
+
 	coordBin = new CoordBin[gNumCoordBins * gNumCoordBins];
 	for (U32 i = 0; i < gNumCoordBins * gNumCoordBins; i ++) {
 		READTOVAR(coordBin[i].binStart, U32); //binStart
 		READTOVAR(coordBin[i].binCount, U32); //binCount
 	}
-	READLOOPVAR2(numCoordBinIndices, coordBinIndex, U16) {
-		READTOVAR(coordBinIndex[i], U16); //coordBinIndex
-	}
+
+	READLISTVAR2(numCoordBinIndices, coordBinIndex, 0, U16, U16);
 	READTOVAR(coordBinMode, U32); //coordBinMode
 	if (this->interiorFileVersion == 4) { //All of this is missing in v4 as well. Saves no space.
 		baseAmbientColor = ColorI(0, 0, 0, 255);
@@ -395,17 +323,13 @@ Interior::Interior(FILE *file, String directory) {
 		/*
 		 There's a long list of static meshes here, but I'm too lazy to add it just to comment it out. Oh and I'd have to implement Point2I / Point2F. See DIF_MB_SPEC.rtf if you want to implement it.
 		 */
-		READLOOPVAR(numTexNormals, texNormal, Point3F) {
-			READTOVAR(texNormal[i], Point3F); //texNormal
-		}
+		READLISTVAR(numTexNormals, texNormal, Point3F);
 		READLOOPVAR(numTexMatrices, texMatrix, TexMatrix) {
 			READTOVAR(texMatrix[i].T, S32); //T
 			READTOVAR(texMatrix[i].N, S32); //N
 			READTOVAR(texMatrix[i].B, S32); //B
 		}
-		READLOOPVAR(numTexMatIndices, texMatIndex, U32) {
-			READTOVAR(texMatIndex[i], U32); //texMatIndex
-		}
+		READLISTVAR(numTexMatIndices, texMatIndex, U32);
 		if ((READTOVAR(extendedLightMapData, U32))) { //extendedLightMapData
 			READTOVAR(lightMapBorderSize, U32); //lightMapBorderSize
 			READ(U32); //dummy

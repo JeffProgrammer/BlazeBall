@@ -142,9 +142,22 @@ countvar = io->readU32(&file, (String)#countvar); \
 listvar = new type[countvar]; \
 for (U32 i = 0; i < countvar; i ++)
 
-#define READLOOP(name, type) \
-type name##_length = io->read##type(&file, (String)#name); \
+#define READLISTVAR(countvar, listvar, type) \
+countvar = io->readU32(&file, (String)#countvar); \
+listvar = new type[countvar]; \
+for (U32 i = 0; i < countvar; i ++) { \
+	READTOVAR(listvar[i], type); \
+}
+
+#define READLOOP(name) \
+U32 name##_length = io->readU32(&file, (String)#name); \
 for (U32 i = 0; i < name##_length; i ++)
+
+#define READLIST(name, type) \
+U32 name##_length = io->readU32(&file, (String)"garbage"); \
+for (U32 i = 0; i < name##_length; i ++) { \
+	READ(type); \
+}
 
 #define READLOOPVAR2(countvar, listvar, type) \
 bool read##countvar##2 = false; \
@@ -158,16 +171,51 @@ if (countvar  & 0x80000000) { \
 listvar = new type[countvar]; \
 for (U32 i = 0; i < countvar; i ++)
 
-#define READLOOP2(name, type) \
+#define READLISTVAR2(countvar, listvar, condition, normaltype, alternatetype) \
+bool read##countvar##2 = false; \
+U32 read##countvar##param = 0; \
+countvar = io->readU32(&file, (String)#countvar); \
+if (countvar  & 0x80000000) { \
+	countvar ^= 0x80000000; \
+	read##countvar##2 = true; \
+	READTOVAR(read##countvar##param, U8); \
+} \
+listvar = new normaltype[countvar]; \
+for (U32 i = 0; i < countvar; i ++) { \
+	if ((condition)) { \
+		READTOVAR(listvar[i], alternatetype); \
+	} else { \
+		READTOVAR(listvar[i], normaltype); \
+	} \
+}
+
+#define READLOOP2(name) \
 bool read##name##2 = false; \
 U32 read##name##param = 0; \
-type name##_length = io->read##type(&file, (String)#name); \
+U32 name##_length = io->readU32(&file, (String)#name); \
 if (name##_length  & 0x80000000) { \
 	name##_length ^= 0x80000000; \
 	read##name##2 = true; \
 	READTOVAR(read##name##param, U8); \
 } \
 for (U32 i = 0; i < name##_length; i ++)
+
+#define READLIST2(name, condition, normaltype, alternatetype) \
+bool read##name##2 = false; \
+U32 read##name##param = 0; \
+U32 name##_length = io->readU32(&file, (String)#name); \
+if (name##_length  & 0x80000000) { \
+	name##_length ^= 0x80000000; \
+	read##name##2 = true; \
+	READTOVAR(read##name##param, U8); \
+} \
+for (U32 i = 0; i < name##_length; i ++) { \
+	if ((condition)) { \
+		READ(alternatetype); \
+	} else { \
+		READ(normaltype); \
+	} \
+}
 
 //Macros to speed up file reading
 #define WRITE(type, value) io->write##type(&file, value)
