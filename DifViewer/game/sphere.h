@@ -60,6 +60,9 @@ public:
 	AngAxisF getRotation();
 	AngAxisF getRotation() const;
 
+	void setPosition(Point3F pos);
+	void setPosition(const Point3F pos) const;
+
 	void applyTorque(Point3F torque);
 	void applyImpulse(Point3F force, Point3F origin);
 	void applyForce(Point3F force, Point3F origin);

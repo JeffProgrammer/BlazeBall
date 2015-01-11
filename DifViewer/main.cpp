@@ -241,11 +241,15 @@ void loop() {
 			gSphere->applyImpulse((normal + Point3F(0, 0, 1)) / 2.f * 7.5f, Point3F(0, 0, -1));
 	} else {
 		gSphere->applyImpulse(Point3F(torque.y, -torque.x, torque.z), Point3F(0, 0, 0));
-}
+	}
 
 	Point3F pos = gSphere->getPosition();
 	gCameraPosition = glm::vec3(pos.x, pos.y, pos.z);
 	gCameraPosition += glm::vec3(glm::translate(delta, glm::vec3(0, -2.5, 0))[3]);
+
+	if (gSphere->getPosition().z < gDifs[0]->interior[0]->boundingBox.getMin().x) {
+		gSphere->setPosition(Point3F(0, 30, 60));
+	}
 }
 
 bool initGL() {

@@ -209,4 +209,18 @@ AngAxisF Sphere::getRotation() const {
 	return btConvert(trans.getRotation());
 }
 
+void Sphere::setPosition(Point3F pos) {
+	btTransform trans;
+	trans.setOrigin(btConvert(pos));
+	actor->getMotionState()->setWorldTransform(trans);
+	actor->setWorldTransform(trans);
+	actor->setLinearVelocity(btConvert(Point3F(0, 0, 0)));
+}
 
+void Sphere::setPosition(const Point3F pos) const {
+	btTransform trans;
+	trans.setOrigin(btConvert(pos));
+	actor->getMotionState()->setWorldTransform(trans);
+	actor->setWorldTransform(trans);
+	actor->setLinearVelocity(btConvert(Point3F(0, 0, 0)));
+}
