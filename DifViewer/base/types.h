@@ -93,6 +93,10 @@ struct String : public Readable, Writable {
 		memcpy(data, bytes, length);
 		allocated = true;
 	}
+	String(U8 *bytes, U32 length) : data(new U8[length]), length(length) {
+		memcpy(data, bytes, length);
+		allocated = true;
+	}
 	String(String *other) : data(new U8[other->length + 1]), length(other->length + 1) {
 		memcpy(data, other->data, length - 1);
 		data[length - 1] = 0;

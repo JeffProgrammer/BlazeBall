@@ -97,6 +97,7 @@ public:
 	}
 
 	bool isfile(String *file);
+	U8 *readFile(String *file, U32 *length);
 };
 
 template <typename T>

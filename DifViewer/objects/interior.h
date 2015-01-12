@@ -240,6 +240,13 @@ struct TexMatrix : public Readable, Writable {
 	bool write(FILE *file);
 };
 
+struct RenderInfo {
+	GLuint vertexBuffer;
+	GLuint uvBuffer;
+	U32 numTriangles;
+	bool generated;
+};
+
 class Interior : public Readable, Writable {
 public:
 	U32 interiorFileVersion;
@@ -386,6 +393,8 @@ public:
 
 	U32 extendedLightMapData;
 	U32 lightMapBorderSize;
+
+	RenderInfo renderInfo;
 
 	Interior() {};
 	~Interior();

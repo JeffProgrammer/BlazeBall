@@ -448,6 +448,13 @@ void Interior::generateMaterials(String *directory) {
 					imageFile->data[pathlen - 1] = 'g';
 					type = BitmapTypeJPEG;
 				}
+				if (!io->isfile(imageFile)) {
+					//Swap the last 3 chars with jng
+					imageFile->data[pathlen - 3] = 'j';
+					imageFile->data[pathlen - 2] = 'n';
+					imageFile->data[pathlen - 1] = 'g';
+					type = BitmapTypePNG;
+				}
 				//Can't recurse any further
 				if (!strrchr((const char *)base->data, '/'))
 					break;

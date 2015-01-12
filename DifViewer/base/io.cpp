@@ -330,3 +330,23 @@ bool IO::isfile(String *file) {
 	}
 	return false;
 }
+
+U8 *IO::readFile(String *file, U32 *length) {
+	FILE *stream = fopen((const char *)file->data, "rb");
+
+	if (!stream)
+		return NULL;
+
+	//Read length of file
+	fseek(stream, 0L, SEEK_END);
+	*length = (U32)ftell(stream);
+	fseek(stream, 0L, SEEK_SET);
+
+	U8 *data = new U8[*length + 1];
+	fread(data, sizeof(U8), *length, stream);
+	data[*length ++] = 0;
+
+	fclose(stream);
+
+	return data;
+}
