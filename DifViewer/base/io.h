@@ -178,22 +178,38 @@ void releaseDictionary(Dictionary dictionary);
 template <typename T>
 inline T __read(FILE *file, T *thing) {
 	T __garbage;
+#ifdef DEBUG
 	io->read(file, &__garbage, String("garbage"));
+#else
+	io->read(file, &__garbage, "");
+#endif
 	return __garbage;
 }
 //I'm so sorry about (type *)nullptr, but that's the only way to get C++ to interpret
 // the type and let the template work
 #define READ(type) __read(file, (type *)nullptr)
 
-#define READVAR(name, type) \
-	type name; \
-	io->read(file, (type *)&name, String(#name))
-#define READTOVAR(name, type) io->read(file, (type *)&name, String(#name))
-#define READCHECK(type, value) { \
+#ifdef DEBUG
+	#define READVAR(name, type) \
+		type name; \
+		io->read(file, (type *)&name, String(#name))
+	#define READTOVAR(name, type) io->read(file, (type *)&name, String(#name))
+	#define READCHECK(type, value) { \
+		READVAR(check, type); \
+		if (check != value)\
+			return;\
+	}
+#else
+	#define READVAR(name, type) \
+		type name; \
+		io->read(file, (type *)&name, "")
+	#define READTOVAR(name, type) io->read(file, (type *)&name, "")
+	#define READCHECK(type, value) { \
 	READVAR(check, type); \
 	if (check != value)\
 		return;\
-}
+	}
+#endif
 
 #define READLOOPVAR(countvar, listvar, type) \
 READTOVAR(countvar, U32); \
@@ -276,7 +292,12 @@ for (U32 i = 0; i < name##_length; i ++) { \
 }
 
 //Macros to speed up file reading
+#ifdef DEBUG
 #define WRITE(value, type) io->write(file, (type) value, String(#value))
+#else
+#define WRITE(value, type) io->write(file, (type) value, "")
+#endif
+
 #define WRITECHECK(value, type) { if (!WRITE(value, type)) return false; }
 
 #define WRITELIST(countvar, listvar, type) \
