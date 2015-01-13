@@ -33,9 +33,7 @@
 void Interior::render() {
 #ifdef GL_33
 	if (!renderInfo.generated) {
-		TriangleF **perMaterialTriangles = new TriangleF*[numMaterials];
-		Point2F **perMaterialUVs = new Point2F*[numMaterials];
-		Point3F **perMaterialNormals = new Point3F*[numMaterials];
+		Triangle **perMaterialTriangles = new Triangle*[numMaterials];
 
 		U32 *materialTriangles = new U32[numMaterials];
 		renderInfo.numMaterialTriangles = new U32[numMaterials];
@@ -55,10 +53,7 @@ void Interior::render() {
 
 		//Load all the textures
 		for (U32 i = 0; i < numMaterials; i ++) {
-			perMaterialTriangles[i] = new TriangleF[renderInfo.numMaterialTriangles[i]];
-			perMaterialUVs[i] = new Point2F[renderInfo.numMaterialTriangles[i] * 3];
-			perMaterialNormals[i] = new Point3F[renderInfo.numMaterialTriangles[i]];
-
+			perMaterialTriangles[i] = new Triangle[renderInfo.numMaterialTriangles[i]];
 			materialTriangles[i] = 0;
 
 			Texture *tex = texture[i];
@@ -95,39 +90,30 @@ void Interior::render() {
 				Point2F uv1 = Point2F(planeF_distance_to_point(texGenEq.planeX, u1), planeF_distance_to_point(texGenEq.planeY, u1));
 				Point2F uv2 = Point2F(planeF_distance_to_point(texGenEq.planeX, u2), planeF_distance_to_point(texGenEq.planeY, u2));
 
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].point0 = u0;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].point1 = u1;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].point2 = u2;
-				perMaterialUVs[surface.textureIndex][materialTriangles[surface.textureIndex] * 3 + 0] = uv0;
-				perMaterialUVs[surface.textureIndex][materialTriangles[surface.textureIndex] * 3 + 1] = uv1;
-				perMaterialUVs[surface.textureIndex][materialTriangles[surface.textureIndex] * 3 + 2] = uv2;
-				perMaterialNormals[surface.textureIndex][materialTriangles[surface.textureIndex]] = n;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].point = u0;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].point = u1;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].point = u2;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].uv = uv0;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].uv = uv1;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].uv = uv2;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].normal = n;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].normal = n;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].normal = n;
 				materialTriangles[surface.textureIndex] ++;
 			}
 		}
-		TriangleF *triangle = new TriangleF[numTriangles];
-		Point2F *uv = new Point2F[numTriangles * 3];
-		Point3F *normals = new Point3F[numTriangles * 3];
+		Triangle *triangle = new Triangle[numTriangles];
 
 		//Load all the textures
 		numTriangles = 0;
 		for (U32 i = 0; i < numMaterials; i ++) {
 			for (U32 j = 0; j < materialTriangles[i]; j ++) {
-				uv[numTriangles * 3 + 0] = perMaterialUVs[i][j * 3 + 0];
-				uv[numTriangles * 3 + 1] = perMaterialUVs[i][j * 3 + 1];
-				uv[numTriangles * 3 + 2] = perMaterialUVs[i][j * 3 + 2];
-				normals[numTriangles] = perMaterialNormals[i][j];
 				triangle[numTriangles] = perMaterialTriangles[i][j];
 				numTriangles ++;
 			}
-			delete [] perMaterialUVs[i];
 			delete [] perMaterialTriangles[i];
-			delete [] perMaterialNormals[i];
 		}
-
-		delete [] perMaterialUVs;
 		delete [] perMaterialTriangles;
-		delete [] perMaterialNormals;
 
 		//Generate us a vertex buffer
 		glGenBuffers(1, &renderInfo.vertexBuffer);
@@ -136,54 +122,41 @@ void Interior::render() {
 		glBindBuffer(GL_ARRAY_BUFFER, renderInfo.vertexBuffer);
 
 		//Upload the buffer data to OpenGL
-		glBufferData(GL_ARRAY_BUFFER, sizeof(TriangleF) * numTriangles, triangle, GL_STATIC_DRAW);
-
-		//UV Buffer
-		glGenBuffers(1, &renderInfo.uvBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, renderInfo.uvBuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Point2F) * numTriangles * 3, uv, GL_STATIC_DRAW);
-
-		//Color Buffer
-		glGenBuffers(1, &renderInfo.normalBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, renderInfo.normalBuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Point3F) * numTriangles, normals, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * numTriangles, triangle, GL_STATIC_DRAW);
 
 		delete [] triangle;
-		delete [] uv;
-		delete [] normals;
 
 		renderInfo.generated = true;
 	}
 
-	//0th array - vertices
 	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, renderInfo.vertexBuffer);
+
+	//0th array - vertices
 	glVertexAttribPointer(0, //Attribute 0
 						  3, //3 components
 						  GL_FLOAT, //Type
 						  GL_FALSE, //Normalized
-						  0, //Stride
-						  0); //Offset
+						  sizeof(Vertex), //Stride
+						  (void *)offsetof(Vertex, point)); //Offset
 
 	//1st array - uvs
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, renderInfo.uvBuffer);
 	glVertexAttribPointer(1, //Attribute 1
 						  2, //2 components
 						  GL_FLOAT, //Type
 						  GL_FALSE, //Normalized
-						  0, //Stride
-						  0); //Offset
+						  sizeof(Vertex), //Stride
+						  (void *)offsetof(Vertex, uv)); //Offset
 
 	//2nd array - normals
-	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, renderInfo.normalBuffer);
 	glVertexAttribPointer(2, //Attribute 2
 						  3, //3 components
 						  GL_FLOAT, //Type
 						  GL_FALSE, //Normalized
-						  0, //Stride
-						  0); //Offset
+						  sizeof(Vertex), //Stride
+						  (void *)offsetof(Vertex, normal)); //Offset
 
 	noise->activate();
 	U32 start = 0;
