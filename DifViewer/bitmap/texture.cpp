@@ -93,7 +93,7 @@ void Texture::activate() {
 	if (!generated)
 		return;
 	//Activate and bind the buffer
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(texNum);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glBindTexture(GL_TEXTURE_2D, buffer);
 }
