@@ -154,7 +154,7 @@ bool SphereF::read(FILE *file) {
 bool String::read(FILE *file) {
 	//<length><bytes>
 
-	io->read(file, &length, "length");
+	io->read(file, (U8 *)&length, "length");
 	data = new U8[length + 1];
 	for (int i = 0; i < length; i ++) {
 		io->read(file, &(data[i]), "data");

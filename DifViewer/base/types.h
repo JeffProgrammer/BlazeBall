@@ -58,7 +58,7 @@ public:
 
 struct String : public Readable, Writable {
 	U8 *data;
-	U8 length;
+	U32 length;
 	bool allocated;
 
 	inline operator const char *() {
@@ -82,7 +82,7 @@ struct String : public Readable, Writable {
 	String() : data(nullptr), length(0) {
 		allocated = false;
 	}
-	String(U8 length) : data(new U8[length]), length(length) {
+	String(U32 length) : data(new U8[length]), length(length) {
 		allocated = true;
 	}
 	~String() {
