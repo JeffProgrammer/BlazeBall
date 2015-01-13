@@ -30,10 +30,12 @@
 
 #include <stdio.h>
 #include <vector>
+#include <OpenGL/gl.h>
+
 #include "types.h"
 #include "interior.h"
 #include "physics.h"
-#include <OpenGL/gl.h>
+#include "texture.h"
 
 class Sphere {
 protected:
@@ -43,8 +45,9 @@ public:
 	Point3F origin;
 	F32 radius;
 	F32 maxAngVel;
+	Texture *texture;
 
-	GLuint displayList;
+	GLuint renderBuffer;
 private:
 	void generate();
 	const static U32 segments = 36;
@@ -62,6 +65,8 @@ public:
 
 	void setPosition(Point3F pos);
 	void setPosition(const Point3F pos) const;
+
+	void setTexture(String *path);
 
 	void applyTorque(Point3F torque);
 	void applyImpulse(Point3F force, Point3F origin);

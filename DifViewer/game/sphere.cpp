@@ -27,8 +27,12 @@
 
 #include "sphere.h"
 #include "math.h"
+#include "io.h"
+#include <glm/glm.hpp>
+#include <glm/matrix.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
-Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), displayList(0), maxAngVel(360.0f) {
+Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), renderBuffer(0), maxAngVel(360.0f) {
 	//Motion state and shape
 	btMotionState *state = new btDefaultMotionState();
 	btCollisionShape *shape = new btSphereShape(radius);
@@ -64,11 +68,8 @@ void Sphere::generate() {
 	S32 segments2 = segments / 2;
 	S32 slices2 = slices / 2;
 
-	//Use a displaylist for superfast drawing
-	displayList = glGenLists(1);
-	glNewList(displayList, GL_COMPILE_AND_EXECUTE);
-	glEnable(GL_COLOR_MATERIAL);
-	glBegin(GL_TRIANGLE_STRIP);
+	Vertex *points = new Vertex[segments * slices * 2];
+	U32 point = 0;
 
 	for (S32 y = -slices2; y < slices2; y ++) {
 		float cosy = cos(y * step);
@@ -89,35 +90,49 @@ void Sphere::generate() {
 			color0 /= color0.z;
 			color1 /= color1.z;
 
-			glColor4fv(&color0.w);
-			glNormal3fv(&point0.x);
-			glVertex3fv(&point0.x);
-			glColor4fv(&color1.w);
-			glNormal3fv(&point1.x);
-			glVertex3fv(&point1.x);
+			points[point].point = point0;
+			points[point].uv = Point2F((F32)i / (F32)segments2, (F32)y / (F32)slices2);
+			points[point].normal = point0;
+			point ++;
+			points[point].point = point1;
+			points[point].uv = Point2F((F32)i / (F32)segments2, (F32)(y + 1) / (F32)slices2);
+			points[point].normal = point1;
+			point ++;
 		}
 	}
-	glEnd();
-	//Reset color so we don't pollute the scene
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	glEndList();
+
+	//Generate a buffer
+	glGenBuffers(1, &renderBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, renderBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * point, points, GL_STATIC_DRAW);
+
+	delete [] points;
 }
 
 void Sphere::render(ColorF color) {
-	glPushMatrix();
-	btTransform trans;
-	Point3F pos = getPosition();
-	AngAxisF rot = getRotation();
-	glTranslatef(pos.x, pos.y, pos.z);
-	glRotatef(rot.angle * (360.f / (M_PI * 2.f)), rot.axis.x, rot.axis.y, rot.axis.z);
-
-	if (displayList == 0) {
+	if (!renderBuffer)
 		generate();
-	} else {
-		glCallList(displayList);
-	}
 
-	glPopMatrix();
+	if (texture) {
+		if (!texture->generated) {
+			texture->generateBuffer();
+		}
+		texture->activate();
+	}
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ARRAY_BUFFER, renderBuffer);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, point));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, uv));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
+	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(0);
+	if (texture) {
+		texture->deactivate();
+	}
 }
 
 void Sphere::applyTorque(Point3F torque) {
@@ -223,4 +238,8 @@ void Sphere::setPosition(const Point3F pos) const {
 	actor->getMotionState()->setWorldTransform(trans);
 	actor->setWorldTransform(trans);
 	actor->setLinearVelocity(btConvert(Point3F(0, 0, 0)));
+}
+
+void Sphere::setTexture(String *path) {
+	texture = io->loadTexture(path);
 }
