@@ -132,6 +132,19 @@ void render() {
 	for (U32 index = 0; index < gDifCount; index ++) {
 		gDifs[index]->render();
 	}
+
+	btTransform trans;
+	Point3F pos = gSphere->getPosition();
+	AngAxisF rot = gSphere->getRotation();
+
+	glm::mat4x4 mat = glm::mat4x4(1);
+	mat = glm::translate(mat, glm::vec3(pos.x, pos.y, pos.z));
+	mat = glm::rotate(mat, rot.angle * (F32)(180.0f / M_PI), glm::vec3(rot.axis.x, rot.axis.y, rot.axis.z));
+
+	mvpMat *= mat;
+	glUniformMatrix4fv(mvpMatrix, 1, GL_FALSE, &mvpMat[0][0]);
+
+	gSphere->render(ColorF(1, 1, 0, 1));
 #else
 	//Load the model matrix
 	glMatrixMode(GL_MODELVIEW);
@@ -311,6 +324,12 @@ bool initGL() {
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
+
+	gSphere = new Sphere(Point3F(0, 30, 60), 0.2f);
+	String *directory = new String(dirname((char *)gFilenames[0]));
+	directory->concat("/");
+	directory->concat("tile_beginner.png");
+	gSphere->setTexture(directory);
 #else
 	//Initialize clear color
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
@@ -345,7 +364,12 @@ bool initGL() {
 	glLightfv(GL_LIGHT0, GL_POSITION, gLightDirection);
 #endif
 
-	return glGetError() == GL_NO_ERROR;
+	GLenum err = glGetError();
+	if (err != GL_NO_ERROR) {
+		fprintf(stderr, "Error in GL init: %d / %s", err, gluErrorString(err));
+		return false;
+	}
+	return true;
 }
 
 void performClick(S32 mouseX, S32 mouseY) {
@@ -474,8 +498,6 @@ void handleEvent(SDL_Event *event) {
 bool init() {
 	gRunning = true;
 	gListNeedsDisplay = true;
-
-	gSphere = new Sphere(Point3F(0, 30, 60), 0.2f);
 
 	//Init SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
