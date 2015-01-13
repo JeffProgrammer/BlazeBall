@@ -30,6 +30,7 @@
 
 #include "types.h"
 #include "math.h"
+#include "texture.h"
 
 #define LIGHT_MAP_SIZE 0x400
 #define io IO::getIO()
@@ -96,8 +97,13 @@ public:
 		return value.write(file);
 	}
 
+	String *getPath(String *file);
+	String *getName(String *file);
+	String *getExtension(String *file);
+
 	bool isfile(String *file);
 	U8 *readFile(String *file, U32 *length);
+	Texture *loadTexture(String *file);
 };
 
 template <typename T>

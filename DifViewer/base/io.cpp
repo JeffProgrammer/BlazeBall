@@ -30,6 +30,8 @@
 #include <string.h>
 #include <math.h>
 #include "io.h"
+#include "mngsupport.h"
+#include "jpegsupport.h"
 
 #if 1
 #define DEBUG_PRINT(...) printf(__VA_ARGS__)
@@ -349,4 +351,45 @@ U8 *IO::readFile(String *file, U32 *length) {
 	fclose(stream);
 
 	return data;
+}
+
+String *IO::getPath(String *file) {
+	U32 last = (U32)((U8 *)strrchr((const char *)file->data, '/') - file->data);
+	return new String(file, last);
+}
+String *IO::getName(String *file) {
+	U32 last = (U32)((U8 *)strrchr((const char *)file->data, '/') - file->data) + 1;
+	return new String(file->data + last, file->length - last);
+}
+String *IO::getExtension(String *file) {
+	U32 last = (U32)((U8 *)strrchr((const char *)file->data, '.') - file->data) + 1;
+	return new String(file->data + last, file->length - last);
+}
+
+Texture *IO::loadTexture(String *file) {
+	U8 *bitmap;
+	Point2I dims;
+
+	String *extension = getExtension(file);
+
+	bool (*readFn)(String file, U8 **bitmap, Point2I *dims);
+
+	//Try to read the image based on format
+	if (*extension == String("png") || *extension == String("jng"))
+		readFn = mngReadImage;
+	else if (*extension == String("jpg"))
+		readFn = jpegReadImage;
+	else {
+		// ?!
+		readFn = mngReadImage;
+	}
+
+	if (readFn(file, &bitmap, &dims)) {
+		Texture *tex = new Texture(bitmap, dims);
+		delete [] bitmap;
+
+		return tex;
+	}
+
+	return nullptr;
 }
