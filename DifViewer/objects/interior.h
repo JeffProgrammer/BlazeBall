@@ -243,7 +243,8 @@ struct TexMatrix : public Readable, Writable {
 struct RenderInfo {
 	GLuint vertexBuffer;
 	GLuint uvBuffer;
-	U32 numTriangles;
+	GLuint normalBuffer;
+	U32 *numMaterialTriangles;
 	bool generated;
 };
 
@@ -282,6 +283,7 @@ public:
 	U32 numMaterials;
 	String *material;
 	Texture **texture;
+	Texture *noise;
 
 	U32 numWindings;
 	U32 *index;

@@ -505,10 +505,19 @@ void Interior::generateMaterials(String *directory) {
 			this->texture[i] = texture;
 
 			//Clean up bitmap (copied above, this is safe)
-			delete bitmap;
+			delete [] bitmap;
 			delete base;
 			delete imageFile;
 		}
+	}
+	String noisePath = "noise.jpg";
+	U8 *bitmap;
+	Point2I dims;
+	if (jpegReadImage(noisePath, &bitmap, &dims)) {
+		this->noise = new Texture(bitmap, dims);
+		this->noise->setTexNum(GL_TEXTURE1);
+
+		delete [] bitmap;
 	}
 }
 
