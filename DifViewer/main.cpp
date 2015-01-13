@@ -66,7 +66,7 @@ GLfloat gAngle;
 float gYaw, gPitch;
 glm::vec3 gCameraPosition;
 
-GLuint mvpMatrix;
+GLuint mvpMatrix, lightDirection;
 
 glm::mat4x4 gProjectionMatrix, gModelviewMatrix;
 
@@ -122,6 +122,8 @@ void render() {
 	glEnable(GL_ALPHA);
 	glEnable(GL_MULTISAMPLE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glUniform3fv(lightDirection, 1, gLightDirection);
 
 	for (U32 index = 0; index < gDifCount; index ++) {
 		gDifs[index]->render();
@@ -266,7 +268,11 @@ bool initGL() {
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 	glUseProgram(shader->getProgramId());
 
+	shader->setUniformLocation(new String("noiseSampler"), 0);
+	shader->setUniformLocation(new String("textureSampler"), 1);
+
 	mvpMatrix = glGetUniformLocation(shader->getProgramId(), "MVP");
+	lightDirection = glGetUniformLocation(shader->getProgramId(), "lightDirection");
 
 	//Window size for viewport
 	int w, h;
