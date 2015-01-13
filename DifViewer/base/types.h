@@ -31,6 +31,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 //Base types (names stolen from TGE because lazy)
 typedef unsigned char      U8;
@@ -67,6 +68,9 @@ struct String : public Readable, Writable {
 	inline operator char *() {
 		return (char *)data;
 	}
+	inline bool operator==(const char *str) {
+		return strcmp((const char *)data, str) == 0;
+	}
 	inline bool operator==(String *str) {
 		return strcmp((const char *)data, (const char *)str->data) == 0;
 	}
@@ -79,6 +83,31 @@ struct String : public Readable, Writable {
 	inline bool operator!=(String str) {
 		return !operator==(str);
 	}
+	inline String operator+=(String str) {
+		concat(str);
+		return *this;
+	}
+	inline String operator+(String str) {
+		String newStr = String(this);
+		newStr.concat(str);
+		return newStr;
+	}
+	inline String *operator+(String *str) {
+		String *newStr = new String(this);
+		newStr->concat(str);
+		return newStr;
+	}
+	inline String concat(String str) {
+		U8 *cur = new U8[length + 1];
+		memcpy(cur, data, length + 1);
+		data = (U8 *)realloc(data, length + str.length + 1);
+		memcpy(data, cur, length);
+		memcpy(data + length, str, str.length);
+		length += str.length;
+		memset(data + length, 0, 1);
+		delete [] cur;
+		return *this;
+	}
 	String() : data(nullptr), length(0) {
 		allocated = false;
 	}
@@ -89,7 +118,7 @@ struct String : public Readable, Writable {
 //		if (allocated)
 //			delete data;
 	}
-	String(const char *bytes) : data(new U8[(U8)strlen(bytes) + 1]), length((U8)strlen(bytes) + 1) {
+	String(const char *bytes) : data(new U8[(U8)strlen(bytes) + 1]), length((U8)strlen(bytes)) {
 		memcpy(data, bytes, length);
 		allocated = true;
 	}
@@ -97,9 +126,14 @@ struct String : public Readable, Writable {
 		memcpy(data, bytes, length);
 		allocated = true;
 	}
-	String(String *other) : data(new U8[other->length + 1]), length(other->length + 1) {
-		memcpy(data, other->data, length - 1);
-		data[length - 1] = 0;
+	String(String *other) : data(new U8[other->length + 1]), length(other->length) {
+		memcpy(data, other->data, length);
+		data[length] = 0;
+		allocated = true;
+	}
+	String(String *other, U32 length) : data(new U8[length + 1]), length(length) {
+		memcpy(data, other->data, length);
+		data[length] = 0;
 		allocated = true;
 	}
 
