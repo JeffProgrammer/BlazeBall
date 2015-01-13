@@ -37,15 +37,14 @@ enum BitmapType {
 	BitmapTypeJPEG,
 };
 
-struct Triangle {
-	Point3F point0;
-	Point3F point1;
-	Point3F point2;
-
+struct Vertex {
+	Point3F point;
+	Point2F uv;
 	Point3F normal;
-	ColorF color;
+};
 
-	Texture *texture;
+struct Triangle {
+	Vertex verts[3];
 };
 
 static U32 gNumCoordBins = 16;
@@ -243,8 +242,6 @@ struct TexMatrix : public Readable, Writable {
 
 struct RenderInfo {
 	GLuint vertexBuffer;
-	GLuint uvBuffer;
-	GLuint normalBuffer;
 	U32 *numMaterialTriangles;
 	bool generated;
 };

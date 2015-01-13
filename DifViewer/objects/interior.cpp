@@ -474,50 +474,26 @@ void Interior::generateMaterials(String *directory) {
 				continue;
 			}
 
-			//Setup
-			U8 *bitmap;
-			Point2I dims;
-
-			bool (*readFn)(String file, U8 **bitmap, Point2I *dims);
-
-			//Try to read the image based on format
-			if (type == BitmapTypePNG)
-				readFn = mngReadImage;
-			else if (type == BitmapTypeJPEG)
-				readFn = jpegReadImage;
-			else {
-				// ?!
-				readFn = mngReadImage;
-			}
-
-			if (!readFn(*imageFile, &bitmap, &dims)) {
+			Texture *texture;
+			if ((texture = io->loadTexture(imageFile)) == nullptr) {
 				fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)imageFile->data);
-				texture[i] = NULL;
+				this->texture[i] = NULL;
 
-				delete bitmap;
 				delete base;
 				delete imageFile;
 				continue;
 			}
 
-			//Create a texture from the bitmap (copies bitmap)
-			Texture *texture = new Texture(bitmap, dims);
+			//Assign the texture
 			this->texture[i] = texture;
 
-			//Clean up bitmap (copied above, this is safe)
-			delete [] bitmap;
+			//Clean up stuff (copied above, this is safe)
 			delete base;
 			delete imageFile;
 		}
 	}
-	String noisePath = "noise.jpg";
-	U8 *bitmap;
-	Point2I dims;
-	if (jpegReadImage(noisePath, &bitmap, &dims)) {
-		this->noise = new Texture(bitmap, dims);
-		this->noise->setTexNum(GL_TEXTURE1);
-		delete [] bitmap;
-	}
+	this->noise = io->loadTexture(new String("noise.jpg"));
+	this->noise->setTexNum(GL_TEXTURE1);
 
 	//Create body
 	btMotionState *state = new btDefaultMotionState();
