@@ -89,7 +89,11 @@ struct String : public Readable, Writable {
 //		if (allocated)
 //			delete data;
 	}
-	String(const char *bytes) : data(new U8[(U32)strlen(bytes) + 1]), length((U32)strlen(bytes) + 1) {
+	String(const char *bytes) : data(new U8[(U8)strlen(bytes) + 1]), length((U8)strlen(bytes) + 1) {
+		memcpy(data, bytes, length);
+		allocated = true;
+	}
+	String(U8 *bytes, U32 length) : data(new U8[length]), length(length) {
 		memcpy(data, bytes, length);
 		allocated = true;
 	}

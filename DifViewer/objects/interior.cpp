@@ -37,7 +37,7 @@
 #include "jpegsupport.h"
 #include "math.h"
 
-Interior::Interior(FILE *file, String *directory) {
+bool Interior::read(FILE *file) {
 	READTOVAR(interiorFileVersion, U32); //interiorFileVersion
 	READTOVAR(detailLevel, U32); //detailLevel
 	READTOVAR(minPixels, U32); //minPixels
@@ -97,14 +97,8 @@ Interior::Interior(FILE *file, String *directory) {
 	} else {
 		numZoneStaticMeshes = 0;
 	}
-	READLISTVAR(numZonePortalList, zonePortalList, U16);
-	READLOOPVAR(numPortals, portal, Portal) {
-		READTOVAR(portal[i].planeIndex, U16); //planeIndex
-		READTOVAR(portal[i].triFanCount, U16); //triFanCount
-		READTOVAR(portal[i].triFanStart, U32); //triFanStart
-		READTOVAR(portal[i].zoneFront, U16); //zoneFront
-		READTOVAR(portal[i].zoneBack, U16); //zoneBack
-	}
+	READLISTVAR2(numZonePortalList, zonePortalList, 0, U16, U16);
+	READLISTVAR(numPortals, portal, Portal);
 
 	//Ok so Torque needs to fuck themselves in the ass, multiple times.
 	// They have two "version 0"s, one for TGE and one for TGEA. So, you
@@ -130,7 +124,7 @@ Interior::Interior(FILE *file, String *directory) {
 			//This means that readSurface failed on a TGEA interior
 
 			//Bail
-			return;
+			return false;
 		}
 		//Ok so we failed reading, it's *probably* a TGE interior. Let's try
 		// to read it as a TGE interior.
@@ -147,7 +141,7 @@ Interior::Interior(FILE *file, String *directory) {
 			if (!readSurface(file, &surface[i], true)) {
 				//Ok this surface failed too. Bail.
 				//TODO: Blow up here
-				return;
+				return false;
 			}
 		}
 	}
@@ -187,12 +181,7 @@ Interior::Interior(FILE *file, String *directory) {
 	} else {
 		READLISTVAR(numAlarmLMapIndices, alarmLMapIndex, U8);
 	}
-	READLOOPVAR(numNullSurfaces, nullSurface, NullSurface) {
-		READTOVAR(nullSurface[i].windingStart, U32); //windingStart
-		READTOVAR(nullSurface[i].planeIndex, U16); //planeIndex
-		READTOVAR(nullSurface[i].surfaceFlags, U8); //surfaceFlags
-		READTOVAR(nullSurface[i].windingCount, U8); //windingCount
-	}
+	READLISTVAR(numNullSurfaces, nullSurface, NullSurface);
 	if (this->interiorFileVersion == 4) { //Also found in 0, 2, 3, 14
 		numLightMaps = 0;
 	} else {
@@ -206,21 +195,8 @@ Interior::Interior(FILE *file, String *directory) {
 		}
 	}
 	READLISTVAR2(numSolidLeafSurfaces, solidLeafSurface, (readnumSolidLeafSurfaces2), U32, U16);
-	READLOOPVAR(numAnimatedLights, animatedLight, AnimatedLight) {
-		READTOVAR(animatedLight[i].nameIndex, U32); //nameIndex
-		READTOVAR(animatedLight[i].stateIndex, U32); //stateIndex
-		READTOVAR(animatedLight[i].stateCount, U16); //stateCount
-		READTOVAR(animatedLight[i].flags, U16); //flags
-		READTOVAR(animatedLight[i].duration, U32); //duration
-	}
-	READLOOPVAR(numLightStates, lightState, LightState) {
-		READTOVAR(lightState[i].red, U8); //red
-		READTOVAR(lightState[i].green, U8); //green
-		READTOVAR(lightState[i].blue, U8); //blue
-		READTOVAR(lightState[i].activeTime, U32); //activeTime
-		READTOVAR(lightState[i].dataIndex, U32); //dataIndex
-		READTOVAR(lightState[i].dataCount, U16); //dataCount
-	}
+	READLISTVAR(numAnimatedLights, animatedLight, AnimatedLight);
+	READLISTVAR(numLightStates, lightState, LightState);
 	if (this->interiorFileVersion == 4) { //Yet more things found in 0, 2, 3, 14
 		numStateDatas = 0;
 		numStateDataBuffers = 0;
@@ -228,11 +204,7 @@ Interior::Interior(FILE *file, String *directory) {
 		numNameBuffers = 0;
 		numSubObjects = 0;
 	} else {
-		READLOOPVAR(numStateDatas, stateData, StateData) {
-			READTOVAR(stateData[i].surfaceIndex, U32); //surfaceIndex
-			READTOVAR(stateData[i].mapIndex, U32); //mapIndex
-			READTOVAR(stateData[i].lightStateIndex, U16); //lightStateIndex
-		}
+		READLISTVAR(numStateDatas, stateData, StateData);
 		READLISTVAR(numStateDataBuffers, stateDataBuffer, U8);
 		READTOVAR(flags, U32); //flags
 		READLISTVAR(numNameBuffers, nameBufferCharacter, U8);
@@ -309,11 +281,7 @@ Interior::Interior(FILE *file, String *directory) {
 		 There's a long list of static meshes here, but I'm too lazy to add it just to comment it out. Oh and I'd have to implement Point2I / Point2F. See DIF_MB_SPEC.rtf if you want to implement it.
 		 */
 		READLISTVAR(numTexNormals, texNormal, Point3F);
-		READLOOPVAR(numTexMatrices, texMatrix, TexMatrix) {
-			READTOVAR(texMatrix[i].T, S32); //T
-			READTOVAR(texMatrix[i].N, S32); //N
-			READTOVAR(texMatrix[i].B, S32); //B
-		}
+		READLISTVAR(numTexMatrices, texMatrix, TexMatrix);
 		READLISTVAR(numTexMatIndices, texMatIndex, U32);
 		READTOVAR(extendedLightMapData, U32);
 		if (extendedLightMapData) { //extendedLightMapData
@@ -324,6 +292,125 @@ Interior::Interior(FILE *file, String *directory) {
 		}
 	}
 
+	return true;
+}
+
+bool Interior::write(FILE *file) {
+	//We can only write version 0 maps at the moment.
+	WRITECHECK(0, U32); //interiorFileVersion
+	WRITECHECK(detailLevel, U32); //detailLevel
+	WRITECHECK(minPixels, U32); //minPixels
+	WRITECHECK(boundingBox, BoxF); //boundingBox
+	WRITECHECK(boundingSphere, SphereF); //boundingSphere
+	WRITECHECK(hasAlarmState, U8); //hasAlarmState
+	WRITECHECK(numLightStateEntries, U32); //numLightStateEntries
+	WRITELIST(numNormals, normal, Point3F); //normal
+	WRITELIST(numPlanes, plane, Plane); //numPlanes
+	WRITELIST(numPoints, point, Point3F); //point
+	WRITELIST(numPointVisibilities, pointVisibility, U8); //pointVisibility
+	WRITELIST(numTexGenEqs, texGenEq, TexGenEq); //texGenEq
+	WRITELIST(numBSPNodes, BSPNode, ::BSPNode); //BSPNode
+	WRITELIST(numBSPSolidLeaves, BSPSolidLeaf, ::BSPSolidLeaf); //BSPSolidLeaf
+	WRITECHECK(materialListVersion, U8); //materialListVersion
+	WRITELIST(numMaterials, material, String); //material
+	WRITELIST(numWindings, index, U32); //index
+	WRITELIST(numWindingIndices, windingIndex, WindingIndex); //windingIndex
+	WRITELIST(numZones, zone, Zone); //zone
+	WRITELIST(numZoneSurfaces, zoneSurface, U16); //zoneSurface
+	WRITELIST(numZonePortalList, zonePortalList, U16); //zonePortalList
+	WRITELIST(numPortals, portal, Portal); //portal
+	WRITELIST(numSurfaces, surface, Surface); //surface
+	WRITELIST(numNormalLMapIndices, normalLMapIndex, U8); //normalLMapIndex
+	WRITELIST(numAlarmLMapIndices, alarmLMapIndex, U8); //alarmLMapIndex
+	WRITELIST(numNullSurfaces, nullSurface, NullSurface); //nullSurface
+	WRITELIST(numLightMaps, lightMap, LightMap); //lightMap
+	WRITELIST(numSolidLeafSurfaces, solidLeafSurface, U32); //solidLeafSurface
+	WRITELIST(numAnimatedLights, animatedLight, AnimatedLight); //animatedLight
+	WRITELIST(numLightStates, lightState, LightState); //lightState
+	WRITELIST(numStateDatas, stateData, StateData); //stateData
+	WRITELIST(numStateDataBuffers, stateDataBuffer, U32); //stateDataBuffer
+	WRITECHECK(flags, U32); //flags
+	WRITELIST(numNameBuffers, nameBufferCharacter, S8); //nameBufferCharacter
+	WRITELOOP(numSubObjects) {} //numSubObjects
+	WRITELIST(numConvexHulls, convexHull, ConvexHull); //convexHull
+	WRITELIST(numConvexHullEmitStrings, convexHullEmitStringCharacter, U8); //convexHullEmitStringCharacter
+	WRITELIST(numHullIndices, hullIndex, U32); //hullIndex
+	WRITELIST(numHullPlaneIndices, hullPlaneIndex, U16); //hullPlaneIndex
+	WRITELIST(numHullEmitStringIndices, hullEmitStringIndex, U32); //hullEmitStringIndex
+	WRITELIST(numHullSurfaceIndices, hullSurfaceIndex, U32); //hullSurfaceIndex
+	WRITELIST(numPolyListPlanes, polyListPlaneIndex, U16); //polyListPlaneIndex
+	WRITELIST(numPolyListPoints, polyListPointIndex, U32); //polyListPointIndex
+	WRITELIST(numPolyListStrings, polyListStringCharacter, U8); //polyListStringCharacter
+	for (U32 i = 0; i < gNumCoordBins * gNumCoordBins; i ++) {
+		WRITECHECK(coordBin[i].binStart, U32); //binStart
+		WRITECHECK(coordBin[i].binCount, U32); //binCount
+	}
+	WRITELIST(numCoordBinIndices, coordBinIndex, U16); //coordBinIndex
+	WRITECHECK(coordBinMode, U32); //coordBinMode
+	WRITECHECK(baseAmbientColor, ColorI); //baseAmbientColor
+	WRITECHECK(alarmAmbientColor, ColorI); //alarmAmbientColor
+	/*
+	 Static meshes (not included)
+	 */
+	WRITELIST(numTexNormals, texNormal, Point3F); //texNormal
+	WRITELIST(numTexMatrices, texMatrix, TexMatrix); //texMatrix
+	WRITELIST(numTexMatIndices, texMatIndex, U32); //texMatIndex
+	WRITECHECK(extendedLightMapData, U32); //extendedLightMapData
+	
+	return true;
+}
+
+Interior::~Interior() {
+	for (U32 i = 0; i < numMaterials; i ++) {
+		releaseString(material[i]);
+
+		if (texture[i])
+			delete texture[i];
+	}
+
+	delete normal;
+	delete plane;
+	delete point;
+	delete pointVisibility;
+	delete texGenEq;
+	delete BSPNode;
+	delete BSPSolidLeaf;
+	delete material;
+	delete texture;
+	delete index;
+	delete windingIndex;
+	delete zone;
+	delete zoneSurface;
+	delete zonePortalList;
+	delete portal;
+	delete surface;
+	delete normalLMapIndex;
+	delete alarmLMapIndex;
+	delete nullSurface;
+	delete lightMap;
+	delete solidLeafSurface;
+	delete animatedLight;
+	delete lightState;
+	delete stateData;
+	delete stateDataBuffer;
+	delete nameBufferCharacter;
+	delete convexHull;
+	delete convexHullEmitStringCharacter;
+	delete hullIndex;
+	delete hullPlaneIndex;
+	delete hullEmitStringIndex;
+	delete hullSurfaceIndex;
+	delete polyListPlaneIndex;
+	delete polyListPointIndex;
+	delete polyListStringCharacter;
+	delete coordBin;
+	delete coordBinIndex;
+	delete texNormal;
+	delete texMatrix;
+	delete texMatIndex;
+}
+
+void Interior::generateMaterials(String *directory) {
 	//Allocate all textures for the interior
 	if (numMaterials) {
 		texture = (Texture **)new Texture*[numMaterials];
@@ -360,6 +447,13 @@ Interior::Interior(FILE *file, String *directory) {
 					imageFile->data[pathlen - 2] = 'p';
 					imageFile->data[pathlen - 1] = 'g';
 					type = BitmapTypeJPEG;
+				}
+				if (!io->isfile(imageFile)) {
+					//Swap the last 3 chars with jng
+					imageFile->data[pathlen - 3] = 'j';
+					imageFile->data[pathlen - 2] = 'n';
+					imageFile->data[pathlen - 1] = 'g';
+					type = BitmapTypePNG;
 				}
 				//Can't recurse any further
 				if (!strrchr((const char *)base->data, '/'))
@@ -400,9 +494,9 @@ Interior::Interior(FILE *file, String *directory) {
 				fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)imageFile->data);
 				texture[i] = NULL;
 
-				free(bitmap);
-				free(base);
-				free(imageFile);
+				delete bitmap;
+				delete base;
+				delete imageFile;
 				continue;
 			}
 
@@ -411,10 +505,18 @@ Interior::Interior(FILE *file, String *directory) {
 			this->texture[i] = texture;
 
 			//Clean up bitmap (copied above, this is safe)
-			free(bitmap);
-			free(base);
-			free(imageFile);
+			delete [] bitmap;
+			delete base;
+			delete imageFile;
 		}
+	}
+	String noisePath = "noise.jpg";
+	U8 *bitmap;
+	Point2I dims;
+	if (jpegReadImage(noisePath, &bitmap, &dims)) {
+		this->noise = new Texture(bitmap, dims);
+		this->noise->setTexNum(GL_TEXTURE1);
+		delete [] bitmap;
 	}
 
 	//Create body
@@ -440,217 +542,6 @@ Interior::Interior(FILE *file, String *directory) {
 		actor->setFriction(1.0f);
 		Physics::getPhysics()->addRigidBody(actor);
 	}
-}
-
-bool Interior::write(FILE *file) {
-	//We can only write version 0 maps at the moment.
-
-	WRITECHECK(U32, 0); //interiorFileVersion
-	WRITECHECK(U32, detailLevel); //detailLevel
-	WRITECHECK(U32, minPixels); //minPixels
-	WRITECHECK(BoxF, boundingBox); //boundingBox
-	WRITECHECK(SphereF, boundingSphere); //boundingSphere
-	WRITECHECK(U8, hasAlarmState); //hasAlarmState
-	WRITECHECK(U32, numLightStateEntries); //numLightStateEntries
-	WRITELOOPVAR(Point3F, numNormals, normal); //normal
-	WRITELOOP(numPlanes) { //numPlanes
-		WRITECHECK(U16, plane[i].normalIndex); //normalIndex
-		WRITECHECK(F32, plane[i].planeDistance); //planeDistance
-	}
-	WRITELOOPVAR(Point3F, numPoints, point); //point
-	WRITELOOPVAR(U8, numPointVisibilities, pointVisibility); //pointVisibility
-	WRITELOOP(numTexGenEqs) { //numTexGenEqs
-		WRITECHECK(PlaneF, texGenEq[i].planeX); //planeX
-		WRITECHECK(PlaneF, texGenEq[i].planeY); //planeY
-	}
-	WRITELOOP(numBSPNodes) { //numBSPNodes
-		WRITECHECK(U16, BSPNode[i].planeIndex); //planeIndex
-		WRITECHECK(U16, BSPNode[i].frontIndex); //frontIndex
-		WRITECHECK(U16, BSPNode[i].backIndex); //backIndex
-	}
-	WRITELOOP(numBSPSolidLeaves) { //numBSPSolidLeaves
-		WRITECHECK(U32, BSPSolidLeaf[i].surfaceIndex); //surfaceIndex
-		WRITECHECK(U16, BSPSolidLeaf[i].surfaceCount); //surfaceCount
-	}
-	WRITECHECK(U8, materialListVersion); //materialListVersion
-	WRITELOOP(numMaterials) { //numMaterials
-		WRITE(String, material[i]); //material
-	}
-	WRITELOOPVAR(U32, numWindings, index); //index
-	WRITELOOP(numWindingIndices) { //numWindingIndices
-		WRITECHECK(U32, windingIndex[i].windingStart); //windingStart
-		WRITECHECK(U32, windingIndex[i].windingCount); //windingCount
-	}
-	WRITELOOP(numZones) { //numZones
-		WRITECHECK(U16, zone[i].portalStart); //portalStart
-		WRITECHECK(U16, zone[i].portalCount); //portalCount
-		WRITECHECK(U32, zone[i].surfaceStart); //surfaceStart
-		WRITECHECK(U32, zone[i].surfaceCount); //surfaceCount
-	}
-	WRITELOOPVAR(U16, numZoneSurfaces, zoneSurface); //zoneSurface
-	WRITELOOPVAR(U16, numZonePortalList, zonePortalList); //zonePortalList
-	WRITELOOP(numPortals) { //numPortals
-		WRITECHECK(U16, portal[i].planeIndex); //planeIndex
-		WRITECHECK(U16, portal[i].triFanCount); //triFanCount
-		WRITECHECK(U32, portal[i].triFanStart); //triFanStart
-		WRITECHECK(U16, portal[i].zoneFront); //zoneFront
-		WRITECHECK(U16, portal[i].zoneBack); //zoneBack
-	}
-	WRITELOOP(numSurfaces) { //numSurfaces
-		WRITECHECK(U32, surface[i].windingStart); //windingStart
-		WRITECHECK(U8, surface[i].windingCount); //windingCount
-		U16 index = surface[i].planeIndex;
-		if (surface[i].planeFlipped)
-			index |= 0x8000;
-		WRITECHECK(U16, index); //planeIndex
-		WRITECHECK(U16, surface[i].textureIndex); //textureIndex
-		WRITECHECK(U32, surface[i].texGenIndex); //texGenIndex
-		WRITECHECK(U8, surface[i].surfaceFlags); //surfaceFlags
-		WRITECHECK(U32, surface[i].fanMask); //fanMask
-		WRITECHECK(U16, surface[i].lightMap.finalWord); //finalWord
-		WRITECHECK(F32, surface[i].lightMap.texGenXDistance); //texGenXDistance
-		WRITECHECK(F32, surface[i].lightMap.texGenYDistance); //texGenYDistance
-		WRITECHECK(U16, surface[i].lightCount); //lightCount
-		WRITECHECK(U32, surface[i].lightStateInfoStart); //lightStateInfoStart
-		WRITECHECK(U8, surface[i].mapOffsetX); //mapOffsetX
-		WRITECHECK(U8, surface[i].mapOffsetY); //mapOffsetY
-		WRITECHECK(U8, surface[i].mapSizeX); //mapSizeX
-		WRITECHECK(U8, surface[i].mapSizeY); //mapSizeY
-	}
-	WRITELOOPVAR(U8, numNormalLMapIndices, normalLMapIndex); //normalLMapIndex
-	WRITELOOPVAR(U8, numAlarmLMapIndices, alarmLMapIndex); //alarmLMapIndex
-	WRITELOOP(numNullSurfaces) { //numNullSurfaces
-		WRITECHECK(U32, nullSurface[i].windingStart); //windingStart
-		WRITECHECK(U16, nullSurface[i].planeIndex); //planeIndex
-		WRITECHECK(U8, nullSurface[i].surfaceFlags); //surfaceFlags
-		WRITECHECK(U8, nullSurface[i].windingCount); //windingCount
-	}
-	WRITELOOP(numLightMaps) { //numLightMaps
-		WRITE(PNG, lightMap[i].lightMap); //lightMap
-		WRITECHECK(U8, lightMap[i].keepLightMap); //keepLightMap
-	}
-	WRITELOOPVAR(U32, numSolidLeafSurfaces, solidLeafSurface); //solidLeafSurface
-	WRITELOOP(numAnimatedLights) { //numAnimatedLights
-		WRITECHECK(U32, animatedLight[i].nameIndex); //nameIndex
-		WRITECHECK(U32, animatedLight[i].stateIndex); //stateIndex
-		WRITECHECK(U16, animatedLight[i].stateCount); //stateCount
-		WRITECHECK(U16, animatedLight[i].flags); //flags
-		WRITECHECK(U32, animatedLight[i].duration); //duration
-	}
-	WRITELOOP(numLightStates) { //numLightStates
-		WRITECHECK(U8, lightState[i].red); //red
-		WRITECHECK(U8, lightState[i].green); //green
-		WRITECHECK(U8, lightState[i].blue); //blue
-		WRITECHECK(U32, lightState[i].activeTime); //activeTime
-		WRITECHECK(U32, lightState[i].dataIndex); //dataIndex
-		WRITECHECK(U16, lightState[i].dataCount); //dataCount
-	}
-	WRITELOOP(numStateDatas) { //numStateDatas
-		WRITECHECK(U32, stateData[i].surfaceIndex); //surfaceIndex
-		WRITECHECK(U32, stateData[i].mapIndex); //mapIndex
-		WRITECHECK(U16, stateData[i].lightStateIndex); //lightStateIndex
-	}
-	WRITELOOPVAR(U32, numStateDataBuffers, stateDataBuffer); //stateDataBuffer
-	WRITECHECK(U32, flags); //flags
-	WRITELOOPVAR(S8, numNameBuffers, nameBufferCharacter); //nameBufferCharacter
-	WRITELOOP(numSubObjects) { //numSubObjects
-
-	}
-	WRITELOOP(numConvexHulls) { //numConvexHulls
-		WRITECHECK(U32, convexHull[i].hullStart); //hullStart
-		WRITECHECK(U16, convexHull[i].hullCount); //hullCount
-		WRITECHECK(F32, convexHull[i].minX); //minX
-		WRITECHECK(F32, convexHull[i].maxX); //maxX
-		WRITECHECK(F32, convexHull[i].minY); //minY
-		WRITECHECK(F32, convexHull[i].maxY); //maxY
-		WRITECHECK(F32, convexHull[i].minZ); //minZ
-		WRITECHECK(F32, convexHull[i].maxZ); //maxZ
-		WRITECHECK(U32, convexHull[i].surfaceStart); //surfaceStart
-		WRITECHECK(U16, convexHull[i].surfaceCount); //surfaceCount
-		WRITECHECK(U32, convexHull[i].planeStart); //planeStart
-		WRITECHECK(U32, convexHull[i].polyListPlaneStart); //polyListPlaneStart
-		WRITECHECK(U32, convexHull[i].polyListPointStart); //polyListPointStart
-		WRITECHECK(U32, convexHull[i].polyListStringStart); //polyListStringStart
-	}
-	WRITELOOPVAR(U8, numConvexHullEmitStrings, convexHullEmitStringCharacter); //convexHullEmitStringCharacter
-	WRITELOOPVAR(U32, numHullIndices, hullIndex); //hullIndex
-	WRITELOOPVAR(U16, numHullPlaneIndices, hullPlaneIndex); //hullPlaneIndex
-	WRITELOOPVAR(U32, numHullEmitStringIndices, hullEmitStringIndex); //hullEmitStringIndex
-	WRITELOOPVAR(U32, numHullSurfaceIndices, hullSurfaceIndex); //hullSurfaceIndex
-	WRITELOOPVAR(U16, numPolyListPlanes, polyListPlaneIndex); //polyListPlaneIndex
-	WRITELOOPVAR(U32, numPolyListPoints, polyListPointIndex); //polyListPointIndex
-	WRITELOOPVAR(U8, numPolyListStrings, polyListStringCharacter); //polyListStringCharacter
-	for (U32 i = 0; i < gNumCoordBins * gNumCoordBins; i ++) {
-		WRITECHECK(U32, coordBin[i].binStart); //binStart
-		WRITECHECK(U32, coordBin[i].binCount); //binCount
-	}
-	WRITELOOPVAR(U16, numCoordBinIndices, coordBinIndex); //coordBinIndex
-	WRITECHECK(U32, coordBinMode); //coordBinMode
-	WRITECHECK(ColorI, baseAmbientColor); //baseAmbientColor
-	WRITECHECK(ColorI, alarmAmbientColor); //alarmAmbientColor
-	/*
-	 Static meshes (not included)
-	 */
-	WRITELOOPVAR(Point3F, numTexNormals, texNormal); //texNormal
-	WRITELOOP(numTexMatrices) { //numTexMatrices
-		WRITECHECK(S32, texMatrix[i].T); //T
-		WRITECHECK(S32, texMatrix[i].N); //N
-		WRITECHECK(S32, texMatrix[i].B); //B
-	}
-	WRITELOOPVAR(U32, numTexMatIndices, texMatIndex); //texMatIndex
-	WRITECHECK(U32, extendedLightMapData); //extendedLightMapData
-	
-	return true;
-}
-
-Interior::~Interior() {
-	for (U32 i = 0; i < numMaterials; i ++) {
-		releaseString(material[i]);
-
-		if (texture[i])
-			delete texture[i];
-	}
-
-	free(normal);
-	free(plane);
-	free(point);
-	free(pointVisibility);
-	free(texGenEq);
-	free(BSPNode);
-	free(BSPSolidLeaf);
-	free(material);
-	free(texture);
-	free(index);
-	free(windingIndex);
-	free(zone);
-	free(zoneSurface);
-	free(zonePortalList);
-	free(portal);
-	free(surface);
-	free(normalLMapIndex);
-	free(alarmLMapIndex);
-	free(nullSurface);
-	free(lightMap);
-	free(solidLeafSurface);
-	free(animatedLight);
-	free(lightState);
-	free(stateData);
-	free(stateDataBuffer);
-	free(nameBufferCharacter);
-	free(convexHull);
-	free(convexHullEmitStringCharacter);
-	free(hullIndex);
-	free(hullPlaneIndex);
-	free(hullEmitStringIndex);
-	free(hullSurfaceIndex);
-	free(polyListPlaneIndex);
-	free(polyListPointIndex);
-	free(polyListStringCharacter);
-	free(coordBin);
-	free(coordBinIndex);
-	free(texNormal);
-	free(texMatrix);
-	free(texMatIndex);
 }
 
 void Interior::exportObj(FILE *file) {
@@ -785,8 +676,8 @@ bool Plane::read(FILE *file) {
 }
 
 bool Plane::write(FILE *file) {
-	WRITECHECK(U16, normalIndex); //normalIndex
-	WRITECHECK(F32, planeDistance); //planeDistance
+	WRITECHECK(normalIndex, U16); //normalIndex
+	WRITECHECK(planeDistance, F32); //planeDistance
 	return true;
 }
 
@@ -797,8 +688,15 @@ bool TexGenEq::read(FILE *file) {
 }
 
 bool TexGenEq::write(FILE *file) {
-	WRITECHECK(PlaneF, planeX); //planeX
-	WRITECHECK(PlaneF, planeY); //planeY
+	WRITECHECK(planeX, PlaneF); //planeX
+	WRITECHECK(planeY, PlaneF); //planeY
+	return true;
+}
+
+bool BSPNode::write(FILE *file) {
+	WRITECHECK(planeIndex, U16); //planeIndex
+	WRITECHECK(frontIndex, U16); //frontIndex
+	WRITECHECK(backIndex, U16); //backIndex
 	return true;
 }
 
@@ -809,8 +707,8 @@ bool BSPSolidLeaf::read(FILE *file) {
 }
 
 bool BSPSolidLeaf::write(FILE *file) {
-	WRITECHECK(U32, surfaceIndex); //surfaceIndex
-	WRITECHECK(U16, surfaceCount); //surfaceCount
+	WRITECHECK(surfaceIndex, U32); //surfaceIndex
+	WRITECHECK(surfaceCount, U16); //surfaceCount
 	return true;
 }
 
@@ -821,8 +719,16 @@ bool WindingIndex::read(FILE *file) {
 }
 
 bool WindingIndex::write(FILE *file) {
-	WRITECHECK(U32, windingStart); //windingStart
-	WRITECHECK(U32, windingCount); //windingCount
+	WRITECHECK(windingStart, U32); //windingStart
+	WRITECHECK(windingCount, U32); //windingCount
+	return true;
+}
+
+bool Zone::write(FILE *file) {
+	WRITECHECK(portalStart, U16); //portalStart
+	WRITECHECK(portalCount, U16); //portalCount
+	WRITECHECK(surfaceStart, U32); //surfaceStart
+	WRITECHECK(surfaceCount, U32); //surfaceCount
 	return true;
 }
 
@@ -835,9 +741,156 @@ bool Edge::read(FILE *file) {
 }
 
 bool Edge::write(FILE *file) {
-	WRITECHECK(S32, pointIndex0); //pointIndex0
-	WRITECHECK(S32, pointIndex1); //pointIndex1
-	WRITECHECK(S32, surfaceIndex0); //surfaceIndex0
-	WRITECHECK(S32, surfaceIndex1); //surfaceIndex1
+	WRITECHECK(pointIndex0, S32); //pointIndex0
+	WRITECHECK(pointIndex1, S32); //pointIndex1
+	WRITECHECK(surfaceIndex0, S32); //surfaceIndex0
+	WRITECHECK(surfaceIndex1, S32); //surfaceIndex1
+	return true;
+}
+
+bool Portal::read(FILE *file) {
+	READTOVAR(planeIndex, U16); //planeIndex
+	READTOVAR(triFanCount, U16); //triFanCount
+	READTOVAR(triFanStart, U32); //triFanStart
+	READTOVAR(zoneFront, U16); //zoneFront
+	READTOVAR(zoneBack, U16); //zoneBack
+	return true;
+}
+
+bool Portal::write(FILE *file) {
+	WRITECHECK(planeIndex, U16); //planeIndex
+	WRITECHECK(triFanCount, U16); //triFanCount
+	WRITECHECK(triFanStart, U32); //triFanStart
+	WRITECHECK(zoneFront, U16); //zoneFront
+	WRITECHECK(zoneBack, U16); //zoneBack
+	return true;
+}
+
+bool Surface::write(FILE *file) {
+	WRITECHECK(windingStart, U32); //windingStart
+	WRITECHECK(windingCount, U8); //windingCount
+	U16 index = planeIndex;
+	if (planeFlipped)
+		index |= 0x8000;
+	WRITECHECK(index, U16); //planeIndex
+	WRITECHECK(textureIndex, U16); //textureIndex
+	WRITECHECK(texGenIndex, U32); //texGenIndex
+	WRITECHECK(surfaceFlags, U8); //surfaceFlags
+	WRITECHECK(fanMask, U32); //fanMask
+	WRITECHECK(lightMap.finalWord, U16); //finalWord
+	WRITECHECK(lightMap.texGenXDistance, F32); //texGenXDistance
+	WRITECHECK(lightMap.texGenYDistance, F32); //texGenYDistance
+	WRITECHECK(lightCount, U16); //lightCount
+	WRITECHECK(lightStateInfoStart, U32); //lightStateInfoStart
+	WRITECHECK(mapOffsetX, U8); //mapOffsetX
+	WRITECHECK(mapOffsetY, U8); //mapOffsetY
+	WRITECHECK(mapSizeX, U8); //mapSizeX
+	WRITECHECK(mapSizeY, U8); //mapSizeY
+	return true;
+}
+
+bool NullSurface::read(FILE *file) {
+	READTOVAR(windingStart, U32); //windingStart
+	READTOVAR(planeIndex, U16); //planeIndex
+	READTOVAR(surfaceFlags, U8); //surfaceFlags
+	READTOVAR(windingCount, U8); //windingCount
+	return true;
+}
+
+bool NullSurface::write(FILE *file) {
+	WRITECHECK(windingStart, U32); //windingStart
+	WRITECHECK(planeIndex, U16); //planeIndex
+	WRITECHECK(surfaceFlags, U8); //surfaceFlags
+	WRITECHECK(windingCount, U8); //windingCount
+	return true;
+}
+
+bool LightMap::write(FILE *file) {
+	WRITE(lightMap, PNG); //lightMap
+	WRITECHECK(keepLightMap, U8); //keepLightMap
+	return true;
+}
+
+bool AnimatedLight::read(FILE *file) {
+	READTOVAR(nameIndex, U32); //nameIndex
+	READTOVAR(stateIndex, U32); //stateIndex
+	READTOVAR(stateCount, U16); //stateCount
+	READTOVAR(flags, U16); //flags
+	READTOVAR(duration, U32); //duration
+	return true;
+}
+
+bool AnimatedLight::write(FILE *file) {
+	WRITECHECK(nameIndex, U32); //nameIndex
+	WRITECHECK(stateIndex, U32); //stateIndex
+	WRITECHECK(stateCount, U16); //stateCount
+	WRITECHECK(flags, U16); //flags
+	WRITECHECK(duration, U32); //duration
+	return true;
+}
+
+bool LightState::read(FILE *file) {
+	READTOVAR(red, U8); //red
+	READTOVAR(green, U8); //green
+	READTOVAR(blue, U8); //blue
+	READTOVAR(activeTime, U32); //activeTime
+	READTOVAR(dataIndex, U32); //dataIndex
+	READTOVAR(dataCount, U16); //dataCount
+	return true;
+}
+
+bool LightState::write(FILE *file) {
+	WRITECHECK(red, U8); //red
+	WRITECHECK(green, U8); //green
+	WRITECHECK(blue, U8); //blue
+	WRITECHECK(activeTime, U32); //activeTime
+	WRITECHECK(dataIndex, U32); //dataIndex
+	WRITECHECK(dataCount, U16); //dataCount
+	return true;
+}
+
+bool StateData::read(FILE *file) {
+	READTOVAR(surfaceIndex, U32); //surfaceIndex
+	READTOVAR(mapIndex, U32); //mapIndex
+	READTOVAR(lightStateIndex, U16); //lightStateIndex
+	return true;
+}
+
+bool StateData::write(FILE *file) {
+	WRITECHECK(surfaceIndex, U32); //surfaceIndex
+	WRITECHECK(mapIndex, U32); //mapIndex
+	WRITECHECK(lightStateIndex, U16); //lightStateIndex
+	return true;
+}
+
+bool ConvexHull::write(FILE *file) {
+	WRITECHECK(hullStart, U32); //hullStart
+	WRITECHECK(hullCount, U16); //hullCount
+	WRITECHECK(minX, F32); //minX
+	WRITECHECK(maxX, F32); //maxX
+	WRITECHECK(minY, F32); //minY
+	WRITECHECK(maxY, F32); //maxY
+	WRITECHECK(minZ, F32); //minZ
+	WRITECHECK(maxZ, F32); //maxZ
+	WRITECHECK(surfaceStart, U32); //surfaceStart
+	WRITECHECK(surfaceCount, U16); //surfaceCount
+	WRITECHECK(planeStart, U32); //planeStart
+	WRITECHECK(polyListPlaneStart, U32); //polyListPlaneStart
+	WRITECHECK(polyListPointStart, U32); //polyListPointStart
+	WRITECHECK(polyListStringStart, U32); //polyListStringStart
+	return true;
+}
+
+bool TexMatrix::read(FILE *file) {
+	READTOVAR(T, S32); //T
+	READTOVAR(N, S32); //N
+	READTOVAR(B, S32); //B
+	return true;
+}
+
+bool TexMatrix::write(FILE *file) {
+	WRITECHECK(T, S32); //T
+	WRITECHECK(N, S32); //N
+	WRITECHECK(B, S32); //B
 	return true;
 }

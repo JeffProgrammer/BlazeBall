@@ -38,10 +38,10 @@ GameEntity::GameEntity(FILE *file) {
 }
 
 bool GameEntity::write(FILE *file) {
-	WRITE(String, datablock); //datablock
-	WRITE(String, gameClass); //gameClass
-	WRITECHECK(Point3F, position); //position
-	WRITE(Dictionary, properties); //properties
+	WRITE(datablock, String); //datablock
+	WRITE(gameClass, String); //gameClass
+	WRITECHECK(position, Point3F); //position
+	WRITE(properties, Dictionary); //properties
 
 	return true;
 }

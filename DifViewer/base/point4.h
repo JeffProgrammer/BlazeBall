@@ -34,14 +34,14 @@
 template <typename T>
 class Point4 : public Readable, Writable {
 public:
-	T w;
 	T x;
 	T y;
 	T z;
+	T w;
 
-	Point4() : w(0), x(0), y(0), z(0) {};
-	Point4(T w, T x, T y, T z) : w(w), x(x), y(y), z(z) {};
-	Point4(const Point4 &point) : w((T) point.w), x((T) point.x), y((T) point.y), z((T) point.z) {}
+	Point4() : x(0), y(0), z(0), w(0) {};
+	Point4(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {};
+	Point4(const Point4 &point) : x((T) point.x), y((T) point.y), z((T) point.z), w((T) point.w) {}
 
 	bool operator==(const Point4<T> &point) const;
 	bool operator!=(const Point4<T> &point) const;
@@ -79,66 +79,66 @@ inline bool Point4<T>::operator!=(const Point4<T> &point) const {
 
 template <typename T>
 inline Point4<T> Point4<T>::operator+(const Point4<T> &point) const {
-	return Point4<T>(w + point.w, x + point.x, y + point.y, z + point.z);
+	return Point4<T>(x + point.x, y + point.y, z + point.z, w + point.w);
 }
 
 template <typename T>
 inline Point4<T> &Point4<T>::operator+=(const Point4<T> &point) {
-	w += point.w, x += point.x, y += point.y, z += point.z;
+	x += point.x, y += point.y, z += point.z, w += point.w;
 	return *this;
 }
 
 template <typename T>
 inline Point4<T> Point4<T>::operator-(const Point4<T> &point) const {
-	return Point4<T>(w - point.w, x - point.x, y - point.y, z - point.z);
+	return Point4<T>(x - point.x, y - point.y, z - point.z, w - point.w);
 }
 
 template <typename T>
 inline Point4<T> &Point4<T>::operator-=(const Point4<T> &point) {
-	w -= point.w, x -= point.x, y -= point.y, z -= point.z;
+	x -= point.x, y -= point.y, z -= point.z, w -= point.w;
 	return *this;
 }
 
 template <typename T>
 inline Point4<T> Point4<T>::operator*(const T scalar) const {
-	return Point4<T>(w * scalar, x * scalar, y * scalar, z * scalar);
+	return Point4<T>(x * scalar, y * scalar, z * scalar, w * scalar);
 }
 
 template <typename T>
 inline Point4<T> &Point4<T>::operator*=(const T scalar) {
-	w *= scalar, x *= scalar, y *= scalar, z *= scalar;
+	x *= scalar, y *= scalar, z *= scalar, w *= scalar;
 	return *this;
 }
 
 template <typename T>
 inline Point4<T> Point4<T>::operator/(const T scalar) const {
-	return Point4<T>(w / scalar, x / scalar, y / scalar, z / scalar);
+	return Point4<T>(x / scalar, y / scalar, z / scalar, w / scalar);
 }
 
 template <typename T>
 inline Point4<T> &Point4<T>::operator/=(const T scalar) {
-	w /= scalar, x /= scalar, y /= scalar, z /= scalar;
+	x /= scalar, y /= scalar, z /= scalar, w /= scalar;
 	return *this;
 }
 
 template <typename T>
 inline Point4<T> Point4<T>::operator+() const {
-	return Point4(+w, +x, +y, +z);
+	return Point4(+x, +y, +z, +w);
 }
 
 template <typename T>
 inline Point4<T> Point4<T>::operator-() const {
-	return Point4(-w, -x, -y, -z);
+	return Point4(-x, -y, -z, -w);
 }
 
 template <typename T>
 inline T Point4<T>::length() const {
-	return sqrtf(w*w + x*x + y*y + z*z);
+	return sqrtf(lengthSquared());
 }
 
 template <typename T>
 inline T Point4<T>::lengthSquared() const {
-	return w*w + x*x + y*y + z*z;
+	return x*x + y*y + z*z + w*w;
 }
 
 template <typename T>
@@ -153,10 +153,10 @@ inline Point4<T> Point4<T>::normalize() const {
 
 template <typename T>
 inline Point4<T> Point4<T>::roundThousands() const {
-	return Point4<T>(floorf(w * 1000.0f) / 1000.f,
-					 floorf(x * 1000.0f) / 1000.f,
+	return Point4<T>(floorf(x * 1000.0f) / 1000.f,
 					 floorf(y * 1000.0f) / 1000.f,
-					 floorf(z * 1000.0f) / 1000.f);
+					 floorf(z * 1000.0f) / 1000.f,
+					 floorf(w * 1000.0f) / 1000.f);
 }
 
 #endif

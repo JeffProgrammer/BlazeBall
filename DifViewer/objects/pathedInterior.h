@@ -35,7 +35,7 @@ class PathedInterior : public Interior {
 	typedef Interior Parent;
 
 public:
-	PathedInterior() {};
+	PathedInterior();
 	/**
 	 Reads an Interior from a FILE
 	 @arg file - The FILE to read from (updates position)

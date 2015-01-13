@@ -129,9 +129,6 @@ struct LightMapF : public Readable, Writable {
 	U16 finalWord;
 	F32 texGenXDistance;
 	F32 texGenYDistance;
-
-	bool read(FILE *file);
-	bool write(FILE *file);
 };
 
 struct LightMap : public Readable, Writable {
@@ -244,7 +241,15 @@ struct TexMatrix : public Readable, Writable {
 	bool write(FILE *file);
 };
 
-class Interior {
+struct RenderInfo {
+	GLuint vertexBuffer;
+	GLuint uvBuffer;
+	GLuint normalBuffer;
+	U32 *numMaterialTriangles;
+	bool generated;
+};
+
+class Interior : public Readable, Writable {
 public:
 	U32 interiorFileVersion;
 	U32 detailLevel;
@@ -279,6 +284,7 @@ public:
 	U32 numMaterials;
 	String *material;
 	Texture **texture;
+	Texture *noise;
 
 	U32 numWindings;
 	U32 *index;
@@ -392,17 +398,17 @@ public:
 	U32 lightMapBorderSize;
 
 	btRigidBody *actor;
+	RenderInfo renderInfo;
 
 	Interior() {};
+	~Interior();
+
 	/**
 	 Reads an Interior from a FILE
 	 @arg file - The FILE to read from (updates position)
 	 @arg directory - The base directory for images
-	 @return An Interior
 	 */
-	Interior(FILE *file, String *directory);
-	~Interior();
-
+	bool read(FILE *file);
 	bool write(FILE *file);
 
 	/**
@@ -415,7 +421,7 @@ public:
 	 Renders an interior with OpenGL
 	 */
 	void render();
-
+	void generateMaterials(String *directory);
 	U32 rayCast(RayF ray);
 
 private:

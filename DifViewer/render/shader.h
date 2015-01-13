@@ -25,23 +25,27 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
+#ifndef shader_h
+#define shader_h
+
 #include <stdio.h>
-#include <stdlib.h>
-#include "io.h"
-#include "aiSpecialNode.h"
+#include <OpenGL/OpenGL.h>
+#include "types.h"
 
-AISpecialNode::AISpecialNode(FILE *file) {
-	READTOVAR(name, String); //name
-	READTOVAR(position, Point3F); //position
-}
+class Shader {
+protected:
+	GLuint vertId;
+	GLuint fragId;
+	GLuint programId;
 
-bool AISpecialNode::write(FILE *file) {
-	WRITE(name, String); //name
-	WRITECHECK(position, Point3F); //position
+	GLuint loadShader(String *path, GLenum type);
+	GLuint loadProgram(String *vertPath, String *fragPath);
+public:
+	Shader(String *vertPath, String *fragPath);
+	~Shader();
 
-	return true;
-}
+	GLuint getProgramId();
+	void setUniformLocation(String *name, GLuint location);
+};
 
-AISpecialNode::~AISpecialNode() {
-	releaseString(name);
-}
+#endif

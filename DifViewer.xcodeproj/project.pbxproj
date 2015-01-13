@@ -23,8 +23,11 @@
 		B54F9DB51A10399D00F550EA /* interiorPathFollower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DA81A10399D00F550EA /* interiorPathFollower.cpp */; };
 		B54F9DB61A10399D00F550EA /* trigger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DAA1A10399D00F550EA /* trigger.cpp */; };
 		B54F9DB71A10399D00F550EA /* vehicleCollision.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DAC1A10399D00F550EA /* vehicleCollision.cpp */; };
-		B566A6BC1A12EFFA003D6BEA /* libmng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B566A6951A12EE54003D6BEA /* libmng.a */; };
 		B56838C11A58AFC30053C982 /* pathedInterior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B56838BF1A58AFC30053C982 /* pathedInterior.cpp */; };
+		B56BFDE31A6344A500B2BDDE /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B56BFDE11A6344A500B2BDDE /* shader.cpp */; };
+		B56BFDEC1A63520400B2BDDE /* vertexShader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = B56BFDE51A63498100B2BDDE /* vertexShader.glsl */; };
+		B56BFDED1A63520500B2BDDE /* fragmentShader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = B56BFDE61A634A0400B2BDDE /* fragmentShader.glsl */; };
+		B57369CC1A648C23006447A4 /* libmng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B566A6951A12EE54003D6BEA /* libmng.a */; };
 		B58E54C81A215B0700304A9B /* math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B58E54C71A215B0700304A9B /* math.cpp */; };
 		B5BC0E371A1423DE00D86A8D /* interiorRender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5BC0E361A1423DE00D86A8D /* interiorRender.cpp */; };
 		B5CC8E9A1A13090A0037BFF7 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B5CC8E991A13090A0037BFF7 /* libz.dylib */; };
@@ -52,14 +55,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		B5BF4D611A0BF42900BF0956 /* CopyFiles */ = {
+		B56BFDEB1A63520100B2BDDE /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			dstPath = "";
+			dstSubfolderSpec = 16;
 			files = (
+				B56BFDEC1A63520400B2BDDE /* vertexShader.glsl in CopyFiles */,
+				B56BFDED1A63520500B2BDDE /* fragmentShader.glsl in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -97,6 +102,10 @@
 		B566A6901A12EE54003D6BEA /* mng.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = mng.xcodeproj; path = mng/mng.xcodeproj; sourceTree = "<group>"; };
 		B56838BF1A58AFC30053C982 /* pathedInterior.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pathedInterior.cpp; sourceTree = "<group>"; };
 		B56838C01A58AFC30053C982 /* pathedInterior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pathedInterior.h; sourceTree = "<group>"; };
+		B56BFDE11A6344A500B2BDDE /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = shader.cpp; path = DifViewer/render/shader.cpp; sourceTree = SOURCE_ROOT; };
+		B56BFDE21A6344A500B2BDDE /* shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = shader.h; path = DifViewer/render/shader.h; sourceTree = SOURCE_ROOT; };
+		B56BFDE51A63498100B2BDDE /* vertexShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vertexShader.glsl; path = DifViewer/shaders/vertexShader.glsl; sourceTree = SOURCE_ROOT; };
+		B56BFDE61A634A0400B2BDDE /* fragmentShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = fragmentShader.glsl; path = DifViewer/shaders/fragmentShader.glsl; sourceTree = SOURCE_ROOT; };
 		B578BCF51A13EB4C001EF856 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = jpeg/.libs/libjpeg.a; sourceTree = "<group>"; };
 		B58E54C71A215B0700304A9B /* math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = math.cpp; sourceTree = "<group>"; };
 		B5AADE6F1A142E1E0064F1E5 /* math.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = math.h; sourceTree = "<group>"; };
@@ -121,6 +130,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B57369CC1A648C23006447A4 /* libmng.a in Frameworks */,
 				B5CC8E9A1A13090A0037BFF7 /* libz.dylib in Frameworks */,
 				B51B35151A57AF5700DD8D35 /* libBulletDynamics.a in Frameworks */,
 				B51B350E1A57AABF00DD8D35 /* libLinearMath.a in Frameworks */,
@@ -212,10 +222,21 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		B56BFDE41A63494900B2BDDE /* shaders */ = {
+			isa = PBXGroup;
+			children = (
+				B56BFDE51A63498100B2BDDE /* vertexShader.glsl */,
+				B56BFDE61A634A0400B2BDDE /* fragmentShader.glsl */,
+			);
+			name = shaders;
+			sourceTree = "<group>";
+		};
 		B5AADE701A143C950064F1E5 /* render */ = {
 			isa = PBXGroup;
 			children = (
 				B5BC0E361A1423DE00D86A8D /* interiorRender.cpp */,
+				B56BFDE11A6344A500B2BDDE /* shader.cpp */,
+				B56BFDE21A6344A500B2BDDE /* shader.h */,
 			);
 			name = render;
 			sourceTree = "<group>";
@@ -243,6 +264,7 @@
 			children = (
 				B54F9D9C1A10399D00F550EA /* main.cpp */,
 				B51B33F71A57915100DD8D35 /* game */,
+				B56BFDE41A63494900B2BDDE /* shaders */,
 				B5AADE701A143C950064F1E5 /* render */,
 				B54F9D981A10399D00F550EA /* base */,
 				B5E0CD971A13F3EC00BB4291 /* bitmap */,
@@ -275,7 +297,7 @@
 			buildPhases = (
 				B5BF4D5F1A0BF42900BF0956 /* Sources */,
 				B5BF4D601A0BF42900BF0956 /* Frameworks */,
-				B5BF4D611A0BF42900BF0956 /* CopyFiles */,
+				B56BFDEB1A63520100B2BDDE /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -342,6 +364,7 @@
 				B54F9DB51A10399D00F550EA /* interiorPathFollower.cpp in Sources */,
 				B54F9DB11A10399D00F550EA /* dif.cpp in Sources */,
 				B54F9DB31A10399D00F550EA /* gameEntity.cpp in Sources */,
+				B56BFDE31A6344A500B2BDDE /* shader.cpp in Sources */,
 				B5E0CD9C1A13F41200BB4291 /* jpegsupport.cpp in Sources */,
 				B54F9DAE1A10399D00F550EA /* io.cpp in Sources */,
 				B54F9DB21A10399D00F550EA /* forceField.cpp in Sources */,
@@ -444,6 +467,10 @@
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG,
+					GL_33,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -467,6 +494,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "-v";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIPFLAGS = "-x";
+				SYMROOT = "$(PROJECT_DIR)/Build";
 			};
 			name = Debug;
 		};
@@ -478,6 +507,7 @@
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS = GL_33;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -501,6 +531,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "-v";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIPFLAGS = "-x";
+				SYMROOT = "$(PROJECT_DIR)/Build";
 			};
 			name = Release;
 		};

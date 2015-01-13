@@ -40,10 +40,14 @@ DIF::DIF(FILE *file, String *directory) {
 	}
 
 	READLOOPVAR(numDetailLevels, interior, Interior *) {
-		interior[i] = new Interior(file, directory);
+		interior[i] = new Interior();
+		interior[i]->read(file);
+		interior[i]->generateMaterials(directory);
 	}
 	READLOOPVAR(numSubObjects, subObject, Interior *) {
-		subObject[i] = new Interior(file, directory);
+		subObject[i] = new Interior();
+		subObject[i]->read(file);
+		subObject[i]->generateMaterials(directory);
 	}
 	READLOOPVAR(numTriggers, trigger, Trigger *) {
 		trigger[i] = new Trigger(file);
@@ -76,8 +80,8 @@ DIF::DIF(FILE *file, String *directory) {
 }
 
 bool DIF::write(FILE *file, String *directory) {
-	WRITECHECK(U32, 44); //interiorResourceFileVersion
-	WRITECHECK(U8, 0); //previewIncluded
+	WRITECHECK(44, U32); //interiorResourceFileVersion
+	WRITECHECK(0, U8); //previewIncluded
 
 	WRITELOOP(numDetailLevels) {
 		if (!interior[i]->write(file)) return false;
@@ -97,23 +101,23 @@ bool DIF::write(FILE *file, String *directory) {
 	WRITELOOP(numAISpecialNodes) {
 		if (!aiSpecialNode[i]->write(file)) return false;
 	}
-	WRITECHECK(U32, 1);
+	WRITECHECK(1, U32);
 	vehicleCollision->write(file);
 
-	WRITECHECK(U32, 0);
-	WRITECHECK(U32, 0);
-	WRITECHECK(U32, 0);
-	WRITECHECK(U32, 0);
+	WRITECHECK(0, U32);
+	WRITECHECK(0, U32);
+	WRITECHECK(0, U32);
+	WRITECHECK(0, U32);
 	if (gameEntity){
-		WRITECHECK(U32, 2);
+		WRITECHECK(2, U32);
 		WRITELOOP(numGameEntities) {
 			gameEntity[i]->write(file);
 		}
 	} else {
-		WRITECHECK(U32, 0);
+		WRITECHECK(0, U32);
 	}
 
-	WRITECHECK(U32, 0);
+	WRITECHECK(0, U32);
 
 	return true;
 }

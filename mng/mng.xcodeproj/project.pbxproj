@@ -408,6 +408,8 @@
 					"$(PROJECT_DIR)/../jpeg/.libs",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIPFLAGS = "-x";
+				SYMROOT = "$(PROJECT_DIR)/Build";
 			};
 			name = Debug;
 		};
@@ -425,6 +427,8 @@
 					"$(PROJECT_DIR)/../jpeg/.libs",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIPFLAGS = "-x";
+				SYMROOT = "$(PROJECT_DIR)/Build";
 			};
 			name = Release;
 		};

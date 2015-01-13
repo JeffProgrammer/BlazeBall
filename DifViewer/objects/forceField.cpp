@@ -71,35 +71,37 @@ ForceField::ForceField(FILE *file) {
 }
 
 bool ForceField::write(FILE *file) {
-	WRITECHECK(U32, forceFieldFileVersion); //forceFieldFileVersion
-	WRITE(String, name); //name
-	WRITELOOPVARNOCHECK(String, numTriggers, trigger); //trigger
-	WRITECHECK(BoxF, boundingBox); //boundingBox
-	WRITECHECK(SphereF, boundingSphere); //boundingSphere
-	WRITELOOPVAR(Point3F, numNormals, normal); //normal
+	WRITECHECK(forceFieldFileVersion, U32); //forceFieldFileVersion
+	WRITE(name, String); //name
+	WRITELOOP(numTriggers) { //trigger
+		WRITECHECK(trigger[i], String);
+	}
+	WRITECHECK(boundingBox, BoxF); //boundingBox
+	WRITECHECK(boundingSphere, SphereF); //boundingSphere
+	WRITELIST(numNormals, normal, Point3F); //normal
 	WRITELOOP(numPlanes) { //numPlanes
-		WRITECHECK(U32, plane[i].normalIndex); //normalIndex
-		WRITECHECK(F32, plane[i].planeDistance); //planeDistance
+		WRITECHECK(plane[i].normalIndex, U32); //normalIndex
+		WRITECHECK(plane[i].planeDistance, F32); //planeDistance
 	}
 	WRITELOOP(numBSPNodes) { //numBSPNodes
-		WRITECHECK(U16, BSPNode[i].planeIndex); //planeIndex
-		WRITECHECK(U16, BSPNode[i].frontIndex); //frontIndex
-		WRITECHECK(U16, BSPNode[i].backIndex); //backIndex
+		WRITECHECK(BSPNode[i].planeIndex, U16); //planeIndex
+		WRITECHECK(BSPNode[i].frontIndex, U16); //frontIndex
+		WRITECHECK(BSPNode[i].backIndex, U16); //backIndex
 	}
 	WRITELOOP(numBSPSolidLeaves) { //numBSPSolidLeaves
-		WRITECHECK(U32, BSPSolidLeaf[i].surfaceIndex); //surfaceIndex
-		WRITECHECK(U16, BSPSolidLeaf[i].surfaceCount); //surfaceCount
+		WRITECHECK(BSPSolidLeaf[i].surfaceIndex, U32); //surfaceIndex
+		WRITECHECK(BSPSolidLeaf[i].surfaceCount, U16); //surfaceCount
 	}
-	WRITELOOPVAR(U32, numWindings, index); //index
+	WRITELIST(numWindings, index, U32); //index
 	WRITELOOP(numSurfaces) { //numSurfaces
-		WRITECHECK(U32, surface[i].windingStart); //windingStart
-		WRITECHECK(U8, surface[i].windingCount); //windingCount
-		WRITECHECK(U16, surface[i].planeIndex); //planeIndex
-		WRITECHECK(U8, surface[i].surfaceFlags); //surfaceFlags
-		WRITECHECK(U32, surface[i].fanMask); //fanMask
+		WRITECHECK(surface[i].windingStart, U32); //windingStart
+		WRITECHECK(surface[i].windingCount, U8); //windingCount
+		WRITECHECK(surface[i].planeIndex, U16); //planeIndex
+		WRITECHECK(surface[i].surfaceFlags, U8); //surfaceFlags
+		WRITECHECK(surface[i].fanMask, U32); //fanMask
 	}
-	WRITELOOPVAR(U32, numSolidLeafSurfaces, solidLeafSurface); //solidLeafSurface
-	WRITECHECK(ColorI, color); //color
+	WRITELIST(numSolidLeafSurfaces, solidLeafSurface, U32); //solidLeafSurface
+	WRITECHECK(color, ColorI); //color
 
 	return true;
 }
@@ -109,12 +111,12 @@ ForceField::~ForceField() {
 	for (U32 i = 0; i < numTriggers; i ++) {
 		releaseString(trigger[i]);
 	}
-	free(trigger);
-	free(normal);
-	free(plane);
-	free(BSPNode);
-	free(BSPSolidLeaf);
-	free(index);
-	free(surface);
-	free(solidLeafSurface);
+	delete trigger;
+	delete normal;
+	delete plane;
+	delete BSPNode;
+	delete BSPSolidLeaf;
+	delete index;
+	delete surface;
+	delete solidLeafSurface;
 }

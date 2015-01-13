@@ -49,19 +49,19 @@ InteriorPathFollower::InteriorPathFollower(FILE *file) {
 }
 
 bool InteriorPathFollower::write(FILE *file) {
-	WRITE(String, name); //name
-	WRITE(String, datablock); //datablock
-	WRITECHECK(U32, interiorResIndex); //interiorResIndex
-	WRITECHECK(Point3F, offset); //offset
-	WRITE(Dictionary, properties); //properties
-	WRITELOOPVAR(U32, numTriggerIds, triggerId); //triggerId
+	WRITE(name, String); //name
+	WRITE(datablock, String); //datablock
+	WRITECHECK(interiorResIndex, U32); //interiorResIndex
+	WRITECHECK(offset, Point3F); //offset
+	WRITE(properties, Dictionary); //properties
+	WRITELIST(numTriggerIds, triggerId, U32); //triggerId
 	WRITELOOP(numWayPoints) { //numWayPoints
-		WRITECHECK(Point3F, wayPoint[i].position); //position
-		WRITECHECK(QuatF, wayPoint[i].rotation); //rotation
-		WRITECHECK(U32, wayPoint[i].msToNext); //msToNext
-		WRITECHECK(U32, wayPoint[i].smoothingType); //smoothingType
+		WRITECHECK(wayPoint[i].position, Point3F); //position
+		WRITECHECK(wayPoint[i].rotation, QuatF); //rotation
+		WRITECHECK(wayPoint[i].msToNext, U32); //msToNext
+		WRITECHECK(wayPoint[i].smoothingType, U32); //smoothingType
 	}
-	WRITECHECK(U32, totalMS); //totalMS
+	WRITECHECK(totalMS, U32); //totalMS
 
 	return true;
 }
@@ -71,6 +71,6 @@ InteriorPathFollower::~InteriorPathFollower() {
 	releaseString(datablock);
 	releaseDictionary(properties);
 
-	free(triggerId);
-	free(wayPoint);
+	delete triggerId;
+	delete wayPoint;
 }

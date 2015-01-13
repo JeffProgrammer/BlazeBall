@@ -68,6 +68,15 @@ void Texture::generateBuffer() {
 	//Actually create the texture
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, extent.x, extent.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
+	// When MAGnifying the image (no bigger mipmap available), use LINEAR filtering
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// When MINifying the image, use a LINEAR blend of two mipmaps, each filtered LINEARLY too
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+	// Generate mipmaps, by the way.
+	glGenerateMipmap(GL_TEXTURE_2D);
+
 	generated = true;
 }
 
@@ -76,7 +85,7 @@ Texture::~Texture() {
 	if (generated)
 		glDeleteTextures(1, &buffer);
 
-	free(pixels);
+	delete pixels;
 }
 
 void Texture::activate() {
@@ -84,7 +93,7 @@ void Texture::activate() {
 	if (!generated)
 		return;
 	//Activate and bind the buffer
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(texNum);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glBindTexture(GL_TEXTURE_2D, buffer);
 }

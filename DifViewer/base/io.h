@@ -63,6 +63,7 @@ public:
 	//Floats
 	bool read(FILE *file, F32 *value, String name);
 
+	//Anything else that is a class can be templated
 	template <typename T>
 	inline bool read(FILE *file, T *value, String name) {
 		return value->read(file);
@@ -75,32 +76,28 @@ public:
 	 */
 
 	//Unsigned ints
-	bool write(FILE *file, U64 value);
-	bool write(FILE *file, U32 value);
-	bool write(FILE *file, U16 value);
-	bool write(FILE *file, U8  value);
+	bool write(FILE *file, U64 value, String name);
+	bool write(FILE *file, U32 value, String name);
+	bool write(FILE *file, U16 value, String name);
+	bool write(FILE *file, U8  value, String name);
 
 	//Signed ints
-	bool write(FILE *file, S64 value);
-	bool write(FILE *file, S32 value);
-	bool write(FILE *file, S16 value);
-	bool write(FILE *file, S8  value);
+	bool write(FILE *file, S64 value, String name);
+	bool write(FILE *file, S32 value, String name);
+	bool write(FILE *file, S16 value, String name);
+	bool write(FILE *file, S8  value, String name);
 
 	//Floats
-	bool write(FILE *file, F32 value);
+	bool write(FILE *file, F32 value, String name);
 
-	//Structures
-	bool write(FILE *file, PlaneF value);
-	bool write(FILE *file, Point3F value);
-	bool write(FILE *file, QuatF value);
-	bool write(FILE *file, BoxF value);
-	bool write(FILE *file, SphereF value);
-	bool write(FILE *file, ColorI value);
-	bool write(FILE *file, String value);
-	bool write(FILE *file, PNG value);
-	bool write(FILE *file, Dictionary value);
+	//Anything else that is a class can be templated
+	template <typename T>
+	inline bool write(FILE *file, T value, String name) {
+		return value.write(file);
+	}
 
 	bool isfile(String *file);
+	U8 *readFile(String *file, U32 *length);
 };
 
 template <typename T>
@@ -136,6 +133,40 @@ bool Color<T>::read(FILE *file) {
 	io->read(file, &alpha, "alpha");
 }
 
+template <typename T>
+bool Point2<T>::write(FILE *file) {
+	return
+	io->write(file, x, "x") &&
+	io->write(file, y, "y");
+}
+
+template <typename T>
+bool Point3<T>::write(FILE *file) {
+	return
+	io->write(file, x, "x") &&
+	io->write(file, y, "y") &&
+	io->write(file, z, "z");
+}
+
+template <typename T>
+bool Point4<T>::write(FILE *file) {
+	return
+	io->write(file, w, "w") &&
+	io->write(file, x, "x") &&
+	io->write(file, y, "y") &&
+	io->write(file, z, "z");
+}
+
+template <typename T>
+bool Color<T>::write(FILE *file) {
+	return
+	io->write(file, red, "red") &&
+	io->write(file, green, "green") &&
+	io->write(file, blue, "blue") &&
+	io->write(file, alpha, "alpha");
+}
+
+
 //Memory management
 void releaseString(String string);
 void releaseDictionary(Dictionary dictionary);
@@ -145,24 +176,40 @@ void releaseDictionary(Dictionary dictionary);
 
 //Hack to get the read() macro to return a value from a function that uses a ref
 template <typename T>
-inline T read(FILE *file, T *thing) {
+inline T __read(FILE *file, T *thing) {
 	T __garbage;
-	io->read(file, &__garbage, "garbage");
+#ifdef DEBUG
+	io->read(file, &__garbage, String("garbage"));
+#else
+	io->read(file, &__garbage, "");
+#endif
 	return __garbage;
 }
-//I'm so sorry about (type *)file, but that's the only way to get C++ to interpret
+//I'm so sorry about (type *)nullptr, but that's the only way to get C++ to interpret
 // the type and let the template work
-#define READ(type) read(file, (type *)file)
+#define READ(type) __read(file, (type *)nullptr)
 
-#define READVAR(name, type) \
-	type name; \
-	io->read(file, (type *)&name, #name)
-#define READTOVAR(name, type) io->read(file, (type *)&name, #name)
-#define READCHECK(type, value) { \
+#ifdef DEBUG
+	#define READVAR(name, type) \
+		type name; \
+		io->read(file, (type *)&name, String(#name))
+	#define READTOVAR(name, type) io->read(file, (type *)&name, String(#name))
+	#define READCHECK(type, value) { \
+		READVAR(check, type); \
+		if (check != value)\
+			return;\
+	}
+#else
+	#define READVAR(name, type) \
+		type name; \
+		io->read(file, (type *)&name, "")
+	#define READTOVAR(name, type) io->read(file, (type *)&name, "")
+	#define READCHECK(type, value) { \
 	READVAR(check, type); \
 	if (check != value)\
 		return;\
-}
+	}
+#endif
 
 #define READLOOPVAR(countvar, listvar, type) \
 READTOVAR(countvar, U32); \
@@ -245,23 +292,22 @@ for (U32 i = 0; i < name##_length; i ++) { \
 }
 
 //Macros to speed up file reading
-#define WRITE(type, value) io->write(file, value)
-#define WRITECHECK(type, value) { if (WRITE(type, value)) return false; }
+#ifdef DEBUG
+#define WRITE(value, type) io->write(file, (type) value, String(#value))
+#else
+#define WRITE(value, type) io->write(file, (type) value, "")
+#endif
 
-#define WRITELOOPVAR(type, countvar, listvar) \
-WRITECHECK(U32, countvar);\
-for (U32 i = 0; i < countvar; i ++) { \
-	WRITECHECK(type, listvar[i]); \
-}
+#define WRITECHECK(value, type) { if (!WRITE(value, type)) return false; }
 
-#define WRITELOOPVARNOCHECK(type, countvar, listvar) \
-WRITECHECK(U32, countvar);\
+#define WRITELIST(countvar, listvar, type) \
+WRITECHECK(countvar, U32);\
 for (U32 i = 0; i < countvar; i ++) { \
-	WRITE(type, listvar[i]); \
+	WRITE(listvar[i], type); \
 }
 
 #define WRITELOOP(countvar) \
-WRITECHECK(U32, countvar);\
+WRITECHECK(countvar, U32);\
 for (U32 i = 0; i < countvar; i ++)\
 
 #endif

@@ -36,6 +36,7 @@ class Texture {
 public:
 	bool generated;
 	GLuint buffer;
+	GLenum texNum;
 	Point2I extent;
 	U8 *pixels;
 
@@ -51,6 +52,14 @@ public:
 	 Releases a Texture, freeing both its store and its buffer
 	 */
 	~Texture();
+
+	void setTexNum(GLenum texNum) {
+		this->texNum = texNum;
+	}
+
+	GLenum getTexNum() {
+		return texNum;
+	}
 
 	/**
 	 Generates the OpenGL buffer for a Texture. Don't call this before setting

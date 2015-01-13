@@ -38,9 +38,11 @@
 #include "texture.h"
 #include "sphere.h"
 #include "physics.h"
+#include "shader.h"
 
 #include <SDL2/SDL.h>
 #include <OpenGL/gl.h>
+#include <OpenGL/gl3.h>
 #include <OpenGL/glu.h>
 
 #include <glm/matrix.hpp>
@@ -68,6 +70,8 @@ GLfloat gAngle;
 float gYaw, gPitch;
 glm::vec3 gCameraPosition;
 
+GLuint mvpMatrix, lightDirection;
+
 glm::mat4x4 gProjectionMatrix, gModelviewMatrix;
 
 struct {
@@ -80,7 +84,7 @@ static float gCameraSpeed = 0.3f;
 static float gKeyCameraSpeed = 3.f;
 static float gMovementSpeed = 0.2f;
 
-static F32 gLightColor[4]     = {1.400000f, 1.200000f, 0.400000f, 1.000000f};
+static F32 gLightColor[4]     = {1.100000f, 1.100000f, 0.900000f, 1.000000f};
 static F32 gLightDirection[4] = {0.60f, 0.40f, 1.0f, 0.0f};
 static F32 gAmbientColor[4]   = {0.600000f, 0.600000f, 0.800000f, 1.000000f};
 static F32 gDiffuseColor[4]   = {0.800000f, 0.800000f, 1.000000f, 1.000000f};
@@ -104,6 +108,31 @@ void handleEvent(SDL_Event *event);
 const char *openFile();
 
 void render() {
+#ifdef GL_33
+	//Camera
+	gModelviewMatrix = glm::mat4x4(1);
+	gModelviewMatrix = glm::rotate(gModelviewMatrix, gPitch, glm::vec3(1, 0, 0));
+	gModelviewMatrix = glm::rotate(gModelviewMatrix, gYaw, glm::vec3(0, 1, 0));
+	gModelviewMatrix = glm::rotate(gModelviewMatrix, -90.0f, glm::vec3(1, 0, 0));
+	gModelviewMatrix = glm::translate(gModelviewMatrix, -gCameraPosition);
+
+	glm::mat4x4 mvpMat = gProjectionMatrix * gModelviewMatrix;
+
+	glUniformMatrix4fv(mvpMatrix, 1, GL_FALSE, &mvpMat[0][0]);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_ALPHA);
+	glEnable(GL_MULTISAMPLE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glUniform3fv(lightDirection, 1, gLightDirection);
+
+	for (U32 index = 0; index < gDifCount; index ++) {
+		gDifs[index]->render();
+	}
+#else
 	//Load the model matrix
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -118,7 +147,9 @@ void render() {
 	gModelviewMatrix = glm::rotate(gModelviewMatrix, gPitch, glm::vec3(1, 0, 0));
 	gModelviewMatrix = glm::rotate(gModelviewMatrix, gYaw, glm::vec3(0, 1, 0));
 	gModelviewMatrix = glm::rotate(gModelviewMatrix, -90.0f, glm::vec3(1, 0, 0));
-	gModelviewMatrix = glm::translate(gModelviewMatrix, -gCameraPosition);
+//	gModelviewMatrix = glm::translate(gModelviewMatrix, -gCameraPosition);
+	gModelviewMatrix = glm::translate(gModelviewMatrix, gCameraPosition);
+	
 	glLoadMatrixf(&gModelviewMatrix[0][0]);
 
 	//Clear
@@ -204,6 +235,7 @@ void render() {
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
 	}
+#endif
 }
 
 void loop() {
@@ -253,6 +285,33 @@ void loop() {
 }
 
 bool initGL() {
+#ifdef GL_33
+	GLuint vertexArrayID;
+	glGenVertexArrays(1, &vertexArrayID);
+	glBindVertexArray(vertexArrayID);
+
+	Shader *shader = new Shader(new String("vertexShader.glsl"), new String("fragmentShader.glsl"));
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
+	glUseProgram(shader->getProgramId());
+
+	shader->setUniformLocation(new String("noiseSampler"), 0);
+	shader->setUniformLocation(new String("textureSampler"), 1);
+
+	mvpMatrix = glGetUniformLocation(shader->getProgramId(), "MVP");
+	lightDirection = glGetUniformLocation(shader->getProgramId(), "lightDirection");
+
+	//Window size for viewport
+	int w, h;
+	SDL_GetWindowSize(gWindow, &w, &h);
+
+	GLfloat aspect = (GLfloat)w / (GLfloat)h;
+	gProjectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+#else
 	//Initialize clear color
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 	glClearDepth(1.0f);
@@ -284,6 +343,7 @@ bool initGL() {
 
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, gLightColor);
 	glLightfv(GL_LIGHT0, GL_POSITION, gLightDirection);
+#endif
 
 	return glGetError() == GL_NO_ERROR;
 }
@@ -337,11 +397,6 @@ void handleEvent(SDL_Event *event) {
 	if (event->type == SDL_QUIT) {
 		gRunning = false;
 	}
-	//Window resize
-	if (event->type == SDL_WINDOWEVENT) {
-		//Just reinit (lazy)
-		initGL();
-	}
 
 	//Key events, movement
 	if (event->type == SDL_KEYDOWN) {
@@ -356,6 +411,8 @@ void handleEvent(SDL_Event *event) {
 
 						FILE *output = fopen((const char *)gFilenames[i], "w");
 						gDifs[i]->write(output, directory);
+						fflush(output);
+						fclose(output);
 					}
 				} else {
 					movement[1] = true;
@@ -425,12 +482,20 @@ bool init() {
 		return false;
 	}
 
+#ifdef GL_33
+	//Use OpenGL 3.3
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+#else
 	//Use OpenGL 2.1
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+#endif
 
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 2);
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 4);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
@@ -447,6 +512,11 @@ bool init() {
 		return false;
 	}
 
+	//Initialize OpenGL
+	if (!initGL()) {
+		return false;
+	}
+
 	//Use Vsync
 	if (SDL_GL_SetSwapInterval(1) < 0) {
 		return false;
@@ -457,12 +527,8 @@ bool init() {
 	captureMouse = true;
 
 //	Point3F center = gDifs[0]->interior[0]->boundingBox.getCenter();
-//	gCameraPosition = glm::vec3(center.x, center.y, center.z);
+	gCameraPosition = glm::vec3(0, 0, 0);
 
-	//Initialize OpenGL
-	if (!initGL()) {
-		return false;
-	}
 	return true;
 }
 
@@ -567,6 +633,7 @@ int main(int argc, const char * argv[])
 	if (!strcmp(argv[1], "-o")) {
 		FILE *out = fopen(argv[2], "w");
 		gDifs[0]->interior[0]->exportObj(out);
+		fflush(out);
 		fclose(out);
 	} else if (!strcmp(argv[1], "-c")) {
 		for (U32 i = 0; i < gDifCount; i ++) {
@@ -574,6 +641,8 @@ int main(int argc, const char * argv[])
 
 			FILE *output = fopen((const char *)gFilenames[i], "w");
 			gDifs[i]->write(output, directory);
+			fflush(output);
+			fclose(output);
 		}
 	} else {
 		//Init SDL and go!
