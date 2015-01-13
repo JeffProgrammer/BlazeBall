@@ -55,7 +55,8 @@ GLuint Shader::loadShader(String *path, GLenum type) {
 	glGetShaderInfoLog(shaderId, infoLogLength, NULL, (GLchar *)log->data);
 
 	if (!result) {
-		printf("%s\n", log->data);
+		printf("%s error: %s\n", path->data, log->data);
+		return 0;
 	}
 
 	return shaderId;
@@ -64,6 +65,9 @@ GLuint Shader::loadShader(String *path, GLenum type) {
 GLuint Shader::loadProgram(String *vertPath, String *fragPath) {
 	vertId = loadShader(vertPath, GL_VERTEX_SHADER);
 	fragId = loadShader(fragPath, GL_FRAGMENT_SHADER);
+
+	if (!vertId || !fragId)
+		return 0;
 
 	GLuint progID = glCreateProgram();
 	glAttachShader(progID, vertId);
@@ -91,4 +95,9 @@ GLuint Shader::loadProgram(String *vertPath, String *fragPath) {
 
 GLuint Shader::getProgramId() {
 	return programId;
+}
+
+void Shader::setUniformLocation(String *name, GLuint location) {
+	GLuint glLocation = glGetUniformLocation(getProgramId(), (const char *)name->data);
+	glUniform1i(glLocation, location);
 }
