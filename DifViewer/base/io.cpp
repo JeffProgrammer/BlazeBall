@@ -33,7 +33,7 @@
 #include "mngsupport.h"
 #include "jpegsupport.h"
 
-#if 0
+#if 1
 #define DEBUG_PRINT(...) printf(__VA_ARGS__)
 #else
 #define DEBUG_PRINT(...)
@@ -69,7 +69,7 @@ bool IO::read(FILE *file, U64 *value, String name) {
 	fgetpos(file, &pos);
 	fread(value, sizeof(*value), 1, file);
 
-	DEBUG_PRINT("Read U64 (%s) 0x%08llX %lld: 0x%016llX / %llu\n", (const char *)name, pos, pos, __builtin_bswap64(*value), *value);
+	DEBUG_PRINT("Read U64 (%s) 0x%08llX %lld: 0x%016llX / %llu\n", (const char *)name, pos, pos, swapEndianness(*value), *value);
 	return true;
 }
 bool IO::read(FILE *file, U32 *value, String name) {
@@ -79,7 +79,7 @@ bool IO::read(FILE *file, U32 *value, String name) {
 	fgetpos(file, &pos);
 	fread(value, sizeof(*value), 1, file);
 
-	DEBUG_PRINT("Read U32 (%s) 0x%08llX %lld: 0x%08X / %u\n", (const char *)name, pos, pos, __builtin_bswap32(*value), *value);
+	DEBUG_PRINT("Read U32 (%s) 0x%08llX %lld: 0x%08X / %u\n", (const char *)name, pos, pos, swapEndianness(*value), *value);
 	return true;
 }
 bool IO::read(FILE *file, U16 *value, String name) {
@@ -89,7 +89,7 @@ bool IO::read(FILE *file, U16 *value, String name) {
 	fgetpos(file, &pos);
 	fread(value, sizeof(*value), 1, file);
 
-	DEBUG_PRINT("Read U16 (%s) 0x%08llX %lld: 0x%04hX / %hu\n", (const char *)name, pos, pos, _OSSwapInt16(*value), *value);
+	DEBUG_PRINT("Read U16 (%s) 0x%08llX %lld: 0x%04hX / %hu\n", (const char *)name, pos, pos, swapEndianness(*value), *value);
 	return true;
 }
 bool IO::read(FILE *file, U8 *value, String name) {
@@ -109,7 +109,7 @@ bool IO::read(FILE *file, F32 *value, String name) {
 	fgetpos(file, &pos);
 	fread(value, sizeof(*value), 1, file);
 
-	DEBUG_PRINT("Read F32 (%s) 0x%08llX %lld: 0x%08X %f\n", (const char *)name, pos, pos, __builtin_bswap32(*(U32 *)value), *value);
+	DEBUG_PRINT("Read F32 (%s) 0x%08llX %lld: 0x%08X %f\n", (const char *)name, pos, pos, swapEndianness(*(U32 *)value), *value);
 	return true;
 }
 
@@ -222,21 +222,21 @@ bool Dictionary::read(FILE *file) {
 bool IO::write(FILE *file, U64 value, String name) {
 	fpos_t pos;
 	fgetpos(file, &pos);
-	DEBUG_PRINT("Write U64 (%s) 0x%08llX %lld: 0x%016llX / %llu\n", (const char *)name, pos, pos, __builtin_bswap64(value), value);
+	DEBUG_PRINT("Write U64 (%s) 0x%08llX %lld: 0x%016llX / %llu\n", (const char *)name, pos, pos, swapEndianness(value), value);
 	fwrite(&value, sizeof(value), 1, file);
 	return true;
 }
 bool IO::write(FILE *file, U32 value, String name) {
 	fpos_t pos;
 	fgetpos(file, &pos);
-	DEBUG_PRINT("Write U32 (%s) 0x%08llX %lld: 0x%08X / %u\n", (const char *)name, pos, pos, __builtin_bswap32(value), value);
+	DEBUG_PRINT("Write U32 (%s) 0x%08llX %lld: 0x%08X / %u\n", (const char *)name, pos, pos, swapEndianness(value), value);
 	fwrite(&value, sizeof(value), 1, file);
 	return true;
 }
 bool IO::write(FILE *file, U16 value, String name) {
 	fpos_t pos;
 	fgetpos(file, &pos);
-	DEBUG_PRINT("Write U16 (%s) 0x%08llX %lld: 0x%04hX / %hu\n", (const char *)name, pos, pos, _OSSwapInt16(value), value);
+	DEBUG_PRINT("Write U16 (%s) 0x%08llX %lld: 0x%04hX / %hu\n", (const char *)name, pos, pos, swapEndianness(value), value);
 	fwrite(&value, sizeof(value), 1, file);
 	return true;
 }
@@ -250,7 +250,7 @@ bool IO::write(FILE *file, U8 value, String name) {
 bool IO::write(FILE *file, F32 value, String name) {
 	fpos_t pos;
 	fgetpos(file, &pos);
-	DEBUG_PRINT("Write F32 (%s) 0x%08llX %lld: 0x%08X %f\n", (const char *)name, pos, pos, __builtin_bswap32(*(U32 *)&value), value);
+	DEBUG_PRINT("Write F32 (%s) 0x%08llX %lld: 0x%08X %f\n", (const char *)name, pos, pos, swapEndianness(*(U32 *)&value), value);
 	fwrite(&value, sizeof(value), 1, file);
 	return true;
 }
@@ -389,7 +389,7 @@ String IO::getName(String file) {
 	S32 last = (S32)((U8 *)strrchr((const char *)file.data, '/') - file.data) + 1;
 	if (last > 0)
 		return String(file.data + last, file.length - last);
-	return String("");
+	return file;
 }
 String IO::getExtension(String file) {
 	S32 last = (S32)((U8 *)strrchr((const char *)file.data, '.') - file.data) + 1;
