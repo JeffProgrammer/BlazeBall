@@ -84,7 +84,7 @@ bool Interior::read(FILE *file) {
 		if (this->interiorFileVersion >= 12) {
 			READTOVAR(zone[i].staticMeshStart, U32); //staticMeshStart
 			READTOVAR(zone[i].staticMeshCount, U32); //staticMeshCount
-			READTOVAR(zone[i].flags, U16); //flags
+//			READTOVAR(zone[i].flags, U16); //flags
 		} else {
 			zone[i].staticMeshStart = 0;
 			zone[i].staticMeshCount = 0;
@@ -175,13 +175,32 @@ bool Interior::read(FILE *file) {
 			READLIST2(numSomethingElses, (readnumSomethingElses2 && readnumSomethingElsesparam == 0), U16, U8);
 		}
 	}
-	READLISTVAR(numNormalLMapIndices, normalLMapIndex, U8);
 	if (this->interiorFileVersion == 4) { //Found in 0, 2, 3, and TGE (14)
+		READLISTVAR(numNormalLMapIndices, normalLMapIndex, U8);
 		numAlarmLMapIndices = 0;
+	} else if (this->interiorFileVersion >= 13) {
+		//These are 32-bit values in v13 and up
+		READLOOPVAR(numNormalLMapIndices, normalLMapIndex, U8) {
+			READTOVAR(normalLMapIndex[i], U32);
+		}
+		READLOOPVAR(numAlarmLMapIndices, alarmLMapIndex, U8) {
+			READTOVAR(alarmLMapIndex[i], U32);
+		}
 	} else {
+		//Normally they're just 8
+		READLISTVAR(numNormalLMapIndices, normalLMapIndex, U8);
 		READLISTVAR(numAlarmLMapIndices, alarmLMapIndex, U8);
 	}
-	READLISTVAR(numNullSurfaces, nullSurface, NullSurface);
+	READLOOPVAR(numNullSurfaces, nullSurface, NullSurface) {
+		READTOVAR(nullSurface[i].windingStart, U32); //windingStart
+		READTOVAR(nullSurface[i].planeIndex, U16); //planeIndex
+		READTOVAR(nullSurface[i].surfaceFlags, U8); //surfaceFlags
+		if (this->interiorFileVersion >= 13) {
+			READTOVAR(nullSurface[i].windingCount, U32); //windingCount
+		} else {
+			READTOVAR(nullSurface[i].windingCount, U8); //windingCount
+		}
+	}
 	if (this->interiorFileVersion == 4) { //Also found in 0, 2, 3, 14
 		numLightMaps = 0;
 	} else {
@@ -277,12 +296,21 @@ bool Interior::read(FILE *file) {
 	} else {
 		READTOVAR(baseAmbientColor, ColorI); //baseAmbientColor
 		READTOVAR(alarmAmbientColor, ColorI); //alarmAmbientColor
-		/*
-		 There's a long list of static meshes here, but I'm too lazy to add it just to comment it out. Oh and I'd have to implement Point2I / Point2F. See DIF_MB_SPEC.rtf if you want to implement it.
-		 */
-		READLISTVAR(numTexNormals, texNormal, Point3F);
-		READLISTVAR(numTexMatrices, texMatrix, TexMatrix);
-		READLISTVAR(numTexMatIndices, texMatIndex, U32);
+
+		if (this->interiorFileVersion >= 10) {
+			READLOOPVAR(numStaticMeshes, staticMesh, StaticMesh *) {
+				staticMesh[i] = new StaticMesh(file);
+			}
+		}
+		if (this->interiorFileVersion >= 11) {
+			READLISTVAR(numTexNormals, texNormal, Point3F);
+			READLISTVAR(numTexMatrices, texMatrix, TexMatrix);
+			READLISTVAR(numTexMatIndices, texMatIndex, U32);
+		} else {
+			READ(U32);
+			READ(U32);
+			READ(U32);
+		}
 		READTOVAR(extendedLightMapData, U32);
 		if (extendedLightMapData) { //extendedLightMapData
 			READTOVAR(lightMapBorderSize, U32); //lightMapBorderSize
@@ -716,14 +744,6 @@ bool Surface::write(FILE *file) {
 	WRITECHECK(mapOffsetY, U8); //mapOffsetY
 	WRITECHECK(mapSizeX, U8); //mapSizeX
 	WRITECHECK(mapSizeY, U8); //mapSizeY
-	return true;
-}
-
-bool NullSurface::read(FILE *file) {
-	READTOVAR(windingStart, U32); //windingStart
-	READTOVAR(planeIndex, U16); //planeIndex
-	READTOVAR(surfaceFlags, U8); //surfaceFlags
-	READTOVAR(windingCount, U8); //windingCount
 	return true;
 }
 

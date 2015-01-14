@@ -153,6 +153,26 @@ bool SphereF::read(FILE *file) {
 		io->read(file, &radius, "radius");
 }
 
+bool MatrixF::read(FILE *file) {
+	return
+		io->read(file, &m[0], "m[0]") &&
+		io->read(file, &m[1], "m[1]") &&
+		io->read(file, &m[2], "m[2]") &&
+		io->read(file, &m[3], "m[3]") &&
+		io->read(file, &m[4], "m[4]") &&
+		io->read(file, &m[5], "m[5]") &&
+		io->read(file, &m[6], "m[6]") &&
+		io->read(file, &m[7], "m[7]") &&
+		io->read(file, &m[8], "m[8]") &&
+		io->read(file, &m[9], "m[9]") &&
+		io->read(file, &m[10], "m[10]") &&
+		io->read(file, &m[11], "m[11]") &&
+		io->read(file, &m[12], "m[12]") &&
+		io->read(file, &m[13], "m[13]") &&
+		io->read(file, &m[14], "m[14]") &&
+		io->read(file, &m[15], "m[15]");
+}
+
 bool String::read(FILE *file) {
 	//<length><bytes>
 
@@ -273,6 +293,26 @@ bool SphereF::write(FILE *file) {
 		io->write(file, y, "y") &&
 		io->write(file, z, "z") &&
 		io->write(file, radius, "radius");
+}
+
+bool MatrixF::write(FILE *file) {
+	return
+		io->write(file, m[0], "m[0]") &&
+		io->write(file, m[1], "m[1]") &&
+		io->write(file, m[2], "m[2]") &&
+		io->write(file, m[3], "m[3]") &&
+		io->write(file, m[4], "m[4]") &&
+		io->write(file, m[5], "m[5]") &&
+		io->write(file, m[6], "m[6]") &&
+		io->write(file, m[7], "m[7]") &&
+		io->write(file, m[8], "m[8]") &&
+		io->write(file, m[9], "m[9]") &&
+		io->write(file, m[10], "m[10]") &&
+		io->write(file, m[11], "m[11]") &&
+		io->write(file, m[12], "m[12]") &&
+		io->write(file, m[13], "m[13]") &&
+		io->write(file, m[14], "m[14]") &&
+		io->write(file, m[15], "m[15]");
 }
 
 bool String::write(FILE *file) {

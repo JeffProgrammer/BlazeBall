@@ -30,6 +30,7 @@
 		B56BFDEC1A63520400B2BDDE /* interiorV.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = B56BFDE51A63498100B2BDDE /* interiorV.glsl */; };
 		B56BFDED1A63520500B2BDDE /* interiorF.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = B56BFDE61A634A0400B2BDDE /* interiorF.glsl */; };
 		B57369CC1A648C23006447A4 /* libmng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B566A6951A12EE54003D6BEA /* libmng.a */; };
+		B58303221A66EA1A00EDAFBD /* staticMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B58303201A66EA1A00EDAFBD /* staticMesh.cpp */; };
 		B58E54C81A215B0700304A9B /* math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B58E54C71A215B0700304A9B /* math.cpp */; };
 		B5BC0E371A1423DE00D86A8D /* interiorRender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5BC0E361A1423DE00D86A8D /* interiorRender.cpp */; };
 		B5CC8E9A1A13090A0037BFF7 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B5CC8E991A13090A0037BFF7 /* libz.dylib */; };
@@ -113,6 +114,8 @@
 		B56BFDE51A63498100B2BDDE /* interiorV.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = interiorV.glsl; path = DifViewer/shaders/interiorV.glsl; sourceTree = SOURCE_ROOT; };
 		B56BFDE61A634A0400B2BDDE /* interiorF.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = interiorF.glsl; path = DifViewer/shaders/interiorF.glsl; sourceTree = SOURCE_ROOT; };
 		B578BCF51A13EB4C001EF856 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = jpeg/.libs/libjpeg.a; sourceTree = "<group>"; };
+		B58303201A66EA1A00EDAFBD /* staticMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = staticMesh.cpp; sourceTree = "<group>"; };
+		B58303211A66EA1A00EDAFBD /* staticMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = staticMesh.h; sourceTree = "<group>"; };
 		B58E54C71A215B0700304A9B /* math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = math.cpp; sourceTree = "<group>"; };
 		B5AADE6F1A142E1E0064F1E5 /* math.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = math.h; sourceTree = "<group>"; };
 		B5BC0E361A1423DE00D86A8D /* interiorRender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = interiorRender.cpp; path = DifViewer/render/interiorRender.cpp; sourceTree = SOURCE_ROOT; };
@@ -195,6 +198,8 @@
 				B54F9DA91A10399D00F550EA /* interiorPathFollower.h */,
 				B56838BF1A58AFC30053C982 /* pathedInterior.cpp */,
 				B56838C01A58AFC30053C982 /* pathedInterior.h */,
+				B58303201A66EA1A00EDAFBD /* staticMesh.cpp */,
+				B58303211A66EA1A00EDAFBD /* staticMesh.h */,
 				B54F9DAA1A10399D00F550EA /* trigger.cpp */,
 				B54F9DAB1A10399D00F550EA /* trigger.h */,
 				B54F9DAC1A10399D00F550EA /* vehicleCollision.cpp */,
@@ -383,6 +388,7 @@
 				B5E0CDA01A13F43B00BB4291 /* texture.cpp in Sources */,
 				B54F9DB01A10399D00F550EA /* aiSpecialNode.cpp in Sources */,
 				B5BC0E371A1423DE00D86A8D /* interiorRender.cpp in Sources */,
+				B58303221A66EA1A00EDAFBD /* staticMesh.cpp in Sources */,
 				B54F9DB61A10399D00F550EA /* trigger.cpp in Sources */,
 				B54F9DB71A10399D00F550EA /* vehicleCollision.cpp in Sources */,
 				B56838C11A58AFC30053C982 /* pathedInterior.cpp in Sources */,

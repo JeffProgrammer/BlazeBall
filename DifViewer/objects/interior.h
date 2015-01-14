@@ -31,6 +31,7 @@
 #include "types.h"
 #include "material.h"
 #include "physics.h"
+#include "staticMesh.h"
 
 struct Vertex {
 	Point3F point;
@@ -378,6 +379,9 @@ public:
 	U32 coordBinMode;
 	ColorI baseAmbientColor;
 	ColorI alarmAmbientColor;
+
+	U32 numStaticMeshes;
+	StaticMesh **staticMesh;
 
 	U32 numTexNormals;
 	Point3F *texNormal;
