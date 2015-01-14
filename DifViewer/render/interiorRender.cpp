@@ -68,37 +68,38 @@ void Interior::render() {
 
 			//New and improved rendering with actual Triangle Strips this time
 			for (U32 j = surface.windingStart + 2; j < surface.windingStart + surface.windingCount; j ++) {
-				Point3F n = normal[plane[surface.planeIndex].normalIndex];
+				Point3F normal = this->normal[plane[surface.planeIndex].normalIndex];
+				Point3F v0, v1, v2;
+
 				if (surface.planeFlipped) {
-					n *= -1;
+					normal *= -1;
 				}
-				Point3F u0, u1, u2;
 
 				if ((j - (surface.windingStart + 2)) % 2 == 0) {
-					u0 = point[index[j]];
-					u1 = point[index[j - 1]];
-					u2 = point[index[j - 2]];
+					v0 = point[index[j]];
+					v1 = point[index[j - 1]];
+					v2 = point[index[j - 2]];
 				} else {
-					u0 = point[index[j - 2]];
-					u1 = point[index[j - 1]];
-					u2 = point[index[j]];
+					v0 = point[index[j - 2]];
+					v1 = point[index[j - 1]];
+					v2 = point[index[j]];
 				}
 
 				TexGenEq texGenEq = this->texGenEq[surface.texGenIndex];
 
-				Point2F uv0 = Point2F(planeF_distance_to_point(texGenEq.planeX, u0), planeF_distance_to_point(texGenEq.planeY, u0));
-				Point2F uv1 = Point2F(planeF_distance_to_point(texGenEq.planeX, u1), planeF_distance_to_point(texGenEq.planeY, u1));
-				Point2F uv2 = Point2F(planeF_distance_to_point(texGenEq.planeX, u2), planeF_distance_to_point(texGenEq.planeY, u2));
+				Point2F uv0 = Point2F(planeF_distance_to_point(texGenEq.planeX, v0), planeF_distance_to_point(texGenEq.planeY, v0));
+				Point2F uv1 = Point2F(planeF_distance_to_point(texGenEq.planeX, v1), planeF_distance_to_point(texGenEq.planeY, v1));
+				Point2F uv2 = Point2F(planeF_distance_to_point(texGenEq.planeX, v2), planeF_distance_to_point(texGenEq.planeY, v2));
 
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].point = u0;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].point = u1;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].point = u2;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].point = v0;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].point = v1;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].point = v2;
 				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].uv = uv0;
 				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].uv = uv1;
 				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].uv = uv2;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].normal = n;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].normal = n;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].normal = n;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].normal = normal;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].normal = normal;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].normal = normal;
 				materialTriangles[surface.textureIndex] ++;
 			}
 		}
@@ -158,21 +159,21 @@ void Interior::render() {
 						  sizeof(Vertex), //Stride
 						  (void *)offsetof(Vertex, normal)); //Offset
 
-	noise->activate();
 	U32 start = 0;
 	for (U32 i = 0; i < numMaterials; i ++) {
 		if (renderInfo.numMaterialTriangles[i] > 0) {
 			if (material[i]) {
 				material[i]->activate();
 			}
+			noise->activate();
 			glDrawArrays(GL_TRIANGLES, start * 3, renderInfo.numMaterialTriangles[i] * 3);
 			start += renderInfo.numMaterialTriangles[i];
+			noise->deactivate();
 			if (material[i]) {
 				material[i]->deactivate();
 			}
 		}
 	}
-	noise->deactivate();
 
 	//Disable arrays
 	glDisableVertexAttribArray(2);
