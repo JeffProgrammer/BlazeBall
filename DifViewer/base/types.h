@@ -221,6 +221,14 @@ public:
 	Point3F point3;
 };
 
+class MatrixF : public Readable, Writable {
+public:
+	F32 m[16];
+
+	bool read(FILE *file);
+	bool write(FILE *file);
+};
+
 #include "ray.h"
 typedef Ray<F32> RayF;
 

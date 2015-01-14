@@ -30,6 +30,7 @@
 
 #include "types.h"
 #include "texture.h"
+#include "staticMesh.h"
 
 enum BitmapType {
 	BitmapTypePNG,
@@ -383,6 +384,9 @@ public:
 	U32 coordBinMode;
 	ColorI baseAmbientColor;
 	ColorI alarmAmbientColor;
+
+	U32 numStaticMeshes;
+	StaticMesh **staticMesh;
 
 	U32 numTexNormals;
 	Point3F *texNormal;

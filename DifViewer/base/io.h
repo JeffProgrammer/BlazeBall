@@ -195,8 +195,7 @@ inline T __read(FILE *file, T *thing) {
 		io->read(file, (type *)&name, String(#name))
 	#define READTOVAR(name, type) io->read(file, (type *)&name, String(#name))
 	#define READCHECK(type, value) { \
-		READVAR(check, type); \
-		if (check != value)\
+		if (READ(type) != value)\
 			return;\
 	}
 #else
