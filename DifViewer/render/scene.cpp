@@ -499,7 +499,8 @@ void Scene::run() {
 
 		//Hard work
 		loop();
-		loopCallback();
+		if (loopCallback)
+			loopCallback();
 		render();
 
 		//Flip buffers
