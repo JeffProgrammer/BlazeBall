@@ -29,6 +29,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <OpenGL/glu.h>
+#include "io.h"
 #include "texture.h"
 
 #define TEXTURE_MAX_SIZE 1024
@@ -101,4 +102,55 @@ void Texture::activate() {
 void Texture::deactivate() {
 	//Haha, this method is just BS. Fooled you.
 	glActiveTexture(0);
+}
+
+String Texture::find(String name, String directory) {
+	//Chop off any paths from the material. Constructor likes to save albums in the materials
+	// and it royally breaks this program.
+	if (strstr(name, "/")) {
+		//Hacky but effective method
+		name = io->getPath(name) + '/';
+		strcpy(name, strstr(name, "/") + 1);
+	}
+
+	//For some reason these two like to become the same.
+	String base = directory;
+
+	//Allocate enough space in each of these so we can work comfortably
+	U32 pathlen = (U32)(base.length + name.length + 1);
+	String imageFile = String(pathlen + 5);
+
+	do {
+		//Init imageFile to base/file.png
+		pathlen = sprintf(imageFile, "%s/%s.png", (char *)base, (char *)name);
+
+		//If we can't find the PNG, try for JPEG
+		//TODO: BMP Support?
+		if (!io->isfile(imageFile)) {
+			//Swap the last 3 chars with jpg
+			imageFile.data[pathlen - 3] = 'j';
+			imageFile.data[pathlen - 2] = 'p';
+			imageFile.data[pathlen - 1] = 'g';
+		}
+		if (!io->isfile(imageFile)) {
+			//Swap the last 3 chars with jng
+			imageFile.data[pathlen - 3] = 'j';
+			imageFile.data[pathlen - 2] = 'n';
+			imageFile.data[pathlen - 1] = 'g';
+		}
+		//Can't recurse any further
+		if (!strrchr(base, '/'))
+			break;
+
+		//If we still can't find it, recurse (hacky but effective method)
+		if (!io->isfile(imageFile)) {
+			*strrchr((const char *)base.data, '/') = 0;
+		}
+	} while (!io->isfile(imageFile) && strcmp(base, ""));
+
+	//If we can't find it, just chuck the lot and keep going.
+	if (!io->isfile(imageFile)) {
+		return "";
+	}
+	return imageFile;
 }

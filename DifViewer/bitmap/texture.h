@@ -76,7 +76,11 @@ public:
 	 Deactivates a Texture after drawing
 	 */
 	void deactivate();
-	
+
+	/**
+	 Find a texture in a directory
+	 */
+	static String find(String name, String directory);
 };
 
 #endif
