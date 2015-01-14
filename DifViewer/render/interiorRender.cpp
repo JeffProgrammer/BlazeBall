@@ -56,12 +56,12 @@ void Interior::render() {
 			perMaterialTriangles[i] = new Triangle[renderInfo.numMaterialTriangles[i]];
 			materialTriangles[i] = 0;
 
-			Texture *tex = texture[i];
-			if (tex) {
-				tex->generateBuffer();
+			Material *mat = material[i];
+			if (mat) {
+				mat->generate();
 			}
 		}
-		noise->generateBuffer();
+		noise->generate();
 
 		for (U32 i = 0; i < numSurfaces; i ++) {
 			Surface surface = this->surface[i];
@@ -162,13 +162,13 @@ void Interior::render() {
 	U32 start = 0;
 	for (U32 i = 0; i < numMaterials; i ++) {
 		if (renderInfo.numMaterialTriangles[i] > 0) {
-			if (texture[i]) {
-				texture[i]->activate();
+			if (material[i]) {
+				material[i]->activate();
 			}
 			glDrawArrays(GL_TRIANGLES, start * 3, renderInfo.numMaterialTriangles[i] * 3);
 			start += renderInfo.numMaterialTriangles[i];
-			if (texture[i]) {
-				texture[i]->deactivate();
+			if (material[i]) {
+				material[i]->deactivate();
 			}
 		}
 	}

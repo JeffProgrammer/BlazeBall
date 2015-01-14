@@ -68,7 +68,7 @@ bool Interior::read(FILE *file) {
 	READLISTVAR(numBSPSolidLeaves, BSPSolidLeaf, ::BSPSolidLeaf);
 	//MaterialList
 	READTOVAR(materialListVersion, U8); //version
-	READLISTVAR(numMaterials, material, String);
+	READLISTVAR(numMaterials, materialName, String);
 	READLISTVAR2(numWindings, index, readnumWindings2, U32, U16);
 	READLISTVAR(numWindingIndices, windingIndex, WindingIndex);
 	if (this->interiorFileVersion >= 12) {
@@ -312,7 +312,7 @@ bool Interior::write(FILE *file) {
 	WRITELIST(numBSPNodes, BSPNode, ::BSPNode); //BSPNode
 	WRITELIST(numBSPSolidLeaves, BSPSolidLeaf, ::BSPSolidLeaf); //BSPSolidLeaf
 	WRITECHECK(materialListVersion, U8); //materialListVersion
-	WRITELIST(numMaterials, material, String); //material
+	WRITELIST(numMaterials, materialName, String); //material
 	WRITELIST(numWindings, index, U32); //index
 	WRITELIST(numWindingIndices, windingIndex, WindingIndex); //windingIndex
 	WRITELIST(numZones, zone, Zone); //zone
@@ -362,8 +362,8 @@ bool Interior::write(FILE *file) {
 
 Interior::~Interior() {
 	for (U32 i = 0; i < numMaterials; i ++) {
-		if (texture[i])
-			delete texture[i];
+		if (material[i])
+			delete material[i];
 	}
 
 	delete [] normal;
@@ -373,6 +373,7 @@ Interior::~Interior() {
 	delete [] texGenEq;
 	delete [] BSPNode;
 	delete [] BSPSolidLeaf;
+	delete [] materialName;
 	delete [] material;
 	delete [] index;
 	delete [] windingIndex;
@@ -410,29 +411,30 @@ Interior::~Interior() {
 void Interior::generateMaterials(String directory) {
 	//Allocate all textures for the interior
 	if (numMaterials) {
-		texture = (Texture **)new Texture*[numMaterials];
+		material = new Material*[numMaterials];
 		for (U32 i = 0; i < numMaterials; i ++) {
-			String material = String(this->material[i].length + 1);
-			strcpy((char *)material.data, (const char *)this->material[i]);
+			String materialName = this->materialName[i];
+
 			//Chop off any paths from the material. Constructor likes to save albums in the materials
 			// and it royally breaks this program.
-			if (strstr((const char *)material.data, "/")) {
+			if (strstr(materialName, "/")) {
 				//Hacky but effective method
-				strcpy((char *)material.data, strstr((const char *)material.data, "/") + 1);
+				materialName = io->getPath(materialName) + '/';
+				strcpy(materialName, strstr(materialName, "/") + 1);
 			}
 
 			BitmapType type = BitmapTypePNG;
 
 			//For some reason these two like to become the same.
-			String base = String(directory);
+			String base = directory;
 
 			//Allocate enough space in each of these so we can work comfortably
-			U32 pathlen = (U32)(base.length + material.length + 1);
+			U32 pathlen = (U32)(base.length + materialName.length + 1);
 			String imageFile = String(pathlen + 5);
 
 			do {
 				//Init imageFile to base/file.png
-				pathlen = sprintf((char *)imageFile.data, "%s/%s.png", (char *)base.data, (char *)material.data);
+				pathlen = sprintf(imageFile, "%s/%s.png", (char *)base, (char *)materialName);
 
 				type = BitmapTypePNG;
 
@@ -453,35 +455,41 @@ void Interior::generateMaterials(String directory) {
 					type = BitmapTypePNG;
 				}
 				//Can't recurse any further
-				if (!strrchr((const char *)base.data, '/'))
+				if (!strrchr(base, '/'))
 					break;
 
 				//If we still can't find it, recurse (hacky but effective method)
 				if (!io->isfile(imageFile)) {
 					*strrchr((const char *)base.data, '/') = 0;
 				}
-			} while (!io->isfile(imageFile) && strcmp((const char *)base.data, ""));
+			} while (!io->isfile(imageFile) && strcmp(base, ""));
 
 			//If we can't find it, just chuck the lot and keep going.
 			if (!io->isfile(imageFile)) {
-				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", (char *)material.data);
-				texture[i] = NULL;
+				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", (char *)materialName);
+				this->material[i] = NULL;
 				continue;
 			}
 
 			Texture *texture;
 			if ((texture = io->loadTexture(imageFile)) == nullptr) {
-				fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)imageFile.data);
-				this->texture[i] = NULL;
+				fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)imageFile);
+				this->material[i] = NULL;
 				continue;
 			}
 
+			Material *material = new Material();
+			material->setTexture(texture);
+
 			//Assign the texture
-			this->texture[i] = texture;
+			this->material[i] = material;
 		}
 	}
-	this->noise = io->loadTexture(String("noise.jpg"));
-	this->noise->setTexNum(GL_TEXTURE1);
+	Texture *texture = io->loadTexture("noise.jpg");
+	texture->setTexNum(GL_TEXTURE1);
+
+	this->noise = new Material();
+	this->noise->setTexture(texture);
 }
 
 void Interior::generateMesh() {

@@ -29,7 +29,7 @@
 #define interior_h
 
 #include "types.h"
-#include "texture.h"
+#include "material.h"
 #include "physics.h"
 
 enum BitmapType {
@@ -279,9 +279,9 @@ public:
 
 	U8 materialListVersion;
 	U32 numMaterials;
-	String *material;
-	Texture **texture;
-	Texture *noise;
+	String *materialName;
+	Material **material;
+	Material *noise;
 
 	U32 numWindings;
 	U32 *index;
