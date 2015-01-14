@@ -58,8 +58,26 @@ bool Interior::read(FILE *file) {
 	READLOOPVAR(numBSPNodes, BSPNode, ::BSPNode) {
 		READTOVAR(BSPNode[i].planeIndex, U16); //planeIndex
 		if (this->interiorFileVersion >= 14) {
-			READTOVAR(BSPNode[i].frontIndex, U32); //frontIndex
-			READTOVAR(BSPNode[i].backIndex, U32); //backIndex
+			U32 tmpFront, tmpBack;
+			READTOVAR(tmpFront, U32); //frontIndex
+			READTOVAR(tmpBack, U32); //backIndex
+
+			//Fuckers
+			if ((tmpFront & 0x80000) != 0) {
+				tmpFront = (tmpFront & ~0x80000) | 0x8000;
+			}
+			if ((tmpFront & 0x40000) != 0) {
+				tmpFront = (tmpFront & ~0x40000) | 0x4000;
+			}
+			if ((tmpBack & 0x80000) != 0) {
+				tmpBack = (tmpBack & ~0x80000) | 0x8000;
+			}
+			if ((tmpBack & 0x40000) != 0) {
+				tmpBack = (tmpBack & ~0x40000) | 0x4000;
+			}
+
+			BSPNode[i].frontIndex = tmpFront;
+			BSPNode[i].backIndex = tmpBack;
 		} else {
 			READTOVAR(BSPNode[i].frontIndex, U16); //frontIndex
 			READTOVAR(BSPNode[i].backIndex, U16); //backIndex
@@ -307,9 +325,9 @@ bool Interior::read(FILE *file) {
 			READLISTVAR(numTexMatrices, texMatrix, TexMatrix);
 			READLISTVAR(numTexMatIndices, texMatIndex, U32);
 		} else {
-			READ(U32);
-			READ(U32);
-			READ(U32);
+			READTOVAR(numTexNormals, U32);
+			READTOVAR(numTexMatrices, U32);
+			READTOVAR(numTexMatIndices, U32);
 		}
 		READTOVAR(extendedLightMapData, U32);
 		if (extendedLightMapData) { //extendedLightMapData
@@ -350,8 +368,10 @@ bool Interior::write(FILE *file) {
 	WRITELIST(numSurfaces, surface, Surface); //surface
 	WRITELIST(numNormalLMapIndices, normalLMapIndex, U8); //normalLMapIndex
 	WRITELIST(numAlarmLMapIndices, alarmLMapIndex, U8); //alarmLMapIndex
-	WRITELIST(numNullSurfaces, nullSurface, NullSurface); //nullSurface
-	WRITELIST(numLightMaps, lightMap, LightMap); //lightMap
+	WRITECHECK(0, U32);
+//	WRITELIST(numNullSurfaces, nullSurface, NullSurface); //nullSurface
+	WRITECHECK(0, U32);
+//	WRITELIST(numLightMaps, lightMap, LightMap); //lightMap
 	WRITELIST(numSolidLeafSurfaces, solidLeafSurface, U32); //solidLeafSurface
 	WRITELIST(numAnimatedLights, animatedLight, AnimatedLight); //animatedLight
 	WRITELIST(numLightStates, lightState, LightState); //lightState
@@ -380,11 +400,15 @@ bool Interior::write(FILE *file) {
 	/*
 	 Static meshes (not included)
 	 */
-	WRITELIST(numTexNormals, texNormal, Point3F); //texNormal
-	WRITELIST(numTexMatrices, texMatrix, TexMatrix); //texMatrix
-	WRITELIST(numTexMatIndices, texMatIndex, U32); //texMatIndex
-	WRITECHECK(extendedLightMapData, U32); //extendedLightMapData
-	
+	WRITECHECK(0, U32);
+//	WRITELIST(numTexNormals, texNormal, Point3F); //texNormal
+	WRITECHECK(0, U32);
+//	WRITELIST(numTexMatrices, texMatrix, TexMatrix); //texMatrix
+	WRITECHECK(0, U32);
+//	WRITELIST(numTexMatIndices, texMatIndex, U32); //texMatIndex
+	WRITECHECK(0, U32);
+//	WRITECHECK(extendedLightMapData, U32); //extendedLightMapData
+
 	return true;
 }
 
