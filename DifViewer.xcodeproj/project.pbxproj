@@ -13,6 +13,7 @@
 		B51B35111A57AC0400DD8D35 /* physics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B51B350F1A57AC0400DD8D35 /* physics.cpp */; };
 		B51B35131A57AF5100DD8D35 /* libBulletCollision.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B51B35121A57AF5100DD8D35 /* libBulletCollision.a */; };
 		B51B35151A57AF5700DD8D35 /* libBulletDynamics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B51B35141A57AF5700DD8D35 /* libBulletDynamics.a */; };
+		B525BB031A6603DF0009E630 /* material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B525BB011A6603DF0009E630 /* material.cpp */; };
 		B54F9DAE1A10399D00F550EA /* io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9D991A10399D00F550EA /* io.cpp */; };
 		B54F9DAF1A10399D00F550EA /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9D9C1A10399D00F550EA /* main.cpp */; };
 		B54F9DB01A10399D00F550EA /* aiSpecialNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9D9E1A10399D00F550EA /* aiSpecialNode.cpp */; };
@@ -79,6 +80,8 @@
 		B51B35121A57AF5100DD8D35 /* libBulletCollision.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBulletCollision.a; path = bullet3/src/BulletCollision/Debug/libBulletCollision.a; sourceTree = "<group>"; };
 		B51B35141A57AF5700DD8D35 /* libBulletDynamics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBulletDynamics.a; path = bullet3/src/BulletDynamics/Debug/libBulletDynamics.a; sourceTree = "<group>"; };
 		B5201D801A10403F0084D459 /* DIF_MB_SPEC.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = DIF_MB_SPEC.rtf; sourceTree = "<group>"; };
+		B525BB011A6603DF0009E630 /* material.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = material.cpp; path = DifViewer/render/material.cpp; sourceTree = SOURCE_ROOT; };
+		B525BB021A6603DF0009E630 /* material.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = material.h; path = DifViewer/render/material.h; sourceTree = SOURCE_ROOT; };
 		B54F9D991A10399D00F550EA /* io.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = io.cpp; sourceTree = "<group>"; };
 		B54F9D9A1A10399D00F550EA /* io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = io.h; sourceTree = "<group>"; };
 		B54F9D9B1A10399D00F550EA /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
@@ -135,7 +138,6 @@
 				B51B35151A57AF5700DD8D35 /* libBulletDynamics.a in Frameworks */,
 				B51B350E1A57AABF00DD8D35 /* libLinearMath.a in Frameworks */,
 				B51B35131A57AF5100DD8D35 /* libBulletCollision.a in Frameworks */,
-				B566A6BC1A12EFFA003D6BEA /* libmng.a in Frameworks */,
 				B5099DAF1A10127F0005DAC6 /* OpenGL.framework in Frameworks */,
 				B5D92CA71A100DD7000A36CB /* SDL2.framework in Frameworks */,
 			);
@@ -237,6 +239,8 @@
 				B5BC0E361A1423DE00D86A8D /* interiorRender.cpp */,
 				B56BFDE11A6344A500B2BDDE /* shader.cpp */,
 				B56BFDE21A6344A500B2BDDE /* shader.h */,
+				B525BB011A6603DF0009E630 /* material.cpp */,
+				B525BB021A6603DF0009E630 /* material.h */,
 			);
 			name = render;
 			sourceTree = "<group>";
@@ -360,6 +364,7 @@
 				B54F9DB41A10399D00F550EA /* interior.cpp in Sources */,
 				B58E54C81A215B0700304A9B /* math.cpp in Sources */,
 				B51B33FA1A57916100DD8D35 /* sphere.cpp in Sources */,
+				B525BB031A6603DF0009E630 /* material.cpp in Sources */,
 				B54F9DAF1A10399D00F550EA /* main.cpp in Sources */,
 				B54F9DB51A10399D00F550EA /* interiorPathFollower.cpp in Sources */,
 				B54F9DB11A10399D00F550EA /* dif.cpp in Sources */,
