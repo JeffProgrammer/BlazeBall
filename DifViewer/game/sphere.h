@@ -35,7 +35,7 @@
 #include "types.h"
 #include "interior.h"
 #include "physics.h"
-#include "texture.h"
+#include "material.h"
 
 class Sphere {
 protected:
@@ -45,7 +45,7 @@ public:
 	Point3F origin;
 	F32 radius;
 	F32 maxAngVel;
-	Texture *texture;
+	Material *material;
 
 	GLuint renderBuffer;
 private:
@@ -66,7 +66,9 @@ public:
 	void setPosition(Point3F pos);
 	void setPosition(const Point3F pos) const;
 
-	void setTexture(String path);
+	void setMaterial(Material *material) {
+		this->material = material;
+	}
 
 	void applyTorque(Point3F torque);
 	void applyImpulse(Point3F force, Point3F origin);

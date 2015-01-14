@@ -113,11 +113,8 @@ void Sphere::render(ColorF color) {
 	if (!renderBuffer)
 		generate();
 
-	if (texture) {
-		if (!texture->generated) {
-			texture->generateBuffer();
-		}
-		texture->activate();
+	if (material) {
+		material->activate();
 	}
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -130,8 +127,8 @@ void Sphere::render(ColorF color) {
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
-	if (texture) {
-		texture->deactivate();
+	if (material) {
+		material->deactivate();
 	}
 }
 
@@ -238,8 +235,4 @@ void Sphere::setPosition(const Point3F pos) const {
 	actor->getMotionState()->setWorldTransform(trans);
 	actor->setWorldTransform(trans);
 	actor->setLinearVelocity(btConvert(Point3F(0, 0, 0)));
-}
-
-void Sphere::setTexture(String path) {
-	texture = io->loadTexture(path);
 }

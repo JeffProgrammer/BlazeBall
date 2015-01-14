@@ -24,6 +24,7 @@
 		B54F9DB51A10399D00F550EA /* interiorPathFollower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DA81A10399D00F550EA /* interiorPathFollower.cpp */; };
 		B54F9DB61A10399D00F550EA /* trigger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DAA1A10399D00F550EA /* trigger.cpp */; };
 		B54F9DB71A10399D00F550EA /* vehicleCollision.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DAC1A10399D00F550EA /* vehicleCollision.cpp */; };
+		B55C04F31A6613130052C528 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B55C04F11A6613130052C528 /* scene.cpp */; };
 		B56838C11A58AFC30053C982 /* pathedInterior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B56838BF1A58AFC30053C982 /* pathedInterior.cpp */; };
 		B56BFDE31A6344A500B2BDDE /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B56BFDE11A6344A500B2BDDE /* shader.cpp */; };
 		B56BFDEC1A63520400B2BDDE /* vertexShader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = B56BFDE51A63498100B2BDDE /* vertexShader.glsl */; };
@@ -102,6 +103,8 @@
 		B54F9DAB1A10399D00F550EA /* trigger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = trigger.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		B54F9DAC1A10399D00F550EA /* vehicleCollision.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = vehicleCollision.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
 		B54F9DAD1A10399D00F550EA /* vehicleCollision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = vehicleCollision.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		B55C04F11A6613130052C528 /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scene.cpp; path = DifViewer/render/scene.cpp; sourceTree = SOURCE_ROOT; };
+		B55C04F21A6613130052C528 /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scene.h; path = DifViewer/render/scene.h; sourceTree = SOURCE_ROOT; };
 		B566A6901A12EE54003D6BEA /* mng.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = mng.xcodeproj; path = mng/mng.xcodeproj; sourceTree = "<group>"; };
 		B56838BF1A58AFC30053C982 /* pathedInterior.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pathedInterior.cpp; sourceTree = "<group>"; };
 		B56838C01A58AFC30053C982 /* pathedInterior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pathedInterior.h; sourceTree = "<group>"; };
@@ -241,6 +244,8 @@
 				B56BFDE21A6344A500B2BDDE /* shader.h */,
 				B525BB011A6603DF0009E630 /* material.cpp */,
 				B525BB021A6603DF0009E630 /* material.h */,
+				B55C04F11A6613130052C528 /* scene.cpp */,
+				B55C04F21A6613130052C528 /* scene.h */,
 			);
 			name = render;
 			sourceTree = "<group>";
@@ -370,6 +375,7 @@
 				B54F9DB11A10399D00F550EA /* dif.cpp in Sources */,
 				B54F9DB31A10399D00F550EA /* gameEntity.cpp in Sources */,
 				B56BFDE31A6344A500B2BDDE /* shader.cpp in Sources */,
+				B55C04F31A6613130052C528 /* scene.cpp in Sources */,
 				B5E0CD9C1A13F41200BB4291 /* jpegsupport.cpp in Sources */,
 				B54F9DAE1A10399D00F550EA /* io.cpp in Sources */,
 				B54F9DB21A10399D00F550EA /* forceField.cpp in Sources */,
