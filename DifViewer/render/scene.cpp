@@ -230,7 +230,7 @@ void Scene::loop() {
 	if (sphere->colliding()) {
 		Point3F normal = sphere->getCollisionNormal();
 		if (movement[8] && normal.dot(Point3F(0, 0, 1)) > 0.1)
-			sphere->applyImpulse((normal + Point3F(0, 0, 1)) / 2.f * 7.5f, Point3F(0, 0, -1));
+			sphere->applyImpulse((normal + Point3F(0, 0, 1)) / 2.f * 5.f, Point3F(0, 0, -1));
 	} else {
 		sphere->applyImpulse(Point3F(torque.y, -torque.x, torque.z), Point3F(0, 0, 0));
 	}
