@@ -81,7 +81,7 @@ GLuint Shader::loadProgram(String vertPath, String fragPath) {
 	glGetProgramiv(progID, GL_INFO_LOG_LENGTH, &infoLogLength);
 
 	String log = String(infoLogLength);
-	glGetProgramInfoLog(progID, infoLogLength, NULL, (GLchar *)log.data);
+	glGetProgramInfoLog(progID, infoLogLength, NULL, log);
 
 	if (!result) {
 		printf("%s\n", log.data);
@@ -97,7 +97,19 @@ GLuint Shader::getProgramId() {
 	return programId;
 }
 
+GLuint Shader::getUniformLocation(String name) {
+	return glGetUniformLocation(getProgramId(), name);
+}
+
 void Shader::setUniformLocation(String name, GLuint location) {
-	GLuint glLocation = glGetUniformLocation(getProgramId(), (const char *)name.data);
+	GLuint glLocation = glGetUniformLocation(getProgramId(), name);
 	glUniform1i(glLocation, location);
+}
+
+void Shader::activate() {
+	glUseProgram(this->getProgramId());
+}
+
+void Shader::deactivate() {
+	glUseProgram(0);
 }

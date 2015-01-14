@@ -307,8 +307,8 @@ bool initGL() {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
-	glUseProgram(shader->getProgramId());
 
+	shader->activate();
 	shader->setUniformLocation(String("noiseSampler"), 0);
 	shader->setUniformLocation(String("textureSampler"), 1);
 

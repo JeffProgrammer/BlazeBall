@@ -45,7 +45,12 @@ public:
 	~Shader();
 
 	GLuint getProgramId();
+
+	GLuint getUniformLocation(String name);
 	void setUniformLocation(String name, GLuint location);
+
+	void activate();
+	void deactivate();
 };
 
 #endif
