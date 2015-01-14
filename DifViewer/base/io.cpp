@@ -33,7 +33,7 @@
 #include "mngsupport.h"
 #include "jpegsupport.h"
 
-#if 1
+#if 0
 #define DEBUG_PRINT(...) printf(__VA_ARGS__)
 #else
 #define DEBUG_PRINT(...)
