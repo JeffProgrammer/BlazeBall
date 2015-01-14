@@ -36,9 +36,16 @@
 class Material {
 	Texture *texture;
 	Shader *shader;
+
+	String name;
+	String path;
 public:
 	Material();
 	~Material();
+
+	Material(String path) : texture(nullptr), shader(nullptr) {
+		loadTexture(path);
+	}
 
 	Texture *getTexture() {
 		return this->texture;
@@ -53,7 +60,11 @@ public:
 	void setShader(Shader *shader) {
 		this->shader = shader;
 	}
+	void setTexNum(GLenum texNum) {
+		this->texture->setTexNum(texNum);
+	}
 
+	void loadTexture(String path);
 	void generate();
 	void activate();
 	void deactivate();

@@ -471,25 +471,14 @@ void Interior::generateMaterials(String directory) {
 				continue;
 			}
 
-			Texture *texture;
-			if ((texture = io->loadTexture(imageFile)) == nullptr) {
-				fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)imageFile);
-				this->material[i] = NULL;
-				continue;
-			}
-
-			Material *material = new Material();
-			material->setTexture(texture);
+			Material *material = new Material(imageFile);
 
 			//Assign the texture
 			this->material[i] = material;
 		}
 	}
-	Texture *texture = io->loadTexture("noise.jpg");
-	texture->setTexNum(GL_TEXTURE1);
-
-	this->noise = new Material();
-	this->noise->setTexture(texture);
+	this->noise = new Material("noise.jpg");
+	this->noise->setTexNum(GL_TEXTURE1);
 }
 
 void Interior::generateMesh() {

@@ -26,6 +26,7 @@
 //------------------------------------------------------------------------------
 
 #include "material.h"
+#include "io.h"
 
 Material::Material() : shader(nullptr), texture(nullptr) {
 
@@ -33,6 +34,15 @@ Material::Material() : shader(nullptr), texture(nullptr) {
 
 Material::~Material() {
 
+}
+
+void Material::loadTexture(String path) {
+	name = io->getName(path);
+	this->path = path;
+
+	if ((texture = io->loadTexture(path)) == nullptr) {
+		fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)path);
+	}
 }
 
 void Material::generate() {
