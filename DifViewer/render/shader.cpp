@@ -66,7 +66,7 @@ GLuint Shader::loadProgram(String *vertPath, String *fragPath) {
 	vertId = loadShader(vertPath, GL_VERTEX_SHADER);
 	fragId = loadShader(fragPath, GL_FRAGMENT_SHADER);
 
-	if (!vertId || !fragId)
+	if (glGetError())
 		return 0;
 
 	GLuint progID = glCreateProgram();
