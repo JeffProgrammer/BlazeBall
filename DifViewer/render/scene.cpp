@@ -386,9 +386,9 @@ void Scene::handleEvent(SDL_Event *event) {
 				if (((SDL_KeyboardEvent *)event)->keysym.mod & KMOD_LGUI) { //LGUI -> LCmd
 					//Save
 					for (U32 i = 0; i < difCount; i ++) {
-						String directory = String(dirname((char *)filenames[i]));
+						String directory = io->getPath(*filenames[i]);
 
-						FILE *output = fopen((const char *)filenames[i], "w");
+						FILE *output = fopen(*filenames[i], "w");
 						difs[i]->write(output, directory);
 						fflush(output);
 						fclose(output);
