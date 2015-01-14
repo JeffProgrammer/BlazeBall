@@ -113,29 +113,37 @@ struct String : public Readable, Writable {
 	}
 	String() : data(new U8[1]), length(0) {
 		data[length] = 0;
+		allocated = true;
 	}
 	String(U32 length) : data(new U8[length + 1]), length(length) {
 		data[length] = 0;
+		allocated = true;
 	}
 	String(const char *bytes) : data(new U8[(U8)strlen(bytes) + 1]), length((U8)strlen(bytes)) {
 		memcpy(data, bytes, length);
 		data[length] = 0;
+		allocated = true;
 	}
 	String(U8 *bytes, U32 length) : data(new U8[length + 1]), length(length) {
 		memcpy(data, bytes, length);
 		data[length] = 0;
+		allocated = true;
 	}
 	String(String const &other) : data(new U8[other.length + 1]), length(other.length) {
 		memcpy(data, other.data, length);
 		data[length] = 0;
+		allocated = true;
 	}
 	String(String other, U32 length) : data(new U8[length + 1]), length(length) {
 		memcpy(data, other.data, length);
 		data[length] = 0;
+		allocated = true;
 	}
 	~String() {
-		//Fuck it, leak
-		delete [] data;
+		if (allocated) {
+			delete [] data;
+			allocated = false;
+		}
 	}
 
 	bool read(FILE *file);
