@@ -414,64 +414,31 @@ void Interior::generateMaterials(String directory) {
 		material = new Material*[numMaterials];
 		for (U32 i = 0; i < numMaterials; i ++) {
 			String materialName = this->materialName[i];
-
-			//Chop off any paths from the material. Constructor likes to save albums in the materials
-			// and it royally breaks this program.
-			if (strstr(materialName, "/")) {
-				//Hacky but effective method
-				materialName = io->getPath(materialName) + '/';
-				strcpy(materialName, strstr(materialName, "/") + 1);
-			}
-
-			BitmapType type = BitmapTypePNG;
-
-			//For some reason these two like to become the same.
-			String base = directory;
-
-			//Allocate enough space in each of these so we can work comfortably
-			U32 pathlen = (U32)(base.length + materialName.length + 1);
-			String imageFile = String(pathlen + 5);
-
-			do {
-				//Init imageFile to base/file.png
-				pathlen = sprintf(imageFile, "%s/%s.png", (char *)base, (char *)materialName);
-
-				type = BitmapTypePNG;
-
-				//If we can't find the PNG, try for JPEG
-				//TODO: BMP Support?
-				if (!io->isfile(imageFile)) {
-					//Swap the last 3 chars with jpg
-					imageFile.data[pathlen - 3] = 'j';
-					imageFile.data[pathlen - 2] = 'p';
-					imageFile.data[pathlen - 1] = 'g';
-					type = BitmapTypeJPEG;
-				}
-				if (!io->isfile(imageFile)) {
-					//Swap the last 3 chars with jng
-					imageFile.data[pathlen - 3] = 'j';
-					imageFile.data[pathlen - 2] = 'n';
-					imageFile.data[pathlen - 1] = 'g';
-					type = BitmapTypePNG;
-				}
-				//Can't recurse any further
-				if (!strrchr(base, '/'))
-					break;
-
-				//If we still can't find it, recurse (hacky but effective method)
-				if (!io->isfile(imageFile)) {
-					*strrchr((const char *)base.data, '/') = 0;
-				}
-			} while (!io->isfile(imageFile) && strcmp(base, ""));
+			String diffuseFile = Texture::find(materialName, directory);
 
 			//If we can't find it, just chuck the lot and keep going.
-			if (!io->isfile(imageFile)) {
+			if (!diffuseFile.length) {
 				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", (char *)materialName);
 				this->material[i] = NULL;
 				continue;
 			}
+			Material *material = new Material(diffuseFile);
 
-			Material *material = new Material(imageFile);
+			//Find spec/normal
+
+			String normalName = materialName + ".normal";
+			String normalFile = Texture::find(normalName, directory);
+
+			if (normalFile.length) {
+				material->setNormalTex(io->loadTexture(normalFile));
+			}
+
+			String specularName = materialName + ".alpha";
+			String specularFile = Texture::find(specularName, directory);
+
+			if (specularFile.length) {
+				material->setSpecularTex(io->loadTexture(specularFile));
+			}
 
 			//Assign the texture
 			this->material[i] = material;

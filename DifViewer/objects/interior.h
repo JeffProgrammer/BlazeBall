@@ -32,11 +32,6 @@
 #include "material.h"
 #include "physics.h"
 
-enum BitmapType {
-	BitmapTypePNG,
-	BitmapTypeJPEG,
-};
-
 struct Vertex {
 	Point3F point;
 	Point2F uv;
