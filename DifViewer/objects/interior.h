@@ -36,6 +36,8 @@ struct Vertex {
 	Point3F point;
 	Point2F uv;
 	Point3F normal;
+	Point3F tangent;
+	Point3F bitangent;
 };
 
 struct Triangle {

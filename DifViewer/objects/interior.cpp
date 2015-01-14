@@ -445,7 +445,7 @@ void Interior::generateMaterials(String directory) {
 		}
 	}
 	this->noise = io->loadTexture("noise.jpg");
-	this->noise->setTexNum(GL_TEXTURE1);
+	this->noise->setTexNum(GL_TEXTURE3);
 }
 
 void Interior::generateMesh() {

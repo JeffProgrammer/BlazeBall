@@ -34,16 +34,34 @@
 
 void Scene::render() {
 #ifdef GL_33
+	//Light
+	glUniform3fv(lightDirectionLocation, 1, &lightDirection.x);
+	glUniform4fv(lightColorLocation, 1, &lightColor.red);
+	glUniform4fv(ambientColorLocation, 1, &ambientColor.red);
+
+	glUniform3fv(sunPositionLocation, 1, &sunPosition.x);
+	glUniform1f(sunPowerLocation, sunPower);
+
 	//Camera
-	modelviewMatrix = glm::mat4x4(1);
-	modelviewMatrix = glm::rotate(modelviewMatrix, pitch, glm::vec3(1, 0, 0));
-	modelviewMatrix = glm::rotate(modelviewMatrix, yaw, glm::vec3(0, 1, 0));
-	modelviewMatrix = glm::rotate(modelviewMatrix, -90.0f, glm::vec3(1, 0, 0));
-	modelviewMatrix = glm::translate(modelviewMatrix, -cameraPosition);
+	viewMatrix = glm::mat4x4(1);
+	viewMatrix = glm::rotate(viewMatrix, pitch, glm::vec3(1, 0, 0));
+	viewMatrix = glm::rotate(viewMatrix, yaw, glm::vec3(0, 1, 0));
+	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
+	viewMatrix = glm::translate(viewMatrix, -cameraPosition);
 
-	glm::mat4x4 mvpMat = projectionMatrix * modelviewMatrix;
+	//Model
+	modelMatrix = glm::mat4x4(1);
 
-	glUniformMatrix4fv(mvpMatrix, 1, GL_FALSE, &mvpMat[0][0]);
+	//Combined
+	glm::mat4x4 mvpMat = projectionMatrix * viewMatrix * modelMatrix;
+	glm::mat3x3 mv3Mat = glm::mat3(viewMatrix * modelMatrix);
+
+	//Send to OpenGL
+	glUniformMatrix4fv(mvpMatrixLocation, 1, GL_FALSE, &mvpMat[0][0]);
+	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]);
+	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &viewMatrix[0][0]);
+	glUniformMatrix3fv(modelView3Location, 1, GL_FALSE, &mv3Mat[0][0]);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
@@ -60,12 +78,18 @@ void Scene::render() {
 	Point3F pos = sphere->getPosition();
 	AngAxisF rot = sphere->getRotation();
 
-	glm::mat4x4 mat = glm::mat4x4(1);
-	mat = glm::translate(mat, glm::vec3(pos.x, pos.y, pos.z));
-	mat = glm::rotate(mat, rot.angle * (F32)(180.0f / M_PI), glm::vec3(rot.axis.x, rot.axis.y, rot.axis.z));
+	//Model
+	modelMatrix = glm::mat4x4(1);
+	modelMatrix = glm::translate(modelMatrix, glm::vec3(pos.x, pos.y, pos.z));
+	modelMatrix = glm::rotate(modelMatrix, rot.angle * (F32)(180.0f / M_PI), glm::vec3(rot.axis.x, rot.axis.y, rot.axis.z));
 
-	mvpMat *= mat;
-	glUniformMatrix4fv(mvpMatrix, 1, GL_FALSE, &mvpMat[0][0]);
+	//Combined
+	mvpMat = projectionMatrix * viewMatrix * modelMatrix;
+
+	//Send to OpenGL
+	glUniformMatrix4fv(mvpMatrixLocation, 1, GL_FALSE, &mvpMat[0][0]);
+	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]);
+	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &viewMatrix[0][0]);
 
 	sphere->render(ColorF(1, 1, 0, 1));
 #else
@@ -79,12 +103,12 @@ void Scene::render() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Camera
-	modelviewMatrix = glm::mat4x4(1);
-	modelviewMatrix = glm::rotate(modelviewMatrix, pitch, glm::vec3(1, 0, 0));
-	modelviewMatrix = glm::rotate(modelviewMatrix, yaw, glm::vec3(0, 1, 0));
-	modelviewMatrix = glm::rotate(modelviewMatrix, -90.0f, glm::vec3(1, 0, 0));
-	//	modelviewMatrix = glm::translate(modelviewMatrix, -cameraPosition);
-	modelviewMatrix = glm::translate(modelviewMatrix, cameraPosition);
+	viewMatrix = glm::mat4x4(1);
+	viewMatrix = glm::rotate(viewMatrix, pitch, glm::vec3(1, 0, 0));
+	viewMatrix = glm::rotate(viewMatrix, yaw, glm::vec3(0, 1, 0));
+	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
+	//	viewMatrix = glm::translate(viewMatrix, -cameraPosition);
+	viewMatrix = glm::translate(viewMatrix, cameraPosition);
 
 	glLoadMatrixf(&modelviewMatrix[0][0]);
 
@@ -232,10 +256,22 @@ bool Scene::initGL() {
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 
 	shader->activate();
-	shader->setUniformLocation(String("noiseSampler"), 0);
-	shader->setUniformLocation(String("textureSampler"), 1);
+	shader->setUniformLocation(String("textureSampler"), 0);
+	shader->setUniformLocation(String("normalSampler"), 1);
+	shader->setUniformLocation(String("specularSampler"), 2);
+	shader->setUniformLocation(String("noiseSampler"), 3);
 
-	mvpMatrix = glGetUniformLocation(shader->getProgramId(), "MVP");
+	mvpMatrixLocation = shader->getUniformLocation("modelViewProjectionMat");
+	modelMatrixLocation = shader->getUniformLocation("modelMat");
+	viewMatrixLocation = shader->getUniformLocation("viewMat");
+	modelView3Location = shader->getUniformLocation("modelView3Mat");
+
+	lightDirectionLocation = shader->getUniformLocation("lightDirection");
+	lightColorLocation = shader->getUniformLocation("lightColor");
+	ambientColorLocation = shader->getUniformLocation("ambientColor");
+
+	sunPositionLocation = shader->getUniformLocation("sunPosition");
+	sunPowerLocation = shader->getUniformLocation("sunPower");
 
 	//Window size for viewport
 	int w, h;
@@ -312,7 +348,7 @@ void Scene::performClick(S32 mouseX, S32 mouseY) {
 	eye = glm::vec4(eye.x, eye.y, -1.0f, 0.0f);
 
 	//Eye coordinates -> modelview coordinates
-	glm::vec3 world = glm::vec3(glm::inverse(modelviewMatrix) * eye);
+	glm::vec3 world = glm::vec3(glm::inverse(viewMatrix) * eye);
 
 	RayF ray(cameraPosition.x, cameraPosition.y, cameraPosition.z,
 			 world.x, world.y, world.z);

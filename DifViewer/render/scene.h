@@ -68,8 +68,19 @@ protected:
 	F32 pitch;
 	glm::vec3 cameraPosition;
 
-	GLuint mvpMatrix;
-	glm::mat4x4 projectionMatrix, modelviewMatrix;
+	GLuint mvpMatrixLocation;
+	GLuint modelMatrixLocation;
+	GLuint viewMatrixLocation;
+
+	GLuint modelView3Location;
+
+	GLuint lightDirectionLocation;
+	GLuint lightColorLocation;
+	GLuint ambientColorLocation;
+	GLuint sunPositionLocation;
+	GLuint sunPowerLocation;
+
+	glm::mat4x4 projectionMatrix, modelMatrix, viewMatrix;
 
 	struct {
 		bool hasSelection;
@@ -88,10 +99,12 @@ protected:
 	const float keyCameraSpeed = 3.f;
 	const float movementSpeed = 0.2f;
 
-	const F32 lightColor[4]     = {1.100000f, 1.100000f, 0.900000f, 1.000000f};
-	const F32 lightDirection[4] = {0.60f, 0.40f, 1.0f, 0.0f};
-	const F32 ambientColor[4]   = {0.600000f, 0.600000f, 0.800000f, 1.000000f};
-	const F32 diffuseColor[4]   = {0.800000f, 0.800000f, 1.000000f, 1.000000f};
+	const ColorF lightColor      = ColorF(1.100000f, 1.100000f, 0.900000f, 1.000000f);
+	const Point3F lightDirection = Point3F(0.60f, 0.40f, 1.0f);
+	const ColorF ambientColor    = ColorF(0.600000f, 0.600000f, 0.800000f, 1.000000f);
+
+	const Point3F sunPosition    = Point3F(100.0f, 75.0f, 100.0f);
+	const F32 sunPower           = 1000.0f;
 public:
 	U32 difCount;
 	DIF **difs;

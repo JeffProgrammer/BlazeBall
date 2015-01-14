@@ -63,6 +63,14 @@ void Interior::render() {
 		}
 		noise->generateBuffer();
 
+		Point3F *tangentMap = new Point3F[numNormals];
+		Point3F *bitangentMap = new Point3F[numNormals];
+
+		for (U32 i = 0; i < numNormals; i ++) {
+			tangentMap[i] = Point3F();
+			bitangentMap[i] = Point3F();
+		}
+
 		for (U32 i = 0; i < numSurfaces; i ++) {
 			Surface surface = this->surface[i];
 
@@ -91,6 +99,35 @@ void Interior::render() {
 				Point2F uv1 = Point2F(planeF_distance_to_point(texGenEq.planeX, v1), planeF_distance_to_point(texGenEq.planeY, v1));
 				Point2F uv2 = Point2F(planeF_distance_to_point(texGenEq.planeX, v2), planeF_distance_to_point(texGenEq.planeY, v2));
 
+				U32 plane = this->plane[surface.planeIndex].normalIndex;
+				Point3F tangent;
+				Point3F bitangent;
+				if (tangentMap[plane].length()) {
+					tangent = tangentMap[plane];
+					bitangent = bitangentMap[plane];
+				} else {
+					Point3F deltaPos1 = v1 - v0;
+					Point3F deltaPos2 = v2 - v0;
+					Point2F deltaUV1 = uv1 - uv0;
+					Point2F deltaUV2 = uv2 - uv0;
+
+					F32 r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+
+					Point3F tangent   = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+					Point3F bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
+
+					tangent = (tangent - (normal * normal.dot(tangent))).normalize();
+					if ((normal.cross(tangent)).dot(bitangent) < 0.0f) {
+						tangent *= -1.0f;
+					}
+
+					tangent = tangent.normalize();
+					bitangent = bitangent.normalize();
+
+					tangentMap[plane] = tangent;
+					bitangentMap[plane] = bitangent;
+				}
+
 				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].point = v0;
 				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].point = v1;
 				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].point = v2;
@@ -100,6 +137,12 @@ void Interior::render() {
 				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].normal = normal;
 				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].normal = normal;
 				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].normal = normal;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].tangent = tangent;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].tangent = tangent;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].tangent = tangent;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].bitangent = bitangent;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].bitangent = bitangent;
+				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].bitangent = bitangent;
 				materialTriangles[surface.textureIndex] ++;
 			}
 		}
@@ -133,6 +176,8 @@ void Interior::render() {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
 	glBindBuffer(GL_ARRAY_BUFFER, renderInfo.vertexBuffer);
 
 	//0th array - vertices
@@ -159,6 +204,22 @@ void Interior::render() {
 						  sizeof(Vertex), //Stride
 						  (void *)offsetof(Vertex, normal)); //Offset
 
+	//3rd array - tangents
+	glVertexAttribPointer(3, //Attribute 3
+						  3, //3 components
+						  GL_FLOAT, //Type
+						  GL_FALSE, //Normalized
+						  sizeof(Vertex), //Stride
+						  (void *)offsetof(Vertex, tangent)); //Offset
+
+	//4th array - bitangents
+	glVertexAttribPointer(4, //Attribute 4
+						  3, //3 components
+						  GL_FLOAT, //Type
+						  GL_FALSE, //Normalized
+						  sizeof(Vertex), //Stride
+						  (void *)offsetof(Vertex, bitangent)); //Offset
+
 	U32 start = 0;
 	for (U32 i = 0; i < numMaterials; i ++) {
 		if (renderInfo.numMaterialTriangles[i] > 0) {
@@ -176,6 +237,8 @@ void Interior::render() {
 	}
 
 	//Disable arrays
+	glDisableVertexAttribArray(4);
+	glDisableVertexAttribArray(3);
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
