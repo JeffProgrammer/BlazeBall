@@ -47,7 +47,5 @@ bool GameEntity::write(FILE *file) {
 }
 
 GameEntity::~GameEntity() {
-	releaseString(datablock);
-	releaseString(gameClass);
-	releaseDictionary(properties);
+
 }

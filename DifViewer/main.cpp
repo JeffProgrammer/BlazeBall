@@ -56,7 +56,7 @@ DIF **gDifs;
 
 Sphere *gSphere;
 
-String *gFilenames;
+String **gFilenames;
 
 bool gRunning;
 bool gPrintFPS = false;
@@ -632,7 +632,7 @@ int main(int argc, const char * argv[])
 
 	gDifCount = 0;
 	gDifs = new DIF*[argc - argstart];
-	gFilenames = new String[argc - argstart];
+	gFilenames = new String*[argc - argstart];
 
 	for (U32 i = 0; i < (argc - argstart); i ++) {
 		String directory = String(dirname((char *)argv[i + argstart]));
@@ -649,7 +649,7 @@ int main(int argc, const char * argv[])
 		//Clean up
 		fclose(file);
 
-		gFilenames[i] = (String)argv[i + argstart];
+		gFilenames[i] = new String(argv[i + argstart]);
 	}
 
 	if (!strcmp(argv[1], "-o")) {

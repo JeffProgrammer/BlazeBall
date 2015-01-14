@@ -172,11 +172,6 @@ bool Color<T>::write(FILE *file) {
 	io->write(file, alpha, "alpha");
 }
 
-
-//Memory management
-void releaseString(String string);
-void releaseDictionary(Dictionary dictionary);
-
 //Macros to speed up file reading
 #define REVERSE(size) io->reverse(&file, size)
 
@@ -185,7 +180,7 @@ template <typename T>
 inline T __read(FILE *file, T *thing) {
 	T __garbage;
 #ifdef DEBUG
-	io->read(file, &__garbage, String("garbage"));
+	io->read(file, &__garbage, "garbage");
 #else
 	io->read(file, &__garbage, "");
 #endif

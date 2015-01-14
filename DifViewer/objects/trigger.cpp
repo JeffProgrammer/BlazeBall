@@ -68,10 +68,7 @@ bool Trigger::write(FILE *file) {
 }
 
 Trigger::~Trigger() {
-	releaseString(name);
-	releaseString(datablock);
-	releaseDictionary(properties);
-	delete polyHedronPoint;
-	delete polyHedronPlane;
-	delete polyHedronEdge;
+	delete [] polyHedronPoint;
+	delete [] polyHedronPlane;
+	delete [] polyHedronEdge;
 }

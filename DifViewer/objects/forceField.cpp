@@ -107,16 +107,12 @@ bool ForceField::write(FILE *file) {
 }
 
 ForceField::~ForceField() {
-	releaseString(name);
-	for (U32 i = 0; i < numTriggers; i ++) {
-		releaseString(trigger[i]);
-	}
-	delete trigger;
-	delete normal;
-	delete plane;
-	delete BSPNode;
-	delete BSPSolidLeaf;
-	delete index;
-	delete surface;
-	delete solidLeafSurface;
+	delete [] trigger;
+	delete [] normal;
+	delete [] plane;
+	delete [] BSPNode;
+	delete [] BSPSolidLeaf;
+	delete [] index;
+	delete [] surface;
+	delete [] solidLeafSurface;
 }

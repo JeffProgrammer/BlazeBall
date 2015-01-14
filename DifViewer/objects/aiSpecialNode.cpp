@@ -43,5 +43,5 @@ bool AISpecialNode::write(FILE *file) {
 }
 
 AISpecialNode::~AISpecialNode() {
-	releaseString(name);
+
 }

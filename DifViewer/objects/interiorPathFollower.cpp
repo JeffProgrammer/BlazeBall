@@ -67,10 +67,6 @@ bool InteriorPathFollower::write(FILE *file) {
 }
 
 InteriorPathFollower::~InteriorPathFollower() {
-	releaseString(name);
-	releaseString(datablock);
-	releaseDictionary(properties);
-
-	delete triggerId;
-	delete wayPoint;
+	delete [] triggerId;
+	delete [] wayPoint;
 }

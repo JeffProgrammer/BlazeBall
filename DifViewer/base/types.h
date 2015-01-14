@@ -68,6 +68,15 @@ struct String : public Readable, Writable {
 	inline operator char *() {
 		return (char *)data;
 	}
+	inline operator U8 *() {
+		return data;
+	}
+	inline operator const void *() {
+		return data;
+	}
+	inline operator void *() {
+		return data;
+	}
 	inline bool operator==(const char *str) {
 		return strcmp((const char *)data, str) == 0;
 	}
@@ -86,6 +95,11 @@ struct String : public Readable, Writable {
 		newStr.concat(str);
 		return newStr;
 	}
+	inline String operator+(char chr) {
+		String newStr = String(*this);
+		newStr.concat(String(&chr));
+		return newStr;
+	}
 	inline String concat(String str) {
 		U8 *cur = new U8[length + 1];
 		memcpy(cur, data, length + 1);
@@ -97,33 +111,31 @@ struct String : public Readable, Writable {
 		delete [] cur;
 		return *this;
 	}
-	String() : data(nullptr), length(0) {
-		allocated = false;
+	String() : data(new U8[1]), length(0) {
+		data[length] = 0;
 	}
-	String(U32 length) : data(new U8[length]), length(length) {
-		allocated = true;
-	}
-	~String() {
-//		if (allocated)
-//			delete data;
+	String(U32 length) : data(new U8[length + 1]), length(length) {
+		data[length] = 0;
 	}
 	String(const char *bytes) : data(new U8[(U8)strlen(bytes) + 1]), length((U8)strlen(bytes)) {
 		memcpy(data, bytes, length);
-		allocated = true;
+		data[length] = 0;
 	}
-	String(U8 *bytes, U32 length) : data(new U8[length]), length(length) {
+	String(U8 *bytes, U32 length) : data(new U8[length + 1]), length(length) {
 		memcpy(data, bytes, length);
-		allocated = true;
+		data[length] = 0;
 	}
 	String(String const &other) : data(new U8[other.length + 1]), length(other.length) {
 		memcpy(data, other.data, length);
 		data[length] = 0;
-		allocated = true;
 	}
 	String(String other, U32 length) : data(new U8[length + 1]), length(length) {
 		memcpy(data, other.data, length);
 		data[length] = 0;
-		allocated = true;
+	}
+	~String() {
+		//Fuck it, leak
+		delete [] data;
 	}
 
 	bool read(FILE *file);
@@ -227,6 +239,11 @@ public:
 				return values[i];
 		}
 		return nullptr;
+	}
+
+	~Dictionary() {
+		delete [] names;
+		delete [] values;
 	}
 };
 

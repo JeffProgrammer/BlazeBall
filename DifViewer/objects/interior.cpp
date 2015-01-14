@@ -362,52 +362,49 @@ bool Interior::write(FILE *file) {
 
 Interior::~Interior() {
 	for (U32 i = 0; i < numMaterials; i ++) {
-		releaseString(material[i]);
-
 		if (texture[i])
 			delete texture[i];
 	}
 
-	delete normal;
-	delete plane;
-	delete point;
-	delete pointVisibility;
-	delete texGenEq;
-	delete BSPNode;
-	delete BSPSolidLeaf;
-	delete material;
-	delete texture;
-	delete index;
-	delete windingIndex;
-	delete zone;
-	delete zoneSurface;
-	delete zonePortalList;
-	delete portal;
-	delete surface;
-	delete normalLMapIndex;
-	delete alarmLMapIndex;
-	delete nullSurface;
-	delete lightMap;
-	delete solidLeafSurface;
-	delete animatedLight;
-	delete lightState;
-	delete stateData;
-	delete stateDataBuffer;
-	delete nameBufferCharacter;
-	delete convexHull;
-	delete convexHullEmitStringCharacter;
-	delete hullIndex;
-	delete hullPlaneIndex;
-	delete hullEmitStringIndex;
-	delete hullSurfaceIndex;
-	delete polyListPlaneIndex;
-	delete polyListPointIndex;
-	delete polyListStringCharacter;
-	delete coordBin;
-	delete coordBinIndex;
-	delete texNormal;
-	delete texMatrix;
-	delete texMatIndex;
+	delete [] normal;
+	delete [] plane;
+	delete [] point;
+	delete [] pointVisibility;
+	delete [] texGenEq;
+	delete [] BSPNode;
+	delete [] BSPSolidLeaf;
+	delete [] material;
+	delete [] index;
+	delete [] windingIndex;
+	delete [] zone;
+	delete [] zoneSurface;
+	delete [] zonePortalList;
+	delete [] portal;
+	delete [] surface;
+	delete [] normalLMapIndex;
+	delete [] alarmLMapIndex;
+	delete [] nullSurface;
+	delete [] lightMap;
+	delete [] solidLeafSurface;
+	delete [] animatedLight;
+	delete [] lightState;
+	delete [] stateData;
+	delete [] stateDataBuffer;
+	delete [] nameBufferCharacter;
+	delete [] convexHull;
+	delete [] convexHullEmitStringCharacter;
+	delete [] hullIndex;
+	delete [] hullPlaneIndex;
+	delete [] hullEmitStringIndex;
+	delete [] hullSurfaceIndex;
+	delete [] polyListPlaneIndex;
+	delete [] polyListPointIndex;
+	delete [] polyListStringCharacter;
+	delete [] coordBin;
+	delete [] coordBinIndex;
+	delete [] texNormal;
+	delete [] texMatrix;
+	delete [] texMatIndex;
 }
 
 void Interior::generateMaterials(String directory) {
