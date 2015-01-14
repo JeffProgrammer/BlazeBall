@@ -49,7 +49,7 @@ DIF::DIF(FILE *file, String directory) {
 		subObject[i] = new Interior();
 		subObject[i]->read(file);
 		subObject[i]->generateMaterials(directory);
-		interior[i]->generateMesh();
+		subObject[i]->generateMesh();
 	}
 	READLOOPVAR(numTriggers, trigger, Trigger *) {
 		trigger[i] = new Trigger(file);

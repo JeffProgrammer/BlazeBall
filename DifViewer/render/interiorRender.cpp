@@ -74,14 +74,14 @@ void Interior::render() {
 		for (U32 i = 0; i < numSurfaces; i ++) {
 			Surface surface = this->surface[i];
 
+			Point3F normal = this->normal[plane[surface.planeIndex].normalIndex];
+			if (surface.planeFlipped) {
+				normal *= -1;
+			}
+
 			//New and improved rendering with actual Triangle Strips this time
 			for (U32 j = surface.windingStart + 2; j < surface.windingStart + surface.windingCount; j ++) {
-				Point3F normal = this->normal[plane[surface.planeIndex].normalIndex];
 				Point3F v0, v1, v2;
-
-				if (surface.planeFlipped) {
-					normal *= -1;
-				}
 
 				if ((j - (surface.windingStart + 2)) % 2 == 0) {
 					v0 = point[index[j]];
