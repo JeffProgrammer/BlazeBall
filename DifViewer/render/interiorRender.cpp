@@ -61,7 +61,7 @@ void Interior::render() {
 				mat->generate();
 			}
 		}
-		noise->generate();
+		noise->generateBuffer();
 
 		for (U32 i = 0; i < numSurfaces; i ++) {
 			Surface surface = this->surface[i];

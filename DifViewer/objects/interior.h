@@ -281,7 +281,7 @@ public:
 	U32 numMaterials;
 	String *materialName;
 	Material **material;
-	Material *noise;
+	Texture *noise;
 
 	U32 numWindings;
 	U32 *index;
