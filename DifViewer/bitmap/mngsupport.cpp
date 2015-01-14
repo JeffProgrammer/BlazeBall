@@ -249,4 +249,5 @@ void closeMNG() {
 		mng_cleanup(&gMNG);
 	}
 	gMNG = MNG_NULL;
+	gMNGInfo.file = "";
 }
