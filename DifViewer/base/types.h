@@ -71,14 +71,8 @@ struct String : public Readable, Writable {
 	inline bool operator==(const char *str) {
 		return strcmp((const char *)data, str) == 0;
 	}
-	inline bool operator==(String *str) {
-		return strcmp((const char *)data, (const char *)str->data) == 0;
-	}
 	inline bool operator==(String str) {
 		return strcmp((const char *)data, (const char *)str.data) == 0;
-	}
-	inline bool operator!=(String *str) {
-		return !operator==(str);
 	}
 	inline bool operator!=(String str) {
 		return !operator==(str);
@@ -88,13 +82,8 @@ struct String : public Readable, Writable {
 		return *this;
 	}
 	inline String operator+(String str) {
-		String newStr = String(this);
+		String newStr = String(*this);
 		newStr.concat(str);
-		return newStr;
-	}
-	inline String *operator+(String *str) {
-		String *newStr = new String(this);
-		newStr->concat(str);
 		return newStr;
 	}
 	inline String concat(String str) {
@@ -126,13 +115,13 @@ struct String : public Readable, Writable {
 		memcpy(data, bytes, length);
 		allocated = true;
 	}
-	String(String *other) : data(new U8[other->length + 1]), length(other->length) {
-		memcpy(data, other->data, length);
+	String(String const &other) : data(new U8[other.length + 1]), length(other.length) {
+		memcpy(data, other.data, length);
 		data[length] = 0;
 		allocated = true;
 	}
-	String(String *other, U32 length) : data(new U8[length + 1]), length(length) {
-		memcpy(data, other->data, length);
+	String(String other, U32 length) : data(new U8[length + 1]), length(length) {
+		memcpy(data, other.data, length);
 		data[length] = 0;
 		allocated = true;
 	}
@@ -226,13 +215,13 @@ public:
 class Dictionary : public Readable, Writable {
 public:
 	U32 size;
-	String **names;
-	String **values;
+	String *names;
+	String *values;
 
 	bool read(FILE *file);
 	bool write(FILE *file);
 
-	String *get(String *key) {
+	String get(String key) {
 		for (U32 i = 0; i < size; i ++) {
 			if (names[i] == key)
 				return values[i];

@@ -240,6 +240,6 @@ void Sphere::setPosition(const Point3F pos) const {
 	actor->setLinearVelocity(btConvert(Point3F(0, 0, 0)));
 }
 
-void Sphere::setTexture(String *path) {
+void Sphere::setTexture(String path) {
 	texture = io->loadTexture(path);
 }

@@ -418,7 +418,7 @@ public:
 	 Renders an interior with OpenGL
 	 */
 	void render();
-	void generateMaterials(String *directory);
+	void generateMaterials(String directory);
 	U32 rayCast(RayF ray);
 
 private:

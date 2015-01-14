@@ -410,32 +410,32 @@ Interior::~Interior() {
 	delete texMatIndex;
 }
 
-void Interior::generateMaterials(String *directory) {
+void Interior::generateMaterials(String directory) {
 	//Allocate all textures for the interior
 	if (numMaterials) {
 		texture = (Texture **)new Texture*[numMaterials];
 		for (U32 i = 0; i < numMaterials; i ++) {
-			String *material = new String(this->material[i].length + 1);
-			strcpy((char *)material->data, (const char *)this->material[i]);
+			String material = String(this->material[i].length + 1);
+			strcpy((char *)material.data, (const char *)this->material[i]);
 			//Chop off any paths from the material. Constructor likes to save albums in the materials
 			// and it royally breaks this program.
-			if (strstr((const char *)material->data, "/")) {
+			if (strstr((const char *)material.data, "/")) {
 				//Hacky but effective method
-				strcpy((char *)material->data, strstr((const char *)material->data, "/") + 1);
+				strcpy((char *)material.data, strstr((const char *)material.data, "/") + 1);
 			}
 
 			BitmapType type = BitmapTypePNG;
 
 			//For some reason these two like to become the same.
-			String *base = new String(directory);
+			String base = String(directory);
 
 			//Allocate enough space in each of these so we can work comfortably
-			U32 pathlen = (U32)(base->length + material->length + 1);
-			String *imageFile = new String(pathlen + 5);
+			U32 pathlen = (U32)(base.length + material.length + 1);
+			String imageFile = String(pathlen + 5);
 
 			do {
 				//Init imageFile to base/file.png
-				pathlen = sprintf((char *)imageFile->data, "%s/%s.png", (char *)base->data, (char *)material->data);
+				pathlen = sprintf((char *)imageFile.data, "%s/%s.png", (char *)base.data, (char *)material.data);
 
 				type = BitmapTypePNG;
 
@@ -443,56 +443,47 @@ void Interior::generateMaterials(String *directory) {
 				//TODO: BMP Support?
 				if (!io->isfile(imageFile)) {
 					//Swap the last 3 chars with jpg
-					imageFile->data[pathlen - 3] = 'j';
-					imageFile->data[pathlen - 2] = 'p';
-					imageFile->data[pathlen - 1] = 'g';
+					imageFile.data[pathlen - 3] = 'j';
+					imageFile.data[pathlen - 2] = 'p';
+					imageFile.data[pathlen - 1] = 'g';
 					type = BitmapTypeJPEG;
 				}
 				if (!io->isfile(imageFile)) {
 					//Swap the last 3 chars with jng
-					imageFile->data[pathlen - 3] = 'j';
-					imageFile->data[pathlen - 2] = 'n';
-					imageFile->data[pathlen - 1] = 'g';
+					imageFile.data[pathlen - 3] = 'j';
+					imageFile.data[pathlen - 2] = 'n';
+					imageFile.data[pathlen - 1] = 'g';
 					type = BitmapTypePNG;
 				}
 				//Can't recurse any further
-				if (!strrchr((const char *)base->data, '/'))
+				if (!strrchr((const char *)base.data, '/'))
 					break;
 
 				//If we still can't find it, recurse (hacky but effective method)
 				if (!io->isfile(imageFile)) {
-					*strrchr((const char *)base->data, '/') = 0;
+					*strrchr((const char *)base.data, '/') = 0;
 				}
-			} while (!io->isfile(imageFile) && strcmp((const char *)base->data, ""));
+			} while (!io->isfile(imageFile) && strcmp((const char *)base.data, ""));
 
 			//If we can't find it, just chuck the lot and keep going.
 			if (!io->isfile(imageFile)) {
-				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", (char *)material->data);
+				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", (char *)material.data);
 				texture[i] = NULL;
-				delete base;
-				delete imageFile;
 				continue;
 			}
 
 			Texture *texture;
 			if ((texture = io->loadTexture(imageFile)) == nullptr) {
-				fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)imageFile->data);
+				fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)imageFile.data);
 				this->texture[i] = NULL;
-
-				delete base;
-				delete imageFile;
 				continue;
 			}
 
 			//Assign the texture
 			this->texture[i] = texture;
-
-			//Clean up stuff (copied above, this is safe)
-			delete base;
-			delete imageFile;
 		}
 	}
-	this->noise = io->loadTexture(new String("noise.jpg"));
+	this->noise = io->loadTexture(String("noise.jpg"));
 	this->noise->setTexNum(GL_TEXTURE1);
 
 	//Create body

@@ -303,14 +303,14 @@ bool initGL() {
 	glGenVertexArrays(1, &vertexArrayID);
 	glBindVertexArray(vertexArrayID);
 
-	Shader *shader = new Shader(new String("vertexShader.glsl"), new String("fragmentShader.glsl"));
+	Shader *shader = new Shader(String("vertexShader.glsl"), String("fragmentShader.glsl"));
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 	glUseProgram(shader->getProgramId());
 
-	shader->setUniformLocation(new String("noiseSampler"), 0);
-	shader->setUniformLocation(new String("textureSampler"), 1);
+	shader->setUniformLocation(String("noiseSampler"), 0);
+	shader->setUniformLocation(String("textureSampler"), 1);
 
 	mvpMatrix = glGetUniformLocation(shader->getProgramId(), "MVP");
 	lightDirection = glGetUniformLocation(shader->getProgramId(), "lightDirection");
@@ -326,9 +326,9 @@ bool initGL() {
 	glDepthFunc(GL_LESS);
 
 	gSphere = new Sphere(Point3F(0, 30, 60), 0.2f);
-	String *directory = new String(dirname((char *)gFilenames[0]));
-	directory->concat("/");
-	directory->concat("tile_beginner.png");
+	String directory = String(dirname((char *)gFilenames[0]));
+	directory.concat("/");
+	directory.concat("tile_beginner.png");
 	gSphere->setTexture(directory);
 #else
 	//Initialize clear color
@@ -431,7 +431,7 @@ void handleEvent(SDL_Event *event) {
 				if (((SDL_KeyboardEvent *)event)->keysym.mod & KMOD_LGUI) { //LGUI -> LCmd
 					//Save
 					for (U32 i = 0; i < gDifCount; i ++) {
-						String *directory = new String(dirname((char *)gFilenames[i]));
+						String directory = String(dirname((char *)gFilenames[i]));
 
 						FILE *output = fopen((const char *)gFilenames[i], "w");
 						gDifs[i]->write(output, directory);
@@ -635,7 +635,7 @@ int main(int argc, const char * argv[])
 	gFilenames = new String[argc - argstart];
 
 	for (U32 i = 0; i < (argc - argstart); i ++) {
-		String *directory = new String(dirname((char *)argv[i + argstart]));
+		String directory = String(dirname((char *)argv[i + argstart]));
 
 		//Open file
 		FILE *file = fopen(argv[i + argstart], "r");
@@ -659,7 +659,7 @@ int main(int argc, const char * argv[])
 		fclose(out);
 	} else if (!strcmp(argv[1], "-c")) {
 		for (U32 i = 0; i < gDifCount; i ++) {
-			String *directory = new String(dirname((char *)gFilenames[i]));
+			String directory = String(dirname((char *)gFilenames[i]));
 
 			FILE *output = fopen((const char *)gFilenames[i], "w");
 			gDifs[i]->write(output, directory);

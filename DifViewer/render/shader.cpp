@@ -30,11 +30,11 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/gl3.h>
 
-Shader::Shader(String *vertPath, String *fragPath) {
+Shader::Shader(String vertPath, String fragPath) {
 	programId = loadProgram(vertPath, fragPath);
 }
 
-GLuint Shader::loadShader(String *path, GLenum type) {
+GLuint Shader::loadShader(String path, GLenum type) {
 	GLuint shaderId = glCreateShader(type);
 	U32 length;
 	U8 *data = io->readFile(path, &length);
@@ -51,18 +51,18 @@ GLuint Shader::loadShader(String *path, GLenum type) {
 	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &result);
 	glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-	String *log = new String(infoLogLength);
-	glGetShaderInfoLog(shaderId, infoLogLength, NULL, (GLchar *)log->data);
+	String log = String(infoLogLength);
+	glGetShaderInfoLog(shaderId, infoLogLength, NULL, (GLchar *)log.data);
 
 	if (!result) {
-		printf("%s error: %s\n", path->data, log->data);
+		printf("%s error: %s\n", path.data, log.data);
 		return 0;
 	}
 
 	return shaderId;
 }
 
-GLuint Shader::loadProgram(String *vertPath, String *fragPath) {
+GLuint Shader::loadProgram(String vertPath, String fragPath) {
 	vertId = loadShader(vertPath, GL_VERTEX_SHADER);
 	fragId = loadShader(fragPath, GL_FRAGMENT_SHADER);
 
@@ -80,11 +80,11 @@ GLuint Shader::loadProgram(String *vertPath, String *fragPath) {
 	glGetProgramiv(progID, GL_LINK_STATUS, &result);
 	glGetProgramiv(progID, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-	String *log = new String(infoLogLength);
-	glGetProgramInfoLog(progID, infoLogLength, NULL, (GLchar *)log->data);
+	String log = String(infoLogLength);
+	glGetProgramInfoLog(progID, infoLogLength, NULL, (GLchar *)log.data);
 
 	if (!result) {
-		printf("%s\n", log->data);
+		printf("%s\n", log.data);
 	}
 
 	glDeleteShader(vertId);
@@ -97,7 +97,7 @@ GLuint Shader::getProgramId() {
 	return programId;
 }
 
-void Shader::setUniformLocation(String *name, GLuint location) {
-	GLuint glLocation = glGetUniformLocation(getProgramId(), (const char *)name->data);
+void Shader::setUniformLocation(String name, GLuint location) {
+	GLuint glLocation = glGetUniformLocation(getProgramId(), (const char *)name.data);
 	glUniform1i(glLocation, location);
 }

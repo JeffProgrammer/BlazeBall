@@ -184,14 +184,14 @@ bool PNG::read(FILE *file) {
 bool Dictionary::read(FILE *file) {
 	//<length>[<name><value>]...
 	io->read(file, &size, "size");
-	names = new String*[size];
-	values = new String*[size];
+	names = new String[size];
+	values = new String[size];
 
 	for (int i = 0; i < size; i ++) {
-		names[i] = new String();
-		values[i] = new String();
-		names[i]->read(file);
-		values[i]->read(file);
+		names[i] = String();
+		values[i] = String();
+		names[i].read(file);
+		values[i].read(file);
 	}
 
 	return true;
@@ -302,8 +302,8 @@ bool Dictionary::write(FILE *file) {
 	if (!io->write(file, size, "size"))
 		return false;
 	for (int i = 0; i < size; i ++) {
-		if (!names[i]->write(file) ||
-		    !values[i]->write(file))
+		if (!names[i].write(file) ||
+		    !values[i].write(file))
 		return false;
 	}
 
@@ -317,15 +317,15 @@ void releaseString(String string) {
 
 void releaseDictionary(Dictionary dictionary) {
 	for (int i = 0; i < dictionary.size; i ++) {
-		releaseString(*dictionary.names[i]);
-		releaseString(*dictionary.values[i]);
+		releaseString(dictionary.names[i]);
+		releaseString(dictionary.values[i]);
 	}
 	delete [] dictionary.names;
 	delete [] dictionary.values;
 }
 
-bool IO::isfile(String *file) {
-	FILE *stream = fopen((const char *)file->data, "r");
+bool IO::isfile(String file) {
+	FILE *stream = fopen((const char *)file.data, "r");
 	if (stream) {
 		fclose(stream);
 		return true;
@@ -333,8 +333,8 @@ bool IO::isfile(String *file) {
 	return false;
 }
 
-U8 *IO::readFile(String *file, U32 *length) {
-	FILE *stream = fopen((const char *)file->data, "rb");
+U8 *IO::readFile(String file, U32 *length) {
+	FILE *stream = fopen((const char *)file.data, "rb");
 
 	if (!stream)
 		return NULL;
@@ -353,31 +353,31 @@ U8 *IO::readFile(String *file, U32 *length) {
 	return data;
 }
 
-String *IO::getPath(String *file) {
-	U32 last = (U32)((U8 *)strrchr((const char *)file->data, '/') - file->data);
-	return new String(file, last);
+String IO::getPath(String file) {
+	U32 last = (U32)((U8 *)strrchr((const char *)file.data, '/') - file.data);
+	return String(file, last);
 }
-String *IO::getName(String *file) {
-	U32 last = (U32)((U8 *)strrchr((const char *)file->data, '/') - file->data) + 1;
-	return new String(file->data + last, file->length - last);
+String IO::getName(String file) {
+	U32 last = (U32)((U8 *)strrchr((const char *)file.data, '/') - file.data) + 1;
+	return String(file.data + last, file.length - last);
 }
-String *IO::getExtension(String *file) {
-	U32 last = (U32)((U8 *)strrchr((const char *)file->data, '.') - file->data) + 1;
-	return new String(file->data + last, file->length - last);
+String IO::getExtension(String file) {
+	U32 last = (U32)((U8 *)strrchr((const char *)file.data, '.') - file.data) + 1;
+	return String(file.data + last, file.length - last);
 }
 
-Texture *IO::loadTexture(String *file) {
+Texture *IO::loadTexture(String file) {
 	U8 *bitmap;
 	Point2I dims;
 
-	String *extension = getExtension(file);
+	String extension = getExtension(file);
 
 	bool (*readFn)(String file, U8 **bitmap, Point2I *dims);
 
 	//Try to read the image based on format
-	if (*extension == String("png") || *extension == String("jng"))
+	if (extension == String("png") || extension == String("jng"))
 		readFn = mngReadImage;
-	else if (*extension == String("jpg"))
+	else if (extension == String("jpg"))
 		readFn = jpegReadImage;
 	else {
 		// ?!
