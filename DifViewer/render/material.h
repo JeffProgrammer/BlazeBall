@@ -34,7 +34,9 @@
 #include "shader.h"
 
 class Material {
-	Texture *texture;
+	Texture *diffuse;
+	Texture *normal;
+	Texture *specular;
 	Shader *shader;
 
 	String name;
@@ -43,28 +45,37 @@ public:
 	Material();
 	~Material();
 
-	Material(String path) : texture(nullptr), shader(nullptr) {
-		loadTexture(path);
+	Material(String path) : diffuse(nullptr), normal(nullptr), specular(nullptr), shader(nullptr) {
+		loadDiffuse(path);
 	}
 
-	Texture *getTexture() {
-		return this->texture;
+	Texture *getDiffuseTex() {
+		return this->diffuse;
+	}
+	Texture *getNormalTex() {
+		return this->normal;
+	}
+	Texture *getSpecularTex() {
+		return this->specular;
 	}
 	Shader *getShader() {
 		return this->shader;
 	}
 
-	void setTexture(Texture *texture) {
-		this->texture = texture;
+	void setDiffuseTex(Texture *texture) {
+		this->diffuse = texture;
+	}
+	void setNormalTex(Texture *texture) {
+		this->normal = texture;
+	}
+	void setSpecularTex(Texture *texture) {
+		this->specular = texture;
 	}
 	void setShader(Shader *shader) {
 		this->shader = shader;
 	}
-	void setTexNum(GLenum texNum) {
-		this->texture->setTexNum(texNum);
-	}
 
-	void loadTexture(String path);
+	void loadDiffuse(String path);
 	void generate();
 	void activate();
 	void deactivate();

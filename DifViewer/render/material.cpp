@@ -28,7 +28,7 @@
 #include "material.h"
 #include "io.h"
 
-Material::Material() : shader(nullptr), texture(nullptr) {
+Material::Material() : shader(nullptr), diffuse(nullptr), normal(nullptr), specular(nullptr) {
 
 }
 
@@ -36,19 +36,19 @@ Material::~Material() {
 
 }
 
-void Material::loadTexture(String path) {
+void Material::loadDiffuse(String path) {
 	name = io->getName(path);
 	this->path = path;
 
-	if ((texture = io->loadTexture(path)) == nullptr) {
+	if ((diffuse = io->loadTexture(path)) == nullptr) {
 		fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)path);
 	}
 }
 
 void Material::generate() {
-	if (texture) {
-		if (!texture->generated) {
-			texture->generateBuffer();
+	if (diffuse) {
+		if (!diffuse->generated) {
+			diffuse->generateBuffer();
 		}
 	}
 }
@@ -57,11 +57,11 @@ void Material::activate() {
 	if (shader) {
 		shader->activate();
 	}
-	if (texture) {
-		if (!texture->generated) {
-			texture->generateBuffer();
+	if (diffuse) {
+		if (!diffuse->generated) {
+			diffuse->generateBuffer();
 		}
-		texture->activate();
+		diffuse->activate();
 	}
 }
 
@@ -69,7 +69,7 @@ void Material::deactivate() {
 	if (shader) {
 		shader->deactivate();
 	}
-	if (texture) {
-		texture->deactivate();
+	if (diffuse) {
+		diffuse->deactivate();
 	}
 }
