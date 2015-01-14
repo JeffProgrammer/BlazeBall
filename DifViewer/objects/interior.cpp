@@ -441,7 +441,7 @@ void Interior::generateMaterials(String directory) {
 	if (numMaterials) {
 		material = new Material*[numMaterials];
 		for (U32 i = 0; i < numMaterials; i ++) {
-			String materialName = this->materialName[i];
+			String materialName = io->getName(this->materialName[i]);
 			String diffuseFile = Texture::find(materialName, directory);
 
 			//If we can't find it, just chuck the lot and keep going.

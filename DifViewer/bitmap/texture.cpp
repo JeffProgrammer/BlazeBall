@@ -105,14 +105,6 @@ void Texture::deactivate() {
 }
 
 String Texture::find(String name, String directory) {
-	//Chop off any paths from the material. Constructor likes to save albums in the materials
-	// and it royally breaks this program.
-	if (strstr(name, "/")) {
-		//Hacky but effective method
-		name = io->getPath(name) + '/';
-		strcpy(name, strstr(name, "/") + 1);
-	}
-
 	//For some reason these two like to become the same.
 	String base = directory;
 
