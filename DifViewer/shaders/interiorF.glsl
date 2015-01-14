@@ -65,6 +65,8 @@ void main() {
 	//Shade
 	color *= shade;
 
+//	color = floor(color);
+
 //	color = (normalize(light_tangent) + 1.0) / 2.0;
 //	color = (normalColor + 1.0) / 2.0;
 }

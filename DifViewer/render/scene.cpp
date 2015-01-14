@@ -250,7 +250,7 @@ bool Scene::initGL() {
 	glGenVertexArrays(1, &vertexArrayID);
 	glBindVertexArray(vertexArrayID);
 
-	Shader *shader = new Shader(String("vertexShader.glsl"), String("fragmentShader.glsl"));
+	Shader *shader = new Shader(String("interiorV.glsl"), String("interiorF.glsl"));
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);

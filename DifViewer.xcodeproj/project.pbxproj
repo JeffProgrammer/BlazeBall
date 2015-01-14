@@ -27,8 +27,8 @@
 		B55C04F31A6613130052C528 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B55C04F11A6613130052C528 /* scene.cpp */; };
 		B56838C11A58AFC30053C982 /* pathedInterior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B56838BF1A58AFC30053C982 /* pathedInterior.cpp */; };
 		B56BFDE31A6344A500B2BDDE /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B56BFDE11A6344A500B2BDDE /* shader.cpp */; };
-		B56BFDEC1A63520400B2BDDE /* vertexShader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = B56BFDE51A63498100B2BDDE /* vertexShader.glsl */; };
-		B56BFDED1A63520500B2BDDE /* fragmentShader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = B56BFDE61A634A0400B2BDDE /* fragmentShader.glsl */; };
+		B56BFDEC1A63520400B2BDDE /* interiorV.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = B56BFDE51A63498100B2BDDE /* interiorV.glsl */; };
+		B56BFDED1A63520500B2BDDE /* interiorF.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = B56BFDE61A634A0400B2BDDE /* interiorF.glsl */; };
 		B57369CC1A648C23006447A4 /* libmng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B566A6951A12EE54003D6BEA /* libmng.a */; };
 		B58E54C81A215B0700304A9B /* math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B58E54C71A215B0700304A9B /* math.cpp */; };
 		B5BC0E371A1423DE00D86A8D /* interiorRender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5BC0E361A1423DE00D86A8D /* interiorRender.cpp */; };
@@ -63,8 +63,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				B56BFDEC1A63520400B2BDDE /* vertexShader.glsl in CopyFiles */,
-				B56BFDED1A63520500B2BDDE /* fragmentShader.glsl in CopyFiles */,
+				B56BFDEC1A63520400B2BDDE /* interiorV.glsl in CopyFiles */,
+				B56BFDED1A63520500B2BDDE /* interiorF.glsl in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,8 +110,8 @@
 		B56838C01A58AFC30053C982 /* pathedInterior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pathedInterior.h; sourceTree = "<group>"; };
 		B56BFDE11A6344A500B2BDDE /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = shader.cpp; path = DifViewer/render/shader.cpp; sourceTree = SOURCE_ROOT; };
 		B56BFDE21A6344A500B2BDDE /* shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = shader.h; path = DifViewer/render/shader.h; sourceTree = SOURCE_ROOT; };
-		B56BFDE51A63498100B2BDDE /* vertexShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vertexShader.glsl; path = DifViewer/shaders/vertexShader.glsl; sourceTree = SOURCE_ROOT; };
-		B56BFDE61A634A0400B2BDDE /* fragmentShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = fragmentShader.glsl; path = DifViewer/shaders/fragmentShader.glsl; sourceTree = SOURCE_ROOT; };
+		B56BFDE51A63498100B2BDDE /* interiorV.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = interiorV.glsl; path = DifViewer/shaders/interiorV.glsl; sourceTree = SOURCE_ROOT; };
+		B56BFDE61A634A0400B2BDDE /* interiorF.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = interiorF.glsl; path = DifViewer/shaders/interiorF.glsl; sourceTree = SOURCE_ROOT; };
 		B578BCF51A13EB4C001EF856 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = jpeg/.libs/libjpeg.a; sourceTree = "<group>"; };
 		B58E54C71A215B0700304A9B /* math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = math.cpp; sourceTree = "<group>"; };
 		B5AADE6F1A142E1E0064F1E5 /* math.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = math.h; sourceTree = "<group>"; };
@@ -230,8 +230,8 @@
 		B56BFDE41A63494900B2BDDE /* shaders */ = {
 			isa = PBXGroup;
 			children = (
-				B56BFDE51A63498100B2BDDE /* vertexShader.glsl */,
-				B56BFDE61A634A0400B2BDDE /* fragmentShader.glsl */,
+				B56BFDE51A63498100B2BDDE /* interiorV.glsl */,
+				B56BFDE61A634A0400B2BDDE /* interiorF.glsl */,
 			);
 			name = shaders;
 			sourceTree = "<group>";
