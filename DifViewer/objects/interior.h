@@ -418,7 +418,20 @@ public:
 	 Renders an interior with OpenGL
 	 */
 	void render();
+
+	/**
+	 Generates the interior's materials
+	 */
 	void generateMaterials(String directory);
+
+	/**
+	 Generates a physics mesh
+	 */
+	void generateMesh();
+
+	/**
+	 Cast a ray, intersecting with any triangle on the interior
+	 */
 	U32 rayCast(RayF ray);
 
 private:

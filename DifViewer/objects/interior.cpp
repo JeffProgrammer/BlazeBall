@@ -482,7 +482,9 @@ void Interior::generateMaterials(String directory) {
 	}
 	this->noise = io->loadTexture(String("noise.jpg"));
 	this->noise->setTexNum(GL_TEXTURE1);
+}
 
+void Interior::generateMesh() {
 	//Create body
 	btMotionState *state = new btDefaultMotionState();
 
