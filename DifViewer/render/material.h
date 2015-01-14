@@ -39,8 +39,8 @@ class Material {
 	Texture *specular;
 	Shader *shader;
 
-	String name;
-	String path;
+	String *name;
+	String *path;
 public:
 	Material();
 	~Material();
@@ -62,15 +62,9 @@ public:
 		return this->shader;
 	}
 
-	void setDiffuseTex(Texture *texture) {
-		this->diffuse = texture;
-	}
-	void setNormalTex(Texture *texture) {
-		this->normal = texture;
-	}
-	void setSpecularTex(Texture *texture) {
-		this->specular = texture;
-	}
+	void setDiffuseTex(Texture *texture);
+	void setNormalTex(Texture *texture);
+	void setSpecularTex(Texture *texture);
 	void setShader(Shader *shader) {
 		this->shader = shader;
 	}

@@ -28,7 +28,7 @@
 #include "material.h"
 #include "io.h"
 
-Material::Material() : shader(nullptr), diffuse(nullptr), normal(nullptr), specular(nullptr) {
+Material::Material() : shader(nullptr), diffuse(nullptr), normal(nullptr), specular(nullptr), name(new String("")), path(new String("")) {
 
 }
 
@@ -37,11 +37,14 @@ Material::~Material() {
 }
 
 void Material::loadDiffuse(String path) {
-	name = io->getName(path);
-	this->path = path;
+	this->name = new String(io->getName(path));
+	this->path = new String(path);
 
 	if ((diffuse = io->loadTexture(path)) == nullptr) {
 		fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)path);
+	} else {
+		//So we set the texNum
+		setDiffuseTex(diffuse);
 	}
 }
 
@@ -49,6 +52,16 @@ void Material::generate() {
 	if (diffuse) {
 		if (!diffuse->generated) {
 			diffuse->generateBuffer();
+		}
+	}
+	if (normal) {
+		if (!normal->generated) {
+			normal->generateBuffer();
+		}
+	}
+	if (specular) {
+		if (!specular->generated) {
+			specular->generateBuffer();
 		}
 	}
 }
@@ -63,6 +76,18 @@ void Material::activate() {
 		}
 		diffuse->activate();
 	}
+	if (normal) {
+		if (!normal->generated) {
+			normal->generateBuffer();
+		}
+		normal->activate();
+	}
+	if (specular) {
+		if (!specular->generated) {
+			specular->generateBuffer();
+		}
+		specular->activate();
+	}
 }
 
 void Material::deactivate() {
@@ -72,4 +97,25 @@ void Material::deactivate() {
 	if (diffuse) {
 		diffuse->deactivate();
 	}
+	if (normal) {
+		normal->deactivate();
+	}
+	if (specular) {
+		specular->deactivate();
+	}
+}
+
+void Material::setDiffuseTex(Texture *texture) {
+	this->diffuse = texture;
+	this->diffuse->setTexNum(GL_TEXTURE0);
+}
+
+void Material::setNormalTex(Texture *texture) {
+	this->normal = texture;
+	this->normal->setTexNum(GL_TEXTURE1);
+}
+
+void Material::setSpecularTex(Texture *texture) {
+	this->specular = texture;
+	this->specular->setTexNum(GL_TEXTURE2);
 }
