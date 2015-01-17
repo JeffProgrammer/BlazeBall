@@ -36,7 +36,7 @@ void main() {
 	vec3 normalColor = normalize(texture(normalSampler, UV).rgb * 2.0 - 1.0);
 
 	//Cool MBU-style noise effect
-	vec3 shade = 0.5 + (texture(noiseSampler, floor(UV) / 32.0).rgb / 2.0);
+	vec3 shade = texture(noiseSampler, floor(UV) / 32.0).rgb;
 
 	//Lighting
 	vec3 n = normalize(normalColor);
@@ -69,4 +69,5 @@ void main() {
 
 //	color = (normalize(light_tangent) + 1.0) / 2.0;
 //	color = (normalColor + 1.0) / 2.0;
+//	color = direction_tangent;
 }
