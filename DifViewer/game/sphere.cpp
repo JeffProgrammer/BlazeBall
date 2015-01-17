@@ -59,8 +59,8 @@ Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), ren
 	//Create the actor and add it to the scene
 	actor = new btRigidBody(info);
 	actor->setActivationState(DISABLE_DEACTIVATION);
-	actor->setCcdMotionThreshold(1e-7);
-	actor->setCcdSweptSphereRadius(radius / 2.0f);
+	actor->setCcdMotionThreshold(1e-3);
+	actor->setCcdSweptSphereRadius(radius / 10.0f);
 	Physics::getPhysics()->addRigidBody(actor);
 }
 

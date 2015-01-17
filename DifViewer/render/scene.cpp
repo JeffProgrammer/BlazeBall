@@ -283,7 +283,7 @@ bool Scene::initGL() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	sphere = new Sphere(Point3F(0, 30, 60), 0.2f);
+	sphere = new Sphere(Point3F(0, 00, 60), 0.2f);
 	sphere->setMaterial(new Material("noise.jpg"));
 #else
 	//Initialize clear color
