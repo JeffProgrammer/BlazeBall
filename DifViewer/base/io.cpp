@@ -379,22 +379,30 @@ U8 *IO::readFile(String file, U32 *length) {
 	return data;
 }
 
+#ifdef _WIN32
+#define DIR_SEP '\\'
+#else
+#define DIR_SEP '/'
+#endif
+
+
 String IO::getPath(String file) {
-	S32 last = (S32)((U8 *)strrchr((const char *)file.data, '/') - file.data);
+	S64 last = (S64)((U8 *)strrchr((const char *)file.data, DIR_SEP) - file.data);
 	if (last > 0)
-		return String(file, last);
+		return String(file, (S32)last);
 	return String("");
 }
 String IO::getName(String file) {
-	S32 last = (S32)((U8 *)strrchr((const char *)file.data, '/') - file.data) + 1;
+	S64 last = (S64)((U8 *)strrchr((const char *)file.data, DIR_SEP) - file.data) + 1;
+	printf("Last is %lld\n", last);
 	if (last > 0)
-		return String(file.data + last, file.length - last);
+		return String(file.data + last, file.length - (S32)last);
 	return file;
 }
 String IO::getExtension(String file) {
-	S32 last = (S32)((U8 *)strrchr((const char *)file.data, '.') - file.data) + 1;
+	S64 last = (S64)((U8 *)strrchr((const char *)file.data, '.') - file.data) + 1;
 	if (last > 0)
-		return String(file.data + last, file.length - last);
+		return String(file.data + last, file.length - (S32)last);
 	return String("");
 }
 
