@@ -368,10 +368,8 @@ bool Interior::write(FILE *file) {
 	WRITELIST(numSurfaces, surface, Surface); //surface
 	WRITELIST(numNormalLMapIndices, normalLMapIndex, U8); //normalLMapIndex
 	WRITELIST(numAlarmLMapIndices, alarmLMapIndex, U8); //alarmLMapIndex
-	WRITECHECK(0, U32);
-//	WRITELIST(numNullSurfaces, nullSurface, NullSurface); //nullSurface
-	WRITECHECK(0, U32);
-//	WRITELIST(numLightMaps, lightMap, LightMap); //lightMap
+	WRITELIST(numNullSurfaces, nullSurface, NullSurface); //nullSurface
+	WRITELIST(numLightMaps, lightMap, LightMap); //lightMap
 	WRITELIST(numSolidLeafSurfaces, solidLeafSurface, U32); //solidLeafSurface
 	WRITELIST(numAnimatedLights, animatedLight, AnimatedLight); //animatedLight
 	WRITELIST(numLightStates, lightState, LightState); //lightState
@@ -400,13 +398,10 @@ bool Interior::write(FILE *file) {
 	/*
 	 Static meshes (not included)
 	 */
-	WRITECHECK(0, U32);
-//	WRITELIST(numTexNormals, texNormal, Point3F); //texNormal
-	WRITECHECK(0, U32);
-//	WRITELIST(numTexMatrices, texMatrix, TexMatrix); //texMatrix
-	WRITECHECK(0, U32);
-//	WRITELIST(numTexMatIndices, texMatIndex, U32); //texMatIndex
-	WRITECHECK(0, U32);
+	WRITELIST(numTexNormals, texNormal, Point3F); //texNormal
+	WRITELIST(numTexMatrices, texMatrix, TexMatrix); //texMatrix
+	WRITELIST(numTexMatIndices, texMatIndex, U32); //texMatIndex
+	WRITECHECK(0, U32); //extendedLightMapData
 //	WRITECHECK(extendedLightMapData, U32); //extendedLightMapData
 
 	return true;
@@ -465,6 +460,7 @@ void Interior::generateMaterials(String directory) {
 	if (numMaterials) {
 		material = new Material*[numMaterials];
 		for (U32 i = 0; i < numMaterials; i ++) {
+			printf("Generating materials for texture %s\n", (char *)this->materialName[i]);
 			String materialName = io->getName(this->materialName[i]);
 			String diffuseFile = Texture::find(materialName, directory);
 
