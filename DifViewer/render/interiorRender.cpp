@@ -99,13 +99,13 @@ void Interior::render() {
 				Point2F uv1 = Point2F(planeF_distance_to_point(texGenEq.planeX, v1), planeF_distance_to_point(texGenEq.planeY, v1));
 				Point2F uv2 = Point2F(planeF_distance_to_point(texGenEq.planeX, v2), planeF_distance_to_point(texGenEq.planeY, v2));
 
-				U32 plane = this->plane[surface.planeIndex].normalIndex;
-				Point3F tangent;
-				Point3F bitangent;
-				if (tangentMap[plane].length()) {
-					tangent = tangentMap[plane];
-					bitangent = bitangentMap[plane];
-				} else {
+//				U32 plane = this->plane[surface.planeIndex].normalIndex;
+//				Point3F tangent;
+//				Point3F bitangent;
+//				if (tangentMap[plane].length()) {
+//					tangent = tangentMap[plane];
+//					bitangent = bitangentMap[plane];
+//				} else {
 					Point3F deltaPos1 = v1 - v0;
 					Point3F deltaPos2 = v2 - v0;
 					Point2F deltaUV1 = uv1 - uv0;
@@ -124,9 +124,9 @@ void Interior::render() {
 					tangent = tangent.normalize();
 					bitangent = bitangent.normalize();
 
-					tangentMap[plane] = tangent;
-					bitangentMap[plane] = bitangent;
-				}
+//					tangentMap[plane] = tangent;
+//					bitangentMap[plane] = bitangent;
+//				}
 
 				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].point = v0;
 				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].point = v1;
