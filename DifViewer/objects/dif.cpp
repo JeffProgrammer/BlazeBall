@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include "io.h"
 #include "dif.h"
+#include "scene.h"
 
 DIF::DIF(FILE *file, String directory) {
 	//http://rustycode.com/tutorials/DIF_File_Format_44_14.html
@@ -42,14 +43,18 @@ DIF::DIF(FILE *file, String directory) {
 	READLOOPVAR(numDetailLevels, interior, Interior *) {
 		interior[i] = new Interior();
 		interior[i]->read(file);
-		interior[i]->generateMaterials(directory);
-		interior[i]->generateMesh();
+		if (!Scene::getSingleton()->getConvertMode()) {
+			interior[i]->generateMaterials(directory);
+			interior[i]->generateMesh();
+		}
 	}
 	READLOOPVAR(numSubObjects, subObject, Interior *) {
 		subObject[i] = new Interior();
 		subObject[i]->read(file);
-		subObject[i]->generateMaterials(directory);
-		subObject[i]->generateMesh();
+		if (!Scene::getSingleton()->getConvertMode()) {
+			subObject[i]->generateMaterials(directory);
+			subObject[i]->generateMesh();
+		}
 	}
 	READLOOPVAR(numTriggers, trigger, Trigger *) {
 		trigger[i] = new Trigger(file);

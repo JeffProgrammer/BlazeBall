@@ -95,6 +95,8 @@ protected:
 	bool mouseButtons[3] = {false, false, false};
 	bool movement[9] = {false, false, false, false, false, false, false, false, false};
 
+	bool convertMode;
+
 	const float cameraSpeed = 0.3f;
 	const float keyCameraSpeed = 3.f;
 	const float movementSpeed = 0.2f;
@@ -119,6 +121,13 @@ public:
 	}
 	void setLoopCallback(void (*callback)()) {
 		loopCallback = callback;
+	}
+
+	bool getConvertMode() {
+		return convertMode;
+	}
+	void setConvertMode(bool convertMode) {
+		this->convertMode = convertMode;
 	}
 
 	void render();
