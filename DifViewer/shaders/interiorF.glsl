@@ -25,6 +25,7 @@ uniform vec3 lightDirection;
 uniform vec4 ambientColor;
 uniform vec3 sunPosition;
 uniform vec3 sunPower;
+uniform float specularExponent;
 
 void main() {
 	//Renders verts as their normals like a normal map
@@ -60,10 +61,12 @@ void main() {
 	//Ambient
 	color += materialColor * ambientColor.rgb;
 	//Specular
-	color += specularColor * (lightColor.rgb * lightColor.a) * pow(cosAlpha, 5);
+	color += specularColor * (lightColor.rgb * lightColor.a) * pow(cosAlpha, specularExponent);
 
 	//Shade
 	color *= shade;
+
+//	color = normal_camera;
 
 //	color = floor(color);
 

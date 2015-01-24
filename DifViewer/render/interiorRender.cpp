@@ -79,6 +79,8 @@ void Interior::render() {
 				normal *= -1;
 			}
 
+//			Point3F color((F32)surface.planeIndex / (F32)numPlanes, (F32)(surface.planeIndex % 32)/32.f, (F32)(surface.planeIndex % 8)/8.f);
+
 			//New and improved rendering with actual Triangle Strips this time
 			for (U32 j = surface.windingStart + 2; j < surface.windingStart + surface.windingCount; j ++) {
 				Point3F v0, v1, v2;

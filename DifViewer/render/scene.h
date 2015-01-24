@@ -79,6 +79,7 @@ protected:
 	GLuint ambientColorLocation;
 	GLuint sunPositionLocation;
 	GLuint sunPowerLocation;
+	GLuint specularExponentLocation;
 
 	glm::mat4x4 projectionMatrix, modelMatrix, viewMatrix;
 
@@ -101,12 +102,13 @@ protected:
 	const float keyCameraSpeed = 3.f;
 	const float movementSpeed = 0.2f;
 
-	const ColorF lightColor      = ColorF(1.100000f, 1.100000f, 0.900000f, 1.000000f);
+	const ColorF lightColor      = ColorF(1.000000f, 1.000000f, 1.000000f, 1.400000f);
 	const Point3F lightDirection = Point3F(0.60f, 0.40f, 1.0f);
-	const ColorF ambientColor    = ColorF(0.600000f, 0.600000f, 0.800000f, 1.000000f);
+	const ColorF ambientColor    = ColorF(0.700000f, 0.700000f, 0.700000f, 1.000000f);
 
 	const Point3F sunPosition    = Point3F(100.0f, 75.0f, 100.0f);
 	const F32 sunPower           = 1000.0f;
+	const U32 specularExponent   = 7;
 public:
 	U32 difCount;
 	DIF **difs;

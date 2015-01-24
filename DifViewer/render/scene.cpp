@@ -41,6 +41,7 @@ void Scene::render() {
 
 	glUniform3fv(sunPositionLocation, 1, &sunPosition.x);
 	glUniform1f(sunPowerLocation, sunPower);
+	glUniform1f(specularExponentLocation, specularExponent);
 
 	//Camera
 	viewMatrix = glm::mat4x4(1);
@@ -272,19 +273,19 @@ bool Scene::initGL() {
 
 	sunPositionLocation = shader->getUniformLocation("sunPosition");
 	sunPowerLocation = shader->getUniformLocation("sunPower");
+	specularExponentLocation = shader->getUniformLocation("specularExponent");
 
 	//Window size for viewport
-	int w, h;
-	SDL_GetWindowSize(window, &w, &h);
+	Point2I screenSize = window->getWindowSize();
 
-	GLfloat aspect = (GLfloat)w / (GLfloat)h;
+	GLfloat aspect = (GLfloat)screenSize.x / (GLfloat)screenSize.y;
 	projectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	sphere = new Sphere(Point3F(0, 00, 60), 0.2f);
-	sphere->setMaterial(new Material("noise.jpg"));
+	sphere = new Sphere(Point3F(0, 0, 60), 0.2f);
+	sphere->setMaterial(difs[0]->interior[0]->material[4]);
 #else
 	//Initialize clear color
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
