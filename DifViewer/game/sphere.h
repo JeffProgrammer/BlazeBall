@@ -25,6 +25,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
+#ifdef BUILD_PHYSICS
 #ifndef sphere_h
 #define sphere_h
 
@@ -78,4 +79,5 @@ public:
 	Point3F getCollisionNormal();
 };
 
+#endif
 #endif

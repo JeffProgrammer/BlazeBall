@@ -496,6 +496,7 @@ void Interior::generateMaterials(String directory) {
 	this->noise->setTexNum(GL_TEXTURE3);
 }
 
+#ifdef BUILD_PHYSICS
 void Interior::generateMesh() {
 	//Create body
 	btMotionState *state = new btDefaultMotionState();
@@ -542,6 +543,7 @@ void Interior::generateMesh() {
 	actor->setFriction(1.0f);
 	Physics::getPhysics()->addRigidBody(actor);
 }
+#endif
 
 void Interior::exportObj(FILE *file) {
 	for (U32 j = 0; j < numPoints; j ++) {

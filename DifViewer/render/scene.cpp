@@ -75,6 +75,7 @@ void Scene::render() {
 		difs[index]->render();
 	}
 
+#ifdef BUILD_PHYSICS
 	btTransform trans;
 	Point3F pos = sphere->getPosition();
 	AngAxisF rot = sphere->getRotation();
@@ -93,6 +94,7 @@ void Scene::render() {
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &viewMatrix[0][0]);
 
 	sphere->render(ColorF(1, 1, 0, 1));
+#endif
 #else
 	//Load the model matrix
 	glMatrixMode(GL_MODELVIEW);

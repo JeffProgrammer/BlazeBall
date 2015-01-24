@@ -45,7 +45,9 @@ DIF::DIF(FILE *file, String directory) {
 		interior[i]->read(file);
 		if (!Scene::getSingleton()->getConvertMode()) {
 			interior[i]->generateMaterials(directory);
+#ifdef BUILD_PHYSICS
 			interior[i]->generateMesh();
+#endif
 		}
 	}
 	READLOOPVAR(numSubObjects, subObject, Interior *) {
@@ -53,7 +55,9 @@ DIF::DIF(FILE *file, String directory) {
 		subObject[i]->read(file);
 		if (!Scene::getSingleton()->getConvertMode()) {
 			subObject[i]->generateMaterials(directory);
+#ifdef BUILD_PHYSICS
 			subObject[i]->generateMesh();
+#endif
 		}
 	}
 	READLOOPVAR(numTriggers, trigger, Trigger *) {

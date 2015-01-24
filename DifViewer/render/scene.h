@@ -113,7 +113,10 @@ public:
 	U32 difCount;
 	DIF **difs;
 	String **filenames;
+#ifdef BUILD_PHYSICS
 	Sphere *sphere;
+#endif
+	Window *window;
 
 	static Scene *getSingleton() {
 		static Scene *singleton;

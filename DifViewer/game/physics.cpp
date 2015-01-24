@@ -25,7 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "physics.h"	
+#ifdef BUILD_PHYSICS
+#include "physics.h"
 #include <BulletCollision/CollisionShapes/btTriangleShape.h>
 
 bool contactAdded(btManifoldPoint& cp,
@@ -70,3 +71,5 @@ void Physics::addRigidBody(btRigidBody *body) {
 	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 	world->addRigidBody(body);
 }
+
+#endif

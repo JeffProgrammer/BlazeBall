@@ -25,6 +25,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
+#ifdef BUILD_PHYSICS
 #ifndef physics_h
 #define physics_h
 
@@ -63,4 +64,5 @@ inline static AngAxisF btConvert(btQuaternion point) {
 	return AngAxisF(btConvert(point.getAxis()), point.getAngle());
 }
 
+#endif
 #endif

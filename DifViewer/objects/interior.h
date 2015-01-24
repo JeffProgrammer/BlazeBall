@@ -395,7 +395,9 @@ public:
 	U32 extendedLightMapData;
 	U32 lightMapBorderSize;
 
+#ifdef BUILD_PHYSICS
 	btRigidBody *actor;
+#endif
 	RenderInfo renderInfo;
 
 	Interior() {};
