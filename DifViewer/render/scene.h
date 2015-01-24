@@ -29,7 +29,6 @@
 #ifndef scene_h
 #define scene_h
 
-#include <SDL2/SDL.h>
 #include <stdio.h>
 #include "math.h"
 #include "types.h"
@@ -40,8 +39,8 @@
 #include "physics.h"
 #include "shader.h"
 #include "scene.h"
+#include "window.h"
 
-#include <SDL2/SDL.h>
 #include <OpenGL/gl.h>
 #include <OpenGL/gl3.h>
 #include <OpenGL/glu.h>
@@ -52,9 +51,6 @@
 
 class Scene {
 protected:
-	SDL_Window *window;
-	SDL_GLContext context;
-
 	void (*loopCallback)();
 
 	bool running;
@@ -142,7 +138,6 @@ public:
 	void cleanup();
 	void run();
 	void performClick(S32 mouseX, S32 mouseY);
-	void handleEvent(SDL_Event *event);
 };
 
 #endif

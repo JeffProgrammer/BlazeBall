@@ -331,15 +331,13 @@ bool Scene::initGL() {
 }
 
 void Scene::performClick(S32 mouseX, S32 mouseY) {
-	int screenWidth, screenHeight;
-	SDL_GetWindowSize(window, &screenWidth, &screenHeight);
-
+	Point2I screenSize = window->getWindowSize();
 	//http://antongerdelan.net/opengl/raycasting.html
 	//(x, y) are in device coordinates. We need to convert that to model coords
 
 	//Device coords -> normalized device coords
-	float x = (((F32)mouseX * 2.0f) / (F32)screenWidth) - 1.0f;
-	float y = 1.0f - (((F32)mouseY * 2.0f) / (F32)screenHeight);
+	float x = (((F32)mouseX * 2.0f) / (F32)screenSize.x) - 1.0f;
+	float y = 1.0f - (((F32)mouseY * 2.0f) / (F32)screenSize.y);
 	float z = 1.0f;
 	glm::vec3 ndc = glm::vec3(x, y, z);
 
@@ -457,53 +455,15 @@ bool Scene::init() {
 	running = true;
 	listNeedsDisplay = true;
 
-	//Init SDL
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-		return false;
-	}
-
-#ifdef GL_33
-	//Use OpenGL 3.3
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-#else
-	//Use OpenGL 2.1
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-#endif
-
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 4);
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
-
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-	SDL_Rect bounds;
-	SDL_GetDisplayBounds(0, &bounds);
-
-	//Create the window
-	if ((window = SDL_CreateWindow("DIF Viewer", (bounds.w - 1280) / 2, (bounds.h - 720) / 2, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI)) == NULL) {
-		return false;
-	}
-
-	//Create context
-	if ((context = SDL_GL_CreateContext(window)) == NULL) {
-		return false;
-	}
-
 	//Initialize OpenGL
 	if (!initGL()) {
 		return false;
 	}
 
-	//Use Vsync
-	if (SDL_GL_SetSwapInterval(1) < 0) {
+	if (!window->createContext()) {
 		return false;
 	}
 
-	//Lock cursor
-	SDL_SetRelativeMouseMode(SDL_TRUE);
 	captureMouse = true;
 
 	//	Point3F center = difs[0]->interior[0]->boundingBox.getCenter();
@@ -543,7 +503,7 @@ void Scene::run() {
 		render();
 
 		//Flip buffers
-		SDL_GL_SwapWindow(window);
+		window->swapBuffers();
 
 		//Count how long a frame took
 		gettimeofday(&endTime, NULL);
