@@ -26,9 +26,18 @@
 //------------------------------------------------------------------------------
 
 #include "physics.h"	
+#include <BulletCollision/CollisionShapes/btTriangleShape.h>
 
-bool cb_ContactAddedCallback(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1) {
-//	printf("%d %d %f, %f, %f\n", colObj0Wrap->m_shape, colObj1Wrap->m_shape, cp.m_normalWorldOnB.x(), cp.m_normalWorldOnB.y(), cp.m_normalWorldOnB.z());
+bool contactAdded(btManifoldPoint& cp,
+				  const btCollisionObjectWrapper* colObj0Wrap,
+				  int partId0,
+				  int index0,
+				  const btCollisionObjectWrapper* colObj1Wrap,
+				  int partId1,
+				  int index1) {
+
+
+
 	return true;
 }
 
@@ -41,7 +50,8 @@ void Physics::init() {
 	world = new btDiscreteDynamicsWorld(dispatcher, interface, solver, configuration);
 	world->setGravity(btVector3(0, 0, -30.0f));
 
-	gContactAddedCallback = cb_ContactAddedCallback;
+	gContactAddedCallback = contactAdded;
+	
 }
 
 void Physics::simulate(F32 delta) {

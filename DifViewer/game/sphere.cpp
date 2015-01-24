@@ -40,6 +40,7 @@ Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), ren
 	//Need this otherwise forces won't work!
 	btVector3 fallInertia = btVector3(0.f, 0.f, 0.f);
 	shape->calculateLocalInertia(1.0f, fallInertia);
+	shape->setMargin(0.01f);
 
 	//Update position
 	btTransform transform;
@@ -90,13 +91,25 @@ void Sphere::generate() {
 			color0 /= color0.z;
 			color1 /= color1.z;
 
+			Point2F uv0 = Point2F((F32)i / (F32)segments2, (F32)y / (F32)slices2);
+			Point2F uv1 = Point2F((F32)i / (F32)segments2, (F32)(y + 1) / (F32)slices2);
+
+			Point3F tangent0 = point0.cross(Point3F(0, 0, 1)).normalize();
+			Point3F tangent1 = point1.cross(Point3F(0, 0, 1)).normalize();
+			Point3F bitangent0 = point0.cross(tangent0).normalize();
+			Point3F bitangent1 = point0.cross(tangent0).normalize();
+
 			points[point].point = point0;
-			points[point].uv = Point2F((F32)i / (F32)segments2, (F32)y / (F32)slices2);
+			points[point].uv = uv0;
 			points[point].normal = point0;
+			points[point].tangent = tangent0;
+			points[point].bitangent = bitangent0;
 			point ++;
 			points[point].point = point1;
-			points[point].uv = Point2F((F32)i / (F32)segments2, (F32)(y + 1) / (F32)slices2);
+			points[point].uv = uv1;
 			points[point].normal = point1;
+			points[point].tangent = tangent1;
+			points[point].bitangent = bitangent1;
 			point ++;
 		}
 	}
@@ -119,11 +132,17 @@ void Sphere::render(ColorF color) {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
 	glBindBuffer(GL_ARRAY_BUFFER, renderBuffer);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, point));
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, uv));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, tangent));
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, bitangent));
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
+	glDisableVertexAttribArray(4);
+	glDisableVertexAttribArray(3);
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);

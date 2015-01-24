@@ -500,26 +500,47 @@ void Interior::generateMesh() {
 	//Create body
 	btMotionState *state = new btDefaultMotionState();
 
-	for (U32 i = 0; i < numConvexHulls; i ++) {
-		ConvexHull hull = convexHull[i];
-		btConvexHullShape *shape = new btConvexHullShape();
+	btCompoundShape *compound = new btCompoundShape();
+	btTriangleMesh **meshes = new btTriangleMesh*[numPlanes];
+	bool *used = new bool[numPlanes];
 
-		for (U32 j = 0; j < hull.hullCount; j ++) {
-			Point3F point = this->point[this->hullIndex[j + hull.hullStart]];
-			shape->addPoint(btConvert(point));
-		}
-
-		btTransform transform;
-		transform.setIdentity();
-		transform.setOrigin(btVector3(0, 0, 0));
-
-		state->setWorldTransform(transform);
-
-		actor = new btRigidBody(0, state, shape);
-		actor->setRestitution(0.7f);
-		actor->setFriction(1.0f);
-		Physics::getPhysics()->addRigidBody(actor);
+	for (U32 i = 0; i < numPlanes; i ++) {
+		meshes[i] = new btTriangleMesh();
+		used[i] = false;
 	}
+
+	for (U32 i = 0; i < numSurfaces; i ++) {
+		Surface surface = this->surface[i];
+		U32 plane = surface.planeIndex;
+		used[plane] = true;
+
+		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
+			Point3F point0 = this->point[this->index[j + surface.windingStart + 0]];
+			Point3F point1 = this->point[this->index[j + surface.windingStart + 1]];
+			Point3F point2 = this->point[this->index[j + surface.windingStart + 2]];
+			meshes[plane]->addTriangle(btConvert(point0), btConvert(point1), btConvert(point2));
+		}
+	}
+	for (U32 i = 0; i < numPlanes; i ++) {
+		if (used[i]) {
+			btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(meshes[i], true, true);
+			shape->setMargin(0.1f);
+			compound->addChildShape(btTransform(btQuaternion(0, 0, 0, 1)), shape);
+		}
+	}
+
+	compound->setMargin(0.1f);
+
+	btTransform transform;
+	transform.setIdentity();
+	transform.setOrigin(btVector3(0, 0, 0));
+
+	state->setWorldTransform(transform);
+
+	actor = new btRigidBody(0, state, compound);
+	actor->setRestitution(0.7f);
+	actor->setFriction(1.0f);
+	Physics::getPhysics()->addRigidBody(actor);
 }
 
 void Interior::exportObj(FILE *file) {
