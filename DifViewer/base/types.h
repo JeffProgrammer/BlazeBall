@@ -155,9 +155,9 @@ struct String : public Readable, Writable {
 #include "point4.h"
 #include "color.h"
 
-typedef Point2<U16> Point2I;
+typedef Point2<S16> Point2I;
 typedef Point2<F32> Point2F;
-typedef Point3<U32> Point3I;
+typedef Point3<S32> Point3I;
 typedef Point3<F32> Point3F;
 typedef Point3<F64> Point3D;
 typedef Point4<F32> Point4F;
