@@ -32,8 +32,20 @@
 #include <stdio.h>
 #include "event.h"
 
-class SDLEvent : public Event {
-	
+namespace SDLEvent {
+	Event *convert(SDL_Event *event);
+
+	inline Event::Type convert(SDL_EventType sdlType) {
+		switch (sdlType) {
+			case SDL_QUIT:    return Event::Type::Quit;
+			case SDL_KEYDOWN: return Event::Type::KeyDown;
+			case SDL_KEYUP:   return Event::Type::KeyUp;
+			case SDL_MOUSEBUTTONDOWN: return Event::Type::MouseDown;
+			case SDL_MOUSEBUTTONUP:   return Event::Type::MouseUp;
+			case SDL_MOUSEMOTION:     return Event::Type::MouseMove;
+			default: return Event::Type::None;
+		}
+	}
 };
 
 #endif

@@ -26,6 +26,7 @@
 //------------------------------------------------------------------------------
 
 #include "SDLWindow.h"
+#include "SDLEvent.h"
 
 bool SDLWindow::createContext() {
 	//Init SDL
@@ -69,17 +70,35 @@ bool SDLWindow::createContext() {
 	}
 
 	//Lock cursor
-	SDL_SetRelativeMouseMode(SDL_TRUE);
+	lockCursor(true);
 
 	return true;
+}
+
+void SDLWindow::destroyContext() {
+	SDL_Quit();
 }
 
 void SDLWindow::swapBuffers() {
 	SDL_GL_SwapWindow(window);
 }
 
+void SDLWindow::lockCursor(bool locked) {
+	SDL_SetRelativeMouseMode((SDL_bool)locked);
+}
+
 Point2I SDLWindow::getWindowSize() {
 	S32 screenWidth, screenHeight;
 	SDL_GetWindowSize(window, &screenWidth, &screenHeight);
 	return Point2I(screenWidth, screenHeight);
+}
+
+bool SDLWindow::pollEvents(Event **event) {
+	SDL_Event sdlevent;
+	if (SDL_PollEvent(&sdlevent)) {
+		*event = SDLEvent::convert(&sdlevent);
+		return true;
+	} else {
+		return false;
+	}
 }

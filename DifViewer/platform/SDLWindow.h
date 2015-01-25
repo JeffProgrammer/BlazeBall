@@ -40,9 +40,12 @@ protected:
 
 public:
 	virtual bool createContext();
+	virtual void destroyContext();
 	virtual void swapBuffers();
-	
+	virtual void lockCursor(bool locked);
+
 	virtual Point2I getWindowSize();
+	virtual bool pollEvents(Event **event);
 };
 
 #endif

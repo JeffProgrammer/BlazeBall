@@ -40,6 +40,7 @@
 #include "shader.h"
 #include "scene.h"
 #include "window.h"
+#include "event.h"
 
 #include <OpenGL/gl.h>
 #include <OpenGL/gl3.h>
@@ -138,6 +139,7 @@ public:
 	void cleanup();
 	void run();
 	void performClick(S32 mouseX, S32 mouseY);
+	void handleEvent(Event *event);
 };
 
 #endif

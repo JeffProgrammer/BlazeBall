@@ -29,13 +29,17 @@
 #define window_h
 
 #include "types.h"
+#include "event.h"
 
 class Window {
 public:
 	virtual bool createContext() = 0;
+	virtual void destroyContext() = 0;
 	virtual void swapBuffers() = 0;
+	virtual void lockCursor(bool locked) = 0;
 
 	virtual Point2I getWindowSize() = 0;
+	virtual bool pollEvents(Event **event) = 0;
 };
 
 #endif

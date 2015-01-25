@@ -372,19 +372,19 @@ void Scene::performClick(S32 mouseX, S32 mouseY) {
 	selection.hasSelection = false;
 }
 
-void Scene::handleEvent(SDL_Event *event) {
+void Scene::handleEvent(Event *event) {
 	//Quit
-	if (event->type == SDL_QUIT) {
+	if (event->getType() == Event::Type::Quit) {
 		running = false;
 	}
 
 	//Key events, movement
-	if (event->type == SDL_KEYDOWN) {
-		switch (((SDL_KeyboardEvent *)event)->keysym.scancode) {
+	if (event->getType() == Event::KeyDown) {
+		switch (((KeyDownEvent *)event)->key) {
 				//Same for Colemak...
-			case SDL_SCANCODE_W: movement[0] = true; break;
-			case SDL_SCANCODE_S:
-				if (((SDL_KeyboardEvent *)event)->keysym.mod & KMOD_LGUI) { //LGUI -> LCmd
+			case KeyEvent::KEY_W: movement[0] = true; break;
+			case KeyEvent::KEY_S:
+				if (((KeyDownEvent *)event)->modifier & KeyEvent::MOD_LGUI) { //LGUI -> LCmd
 					//Save
 					for (U32 i = 0; i < difCount; i ++) {
 						String directory = io->getPath(*filenames[i]);
@@ -398,55 +398,55 @@ void Scene::handleEvent(SDL_Event *event) {
 					movement[1] = true;
 				}
 				break;
-			case SDL_SCANCODE_A: movement[2] = true; break;
-			case SDL_SCANCODE_D: movement[3] = true; break;
-			case SDL_SCANCODE_UP:    movement[4] = true; break;
-			case SDL_SCANCODE_DOWN:  movement[5] = true; break;
-			case SDL_SCANCODE_LEFT:  movement[6] = true; break;
-			case SDL_SCANCODE_RIGHT: movement[7] = true; break;
-			case SDL_SCANCODE_SPACE: movement[8] = true; break;
+			case KeyEvent::KEY_A: movement[2] = true; break;
+			case KeyEvent::KEY_D: movement[3] = true; break;
+			case KeyEvent::KEY_UP:    movement[4] = true; break;
+			case KeyEvent::KEY_DOWN:  movement[5] = true; break;
+			case KeyEvent::KEY_LEFT:  movement[6] = true; break;
+			case KeyEvent::KEY_RIGHT: movement[7] = true; break;
+			case KeyEvent::KEY_SPACE: movement[8] = true; break;
 			default: break;
 		}
-	} else if (event->type == SDL_KEYUP) {
-		switch (((SDL_KeyboardEvent *)event)->keysym.scancode) {
-			case SDL_SCANCODE_W: movement[0] = false; break;
-			case SDL_SCANCODE_S:
+	} else if (event->getType() == Event::KeyUp) {
+		switch (((KeyUpEvent *)event)->key) {
+			case KeyEvent::KEY_W: movement[0] = false; break;
+			case KeyEvent::KEY_S:
 				movement[1] = false;
 				break;
-			case SDL_SCANCODE_A: movement[2] = false; break;
-			case SDL_SCANCODE_D: movement[3] = false; break;
-			case SDL_SCANCODE_UP:    movement[4] = false; break;
-			case SDL_SCANCODE_DOWN:  movement[5] = false; break;
-			case SDL_SCANCODE_LEFT:  movement[6] = false; break;
-			case SDL_SCANCODE_RIGHT: movement[7] = false; break;
-			case SDL_SCANCODE_Q: listNeedsDisplay = true; break;
-			case SDL_SCANCODE_SPACE: movement[8] = false; break;
+			case KeyEvent::KEY_A: movement[2] = false; break;
+			case KeyEvent::KEY_D: movement[3] = false; break;
+			case KeyEvent::KEY_UP:    movement[4] = false; break;
+			case KeyEvent::KEY_DOWN:  movement[5] = false; break;
+			case KeyEvent::KEY_LEFT:  movement[6] = false; break;
+			case KeyEvent::KEY_RIGHT: movement[7] = false; break;
+			case KeyEvent::KEY_Q: listNeedsDisplay = true; break;
+			case KeyEvent::KEY_SPACE: movement[8] = false; break;
 			default: break;
 		}
 	}
 	//Mouse for rotation
-	if (event->type == SDL_MOUSEMOTION) {
+	if (event->getType() == Event::MouseMove) {
 		if (mouseButtons[2]) {
-			yaw += (GLfloat)((SDL_MouseMotionEvent *)event)->xrel * cameraSpeed;
-			pitch += (GLfloat)((SDL_MouseMotionEvent *)event)->yrel * cameraSpeed;
+			yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x * cameraSpeed;
+			pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y * cameraSpeed;
 		}
 	}
-	if (event->type == SDL_MOUSEBUTTONDOWN) {
-		mouseButtons[((SDL_MouseButtonEvent *)event)->button - 1] = true;
+	if (event->getType() == Event::MouseDown) {
+		mouseButtons[((MouseDownEvent *)event)->button - 1] = true;
 
-		if (((SDL_MouseButtonEvent *)event)->button == 3) {
-			SDL_SetRelativeMouseMode(SDL_TRUE);
+		if (((MouseDownEvent *)event)->button == 3) {
+			window->lockCursor(true);
 		}
 
-		if (((SDL_MouseButtonEvent *)event)->button == 1) {
-			performClick(((SDL_MouseButtonEvent *)event)->x, ((SDL_MouseButtonEvent *)event)->y);
+		if (((MouseDownEvent *)event)->button == 1) {
+			performClick(((MouseDownEvent *)event)->position.x, ((MouseDownEvent *)event)->position.y);
 		}
 
-	} else if (event->type == SDL_MOUSEBUTTONUP) {
-		mouseButtons[((SDL_MouseButtonEvent *)event)->button - 1] = false;
+	} else if (event->getType() == Event::MouseUp) {
+		mouseButtons[((MouseUpEvent *)event)->button - 1] = false;
 
-		if (((SDL_MouseButtonEvent *)event)->button == 3) {
-			SDL_SetRelativeMouseMode(SDL_FALSE);
+		if (((MouseUpEvent *)event)->button == 3) {
+			window->lockCursor(false);
 		}
 	}
 }
@@ -455,12 +455,12 @@ bool Scene::init() {
 	running = true;
 	listNeedsDisplay = true;
 
-	//Initialize OpenGL
-	if (!initGL()) {
+	if (!window->createContext()) {
 		return false;
 	}
 
-	if (!window->createContext()) {
+	//Initialize OpenGL
+	if (!initGL()) {
 		return false;
 	}
 
@@ -474,7 +474,7 @@ bool Scene::init() {
 
 void Scene::cleanup() {
 	//Destroy the SDL
-	SDL_Quit();
+	window->destroyContext();
 }
 
 void Scene::run() {
@@ -483,7 +483,7 @@ void Scene::run() {
 		exit(-1);
 	}
 
-	SDL_Event event;
+	Event *event;
 
 	//Main loop
 	while (running) {
@@ -492,8 +492,11 @@ void Scene::run() {
 		gettimeofday(&startTime, NULL);
 
 		//Input
-		while (SDL_PollEvent(&event)) {
-			handleEvent(&event);
+		while (window->pollEvents(&event)) {
+			if (event != nullptr) {
+				handleEvent(event);
+				delete event;
+			}
 		}
 
 		//Hard work
