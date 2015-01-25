@@ -31,6 +31,7 @@
 #include <sys/time.h>
 #include <libgen.h>
 #include <unistd.h>
+#include "SDLWindow.h"
 #include "scene.h"
 
 
@@ -95,7 +96,8 @@ int main(int argc, const char * argv[])
 		}
 	} else {
 		//Init SDL and go!
-		Scene::getSingleton()->run();
+		scene->window = new SDLWindow();
+		scene->run();
 	}
 
 	return 0;
