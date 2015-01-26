@@ -29,18 +29,27 @@
 #ifndef physics_h
 #define physics_h
 
+#define PHYSICS_TICK 0.016
+
 #include <stdio.h>
 #include "types.h"
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionDispatch/btInternalEdgeUtility.h>
 
 class Physics {
 	btDiscreteDynamicsWorld *world;
+	btCollisionDispatcher *dispatcher;
+	bool running;
+	F32 extraTime;
 public:
 	void init();
 	void simulate(F32 delta);
 	void addRigidBody(btRigidBody *body);
-
-	inline btDiscreteDynamicsWorld *getWorld() { return world; };
+	void setRunning(bool running) { this->running = running; }
+	bool getRunning() { return running; }
+	
+	btDiscreteDynamicsWorld *getWorld() { return world; };
+	btCollisionDispatcher *getDispatcher() { return dispatcher; }
 
 	static Physics *getPhysics();
 };

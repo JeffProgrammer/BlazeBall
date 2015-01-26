@@ -37,26 +37,33 @@ bool contactAdded(btManifoldPoint& cp,
 				  int partId1,
 				  int index1) {
 
-
+	btAdjustInternalEdgeContacts(cp,colObj1Wrap,colObj0Wrap, partId1,index1);
 
 	return true;
 }
 
 void Physics::init() {
 	btDefaultCollisionConfiguration *configuration = new btDefaultCollisionConfiguration();
-	btCollisionDispatcher *dispatcher = new btCollisionDispatcher(configuration);
+	dispatcher = new btCollisionDispatcher(configuration);
 	btBroadphaseInterface *interface = new btDbvtBroadphase();
 	btConstraintSolver *solver = new btSequentialImpulseConstraintSolver();
 
 	world = new btDiscreteDynamicsWorld(dispatcher, interface, solver, configuration);
-	world->setGravity(btVector3(0, 0, -30.0f));
+	world->setGravity(btVector3(0, 0, -20.0f));
 
 	gContactAddedCallback = contactAdded;
-	
+	running = true;
 }
 
 void Physics::simulate(F32 delta) {
-	world->stepSimulation(delta);
+	if (running) {
+		extraTime += delta;
+		for ( ; extraTime > PHYSICS_TICK; extraTime -= PHYSICS_TICK) {
+			world->stepSimulation(PHYSICS_TICK);
+		}
+		world->stepSimulation(extraTime);
+		extraTime = 0;
+	}
 }
 
 Physics *Physics::getPhysics() {

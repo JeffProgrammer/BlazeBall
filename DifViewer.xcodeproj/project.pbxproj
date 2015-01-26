@@ -14,6 +14,32 @@
 		B51B35131A57AF5100DD8D35 /* libBulletCollision.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B51B35121A57AF5100DD8D35 /* libBulletCollision.a */; };
 		B51B35151A57AF5700DD8D35 /* libBulletDynamics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B51B35141A57AF5700DD8D35 /* libBulletDynamics.a */; };
 		B525BB031A6603DF0009E630 /* material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B525BB011A6603DF0009E630 /* material.cpp */; };
+		B54AFB911A742D390017C975 /* GenerateThumbnailForURL.mm in Sources */ = {isa = PBXBuildFile; fileRef = B54AFB901A742D390017C975 /* GenerateThumbnailForURL.mm */; };
+		B54AFB931A742D390017C975 /* GeneratePreviewForURL.mm in Sources */ = {isa = PBXBuildFile; fileRef = B54AFB921A742D390017C975 /* GeneratePreviewForURL.mm */; };
+		B54AFB951A742D390017C975 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = B54AFB941A742D390017C975 /* main.c */; };
+		B54AFB9A1A74307A0017C975 /* QLDif.qlgenerator in Copy Files */ = {isa = PBXBuildFile; fileRef = B54AFB8C1A742D390017C975 /* QLDif.qlgenerator */; };
+		B54AFB9B1A74334F0017C975 /* interiorRender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5BC0E361A1423DE00D86A8D /* interiorRender.cpp */; };
+		B54AFB9C1A74334F0017C975 /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B56BFDE11A6344A500B2BDDE /* shader.cpp */; };
+		B54AFB9D1A74334F0017C975 /* material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B525BB011A6603DF0009E630 /* material.cpp */; };
+		B54AFB9F1A74334F0017C975 /* io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9D991A10399D00F550EA /* io.cpp */; };
+		B54AFBA01A74334F0017C975 /* math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B58E54C71A215B0700304A9B /* math.cpp */; };
+		B54AFBA11A74334F0017C975 /* jpegsupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E0CD981A13F41200BB4291 /* jpegsupport.cpp */; };
+		B54AFBA21A74334F0017C975 /* mngsupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E0CD9A1A13F41200BB4291 /* mngsupport.cpp */; };
+		B54AFBA31A74334F0017C975 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E0CD9F1A13F43B00BB4291 /* texture.cpp */; };
+		B54AFBA41A74334F0017C975 /* aiSpecialNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9D9E1A10399D00F550EA /* aiSpecialNode.cpp */; };
+		B54AFBA51A74334F0017C975 /* dif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DA01A10399D00F550EA /* dif.cpp */; };
+		B54AFBA61A74334F0017C975 /* forceField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DA21A10399D00F550EA /* forceField.cpp */; };
+		B54AFBA71A74334F0017C975 /* gameEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DA41A10399D00F550EA /* gameEntity.cpp */; };
+		B54AFBA81A74334F0017C975 /* interior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DA61A10399D00F550EA /* interior.cpp */; };
+		B54AFBA91A74334F0017C975 /* interiorPathFollower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DA81A10399D00F550EA /* interiorPathFollower.cpp */; };
+		B54AFBAA1A74334F0017C975 /* pathedInterior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B56838BF1A58AFC30053C982 /* pathedInterior.cpp */; };
+		B54AFBAB1A74334F0017C975 /* staticMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B58303201A66EA1A00EDAFBD /* staticMesh.cpp */; };
+		B54AFBAC1A74334F0017C975 /* trigger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DAA1A10399D00F550EA /* trigger.cpp */; };
+		B54AFBAD1A74334F0017C975 /* vehicleCollision.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9DAC1A10399D00F550EA /* vehicleCollision.cpp */; };
+		B54AFBAE1A74335D0017C975 /* libmng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B566A6951A12EE54003D6BEA /* libmng.a */; };
+		B54AFBAF1A74345F0017C975 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5099DAE1A10127F0005DAC6 /* OpenGL.framework */; };
+		B54AFBB01A7434660017C975 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B5CC8E991A13090A0037BFF7 /* libz.dylib */; };
+		B54AFBB71A7435A50017C975 /* SDLWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54AFBB51A7435A50017C975 /* SDLWindow.cpp */; };
 		B54F9DAE1A10399D00F550EA /* io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9D991A10399D00F550EA /* io.cpp */; };
 		B54F9DAF1A10399D00F550EA /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9D9C1A10399D00F550EA /* main.cpp */; };
 		B54F9DB01A10399D00F550EA /* aiSpecialNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B54F9D9E1A10399D00F550EA /* aiSpecialNode.cpp */; };
@@ -32,6 +58,7 @@
 		B57369CC1A648C23006447A4 /* libmng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B566A6951A12EE54003D6BEA /* libmng.a */; };
 		B58303221A66EA1A00EDAFBD /* staticMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B58303201A66EA1A00EDAFBD /* staticMesh.cpp */; };
 		B58E54C81A215B0700304A9B /* math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B58E54C71A215B0700304A9B /* math.cpp */; };
+		B5AC554D1A7437CE0007830C /* SDLEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5AC554B1A7437CE0007830C /* SDLEvent.cpp */; };
 		B5BC0E371A1423DE00D86A8D /* interiorRender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5BC0E361A1423DE00D86A8D /* interiorRender.cpp */; };
 		B5CC8E9A1A13090A0037BFF7 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B5CC8E991A13090A0037BFF7 /* libz.dylib */; };
 		B5D92CA71A100DD7000A36CB /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5D92CA61A100DD7000A36CB /* SDL2.framework */; };
@@ -58,6 +85,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		B54AFB991A74306A0017C975 /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "~/Library/QuickLook";
+			dstSubfolderSpec = 0;
+			files = (
+				B54AFB9A1A74307A0017C975 /* QLDif.qlgenerator in Copy Files */,
+			);
+			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B56BFDEB1A63520100B2BDDE /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -84,6 +122,14 @@
 		B5201D801A10403F0084D459 /* DIF_MB_SPEC.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = DIF_MB_SPEC.rtf; sourceTree = "<group>"; };
 		B525BB011A6603DF0009E630 /* material.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = material.cpp; path = DifViewer/render/material.cpp; sourceTree = SOURCE_ROOT; };
 		B525BB021A6603DF0009E630 /* material.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = material.h; path = DifViewer/render/material.h; sourceTree = SOURCE_ROOT; };
+		B54AFB8C1A742D390017C975 /* QLDif.qlgenerator */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QLDif.qlgenerator; sourceTree = BUILT_PRODUCTS_DIR; };
+		B54AFB8F1A742D390017C975 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B54AFB901A742D390017C975 /* GenerateThumbnailForURL.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GenerateThumbnailForURL.mm; sourceTree = "<group>"; };
+		B54AFB921A742D390017C975 /* GeneratePreviewForURL.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GeneratePreviewForURL.mm; sourceTree = "<group>"; };
+		B54AFB941A742D390017C975 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		B54AFBB41A74358D0017C975 /* window.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = window.h; path = DifViewer/platform/window.h; sourceTree = SOURCE_ROOT; };
+		B54AFBB51A7435A50017C975 /* SDLWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SDLWindow.cpp; path = DifViewer/platform/SDLWindow.cpp; sourceTree = SOURCE_ROOT; };
+		B54AFBB61A7435A50017C975 /* SDLWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDLWindow.h; path = DifViewer/platform/SDLWindow.h; sourceTree = SOURCE_ROOT; };
 		B54F9D991A10399D00F550EA /* io.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = io.cpp; sourceTree = "<group>"; };
 		B54F9D9A1A10399D00F550EA /* io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = io.h; sourceTree = "<group>"; };
 		B54F9D9B1A10399D00F550EA /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
@@ -118,6 +164,9 @@
 		B58303211A66EA1A00EDAFBD /* staticMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = staticMesh.h; sourceTree = "<group>"; };
 		B58E54C71A215B0700304A9B /* math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = math.cpp; sourceTree = "<group>"; };
 		B5AADE6F1A142E1E0064F1E5 /* math.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = math.h; sourceTree = "<group>"; };
+		B5AC554B1A7437CE0007830C /* SDLEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SDLEvent.cpp; path = DifViewer/platform/SDLEvent.cpp; sourceTree = SOURCE_ROOT; };
+		B5AC554C1A7437CE0007830C /* SDLEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDLEvent.h; path = DifViewer/platform/SDLEvent.h; sourceTree = SOURCE_ROOT; };
+		B5AC554F1A7437E30007830C /* event.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = event.h; path = DifViewer/platform/event.h; sourceTree = SOURCE_ROOT; };
 		B5BC0E361A1423DE00D86A8D /* interiorRender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = interiorRender.cpp; path = DifViewer/render/interiorRender.cpp; sourceTree = SOURCE_ROOT; };
 		B5BF4D631A0BF42900BF0956 /* DifViewer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DifViewer; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5CC8E991A13090A0037BFF7 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -135,6 +184,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B54AFB881A742D390017C975 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B54AFBB01A7434660017C975 /* libz.dylib in Frameworks */,
+				B54AFBAF1A74345F0017C975 /* OpenGL.framework in Frameworks */,
+				B54AFBAE1A74335D0017C975 /* libmng.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B5BF4D601A0BF42900BF0956 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -161,6 +220,38 @@
 				B51B35101A57AC0400DD8D35 /* physics.h */,
 			);
 			name = game;
+			sourceTree = "<group>";
+		};
+		B54AFB8D1A742D390017C975 /* QLDif */ = {
+			isa = PBXGroup;
+			children = (
+				B54AFB901A742D390017C975 /* GenerateThumbnailForURL.mm */,
+				B54AFB921A742D390017C975 /* GeneratePreviewForURL.mm */,
+				B54AFB941A742D390017C975 /* main.c */,
+				B54AFB8E1A742D390017C975 /* Supporting Files */,
+			);
+			path = QLDif;
+			sourceTree = "<group>";
+		};
+		B54AFB8E1A742D390017C975 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B54AFB8F1A742D390017C975 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B54AFBB81A7435A90017C975 /* platform */ = {
+			isa = PBXGroup;
+			children = (
+				B54AFBB51A7435A50017C975 /* SDLWindow.cpp */,
+				B54AFBB61A7435A50017C975 /* SDLWindow.h */,
+				B5AC554B1A7437CE0007830C /* SDLEvent.cpp */,
+				B5AC554C1A7437CE0007830C /* SDLEvent.h */,
+				B54AFBB41A74358D0017C975 /* window.h */,
+				B5AC554F1A7437E30007830C /* event.h */,
+			);
+			name = platform;
 			sourceTree = "<group>";
 		};
 		B54F9D981A10399D00F550EA /* base */ = {
@@ -260,6 +351,7 @@
 			children = (
 				B5BF4D651A0BF42900BF0956 /* DifViewer */,
 				B5201D801A10403F0084D459 /* DIF_MB_SPEC.rtf */,
+				B54AFB8D1A742D390017C975 /* QLDif */,
 				B566A61D1A12ED06003D6BEA /* Frameworks */,
 				B5BF4D641A0BF42900BF0956 /* Products */,
 			);
@@ -269,6 +361,7 @@
 			isa = PBXGroup;
 			children = (
 				B5BF4D631A0BF42900BF0956 /* DifViewer */,
+				B54AFB8C1A742D390017C975 /* QLDif.qlgenerator */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -279,6 +372,7 @@
 				B54F9D9C1A10399D00F550EA /* main.cpp */,
 				B51B33F71A57915100DD8D35 /* game */,
 				B56BFDE41A63494900B2BDDE /* shaders */,
+				B54AFBB81A7435A90017C975 /* platform */,
 				B5AADE701A143C950064F1E5 /* render */,
 				B54F9D981A10399D00F550EA /* base */,
 				B5E0CD971A13F3EC00BB4291 /* bitmap */,
@@ -304,7 +398,36 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		B54AFB891A742D390017C975 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
+		B54AFB8B1A742D390017C975 /* QLDif */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B54AFB981A742D390017C975 /* Build configuration list for PBXNativeTarget "QLDif" */;
+			buildPhases = (
+				B54AFB871A742D390017C975 /* Sources */,
+				B54AFB881A742D390017C975 /* Frameworks */,
+				B54AFB891A742D390017C975 /* Headers */,
+				B54AFB8A1A742D390017C975 /* Resources */,
+				B54AFB991A74306A0017C975 /* Copy Files */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QLDif;
+			productName = QLDif;
+			productReference = B54AFB8C1A742D390017C975 /* QLDif.qlgenerator */;
+			productType = "com.apple.product-type.bundle";
+		};
 		B5BF4D621A0BF42900BF0956 /* DifViewer */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B5BF4D6C1A0BF42A00BF0956 /* Build configuration list for PBXNativeTarget "DifViewer" */;
@@ -331,6 +454,11 @@
 			attributes = {
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = CouleeApps;
+				TargetAttributes = {
+					B54AFB8B1A742D390017C975 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+				};
 			};
 			buildConfigurationList = B5BF4D5E1A0BF42900BF0956 /* Build configuration list for PBXProject "DifViewer" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -351,6 +479,7 @@
 			projectRoot = "";
 			targets = (
 				B5BF4D621A0BF42900BF0956 /* DifViewer */,
+				B54AFB8B1A742D390017C975 /* QLDif */,
 			);
 		};
 /* End PBXProject section */
@@ -365,7 +494,45 @@
 		};
 /* End PBXReferenceProxy section */
 
+/* Begin PBXResourcesBuildPhase section */
+		B54AFB8A1A742D390017C975 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		B54AFB871A742D390017C975 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B54AFB9B1A74334F0017C975 /* interiorRender.cpp in Sources */,
+				B54AFB9C1A74334F0017C975 /* shader.cpp in Sources */,
+				B54AFB9D1A74334F0017C975 /* material.cpp in Sources */,
+				B54AFB9F1A74334F0017C975 /* io.cpp in Sources */,
+				B54AFBA01A74334F0017C975 /* math.cpp in Sources */,
+				B54AFBA11A74334F0017C975 /* jpegsupport.cpp in Sources */,
+				B54AFBA21A74334F0017C975 /* mngsupport.cpp in Sources */,
+				B54AFBA31A74334F0017C975 /* texture.cpp in Sources */,
+				B54AFBA41A74334F0017C975 /* aiSpecialNode.cpp in Sources */,
+				B54AFBA51A74334F0017C975 /* dif.cpp in Sources */,
+				B54AFBA61A74334F0017C975 /* forceField.cpp in Sources */,
+				B54AFBA71A74334F0017C975 /* gameEntity.cpp in Sources */,
+				B54AFBA81A74334F0017C975 /* interior.cpp in Sources */,
+				B54AFBA91A74334F0017C975 /* interiorPathFollower.cpp in Sources */,
+				B54AFBAA1A74334F0017C975 /* pathedInterior.cpp in Sources */,
+				B54AFBAB1A74334F0017C975 /* staticMesh.cpp in Sources */,
+				B54AFBAC1A74334F0017C975 /* trigger.cpp in Sources */,
+				B54AFBAD1A74334F0017C975 /* vehicleCollision.cpp in Sources */,
+				B54AFB911A742D390017C975 /* GenerateThumbnailForURL.mm in Sources */,
+				B54AFB931A742D390017C975 /* GeneratePreviewForURL.mm in Sources */,
+				B54AFB951A742D390017C975 /* main.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B5BF4D5F1A0BF42900BF0956 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -380,6 +547,7 @@
 				B54F9DB11A10399D00F550EA /* dif.cpp in Sources */,
 				B54F9DB31A10399D00F550EA /* gameEntity.cpp in Sources */,
 				B56BFDE31A6344A500B2BDDE /* shader.cpp in Sources */,
+				B5AC554D1A7437CE0007830C /* SDLEvent.cpp in Sources */,
 				B55C04F31A6613130052C528 /* scene.cpp in Sources */,
 				B5E0CD9C1A13F41200BB4291 /* jpegsupport.cpp in Sources */,
 				B54F9DAE1A10399D00F550EA /* io.cpp in Sources */,
@@ -388,6 +556,7 @@
 				B5E0CDA01A13F43B00BB4291 /* texture.cpp in Sources */,
 				B54F9DB01A10399D00F550EA /* aiSpecialNode.cpp in Sources */,
 				B5BC0E371A1423DE00D86A8D /* interiorRender.cpp in Sources */,
+				B54AFBB71A7435A50017C975 /* SDLWindow.cpp in Sources */,
 				B58303221A66EA1A00EDAFBD /* staticMesh.cpp in Sources */,
 				B54F9DB61A10399D00F550EA /* trigger.cpp in Sources */,
 				B54F9DB71A10399D00F550EA /* vehicleCollision.cpp in Sources */,
@@ -406,6 +575,87 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		B54AFB961A742D390017C975 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_UNREACHABLE_CODE = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG,
+					GL_33,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(PROJECT_DIR)/glm",
+					"$(PROJECT_DIR)/",
+					"$(PROJECT_DIR)/jpeg",
+					"$(PROJECT_DIR)/bullet3/src/**",
+				);
+				INFOPLIST_FILE = QLDif/Info.plist;
+				INSTALL_PATH = /Library/QuickLook;
+				LIBRARY_SEARCH_PATHS = (
+					"$(INHERITED)",
+					"$(PROJECT_DIR)/jpeg/.libs",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Collision/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Common/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Dynamics/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Geometry/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3OpenCL/Debug",
+					"$(PROJECT_DIR)/bullet3/src/LinearMath/Debug",
+					"$(PROJECT_DIR)/bullet3/src/BulletCollision/Debug",
+					"$(PROJECT_DIR)/bullet3/src/BulletDynamics/Debug",
+				);
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = qlgenerator;
+			};
+			name = Debug;
+		};
+		B54AFB971A742D390017C975 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_UNREACHABLE_CODE = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = GL_33;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(PROJECT_DIR)/glm",
+					"$(PROJECT_DIR)/",
+					"$(PROJECT_DIR)/jpeg",
+					"$(PROJECT_DIR)/bullet3/src/**",
+				);
+				INFOPLIST_FILE = QLDif/Info.plist;
+				INSTALL_PATH = /Library/QuickLook;
+				LIBRARY_SEARCH_PATHS = (
+					"$(INHERITED)",
+					"$(PROJECT_DIR)/jpeg/.libs",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Collision/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Common/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Dynamics/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3Geometry/Debug",
+					"$(PROJECT_DIR)/bullet3/src/Bullet3OpenCL/Debug",
+					"$(PROJECT_DIR)/bullet3/src/LinearMath/Debug",
+					"$(PROJECT_DIR)/bullet3/src/BulletCollision/Debug",
+					"$(PROJECT_DIR)/bullet3/src/BulletDynamics/Debug",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = qlgenerator;
+			};
+			name = Release;
+		};
 		B5BF4D6A1A0BF42A00BF0956 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -487,6 +737,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DEBUG,
 					GL_33,
+					BUILD_PHYSICS,
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -511,6 +762,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "-v";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 				STRIPFLAGS = "-x";
 				SYMROOT = "$(PROJECT_DIR)/Build";
 			};
@@ -524,7 +776,10 @@
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
-				GCC_PREPROCESSOR_DEFINITIONS = GL_33;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					GL_33,
+					BUILD_PHYSICS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -548,6 +803,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "-v";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 				STRIPFLAGS = "-x";
 				SYMROOT = "$(PROJECT_DIR)/Build";
 			};
@@ -556,6 +812,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B54AFB981A742D390017C975 /* Build configuration list for PBXNativeTarget "QLDif" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B54AFB961A742D390017C975 /* Debug */,
+				B54AFB971A742D390017C975 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B5BF4D5E1A0BF42900BF0956 /* Build configuration list for PBXProject "DifViewer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

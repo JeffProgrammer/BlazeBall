@@ -501,36 +501,25 @@ void Interior::generateMesh() {
 	//Create body
 	btMotionState *state = new btDefaultMotionState();
 
-	btCompoundShape *compound = new btCompoundShape();
-	btTriangleMesh **meshes = new btTriangleMesh*[numPlanes];
-	bool *used = new bool[numPlanes];
-
-	for (U32 i = 0; i < numPlanes; i ++) {
-		meshes[i] = new btTriangleMesh();
-		used[i] = false;
-	}
+	btTriangleMesh *mesh = new btTriangleMesh;
 
 	for (U32 i = 0; i < numSurfaces; i ++) {
 		Surface surface = this->surface[i];
-		U32 plane = surface.planeIndex;
-		used[plane] = true;
 
 		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
 			Point3F point0 = this->point[this->index[j + surface.windingStart + 0]];
 			Point3F point1 = this->point[this->index[j + surface.windingStart + 1]];
 			Point3F point2 = this->point[this->index[j + surface.windingStart + 2]];
-			meshes[plane]->addTriangle(btConvert(point0), btConvert(point1), btConvert(point2));
-		}
-	}
-	for (U32 i = 0; i < numPlanes; i ++) {
-		if (used[i]) {
-			btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(meshes[i], true, true);
-			shape->setMargin(0.1f);
-			compound->addChildShape(btTransform(btQuaternion(0, 0, 0, 1)), shape);
+			mesh->addTriangle(btConvert(point0), btConvert(point1), btConvert(point2));
 		}
 	}
 
-	compound->setMargin(0.1f);
+	btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(mesh, true, true);
+	btTriangleInfoMap *map = new btTriangleInfoMap();
+
+	btGenerateInternalEdgeInfo(shape, map);
+
+	shape->setMargin(0.01f);
 
 	btTransform transform;
 	transform.setIdentity();
@@ -538,9 +527,10 @@ void Interior::generateMesh() {
 
 	state->setWorldTransform(transform);
 
-	actor = new btRigidBody(0, state, compound);
+	actor = new btRigidBody(0, state, shape);
 	actor->setRestitution(0.7f);
 	actor->setFriction(1.0f);
+	actor->setCollisionFlags(actor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 	Physics::getPhysics()->addRigidBody(actor);
 }
 #endif

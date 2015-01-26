@@ -32,7 +32,7 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), renderBuffer(0), maxAngVel(360.0f) {
+Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), renderBuffer(0), maxAngVel(1000.0f) {
 	//Motion state and shape
 	btMotionState *state = new btDefaultMotionState();
 	btCollisionShape *shape = new btSphereShape(radius);
@@ -53,15 +53,16 @@ Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), ren
 	btRigidBody::btRigidBodyConstructionInfo info(1, state, shape, fallInertia);
 	info.m_linearDamping = 0.3f;
 	info.m_angularDamping = 0.4f;
-	info.m_restitution = 0.7f;
+	info.m_restitution = 0.8f;
 	info.m_friction = 1.1f;
-	info.m_rollingFriction = 1.1f;
+	info.m_rollingFriction = 0.4f;
 
 	//Create the actor and add it to the scene
 	actor = new btRigidBody(info);
 	actor->setActivationState(DISABLE_DEACTIVATION);
 	actor->setCcdMotionThreshold(1e-3);
 	actor->setCcdSweptSphereRadius(radius / 10.0f);
+	actor->setAnisotropicFriction(shape->getAnisotropicRollingFrictionDirection(), btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION);
 	Physics::getPhysics()->addRigidBody(actor);
 }
 
