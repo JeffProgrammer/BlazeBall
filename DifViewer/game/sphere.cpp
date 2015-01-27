@@ -33,37 +33,44 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), renderBuffer(0), maxAngVel(1000.0f) {
-	//Motion state and shape
-	btMotionState *state = new btDefaultMotionState();
-	btCollisionShape *shape = new btSphereShape(radius);
+	physx::PxMaterial *material = Physics::getPhysics()->getPxPhysics()->createMaterial(1.1f, 0.9f, 0.8f);
+	actor = physx::PxCreateDynamic(*Physics::getPhysics()->getPxPhysics(), physx::PxTransform(origin.x, origin.y, origin.z), physx::PxSphereGeometry(radius), *material, 1.0f);
+	physx::PxRigidBody *rigid = actor->is<physx::PxRigidBody>();
+	if (rigid)
+		physx::PxRigidBodyExt::updateMassAndInertia(*rigid, 1);
 
-	//Need this otherwise forces won't work!
-	btVector3 fallInertia = btVector3(0.f, 0.f, 0.f);
-	shape->calculateLocalInertia(1.0f, fallInertia);
-	shape->setMargin(0.01f);
-
-	//Update position
-	btTransform transform;
-	transform.setIdentity();
-	transform.setOrigin(btConvert(origin));
-
-	state->setWorldTransform(transform);
-
-	//Construction info
-	btRigidBody::btRigidBodyConstructionInfo info(1, state, shape, fallInertia);
-	info.m_linearDamping = 0.3f;
-	info.m_angularDamping = 0.4f;
-	info.m_restitution = 0.8f;
-	info.m_friction = 1.1f;
-	info.m_rollingFriction = 0.4f;
-
-	//Create the actor and add it to the scene
-	actor = new btRigidBody(info);
-	actor->setActivationState(DISABLE_DEACTIVATION);
-	actor->setCcdMotionThreshold(1e-3);
-	actor->setCcdSweptSphereRadius(radius / 10.0f);
-	actor->setAnisotropicFriction(shape->getAnisotropicRollingFrictionDirection(), btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION);
-	Physics::getPhysics()->addRigidBody(actor);
+	Physics::getPhysics()->addActor(actor);
+//	//Motion state and shape
+//	btMotionState *state = new btDefaultMotionState();
+//	btCollisionShape *shape = new btSphereShape(radius);
+//
+//	//Need this otherwise forces won't work!
+//	btVector3 fallInertia = btVector3(0.f, 0.f, 0.f);
+//	shape->calculateLocalInertia(1.0f, fallInertia);
+//	shape->setMargin(0.01f);
+//
+//	//Update position
+//	btTransform transform;
+//	transform.setIdentity();
+//	transform.setOrigin(btConvert(origin));
+//
+//	state->setWorldTransform(transform);
+//
+//	//Construction info
+//	btRigidBody::btRigidBodyConstructionInfo info(1, state, shape, fallInertia);
+//	info.m_linearDamping = 0.3f;
+//	info.m_angularDamping = 0.4f;
+//	info.m_restitution = 0.8f;
+//	info.m_friction = 1.1f;
+//	info.m_rollingFriction = 0.4f;
+//
+//	//Create the actor and add it to the scene
+//	actor = new btRigidBody(info);
+//	actor->setActivationState(DISABLE_DEACTIVATION);
+//	actor->setCcdMotionThreshold(1e-3);
+//	actor->setCcdSweptSphereRadius(radius / 10.0f);
+//	actor->setAnisotropicFriction(shape->getAnisotropicRollingFrictionDirection(), btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION);
+//	Physics::getPhysics()->addRigidBody(actor);
 }
 
 void Sphere::generate() {
@@ -153,106 +160,109 @@ void Sphere::render(ColorF color) {
 }
 
 void Sphere::applyTorque(Point3F torque) {
-	actor->applyTorqueImpulse(btConvert(torque));
-	Point3F ang = btConvert(actor->getAngularVelocity());
+	physx::PxRigidDynamic *dynamic = actor->is<physx::PxRigidDynamic>();
 
-	if (ang.length() > maxAngVel)
-		ang = ang.normalize(maxAngVel);
-	
-	actor->setAngularVelocity(btConvert(ang));
+	if (dynamic)
+		dynamic->addTorque(pxConvert<Point3F, physx::PxVec3>(torque));
+
+//	actor->applyTorqueImpulse(btConvert(torque));
+//	Point3F ang = btConvert(actor->getAngularVelocity());
+//
+//	if (ang.length() > maxAngVel)
+//		ang = ang.normalize(maxAngVel);
+//	
+//	actor->setAngularVelocity(btConvert(ang));
 }
 
 void Sphere::applyImpulse(Point3F force, Point3F origin) {
-	actor->applyImpulse(btConvert(force), btConvert(origin));
+	physx::PxRigidDynamic *dynamic = actor->is<physx::PxRigidDynamic>();
+
+	if (dynamic)
+		physx::PxRigidBodyExt::addForceAtPos(*dynamic, pxConvert<Point3F, physx::PxVec3>(force), pxConvert<Point3F, physx::PxVec3>(origin));
 }
 
 void Sphere::applyForce(Point3F force, Point3F origin) {
-	actor->applyForce(btConvert(force), btConvert(origin));
+	physx::PxRigidDynamic *dynamic = actor->is<physx::PxRigidDynamic>();
+
+	if (dynamic)
+		physx::PxRigidBodyExt::addForceAtPos(*dynamic, pxConvert<Point3F, physx::PxVec3>(force), pxConvert<Point3F, physx::PxVec3>(origin));
 }
 
 bool Sphere::colliding() {
-	btDiscreteDynamicsWorld *world = Physics::getPhysics()->getWorld();
-	U32 manifolds = world->getDispatcher()->getNumManifolds();
-
-	for (U32 i = 0; i < manifolds; i ++) {
-		btPersistentManifold *manifold = world->getDispatcher()->getManifoldByIndexInternal(i);
-		btCollisionObject *obj1 = (btCollisionObject *)manifold->getBody0();
-		btCollisionObject *obj2 = (btCollisionObject *)manifold->getBody1();
-
-		if (obj1 == actor || obj2 == actor) {
-			if (manifold->getNumContacts() > 0)
-				return true;
-		}
-	}
+//	btDiscreteDynamicsWorld *world = Physics::getPhysics()->getWorld();
+//	U32 manifolds = world->getDispatcher()->getNumManifolds();
+//
+//	for (U32 i = 0; i < manifolds; i ++) {
+//		btPersistentManifold *manifold = world->getDispatcher()->getManifoldByIndexInternal(i);
+//		btCollisionObject *obj1 = (btCollisionObject *)manifold->getBody0();
+//		btCollisionObject *obj2 = (btCollisionObject *)manifold->getBody1();
+//
+//		if (obj1 == actor || obj2 == actor) {
+//			if (manifold->getNumContacts() > 0)
+//				return true;
+//		}
+//	}
 
 	return false;
 }
 
 Point3F Sphere::getCollisionNormal() {
-	btDiscreteDynamicsWorld *world = Physics::getPhysics()->getWorld();
-	U32 manifolds = world->getDispatcher()->getNumManifolds();
+//	btDiscreteDynamicsWorld *world = Physics::getPhysics()->getWorld();
+//	U32 manifolds = world->getDispatcher()->getNumManifolds();
+//
+//	Point3F best = Point3F(0.0f, 0.0f, 0.0f);
+//	F32 dot = 0;
+//
+//	for (U32 i = 0; i < manifolds; i ++) {
+//		btPersistentManifold *manifold = world->getDispatcher()->getManifoldByIndexInternal(i);
+//		btCollisionObject *obj1 = (btCollisionObject *)manifold->getBody0();
+//		btCollisionObject *obj2 = (btCollisionObject *)manifold->getBody1();
+//
+//		if (obj1 == actor || obj2 == actor) {
+//			U32 contacts = manifold->getNumContacts();
+//			for (U32 j = 0; j < contacts; j ++) {
+//				Point3F normal = btConvert(manifold->getContactPoint(j).m_normalWorldOnB);
+//				if (obj2 == actor)
+//					normal *= -1;
+//				if (normal.dot(Point3F(0, 0, 1)) > dot) {
+//					best = normal;
+//					dot = normal.dot(Point3F(0, 0, 1));
+//				}
+//			}
+//		}
+//	}
 
-	Point3F best = Point3F(0.0f, 0.0f, 0.0f);
-	F32 dot = 0;
-
-	for (U32 i = 0; i < manifolds; i ++) {
-		btPersistentManifold *manifold = world->getDispatcher()->getManifoldByIndexInternal(i);
-		btCollisionObject *obj1 = (btCollisionObject *)manifold->getBody0();
-		btCollisionObject *obj2 = (btCollisionObject *)manifold->getBody1();
-
-		if (obj1 == actor || obj2 == actor) {
-			U32 contacts = manifold->getNumContacts();
-			for (U32 j = 0; j < contacts; j ++) {
-				Point3F normal = btConvert(manifold->getContactPoint(j).m_normalWorldOnB);
-				if (obj2 == actor)
-					normal *= -1;
-				if (normal.dot(Point3F(0, 0, 1)) > dot) {
-					best = normal;
-					dot = normal.dot(Point3F(0, 0, 1));
-				}
-			}
-		}
-	}
-
-	return best;
+	return Point3F(0,0,0); //best
 }
 
 Point3F Sphere::getPosition() {
-	btTransform trans;
-	actor->getMotionState()->getWorldTransform(trans);
-	return btConvert(trans.getOrigin());
+	return pxConvert<physx::PxTransform, Point3F>(actor->getGlobalPose());
 }
 
 Point3F Sphere::getPosition() const {
-	btTransform trans;
-	actor->getMotionState()->getWorldTransform(trans);
-	return btConvert(trans.getOrigin());
+	return pxConvert<physx::PxTransform, Point3F>(actor->getGlobalPose());
 }
 
 AngAxisF Sphere::getRotation() {
-	btTransform trans;
-	actor->getMotionState()->getWorldTransform(trans);
-	return btConvert(trans.getRotation());
+	return AngAxisF(pxConvert<physx::PxTransform, QuatF>(actor->getGlobalPose()));
 }
 
 AngAxisF Sphere::getRotation() const {
-	btTransform trans;
-	actor->getMotionState()->getWorldTransform(trans);
-	return btConvert(trans.getRotation());
+	return AngAxisF(pxConvert<physx::PxTransform, QuatF>(actor->getGlobalPose()));
 }
 
 void Sphere::setPosition(Point3F pos) {
-	btTransform trans;
-	trans.setOrigin(btConvert(pos));
-	actor->getMotionState()->setWorldTransform(trans);
-	actor->setWorldTransform(trans);
-	actor->setLinearVelocity(btConvert(Point3F(0, 0, 0)));
+//	btTransform trans;
+//	trans.setOrigin(btConvert(pos));
+//	actor->getMotionState()->setWorldTransform(trans);
+//	actor->setWorldTransform(trans);
+//	actor->setLinearVelocity(btConvert(Point3F(0, 0, 0)));
 }
 
 void Sphere::setPosition(const Point3F pos) const {
-	btTransform trans;
-	trans.setOrigin(btConvert(pos));
-	actor->getMotionState()->setWorldTransform(trans);
-	actor->setWorldTransform(trans);
-	actor->setLinearVelocity(btConvert(Point3F(0, 0, 0)));
+//	btTransform trans;
+//	trans.setOrigin(btConvert(pos));
+//	actor->getMotionState()->setWorldTransform(trans);
+//	actor->setWorldTransform(trans);
+//	actor->setLinearVelocity(btConvert(Point3F(0, 0, 0)));
 }

@@ -33,44 +33,68 @@
 
 #include <stdio.h>
 #include "types.h"
-#include <btBulletDynamicsCommon.h>
-#include <BulletCollision/CollisionDispatch/btInternalEdgeUtility.h>
+#include "PxPhysicsAPI.h"
+#include "cooking/PxCooking.h"
 
 class Physics {
-	btDiscreteDynamicsWorld *world;
-	btCollisionDispatcher *dispatcher;
+	physx::PxFoundation *foundation;
+	physx::PxProfileZoneManager *profileZoneManager;
+	physx::PxPhysics *physics;
+	physx::PxCooking *cooking;
+	physx::PxScene *scene;
+	physx::PxCpuDispatcher *dispatcher;
+
 	bool running;
 	F32 extraTime;
 public:
 	void init();
+	void destroy();
 	void simulate(F32 delta);
-	void addRigidBody(btRigidBody *body);
+	void addActor(physx::PxActor *actor);
 	void setRunning(bool running) { this->running = running; }
 	bool getRunning() { return running; }
-	
-	btDiscreteDynamicsWorld *getWorld() { return world; };
-	btCollisionDispatcher *getDispatcher() { return dispatcher; }
+
+	physx::PxPhysics *getPxPhysics() { return physics; }
+	physx::PxCooking *getPxCooking() { return cooking; }
+
+//	btDiscreteDynamicsWorld *getWorld() { return world; };
+//	btCollisionDispatcher *getDispatcher() { return dispatcher; }
 
 	static Physics *getPhysics();
 };
 
+class AllocatorCallback : public physx::PxAllocatorCallback {
+	virtual void *allocate(size_t size, const char *typeName, const char *fileName, int line) {
+		return malloc(size);
+	}
+	virtual void deallocate(void *ptr) {
+		free(ptr);
+	}
+};
+
+class ErrorCallback : public physx::PxErrorCallback {
+	virtual void reportError(physx::PxErrorCode::Enum code, const char* message, const char* file, int line) {
+		printf("Physx Error: %d %s [File: %s (%d)]\n", code, message, file, line);
+	}
+};
+
 template <typename from, typename to>
-static to btConvert(from point);
+to pxConvert(from val);
 
-inline static btVector3 btConvert(Point3F point) {
-	return btVector3(point.x, point.y, point.z);
+template<> inline Point3F pxConvert(physx::PxVec3 val) {
+	return Point3F(val.x, val.y, val.z);
 }
 
-inline static Point3F btConvert(btVector3 point) {
-	return Point3F(point.x(), point.y(), point.z());
+template<> inline physx::PxVec3 pxConvert(Point3F val) {
+	return physx::PxVec3(val.x, val.y, val.z);
 }
 
-inline static btQuaternion btConvert(AngAxisF point) {
-	return btQuaternion(btConvert(point.axis), point.angle);
+template<> inline QuatF pxConvert(physx::PxTransform val) {
+	return QuatF(val.q.x, val.q.y, val.q.z, val.q.w);
 }
 
-inline static AngAxisF btConvert(btQuaternion point) {
-	return AngAxisF(btConvert(point.getAxis()), point.getAngle());
+template<> inline Point3F pxConvert(physx::PxTransform val) {
+	return Point3F(val.p.x, val.p.y, val.p.z);
 }
 
 #endif

@@ -42,7 +42,7 @@ class Sphere {
 protected:
 	std::vector<Point3F> geometry;
 public:
-	btRigidBody *actor;
+	physx::PxRigidActor *actor;
 	Point3F origin;
 	F32 radius;
 	F32 maxAngVel;

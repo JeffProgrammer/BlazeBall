@@ -27,41 +27,50 @@
 
 #ifdef BUILD_PHYSICS
 #include "physics.h"
-#include <BulletCollision/CollisionShapes/btTriangleShape.h>
-
-bool contactAdded(btManifoldPoint& cp,
-				  const btCollisionObjectWrapper* colObj0Wrap,
-				  int partId0,
-				  int index0,
-				  const btCollisionObjectWrapper* colObj1Wrap,
-				  int partId1,
-				  int index1) {
-
-	btAdjustInternalEdgeContacts(cp,colObj1Wrap,colObj0Wrap, partId1,index1);
-
-	return true;
-}
 
 void Physics::init() {
-	btDefaultCollisionConfiguration *configuration = new btDefaultCollisionConfiguration();
-	dispatcher = new btCollisionDispatcher(configuration);
-	btBroadphaseInterface *interface = new btDbvtBroadphase();
-	btConstraintSolver *solver = new btSequentialImpulseConstraintSolver();
+	static AllocatorCallback *allocator = nullptr;
+	if (allocator == nullptr) {
+		allocator = new AllocatorCallback();
+	}
+	static ErrorCallback *errorer = nullptr;
+	if (errorer == nullptr) {
+		errorer = new ErrorCallback();
+	}
+	foundation = PxCreateFoundation(PX_PHYSICS_VERSION, *allocator, *errorer);
+	profileZoneManager = &physx::PxProfileZoneManager::createProfileZoneManager(foundation);
 
-	world = new btDiscreteDynamicsWorld(dispatcher, interface, solver, configuration);
-	world->setGravity(btVector3(0, 0, -20.0f));
+	bool recordMemoryAllocations = true;
+	physics = PxCreatePhysics(PX_PHYSICS_VERSION, *foundation, physx::PxTolerancesScale(), recordMemoryAllocations, profileZoneManager);
+	cooking = PxCreateCooking(PX_PHYSICS_VERSION, *foundation, physx::PxCookingParams(physics->getTolerancesScale()));
 
-	gContactAddedCallback = contactAdded;
+	PxInitExtensions(*physics);
+
+	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale());
+	sceneDesc.gravity =	physx::PxVec3(0, 0, -20.f);
+
+	if (!sceneDesc.cpuDispatcher) {
+		dispatcher = physx::PxDefaultCpuDispatcherCreate(1);
+		sceneDesc.cpuDispatcher = dispatcher;
+	}
+	scene = physics->createScene(sceneDesc);
+
 	running = true;
+}
+
+void Physics::destroy() {
+	physics->release();
+	foundation->release();
 }
 
 void Physics::simulate(F32 delta) {
 	if (running) {
+		scene->fetchResults();
 		extraTime += delta;
 		for ( ; extraTime > PHYSICS_TICK; extraTime -= PHYSICS_TICK) {
-			world->stepSimulation(PHYSICS_TICK);
+			scene->simulate(extraTime);
 		}
-		world->stepSimulation(extraTime);
+		scene->simulate(extraTime);
 		extraTime = 0;
 	}
 }
@@ -74,9 +83,8 @@ Physics *Physics::getPhysics() {
 	return physics;
 }
 
-void Physics::addRigidBody(btRigidBody *body) {
-	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
-	world->addRigidBody(body);
+void Physics::addActor(physx::PxActor *actor) {
+	scene->addActor(*actor);
 }
 
 #endif

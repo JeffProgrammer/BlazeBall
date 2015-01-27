@@ -499,39 +499,77 @@ void Interior::generateMaterials(String directory) {
 #ifdef BUILD_PHYSICS
 void Interior::generateMesh() {
 	//Create body
-	btMotionState *state = new btDefaultMotionState();
+	physx::PxTriangleMeshGeometry geometry;
 
-	btTriangleMesh *mesh = new btTriangleMesh;
+	physx::PxTriangleMeshDesc meshDesc;
 
+	U32 numTriangles = 0;
+	for (U32 i = 0; i < numSurfaces; i ++) {
+		Surface surface = this->surface[i];
+		numTriangles += surface.windingCount - 2;
+	}
+
+	Point3F *points = new Point3F[numPoints];
+	U32 *triangles = new U32[numTriangles * 3];
+
+	for (U32 i = 0; i < numPoints; i ++) {
+		points[i] = point[i];
+	}
+
+	U32 curPoint = 0;
 	for (U32 i = 0; i < numSurfaces; i ++) {
 		Surface surface = this->surface[i];
 
 		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
-			Point3F point0 = this->point[this->index[j + surface.windingStart + 0]];
-			Point3F point1 = this->point[this->index[j + surface.windingStart + 1]];
-			Point3F point2 = this->point[this->index[j + surface.windingStart + 2]];
-			mesh->addTriangle(btConvert(point0), btConvert(point1), btConvert(point2));
+			U32 point0 = this->index[j + surface.windingStart + 0];
+			U32 point1 = this->index[j + surface.windingStart + 1];
+			U32 point2 = this->index[j + surface.windingStart + 2];
+
+			triangles[curPoint++] = point0;
+			triangles[curPoint++] = point1;
+			triangles[curPoint++] = point2;
 		}
 	}
 
-	btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(mesh, true, true);
-	btTriangleInfoMap *map = new btTriangleInfoMap();
+	meshDesc.points.count = numPoints;
+	meshDesc.points.data = points;
+	meshDesc.points.stride = sizeof(Point3F);
 
-	btGenerateInternalEdgeInfo(shape, map);
+	meshDesc.triangles.count = numTriangles;
+	meshDesc.triangles.data = triangles;
+	meshDesc.triangles.stride = 3 * sizeof(U32);
 
-	shape->setMargin(0.01f);
+	meshDesc.flags |= physx::PxMeshFlag::eFLIPNORMALS;
 
-	btTransform transform;
-	transform.setIdentity();
-	transform.setOrigin(btVector3(0, 0, 0));
+	physx::PxDefaultMemoryOutputStream writeBuffer;
+	bool status = Physics::getPhysics()->getPxCooking()->cookTriangleMesh(meshDesc, writeBuffer);
 
-	state->setWorldTransform(transform);
+	physx::PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+	physx::PxTriangleMesh *mesh = Physics::getPhysics()->getPxPhysics()->createTriangleMesh(readBuffer);
+	geometry.triangleMesh = mesh;
 
-	actor = new btRigidBody(0, state, shape);
-	actor->setRestitution(0.7f);
-	actor->setFriction(1.0f);
-	actor->setCollisionFlags(actor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
-	Physics::getPhysics()->addRigidBody(actor);
+//
+//	btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(mesh, true, true);
+//	btTriangleInfoMap *map = new btTriangleInfoMap();
+//
+//	btGenerateInternalEdgeInfo(shape, map);
+//
+//	shape->setMargin(0.01f);
+//
+//	btTransform transform;
+//	transform.setIdentity();
+//	transform.setOrigin(btVector3(0, 0, 0));
+//
+//	state->setWorldTransform(transform);
+//
+//	actor = new btRigidBody(0, state, shape);
+//	actor->setRestitution(0.7f);
+//	actor->setFriction(1.0f);
+//	actor->setCollisionFlags(actor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+
+	physx::PxMaterial *material = Physics::getPhysics()->getPxPhysics()->createMaterial(1.0, 1.0, 0.7);
+	actor = physx::PxCreateStatic(*Physics::getPhysics()->getPxPhysics(), physx::PxTransform(0.0f, 0.0f, 0.0f), geometry, *material);
+	Physics::getPhysics()->addActor(actor);
 }
 #endif
 

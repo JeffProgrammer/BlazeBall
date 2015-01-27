@@ -76,7 +76,6 @@ void Scene::render() {
 	}
 
 #ifdef BUILD_PHYSICS
-	btTransform trans;
 	Point3F pos = sphere->getPosition();
 	AngAxisF rot = sphere->getRotation();
 
@@ -224,8 +223,6 @@ void Scene::loop() {
 	if (movement[3]) move.y += speed;
 	torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
 	delta = glm::rotate(delta, -pitch, glm::vec3(1, 0, 0));
-
-	torque /= 3.0;
 
 	Point3F force = Point3F(torque.x, torque.y, torque.z);
 	sphere->applyTorque(force);
