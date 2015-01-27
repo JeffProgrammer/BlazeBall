@@ -396,7 +396,7 @@ public:
 	U32 lightMapBorderSize;
 
 #ifdef BUILD_PHYSICS
-	physx::PxRigidActor *actor;
+	physx::PxRigidStatic *actor;
 #endif
 	RenderInfo renderInfo;
 

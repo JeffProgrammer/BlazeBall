@@ -32,12 +32,18 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), renderBuffer(0), maxAngVel(1000.0f) {
+Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), renderBuffer(0), maxAngVel(100.0f) {
 	physx::PxMaterial *material = Physics::getPhysics()->getPxPhysics()->createMaterial(1.1f, 0.9f, 0.8f);
+	material->setFrictionCombineMode(physx::PxCombineMode::eMULTIPLY);
+	material->setRestitutionCombineMode(physx::PxCombineMode::eMULTIPLY);
+
 	actor = physx::PxCreateDynamic(*Physics::getPhysics()->getPxPhysics(), physx::PxTransform(origin.x, origin.y, origin.z), physx::PxSphereGeometry(radius), *material, 1.0f);
+	actor->setMaxAngularVelocity(maxAngVel);
 	physx::PxRigidBody *rigid = actor->is<physx::PxRigidBody>();
-	if (rigid)
-		physx::PxRigidBodyExt::updateMassAndInertia(*rigid, 1);
+	if (rigid) {
+		physx::PxRigidBodyExt::setMassAndUpdateInertia(*rigid, 1.0f);
+		rigid->setRigidBodyFlag(physx::PxRigidBodyFlag::eENABLE_CCD, true);
+	}
 
 	Physics::getPhysics()->addActor(actor);
 //	//Motion state and shape
@@ -164,14 +170,6 @@ void Sphere::applyTorque(Point3F torque) {
 
 	if (dynamic)
 		dynamic->addTorque(pxConvert<Point3F, physx::PxVec3>(torque));
-
-//	actor->applyTorqueImpulse(btConvert(torque));
-//	Point3F ang = btConvert(actor->getAngularVelocity());
-//
-//	if (ang.length() > maxAngVel)
-//		ang = ang.normalize(maxAngVel);
-//	
-//	actor->setAngularVelocity(btConvert(ang));
 }
 
 void Sphere::applyImpulse(Point3F force, Point3F origin) {
@@ -252,17 +250,11 @@ AngAxisF Sphere::getRotation() const {
 }
 
 void Sphere::setPosition(Point3F pos) {
-//	btTransform trans;
-//	trans.setOrigin(btConvert(pos));
-//	actor->getMotionState()->setWorldTransform(trans);
-//	actor->setWorldTransform(trans);
-//	actor->setLinearVelocity(btConvert(Point3F(0, 0, 0)));
+	actor->setGlobalPose(pxConvert<Point3F, physx::PxTransform>(pos));
+	actor->setLinearVelocity(physx::PxVec3(0, 0, 0));
 }
 
 void Sphere::setPosition(const Point3F pos) const {
-//	btTransform trans;
-//	trans.setOrigin(btConvert(pos));
-//	actor->getMotionState()->setWorldTransform(trans);
-//	actor->setWorldTransform(trans);
-//	actor->setLinearVelocity(btConvert(Point3F(0, 0, 0)));
+	actor->setGlobalPose(pxConvert<Point3F, physx::PxTransform>(pos));
+	actor->setLinearVelocity(physx::PxVec3(0, 0, 0));
 }

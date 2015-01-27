@@ -521,13 +521,23 @@ void Interior::generateMesh() {
 		Surface surface = this->surface[i];
 
 		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
-			U32 point0 = this->index[j + surface.windingStart + 0];
-			U32 point1 = this->index[j + surface.windingStart + 1];
-			U32 point2 = this->index[j + surface.windingStart + 2];
+			U32 v0 = 0;
+			U32 v1 = 0;
+			U32 v2 = 0;
 
-			triangles[curPoint++] = point0;
-			triangles[curPoint++] = point1;
-			triangles[curPoint++] = point2;
+			if ((j % 2) == 1) {
+				v0 = this->index[j + surface.windingStart + 0];
+				v1 = this->index[j + surface.windingStart + 1];
+				v2 = this->index[j + surface.windingStart + 2];
+			} else {
+				v0 = this->index[j + surface.windingStart + 2];
+				v1 = this->index[j + surface.windingStart + 1];
+				v2 = this->index[j + surface.windingStart + 0];
+			}
+
+			triangles[curPoint++] = v0;
+			triangles[curPoint++] = v1;
+			triangles[curPoint++] = v2;
 		}
 	}
 
@@ -538,8 +548,6 @@ void Interior::generateMesh() {
 	meshDesc.triangles.count = numTriangles;
 	meshDesc.triangles.data = triangles;
 	meshDesc.triangles.stride = 3 * sizeof(U32);
-
-	meshDesc.flags |= physx::PxMeshFlag::eFLIPNORMALS;
 
 	physx::PxDefaultMemoryOutputStream writeBuffer;
 	bool status = Physics::getPhysics()->getPxCooking()->cookTriangleMesh(meshDesc, writeBuffer);
@@ -568,7 +576,14 @@ void Interior::generateMesh() {
 //	actor->setCollisionFlags(actor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
 	physx::PxMaterial *material = Physics::getPhysics()->getPxPhysics()->createMaterial(1.0, 1.0, 0.7);
-	actor = physx::PxCreateStatic(*Physics::getPhysics()->getPxPhysics(), physx::PxTransform(0.0f, 0.0f, 0.0f), geometry, *material);
+	material->setFrictionCombineMode(physx::PxCombineMode::eMULTIPLY);
+	material->setRestitutionCombineMode(physx::PxCombineMode::eMULTIPLY);
+
+	actor = Physics::getPhysics()->getPxPhysics()->createRigidStatic(physx::PxTransform(physx::PxIDENTITY()));
+	physx::PxShape *shape = actor->createShape(geometry, *material);
+	shape->setContactOffset(0.01f);
+	shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+	shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
 	Physics::getPhysics()->addActor(actor);
 }
 #endif

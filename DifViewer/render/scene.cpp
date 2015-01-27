@@ -224,6 +224,8 @@ void Scene::loop() {
 	torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
 	delta = glm::rotate(delta, -pitch, glm::vec3(1, 0, 0));
 
+	torque /= 3.0;
+
 	Point3F force = Point3F(torque.x, torque.y, torque.z);
 	sphere->applyTorque(force);
 

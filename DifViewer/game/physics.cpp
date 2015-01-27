@@ -28,6 +28,21 @@
 #ifdef BUILD_PHYSICS
 #include "physics.h"
 
+//filter shader with support for CCD pairs
+static physx::PxFilterFlags filterShader(physx::PxFilterObjectAttributes attributes0,
+										 physx::PxFilterData filterData0,
+										 physx::PxFilterObjectAttributes attributes1,
+										 physx::PxFilterData filterData1,
+										 physx::PxPairFlags& pairFlags,
+										 const void* constantBlock,
+										 physx::PxU32 constantBlockSize) {
+	pairFlags = physx::PxPairFlag::eRESOLVE_CONTACTS;
+	pairFlags |= physx::PxPairFlag::eCCD_LINEAR;
+//	pairFlags |= physx::PxPairFlag::eMODIFY_CONTACTS;
+	pairFlags |= physx::PxPairFlag::eCONTACT_DEFAULT;
+	return physx::PxFilterFlags();
+}
+
 void Physics::init() {
 	static AllocatorCallback *allocator = nullptr;
 	if (allocator == nullptr) {
@@ -48,11 +63,17 @@ void Physics::init() {
 
 	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale());
 	sceneDesc.gravity =	physx::PxVec3(0, 0, -20.f);
+	sceneDesc.flags |= physx::PxSceneFlag::eENABLE_ACTIVETRANSFORMS | physx::PxSceneFlag::eENABLE_CCD;
 
 	if (!sceneDesc.cpuDispatcher) {
 		dispatcher = physx::PxDefaultCpuDispatcherCreate(1);
 		sceneDesc.cpuDispatcher = dispatcher;
 	}
+
+	if (!sceneDesc.filterShader) {
+		sceneDesc.filterShader = filterShader;
+	}
+
 	scene = physics->createScene(sceneDesc);
 
 	running = true;
@@ -65,13 +86,8 @@ void Physics::destroy() {
 
 void Physics::simulate(F32 delta) {
 	if (running) {
+		scene->simulate(delta);
 		scene->fetchResults();
-		extraTime += delta;
-		for ( ; extraTime > PHYSICS_TICK; extraTime -= PHYSICS_TICK) {
-			scene->simulate(extraTime);
-		}
-		scene->simulate(extraTime);
-		extraTime = 0;
 	}
 }
 

@@ -93,8 +93,20 @@ template<> inline QuatF pxConvert(physx::PxTransform val) {
 	return QuatF(val.q.x, val.q.y, val.q.z, val.q.w);
 }
 
+template<> inline QuatF pxConvert(physx::PxQuat val) {
+	return QuatF(val.x, val.y, val.z, val.w);
+}
+
 template<> inline Point3F pxConvert(physx::PxTransform val) {
 	return Point3F(val.p.x, val.p.y, val.p.z);
+}
+
+template<> inline physx::PxTransform pxConvert(Point3F val) {
+	return physx::PxTransform(val.x, val.y, val.z);
+}
+
+template<> inline physx::PxQuat pxConvert(QuatF val) {
+	return physx::PxQuat(val.x, val.y, val.z, val.w);
 }
 
 #endif
