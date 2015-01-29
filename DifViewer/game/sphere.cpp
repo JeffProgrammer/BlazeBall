@@ -25,6 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
+#ifdef BUILD_PHYSICS
+
 #include "sphere.h"
 #include "math.h"
 #include "io.h"
@@ -258,3 +260,5 @@ void Sphere::setPosition(const Point3F pos) const {
 	actor->setGlobalPose(pxConvert<Point3F, physx::PxTransform>(pos));
 	actor->setLinearVelocity(physx::PxVec3(0, 0, 0));
 }
+
+#endif
