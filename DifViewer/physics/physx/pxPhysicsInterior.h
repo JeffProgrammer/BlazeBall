@@ -25,19 +25,17 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
-#include "physicsEngine.h"
+#ifndef pxPhysicsInterior_h
+#define pxPhysicsInterior_h
 
-PhysicsEngine *PhysicsEngine::gEngine = nullptr;
+#include "pxPhysicsBody.h"
 
-PhysicsEngine *PhysicsEngine::getEngine() {
-	return gEngine;
-}
-
-void PhysicsEngine::setEngine(PhysicsEngine *engine) {
-	gEngine = engine;
-
-	gEngine->init();
-}
+class Interior;
+class PxPhysicsInterior : public PxPhysicsBody {
+	Interior *mInterior;
+public:
+	PxPhysicsInterior(Interior *interior);
+	void construct();
+};
 
 #endif

@@ -25,19 +25,52 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
-#include "physicsEngine.h"
+#include "pxPhysicsBody.h"
 
-PhysicsEngine *PhysicsEngine::gEngine = nullptr;
-
-PhysicsEngine *PhysicsEngine::getEngine() {
-	return gEngine;
+const Point3F PxPhysicsBody::getPosition() {
+	return pxConvert(mActor->getGlobalPose().p);
+}
+const AngAxisF PxPhysicsBody::getRotation() {
+	return pxConvert(mActor->getGlobalPose());
 }
 
-void PhysicsEngine::setEngine(PhysicsEngine *engine) {
-	gEngine = engine;
-
-	gEngine->init();
+void PxPhysicsBody::setMass(const F32 &mass) {
+	if (getDynamic()) {
+		physx::PxRigidDynamic *dyn = mActor->is<physx::PxRigidDynamic>();
+		dyn->setMass(mass);
+	}
+}
+void PxPhysicsBody::setPosition(const Point3F &position) {
+	physx::PxTransform trans;
+	trans.p = pxConvert(position);
+	trans.q = mActor->getGlobalPose().q;
+	mActor->setGlobalPose(trans);
+}
+void PxPhysicsBody::setRotation(const AngAxisF &rotation) {
+	physx::PxTransform trans;
+	trans.p = mActor->getGlobalPose().p;
+	trans.q = pxConvert(rotation);
+	mActor->setGlobalPose(trans);
+}
+void PxPhysicsBody::applyTorque(const Point3F &torque) {
+	if (getDynamic()) {
+		physx::PxRigidDynamic *dyn = mActor->is<physx::PxRigidDynamic>();
+		dyn->addTorque(pxConvert(torque));
+	}
+}
+void PxPhysicsBody::applyImpulse(const Point3F &impulse, const Point3F &origin) {
+	if (getDynamic()) {
+		physx::PxRigidDynamic *dyn = mActor->is<physx::PxRigidDynamic>();
+		physx::PxRigidBodyExt::addForceAtPos(*dyn, pxConvert(impulse), pxConvert(origin));
+	}
+}
+void PxPhysicsBody::applyForce(const Point3F &force, const Point3F &origin) {
+	if (getDynamic()) {
+		physx::PxRigidDynamic *dyn = mActor->is<physx::PxRigidDynamic>();
+		physx::PxRigidBodyExt::addForceAtPos(*dyn, pxConvert(force), pxConvert(origin));
+	}
 }
 
-#endif
+bool PxPhysicsBody::getDynamic() {
+	return mActor->is<physx::PxRigidDynamic>();
+}

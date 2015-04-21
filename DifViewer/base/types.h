@@ -167,15 +167,7 @@ typedef Color<F32> ColorF;
 
 //More names stolen from TGE
 
-class AngAxisF {
-public:
-	Point3F axis;
-	F32 angle;
-
-	AngAxisF(Point3F axis, F32 angle) : axis(axis), angle(angle) {};
-	AngAxisF(F32 angle, Point3F axis) : axis(axis), angle(angle) {};
-};
-
+class AngAxisF;
 class QuatF : public Readable, Writable {
 public:
 	F32 w;
@@ -183,9 +175,41 @@ public:
 	F32 y;
 	F32 z;
 
+	QuatF() : x(0), y(0), z(0), w(0) {};
+	QuatF(F32 x, F32 y, F32 z, F32 w) : x(x), y(y), z(z), w(w) {};
+	QuatF(AngAxisF const &ang);
+
 	bool read(FILE *file);
 	bool write(FILE *file);
 };
+
+class AngAxisF {
+public:
+	Point3F axis;
+	F32 angle;
+
+	AngAxisF(Point3F axis, F32 angle) : axis(axis), angle(angle) {};
+	AngAxisF(F32 angle, Point3F axis) : axis(axis), angle(angle) {};
+	AngAxisF(QuatF const &quat);
+};
+
+inline AngAxisF::AngAxisF(QuatF const &quat) {
+	angle = acosf(quat.w);
+	F32 half = sqrtf(quat.x * quat.x + quat.y * quat.y + quat.z * quat.z);
+	if (half != 0.0f) {
+		axis = Point3F(quat.x / half, quat.y / half, quat.z / half);
+	} else {
+		axis = Point3F(1.0f, 0.0f, 0.0f);
+	}
+}
+
+inline QuatF::QuatF(AngAxisF const &ang) {
+	F32 sin2 = sinf(ang.angle / 2);
+	w = cosf(ang.angle / 2);
+	x = ang.axis.x * sin2;
+	y = ang.axis.y * sin2;
+	z = ang.axis.z * sin2;
+}
 
 class PlaneF : public Readable, Writable {
 public:

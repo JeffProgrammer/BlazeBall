@@ -25,19 +25,26 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
-#include "physicsEngine.h"
+#include "pxPhysicsSphere.h"
 
-PhysicsEngine *PhysicsEngine::gEngine = nullptr;
+PxPhysicsSphere::PxPhysicsSphere(F32 radius) {
+	physx::PxPhysics *physics = dynamic_cast<PxPhysicsEngine *>(PhysicsEngine::getEngine())->getPxPhysics();
+	physx::PxMaterial *material = physics->createMaterial(1.1f, 0.9f, 0.8f);
+	material->setFrictionCombineMode(physx::PxCombineMode::eMULTIPLY);
+	material->setRestitutionCombineMode(physx::PxCombineMode::eMULTIPLY);
 
-PhysicsEngine *PhysicsEngine::getEngine() {
-	return gEngine;
+	mActor = physx::PxCreateDynamic(*physics, physx::PxTransform(0.0f, 0.0f, 0.0f), physx::PxSphereGeometry(radius), *material, 1.0f);
+//	mActor->setMaxAngularVelocity(maxAngVel);
+	physx::PxRigidBody *rigid = mActor->is<physx::PxRigidBody>();
+	if (rigid) {
+		physx::PxRigidBodyExt::setMassAndUpdateInertia(*rigid, 1.0f);
+		rigid->setRigidBodyFlag(physx::PxRigidBodyFlag::eENABLE_CCD, true);
+	}
 }
 
-void PhysicsEngine::setEngine(PhysicsEngine *engine) {
-	gEngine = engine;
-
-	gEngine->init();
+bool PxPhysicsSphere::getColliding() {
+	return false;
 }
-
-#endif
+Point3F PxPhysicsSphere::getCollisionNormal() {
+	return Point3F(0, 0, 0);
+}

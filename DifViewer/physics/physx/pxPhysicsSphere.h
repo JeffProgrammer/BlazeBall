@@ -25,19 +25,19 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
-#include "physicsEngine.h"
+#ifndef pxPhysicsSphere_h
+#define pxPhysicsSphere_h
 
-PhysicsEngine *PhysicsEngine::gEngine = nullptr;
+#include "pxPhysicsBody.h"
+#include "physicsSphere.h"
 
-PhysicsEngine *PhysicsEngine::getEngine() {
-	return gEngine;
-}
+class PxPhysicsSphere : public PxPhysicsBody, public PhysicsSphere {
+	F32 mRadius;
+public:
+	PxPhysicsSphere(F32 radius);
 
-void PhysicsEngine::setEngine(PhysicsEngine *engine) {
-	gEngine = engine;
-
-	gEngine->init();
-}
+	virtual bool getColliding();
+	virtual Point3F getCollisionNormal();
+};
 
 #endif

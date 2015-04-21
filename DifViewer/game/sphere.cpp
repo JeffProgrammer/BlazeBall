@@ -25,6 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
+#ifdef BUILD_PHYSICS
+
 #include "sphere.h"
 #include "math.h"
 #include "io.h"
@@ -157,3 +159,5 @@ const AngAxisF Sphere::getRotation() {
 void Sphere::setPosition(const Point3F &pos) {
 	mActor->setPosition(pos);
 }
+
+#endif

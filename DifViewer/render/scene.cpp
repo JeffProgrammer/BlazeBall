@@ -227,7 +227,7 @@ void Scene::loop() {
 	torque *= 3.0;
 
 	Point3F force = Point3F(torque.x, torque.y, torque.z);
-	sphere->applyTorque(force);
+	sphere->applyImpulse(force, Point3F(0, 0, 0.2));
 
 	if (sphere->getColliding()) {
 		Point3F normal = sphere->getCollisionNormal();

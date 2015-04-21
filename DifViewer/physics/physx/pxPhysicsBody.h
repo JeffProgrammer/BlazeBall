@@ -25,19 +25,36 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
-#include "physicsEngine.h"
+#ifndef pxPhysicsBody_h
+#define pxPhysicsBody_h
 
-PhysicsEngine *PhysicsEngine::gEngine = nullptr;
+#include "physicsBody.h"
+#include "pxPhysicsEngine.h"
 
-PhysicsEngine *PhysicsEngine::getEngine() {
-	return gEngine;
-}
+class PxPhysicsBody : public PhysicsBody {
+protected:
+	physx::PxRigidActor *mActor;
 
-void PhysicsEngine::setEngine(PhysicsEngine *engine) {
-	gEngine = engine;
+public:
+	bool getDynamic();
 
-	gEngine->init();
-}
+	PxPhysicsBody() : mActor(nullptr) {};
+	PxPhysicsBody(physx::PxRigidActor *actor) : mActor(actor) {};
+
+	virtual const Point3F getPosition();
+	virtual const AngAxisF getRotation();
+	virtual void setMass(const F32 &mass);
+	virtual void setPosition(const Point3F &position);
+	virtual void setRotation(const AngAxisF &rotation);
+
+	virtual void applyTorque(const Point3F &torque);
+	virtual void applyImpulse(const Point3F &impulse, const Point3F &origin);
+	virtual void applyForce(const Point3F &force, const Point3F &origin);
+
+	physx::PxRigidActor *getActor() {
+		return mActor;
+	}
+};
+
 
 #endif
