@@ -10,7 +10,7 @@
 		B5099DAF1A10127F0005DAC6 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5099DAE1A10127F0005DAC6 /* OpenGL.framework */; };
 		B51B33FA1A57916100DD8D35 /* sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B51B33F81A57916100DD8D35 /* sphere.cpp */; };
 		B51B350E1A57AABF00DD8D35 /* libLinearMath.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B51B350D1A57AABF00DD8D35 /* libLinearMath.a */; };
-		B51B35111A57AC0400DD8D35 /* physics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B51B350F1A57AC0400DD8D35 /* physics.cpp */; };
+		B51B35111A57AC0400DD8D35 /* physicsEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B51B350F1A57AC0400DD8D35 /* physicsEngine.cpp */; };
 		B51B35131A57AF5100DD8D35 /* libBulletCollision.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B51B35121A57AF5100DD8D35 /* libBulletCollision.a */; };
 		B51B35151A57AF5700DD8D35 /* libBulletDynamics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B51B35141A57AF5700DD8D35 /* libBulletDynamics.a */; };
 		B525BB031A6603DF0009E630 /* material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B525BB011A6603DF0009E630 /* material.cpp */; };
@@ -65,6 +65,12 @@
 		B5E0CD9C1A13F41200BB4291 /* jpegsupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E0CD981A13F41200BB4291 /* jpegsupport.cpp */; };
 		B5E0CD9D1A13F41200BB4291 /* mngsupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E0CD9A1A13F41200BB4291 /* mngsupport.cpp */; };
 		B5E0CDA01A13F43B00BB4291 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E0CD9F1A13F43B00BB4291 /* texture.cpp */; };
+		B5EFF8201AE5FDCF004D2DCF /* btPhysicsEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5EFF81E1AE5FDCF004D2DCF /* btPhysicsEngine.cpp */; };
+		B5EFF8231AE5FED8004D2DCF /* physicsBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5EFF8211AE5FED8004D2DCF /* physicsBody.cpp */; };
+		B5EFF8261AE5FF2D004D2DCF /* btPhysicsBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5EFF8241AE5FF2D004D2DCF /* btPhysicsBody.cpp */; };
+		B5EFF82A1AE60043004D2DCF /* btPhysicsInterior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5EFF8281AE60043004D2DCF /* btPhysicsInterior.cpp */; };
+		B5EFF8331AE60506004D2DCF /* btPhysicsSphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5EFF8311AE60506004D2DCF /* btPhysicsSphere.cpp */; };
+		B5EFF8361AE60D5A004D2DCF /* physicsSphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5EFF8341AE60D59004D2DCF /* physicsSphere.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,8 +121,8 @@
 		B51B33F81A57916100DD8D35 /* sphere.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sphere.cpp; path = DifViewer/game/sphere.cpp; sourceTree = SOURCE_ROOT; };
 		B51B33F91A57916100DD8D35 /* sphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sphere.h; path = DifViewer/game/sphere.h; sourceTree = SOURCE_ROOT; };
 		B51B350D1A57AABF00DD8D35 /* libLinearMath.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLinearMath.a; path = bullet3/src/LinearMath/Debug/libLinearMath.a; sourceTree = "<group>"; };
-		B51B350F1A57AC0400DD8D35 /* physics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = physics.cpp; path = DifViewer/game/physics.cpp; sourceTree = SOURCE_ROOT; };
-		B51B35101A57AC0400DD8D35 /* physics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physics.h; path = DifViewer/game/physics.h; sourceTree = SOURCE_ROOT; };
+		B51B350F1A57AC0400DD8D35 /* physicsEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = physicsEngine.cpp; path = DifViewer/physics/physicsEngine.cpp; sourceTree = SOURCE_ROOT; };
+		B51B35101A57AC0400DD8D35 /* physicsEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physicsEngine.h; path = DifViewer/physics/physicsEngine.h; sourceTree = SOURCE_ROOT; };
 		B51B35121A57AF5100DD8D35 /* libBulletCollision.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBulletCollision.a; path = bullet3/src/BulletCollision/Debug/libBulletCollision.a; sourceTree = "<group>"; };
 		B51B35141A57AF5700DD8D35 /* libBulletDynamics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBulletDynamics.a; path = bullet3/src/BulletDynamics/Debug/libBulletDynamics.a; sourceTree = "<group>"; };
 		B5201D801A10403F0084D459 /* DIF_MB_SPEC.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = DIF_MB_SPEC.rtf; sourceTree = "<group>"; };
@@ -177,6 +183,18 @@
 		B5E0CD9B1A13F41200BB4291 /* mngsupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mngsupport.h; path = DifViewer/bitmap/mngsupport.h; sourceTree = SOURCE_ROOT; };
 		B5E0CD9E1A13F43100BB4291 /* texture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = texture.h; path = DifViewer/bitmap/texture.h; sourceTree = SOURCE_ROOT; };
 		B5E0CD9F1A13F43B00BB4291 /* texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = texture.cpp; path = DifViewer/bitmap/texture.cpp; sourceTree = SOURCE_ROOT; };
+		B5EFF81E1AE5FDCF004D2DCF /* btPhysicsEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = btPhysicsEngine.cpp; path = DifViewer/physics/bullet/btPhysicsEngine.cpp; sourceTree = SOURCE_ROOT; };
+		B5EFF81F1AE5FDCF004D2DCF /* btPhysicsEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = btPhysicsEngine.h; path = DifViewer/physics/bullet/btPhysicsEngine.h; sourceTree = SOURCE_ROOT; };
+		B5EFF8211AE5FED8004D2DCF /* physicsBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = physicsBody.cpp; path = DifViewer/physics/physicsBody.cpp; sourceTree = SOURCE_ROOT; };
+		B5EFF8221AE5FED8004D2DCF /* physicsBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physicsBody.h; path = DifViewer/physics/physicsBody.h; sourceTree = SOURCE_ROOT; };
+		B5EFF8241AE5FF2D004D2DCF /* btPhysicsBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = btPhysicsBody.cpp; path = DifViewer/physics/bullet/btPhysicsBody.cpp; sourceTree = SOURCE_ROOT; };
+		B5EFF8251AE5FF2D004D2DCF /* btPhysicsBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = btPhysicsBody.h; path = DifViewer/physics/bullet/btPhysicsBody.h; sourceTree = SOURCE_ROOT; };
+		B5EFF8281AE60043004D2DCF /* btPhysicsInterior.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = btPhysicsInterior.cpp; path = DifViewer/physics/bullet/btPhysicsInterior.cpp; sourceTree = SOURCE_ROOT; };
+		B5EFF8291AE60043004D2DCF /* btPhysicsInterior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = btPhysicsInterior.h; path = DifViewer/physics/bullet/btPhysicsInterior.h; sourceTree = SOURCE_ROOT; };
+		B5EFF8311AE60506004D2DCF /* btPhysicsSphere.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = btPhysicsSphere.cpp; path = DifViewer/physics/bullet/btPhysicsSphere.cpp; sourceTree = SOURCE_ROOT; };
+		B5EFF8321AE60506004D2DCF /* btPhysicsSphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = btPhysicsSphere.h; path = DifViewer/physics/bullet/btPhysicsSphere.h; sourceTree = SOURCE_ROOT; };
+		B5EFF8341AE60D59004D2DCF /* physicsSphere.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = physicsSphere.cpp; path = DifViewer/physics/physicsSphere.cpp; sourceTree = SOURCE_ROOT; };
+		B5EFF8351AE60D59004D2DCF /* physicsSphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physicsSphere.h; path = DifViewer/physics/physicsSphere.h; sourceTree = SOURCE_ROOT; };
 		B5F5AD631A567AA80030F491 /* point3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = point3.h; sourceTree = "<group>"; };
 		B5F5AD641A5685700030F491 /* point2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = point2.h; sourceTree = "<group>"; };
 		B5F5AD651A56880F0030F491 /* color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = color.h; sourceTree = "<group>"; };
@@ -216,8 +234,7 @@
 			children = (
 				B51B33F81A57916100DD8D35 /* sphere.cpp */,
 				B51B33F91A57916100DD8D35 /* sphere.h */,
-				B51B350F1A57AC0400DD8D35 /* physics.cpp */,
-				B51B35101A57AC0400DD8D35 /* physics.h */,
+				B5EFF81D1AE5FD8D004D2DCF /* physics */,
 			);
 			name = game;
 			sourceTree = "<group>";
@@ -396,6 +413,36 @@
 			path = ../DifViewer/base;
 			sourceTree = "<group>";
 		};
+		B5EFF81D1AE5FD8D004D2DCF /* physics */ = {
+			isa = PBXGroup;
+			children = (
+				B5EFF8211AE5FED8004D2DCF /* physicsBody.cpp */,
+				B5EFF8221AE5FED8004D2DCF /* physicsBody.h */,
+				B51B350F1A57AC0400DD8D35 /* physicsEngine.cpp */,
+				B51B35101A57AC0400DD8D35 /* physicsEngine.h */,
+				B5EFF8341AE60D59004D2DCF /* physicsSphere.cpp */,
+				B5EFF8351AE60D59004D2DCF /* physicsSphere.h */,
+				B5EFF8271AE5FF9F004D2DCF /* bullet */,
+			);
+			name = physics;
+			sourceTree = "<group>";
+		};
+		B5EFF8271AE5FF9F004D2DCF /* bullet */ = {
+			isa = PBXGroup;
+			children = (
+				B5EFF8241AE5FF2D004D2DCF /* btPhysicsBody.cpp */,
+				B5EFF8251AE5FF2D004D2DCF /* btPhysicsBody.h */,
+				B5EFF81E1AE5FDCF004D2DCF /* btPhysicsEngine.cpp */,
+				B5EFF81F1AE5FDCF004D2DCF /* btPhysicsEngine.h */,
+				B5EFF8281AE60043004D2DCF /* btPhysicsInterior.cpp */,
+				B5EFF8291AE60043004D2DCF /* btPhysicsInterior.h */,
+				B5EFF8311AE60506004D2DCF /* btPhysicsSphere.cpp */,
+				B5EFF8321AE60506004D2DCF /* btPhysicsSphere.h */,
+			);
+			name = bullet;
+			path = DifViewer/physics/bullet;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -537,7 +584,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B51B35111A57AC0400DD8D35 /* physics.cpp in Sources */,
+				B5EFF8261AE5FF2D004D2DCF /* btPhysicsBody.cpp in Sources */,
+				B5EFF8331AE60506004D2DCF /* btPhysicsSphere.cpp in Sources */,
+				B5EFF8361AE60D5A004D2DCF /* physicsSphere.cpp in Sources */,
+				B51B35111A57AC0400DD8D35 /* physicsEngine.cpp in Sources */,
 				B54F9DB41A10399D00F550EA /* interior.cpp in Sources */,
 				B58E54C81A215B0700304A9B /* math.cpp in Sources */,
 				B51B33FA1A57916100DD8D35 /* sphere.cpp in Sources */,
@@ -549,7 +599,9 @@
 				B56BFDE31A6344A500B2BDDE /* shader.cpp in Sources */,
 				B5AC554D1A7437CE0007830C /* SDLEvent.cpp in Sources */,
 				B55C04F31A6613130052C528 /* scene.cpp in Sources */,
+				B5EFF8201AE5FDCF004D2DCF /* btPhysicsEngine.cpp in Sources */,
 				B5E0CD9C1A13F41200BB4291 /* jpegsupport.cpp in Sources */,
+				B5EFF82A1AE60043004D2DCF /* btPhysicsInterior.cpp in Sources */,
 				B54F9DAE1A10399D00F550EA /* io.cpp in Sources */,
 				B54F9DB21A10399D00F550EA /* forceField.cpp in Sources */,
 				B5E0CD9D1A13F41200BB4291 /* mngsupport.cpp in Sources */,
@@ -557,6 +609,7 @@
 				B54F9DB01A10399D00F550EA /* aiSpecialNode.cpp in Sources */,
 				B5BC0E371A1423DE00D86A8D /* interiorRender.cpp in Sources */,
 				B54AFBB71A7435A50017C975 /* SDLWindow.cpp in Sources */,
+				B5EFF8231AE5FED8004D2DCF /* physicsBody.cpp in Sources */,
 				B58303221A66EA1A00EDAFBD /* staticMesh.cpp in Sources */,
 				B54F9DB61A10399D00F550EA /* trigger.cpp in Sources */,
 				B54F9DB71A10399D00F550EA /* vehicleCollision.cpp in Sources */,
