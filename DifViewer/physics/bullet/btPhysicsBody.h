@@ -25,82 +25,32 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <sys/time.h>
-#include <libgen.h>
-#include <unistd.h>
-#include "SDLWindow.h"
-#include "scene.h"
+#ifndef btPhysicsBody_h
+#define btPhysicsBody_h
 
 #include "btPhysicsEngine.h"
+#include "physicsBody.h"
 
+class btPhysicsBody : public PhysicsBody {
+protected:
+	btRigidBody *mActor;
+public:
+	btPhysicsBody() : mActor(nullptr) {};
+	btPhysicsBody(btRigidBody *actor) : mActor(actor) {};
 
-int main(int argc, const char * argv[])
-{
-	//Usage prompt
-	if (argc < 2) {
-		printf("Usage: %s <file>\n", argv[0]);
-		return 1;
+	virtual const Point3F getPosition();
+	virtual const AngAxisF getRotation();
+	virtual void setMass(const F32 &mass);
+	virtual void setPosition(const Point3F &position);
+	virtual void setRotation(const AngAxisF &rotation);
+
+	virtual void applyTorque(const Point3F &torque);
+	virtual void applyImpulse(const Point3F &impulse, const Point3F &origin);
+	virtual void applyForce(const Point3F &force, const Point3F &origin);
+
+	btRigidBody *getActor() {
+		return mActor;
 	}
+};
 
-	PhysicsEngine::setEngine(new btPhysicsEngine());
-
-	U32 argstart = 1;
-
-	Scene *scene = Scene::getSingleton();
-
-	if (!strcmp(argv[1], "-o")) {
-		argstart += 2;
-		scene->setConvertMode(true);
-	}
-	if (!strcmp(argv[1], "-c")) {
-		argstart += 1;
-		scene->setConvertMode(true);
-	}
-
-	scene->difCount = 0;
-	scene->difs = new DIF*[argc - argstart];
-	scene->filenames = new String*[argc - argstart];
-
-	for (U32 i = 0; i < (argc - argstart); i ++) {
-		String directory = io->getPath(argv[i + argstart]);
-
-		//Open file
-		FILE *file = fopen(argv[i + argstart], "r");
-
-		//Read the .dif
-		scene->difs[i] = new DIF(file, directory);
-		if (scene->difs[i]) {
-			scene->difCount ++;
-		}
-
-		//Clean up
-		fclose(file);
-
-		scene->filenames[i] = new String(argv[i + argstart]);
-	}
-
-	if (!strcmp(argv[1], "-o")) {
-		FILE *out = fopen(argv[2], "w");
-		scene->difs[0]->interior[0]->exportObj(out);
-		fflush(out);
-		fclose(out);
-	} else if (!strcmp(argv[1], "-c")) {
-		for (U32 i = 0; i < scene->difCount; i ++) {
-			String directory = io->getPath(*scene->filenames[i]);
-
-			FILE *output = fopen((const char *)scene->filenames[i], "w");
-			scene->difs[i]->write(output, directory);
-			fflush(output);
-			fclose(output);
-		}
-	} else {
-		//Init SDL and go!
-		scene->window = new SDLWindow();
-		scene->run();
-	}
-
-	return 0;
-}
+#endif

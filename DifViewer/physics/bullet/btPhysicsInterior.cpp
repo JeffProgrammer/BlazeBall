@@ -25,82 +25,45 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <sys/time.h>
-#include <libgen.h>
-#include <unistd.h>
-#include "SDLWindow.h"
-#include "scene.h"
+#include "btPhysicsInterior.h"
+#include "interior.h"
 
-#include "btPhysicsEngine.h"
+btPhysicsInterior::btPhysicsInterior(Interior *interior) : btPhysicsBody(), mInterior(interior) {
+	construct();
+}
 
+void btPhysicsInterior::construct() {
+	//Create body
+	btMotionState *state = new btDefaultMotionState();
 
-int main(int argc, const char * argv[])
-{
-	//Usage prompt
-	if (argc < 2) {
-		printf("Usage: %s <file>\n", argv[0]);
-		return 1;
-	}
+	btTriangleMesh *mesh = new btTriangleMesh;
 
-	PhysicsEngine::setEngine(new btPhysicsEngine());
+	for (U32 i = 0; i < mInterior->numSurfaces; i ++) {
+		Surface surface = mInterior->surface[i];
 
-	U32 argstart = 1;
-
-	Scene *scene = Scene::getSingleton();
-
-	if (!strcmp(argv[1], "-o")) {
-		argstart += 2;
-		scene->setConvertMode(true);
-	}
-	if (!strcmp(argv[1], "-c")) {
-		argstart += 1;
-		scene->setConvertMode(true);
-	}
-
-	scene->difCount = 0;
-	scene->difs = new DIF*[argc - argstart];
-	scene->filenames = new String*[argc - argstart];
-
-	for (U32 i = 0; i < (argc - argstart); i ++) {
-		String directory = io->getPath(argv[i + argstart]);
-
-		//Open file
-		FILE *file = fopen(argv[i + argstart], "r");
-
-		//Read the .dif
-		scene->difs[i] = new DIF(file, directory);
-		if (scene->difs[i]) {
-			scene->difCount ++;
+		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
+			Point3F point0 = mInterior->point[mInterior->index[j + surface.windingStart + 0]];
+			Point3F point1 = mInterior->point[mInterior->index[j + surface.windingStart + 1]];
+			Point3F point2 = mInterior->point[mInterior->index[j + surface.windingStart + 2]];
+			mesh->addTriangle(btConvert(point0), btConvert(point1), btConvert(point2));
 		}
-
-		//Clean up
-		fclose(file);
-
-		scene->filenames[i] = new String(argv[i + argstart]);
 	}
 
-	if (!strcmp(argv[1], "-o")) {
-		FILE *out = fopen(argv[2], "w");
-		scene->difs[0]->interior[0]->exportObj(out);
-		fflush(out);
-		fclose(out);
-	} else if (!strcmp(argv[1], "-c")) {
-		for (U32 i = 0; i < scene->difCount; i ++) {
-			String directory = io->getPath(*scene->filenames[i]);
+	btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(mesh, true, true);
+	btTriangleInfoMap *map = new btTriangleInfoMap();
 
-			FILE *output = fopen((const char *)scene->filenames[i], "w");
-			scene->difs[i]->write(output, directory);
-			fflush(output);
-			fclose(output);
-		}
-	} else {
-		//Init SDL and go!
-		scene->window = new SDLWindow();
-		scene->run();
-	}
+	btGenerateInternalEdgeInfo(shape, map);
 
-	return 0;
+	shape->setMargin(0.01f);
+
+	btTransform transform;
+	transform.setIdentity();
+	transform.setOrigin(btVector3(0, 0, 0));
+
+	state->setWorldTransform(transform);
+
+	mActor = new btRigidBody(0, state, shape);
+	mActor->setRestitution(0.7f);
+	mActor->setFriction(1.0f);
+	mActor->setCollisionFlags(mActor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 }
