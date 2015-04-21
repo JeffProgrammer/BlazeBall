@@ -26,57 +26,35 @@
 //------------------------------------------------------------------------------
 
 #ifdef BUILD_PHYSICS
-#include "physics.h"
-#include <BulletCollision/CollisionShapes/btTriangleShape.h>
+#ifndef physicsEngine_h
+#define physicsEngine_h
 
-bool contactAdded(btManifoldPoint& cp,
-				  const btCollisionObjectWrapper* colObj0Wrap,
-				  int partId0,
-				  int index0,
-				  const btCollisionObjectWrapper* colObj1Wrap,
-				  int partId1,
-				  int index1) {
+#include <stdio.h>
+#include "types.h"
 
-	btAdjustInternalEdgeContacts(cp,colObj1Wrap,colObj0Wrap, partId1,index1);
+class PhysicsBody;
+class Interior;
 
-	return true;
-}
+class PhysicsEngine {
+	static PhysicsEngine *gEngine;
 
-void Physics::init() {
-	btDefaultCollisionConfiguration *configuration = new btDefaultCollisionConfiguration();
-	dispatcher = new btCollisionDispatcher(configuration);
-	btBroadphaseInterface *interface = new btDbvtBroadphase();
-	btConstraintSolver *solver = new btSequentialImpulseConstraintSolver();
+	bool running;
+public:
+	PhysicsEngine() {}
 
-	world = new btDiscreteDynamicsWorld(dispatcher, interface, solver, configuration);
-	world->setGravity(btVector3(0, 0, -20.0f));
+	virtual void init() = 0;
+	virtual void simulate(F32 delta) = 0;
+	virtual void addBody(PhysicsBody *body) = 0;
 
-	gContactAddedCallback = contactAdded;
-	running = true;
-}
+	virtual PhysicsBody *createInterior(Interior *interior) = 0;
+	virtual PhysicsBody *createSphere(F32 radius) = 0;
 
-void Physics::simulate(F32 delta) {
-	if (running) {
-		extraTime += delta;
-		for ( ; extraTime > PHYSICS_TICK; extraTime -= PHYSICS_TICK) {
-			world->stepSimulation(PHYSICS_TICK);
-		}
-		world->stepSimulation(extraTime);
-		extraTime = 0;
-	}
-}
+	void setRunning(bool running) { this->running = running; }
+	bool getRunning() { return running; }
 
-Physics *Physics::getPhysics() {
-	static Physics *physics = nullptr;
-	if (physics == nullptr) {
-		physics = new Physics;
-	}
-	return physics;
-}
+	static void setEngine(PhysicsEngine *engine);
+	static PhysicsEngine *getEngine();
+};
 
-void Physics::addRigidBody(btRigidBody *body) {
-	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
-	world->addRigidBody(body);
-}
-
+#endif
 #endif
