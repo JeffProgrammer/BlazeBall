@@ -229,7 +229,7 @@ void Scene::loop() {
 	Point3F force = Point3F(torque.x, torque.y, torque.z);
 	sphere->applyImpulse(force, Point3F(0, 0, 0.2));
 
-	if (sphere->colliding()) {
+	if (sphere->getColliding()) {
 		Point3F normal = sphere->getCollisionNormal();
 		if (movement[8] && normal.dot(Point3F(0, 0, 1)) > 0.1)
 			sphere->applyImpulse((normal + Point3F(0, 0, 1)) / 2.f * 2.5f, Point3F(0, 0, -1));
@@ -526,7 +526,7 @@ void Scene::run() {
 			printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
 		}
 
-		Physics::getPhysics()->simulate((end - start) / 1000000.0f);
+		PhysicsEngine::getEngine()->simulate((end - start) / 1000000.0f);
 	}
 	
 	//Clean up (duh)

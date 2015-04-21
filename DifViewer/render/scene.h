@@ -36,7 +36,7 @@
 #include "dif.h"
 #include "texture.h"
 #include "sphere.h"
-#include "physics.h"
+#include "physicsEngine.h"
 #include "shader.h"
 #include "scene.h"
 #include "window.h"

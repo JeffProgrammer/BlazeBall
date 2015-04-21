@@ -34,6 +34,8 @@
 #include "SDLWindow.h"
 #include "scene.h"
 
+#include "pxPhysicsEngine.h"
+
 
 int main(int argc, const char * argv[])
 {
@@ -43,7 +45,7 @@ int main(int argc, const char * argv[])
 		return 1;
 	}
 
-	Physics::getPhysics()->init();
+	PhysicsEngine::setEngine(new PxPhysicsEngine());
 
 	U32 argstart = 1;
 

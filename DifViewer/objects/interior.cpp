@@ -498,93 +498,8 @@ void Interior::generateMaterials(String directory) {
 
 #ifdef BUILD_PHYSICS
 void Interior::generateMesh() {
-	//Create body
-	physx::PxTriangleMeshGeometry geometry;
-
-	physx::PxTriangleMeshDesc meshDesc;
-
-	U32 numTriangles = 0;
-	for (U32 i = 0; i < numSurfaces; i ++) {
-		Surface surface = this->surface[i];
-		numTriangles += surface.windingCount - 2;
-	}
-
-	Point3F *points = new Point3F[numPoints];
-	U32 *triangles = new U32[numTriangles * 3];
-
-	for (U32 i = 0; i < numPoints; i ++) {
-		points[i] = point[i];
-	}
-
-	U32 curPoint = 0;
-	for (U32 i = 0; i < numSurfaces; i ++) {
-		Surface surface = this->surface[i];
-
-		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
-			U32 v0 = 0;
-			U32 v1 = 0;
-			U32 v2 = 0;
-
-			if ((j % 2) == 1) {
-				v0 = this->index[j + surface.windingStart + 0];
-				v1 = this->index[j + surface.windingStart + 1];
-				v2 = this->index[j + surface.windingStart + 2];
-			} else {
-				v0 = this->index[j + surface.windingStart + 2];
-				v1 = this->index[j + surface.windingStart + 1];
-				v2 = this->index[j + surface.windingStart + 0];
-			}
-
-			triangles[curPoint++] = v0;
-			triangles[curPoint++] = v1;
-			triangles[curPoint++] = v2;
-		}
-	}
-
-	meshDesc.points.count = numPoints;
-	meshDesc.points.data = points;
-	meshDesc.points.stride = sizeof(Point3F);
-
-	meshDesc.triangles.count = numTriangles;
-	meshDesc.triangles.data = triangles;
-	meshDesc.triangles.stride = 3 * sizeof(U32);
-
-	physx::PxDefaultMemoryOutputStream writeBuffer;
-	bool status = Physics::getPhysics()->getPxCooking()->cookTriangleMesh(meshDesc, writeBuffer);
-
-	physx::PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
-	physx::PxTriangleMesh *mesh = Physics::getPhysics()->getPxPhysics()->createTriangleMesh(readBuffer);
-	geometry.triangleMesh = mesh;
-
-//
-//	btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(mesh, true, true);
-//	btTriangleInfoMap *map = new btTriangleInfoMap();
-//
-//	btGenerateInternalEdgeInfo(shape, map);
-//
-//	shape->setMargin(0.01f);
-//
-//	btTransform transform;
-//	transform.setIdentity();
-//	transform.setOrigin(btVector3(0, 0, 0));
-//
-//	state->setWorldTransform(transform);
-//
-//	actor = new btRigidBody(0, state, shape);
-//	actor->setRestitution(0.7f);
-//	actor->setFriction(1.0f);
-//	actor->setCollisionFlags(actor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
-
-	physx::PxMaterial *material = Physics::getPhysics()->getPxPhysics()->createMaterial(1.0, 1.0, 0.7);
-	material->setFrictionCombineMode(physx::PxCombineMode::eMULTIPLY);
-	material->setRestitutionCombineMode(physx::PxCombineMode::eMULTIPLY);
-
-	actor = Physics::getPhysics()->getPxPhysics()->createRigidStatic(physx::PxTransform(physx::PxIDENTITY()));
-	physx::PxShape *shape = actor->createShape(geometry, *material);
-	shape->setContactOffset(0.01f);
-	shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
-	shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
-	Physics::getPhysics()->addActor(actor);
+	mActor = PhysicsEngine::getEngine()->createInterior(this);
+	PhysicsEngine::getEngine()->addBody(mActor);
 }
 #endif
 
@@ -606,18 +521,31 @@ void Interior::exportObj(FILE *file) {
 	for (U32 surfaceNum = 0; surfaceNum < numSurfaces; surfaceNum ++) {
 		Surface surface = this->surface[surfaceNum];
 
-		U32 windingStart = surface.windingStart;
-		U8 windingCount = surface.windingCount;
-
-		fprintf(file, "f");
-
-		//Triangle strips, in 0-1-2, 3-2-1, 2-3-4, 5-4-3 order
-		for (U32 index = windingStart; index < windingStart + windingCount; index ++) {
-			//Build triangles
-
-			fprintf(file, " %d//%d", this->index[index] + 1, plane[surface.planeIndex].normalIndex + 1);
+		Point3F normal = this->normal[plane[surface.planeIndex].normalIndex];
+		if (surface.planeFlipped) {
+			normal *= -1;
 		}
-		fprintf(file, "\n");
+
+		//New and improved rendering with actual Triangle Strips this time
+		for (U32 j = surface.windingStart + 2; j < surface.windingStart + surface.windingCount; j ++) {
+			U32 v0, v1, v2;
+
+			if ((j - (surface.windingStart + 2)) % 2 == 0) {
+				v0 = index[j];
+				v1 = index[j - 1];
+				v2 = index[j - 2];
+			} else {
+				v0 = index[j - 2];
+				v1 = index[j - 1];
+				v2 = index[j];
+			}
+			//Build triangles
+			fprintf(file, "f");
+			fprintf(file, " %d//%d", v0 + 1, plane[surface.planeIndex].normalIndex + 1);
+			fprintf(file, " %d//%d", v1 + 1, plane[surface.planeIndex].normalIndex + 1);
+			fprintf(file, " %d//%d", v2 + 1, plane[surface.planeIndex].normalIndex + 1);
+			fprintf(file, "\n");
+		}
 	}
 }
 

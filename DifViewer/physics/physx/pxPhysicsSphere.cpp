@@ -25,56 +25,26 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
-#ifndef sphere_h
-#define sphere_h
+#include "pxPhysicsSphere.h"
 
-#include <stdio.h>
-#include <vector>
-#include <OpenGL/gl.h>
+PxPhysicsSphere::PxPhysicsSphere(F32 radius) {
+	physx::PxPhysics *physics = dynamic_cast<PxPhysicsEngine *>(PhysicsEngine::getEngine())->getPxPhysics();
+	physx::PxMaterial *material = physics->createMaterial(1.1f, 0.9f, 0.8f);
+	material->setFrictionCombineMode(physx::PxCombineMode::eMULTIPLY);
+	material->setRestitutionCombineMode(physx::PxCombineMode::eMULTIPLY);
 
-#include "types.h"
-#include "interior.h"
-#include "physicsBody.h"
-#include "material.h"
-
-class Sphere {
-protected:
-	std::vector<Point3F> geometry;
-public:
-	PhysicsBody *mActor;
-	Point3F origin;
-	F32 radius;
-	F32 maxAngVel;
-	Material *material;
-
-	GLuint renderBuffer;
-private:
-	void generate();
-	const static U32 segments = 36;
-	const static U32 slices = 18;
-	constexpr const static F32 step = (M_PI * 2.0f / segments);
-
-public:
-	Sphere(Point3F origin, F32 radius);
-
-	void render(ColorF color);
-	const Point3F getPosition();
-	const AngAxisF getRotation();
-
-	void setPosition(const Point3F &pos);
-
-	void setMaterial(Material *material) {
-		this->material = material;
+	mActor = physx::PxCreateDynamic(*physics, physx::PxTransform(0.0f, 0.0f, 0.0f), physx::PxSphereGeometry(radius), *material, 1.0f);
+//	mActor->setMaxAngularVelocity(maxAngVel);
+	physx::PxRigidBody *rigid = mActor->is<physx::PxRigidBody>();
+	if (rigid) {
+		physx::PxRigidBodyExt::setMassAndUpdateInertia(*rigid, 1.0f);
+		rigid->setRigidBodyFlag(physx::PxRigidBodyFlag::eENABLE_CCD, true);
 	}
+}
 
-	void applyTorque(const Point3F &torque);
-	void applyImpulse(const Point3F &force, const Point3F &origin);
-	void applyForce(const Point3F &force, const Point3F &origin);
-
-	bool getColliding();
-	Point3F getCollisionNormal();
-};
-
-#endif
-#endif
+bool PxPhysicsSphere::getColliding() {
+	return false;
+}
+Point3F PxPhysicsSphere::getCollisionNormal() {
+	return Point3F(0, 0, 0);
+}

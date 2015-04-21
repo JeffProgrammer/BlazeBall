@@ -26,54 +26,34 @@
 //------------------------------------------------------------------------------
 
 #ifdef BUILD_PHYSICS
-#ifndef sphere_h
-#define sphere_h
+#ifndef physicsEngine_h
+#define physicsEngine_h
 
 #include <stdio.h>
-#include <vector>
-#include <OpenGL/gl.h>
-
 #include "types.h"
-#include "interior.h"
-#include "physicsBody.h"
-#include "material.h"
 
-class Sphere {
-protected:
-	std::vector<Point3F> geometry;
+class PhysicsBody;
+class Interior;
+
+class PhysicsEngine {
+	static PhysicsEngine *gEngine;
+
+	bool running;
 public:
-	PhysicsBody *mActor;
-	Point3F origin;
-	F32 radius;
-	F32 maxAngVel;
-	Material *material;
+	PhysicsEngine() {}
 
-	GLuint renderBuffer;
-private:
-	void generate();
-	const static U32 segments = 36;
-	const static U32 slices = 18;
-	constexpr const static F32 step = (M_PI * 2.0f / segments);
+	virtual void init() = 0;
+	virtual void simulate(F32 delta) = 0;
+	virtual void addBody(PhysicsBody *body) = 0;
 
-public:
-	Sphere(Point3F origin, F32 radius);
+	virtual PhysicsBody *createInterior(Interior *interior) = 0;
+	virtual PhysicsBody *createSphere(F32 radius) = 0;
 
-	void render(ColorF color);
-	const Point3F getPosition();
-	const AngAxisF getRotation();
+	void setRunning(bool running) { this->running = running; }
+	bool getRunning() { return running; }
 
-	void setPosition(const Point3F &pos);
-
-	void setMaterial(Material *material) {
-		this->material = material;
-	}
-
-	void applyTorque(const Point3F &torque);
-	void applyImpulse(const Point3F &force, const Point3F &origin);
-	void applyForce(const Point3F &force, const Point3F &origin);
-
-	bool getColliding();
-	Point3F getCollisionNormal();
+	static void setEngine(PhysicsEngine *engine);
+	static PhysicsEngine *getEngine();
 };
 
 #endif

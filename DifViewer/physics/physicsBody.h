@@ -25,56 +25,24 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
-#ifndef sphere_h
-#define sphere_h
-
-#include <stdio.h>
-#include <vector>
-#include <OpenGL/gl.h>
+#ifndef physicsBody_h
+#define physicsBody_h
 
 #include "types.h"
-#include "interior.h"
-#include "physicsBody.h"
-#include "material.h"
+#include "physicsEngine.h"
 
-class Sphere {
-protected:
-	std::vector<Point3F> geometry;
+class PhysicsBody {
 public:
-	PhysicsBody *mActor;
-	Point3F origin;
-	F32 radius;
-	F32 maxAngVel;
-	Material *material;
+	virtual const Point3F getPosition() = 0;
+	virtual const AngAxisF getRotation() = 0;
+	virtual void setMass(const F32 &mass) = 0;
+	virtual void setPosition(const Point3F &position) = 0;
+	virtual void setRotation(const AngAxisF &rotation) = 0;
 
-	GLuint renderBuffer;
-private:
-	void generate();
-	const static U32 segments = 36;
-	const static U32 slices = 18;
-	constexpr const static F32 step = (M_PI * 2.0f / segments);
+	virtual void applyTorque(const Point3F &torque) = 0;
+	virtual void applyImpulse(const Point3F &impulse, const Point3F &origin) = 0;
+	virtual void applyForce(const Point3F &force, const Point3F &origin) = 0;
 
-public:
-	Sphere(Point3F origin, F32 radius);
-
-	void render(ColorF color);
-	const Point3F getPosition();
-	const AngAxisF getRotation();
-
-	void setPosition(const Point3F &pos);
-
-	void setMaterial(Material *material) {
-		this->material = material;
-	}
-
-	void applyTorque(const Point3F &torque);
-	void applyImpulse(const Point3F &force, const Point3F &origin);
-	void applyForce(const Point3F &force, const Point3F &origin);
-
-	bool getColliding();
-	Point3F getCollisionNormal();
 };
 
-#endif
 #endif

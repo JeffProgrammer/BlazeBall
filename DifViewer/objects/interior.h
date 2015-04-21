@@ -30,7 +30,7 @@
 
 #include "types.h"
 #include "material.h"
-#include "physics.h"
+#include "physicsEngine.h"
 #include "staticMesh.h"
 
 struct Vertex {
@@ -244,6 +244,7 @@ struct RenderInfo {
 	bool generated;
 };
 
+class PhysicsInterior;
 class Interior : public Readable, Writable {
 public:
 	U32 interiorFileVersion;
@@ -396,7 +397,7 @@ public:
 	U32 lightMapBorderSize;
 
 #ifdef BUILD_PHYSICS
-	physx::PxRigidStatic *actor;
+	PhysicsBody *mActor;
 #endif
 	RenderInfo renderInfo;
 

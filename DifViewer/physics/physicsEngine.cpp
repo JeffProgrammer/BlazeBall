@@ -26,55 +26,18 @@
 //------------------------------------------------------------------------------
 
 #ifdef BUILD_PHYSICS
-#ifndef sphere_h
-#define sphere_h
+#include "physicsEngine.h"
 
-#include <stdio.h>
-#include <vector>
-#include <OpenGL/gl.h>
+PhysicsEngine *PhysicsEngine::gEngine = nullptr;
 
-#include "types.h"
-#include "interior.h"
-#include "physicsBody.h"
-#include "material.h"
+PhysicsEngine *PhysicsEngine::getEngine() {
+	return gEngine;
+}
 
-class Sphere {
-protected:
-	std::vector<Point3F> geometry;
-public:
-	PhysicsBody *mActor;
-	Point3F origin;
-	F32 radius;
-	F32 maxAngVel;
-	Material *material;
+void PhysicsEngine::setEngine(PhysicsEngine *engine) {
+	gEngine = engine;
 
-	GLuint renderBuffer;
-private:
-	void generate();
-	const static U32 segments = 36;
-	const static U32 slices = 18;
-	constexpr const static F32 step = (M_PI * 2.0f / segments);
+	gEngine->init();
+}
 
-public:
-	Sphere(Point3F origin, F32 radius);
-
-	void render(ColorF color);
-	const Point3F getPosition();
-	const AngAxisF getRotation();
-
-	void setPosition(const Point3F &pos);
-
-	void setMaterial(Material *material) {
-		this->material = material;
-	}
-
-	void applyTorque(const Point3F &torque);
-	void applyImpulse(const Point3F &force, const Point3F &origin);
-	void applyForce(const Point3F &force, const Point3F &origin);
-
-	bool getColliding();
-	Point3F getCollisionNormal();
-};
-
-#endif
 #endif

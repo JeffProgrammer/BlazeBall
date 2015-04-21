@@ -25,8 +25,10 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
-#include "physics.h"
+#include "pxPhysicsEngine.h"
+#include "pxPhysicsBody.h"
+#include "pxPhysicsInterior.h"
+#include "pxPhysicsSphere.h"
 
 //filter shader with support for CCD pairs
 static physx::PxFilterFlags filterShader(physx::PxFilterObjectAttributes attributes0,
@@ -38,12 +40,12 @@ static physx::PxFilterFlags filterShader(physx::PxFilterObjectAttributes attribu
 										 physx::PxU32 constantBlockSize) {
 	pairFlags = physx::PxPairFlag::eRESOLVE_CONTACTS;
 	pairFlags |= physx::PxPairFlag::eCCD_LINEAR;
-//	pairFlags |= physx::PxPairFlag::eMODIFY_CONTACTS;
+	//	pairFlags |= physx::PxPairFlag::eMODIFY_CONTACTS;
 	pairFlags |= physx::PxPairFlag::eCONTACT_DEFAULT;
 	return physx::PxFilterFlags();
 }
 
-void Physics::init() {
+void PxPhysicsEngine::init() {
 	static AllocatorCallback *allocator = nullptr;
 	if (allocator == nullptr) {
 		allocator = new AllocatorCallback();
@@ -76,31 +78,29 @@ void Physics::init() {
 
 	scene = physics->createScene(sceneDesc);
 
-	running = true;
+	setRunning(true);
 }
 
-void Physics::destroy() {
+void PxPhysicsEngine::destroy() {
 	physics->release();
 	foundation->release();
 }
 
-void Physics::simulate(F32 delta) {
-	if (running) {
+void PxPhysicsEngine::simulate(F32 delta) {
+	if (getRunning()) {
 		scene->simulate(delta);
 		scene->fetchResults();
 	}
 }
 
-Physics *Physics::getPhysics() {
-	static Physics *physics = nullptr;
-	if (physics == nullptr) {
-		physics = new Physics;
-	}
-	return physics;
+void PxPhysicsEngine::addBody(PhysicsBody *body) {
+	scene->addActor(*static_cast<PxPhysicsBody *>(body)->getActor());
 }
 
-void Physics::addActor(physx::PxActor *actor) {
-	scene->addActor(*actor);
+PhysicsBody *PxPhysicsEngine::createInterior(Interior *interior) {
+	return new PxPhysicsInterior(interior);
 }
 
-#endif
+PhysicsBody *PxPhysicsEngine::createSphere(F32 radius) {
+	return new PxPhysicsSphere(radius);
+}

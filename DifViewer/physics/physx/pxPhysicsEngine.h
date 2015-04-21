@@ -25,18 +25,15 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
-#ifndef physics_h
-#define physics_h
+#ifndef pxPhysicsEngine_h
+#define pxPhysicsEngine_h
 
-#define PHYSICS_TICK 0.016
+#include "physicsEngine.h"
 
-#include <stdio.h>
-#include "types.h"
 #include "PxPhysicsAPI.h"
 #include "cooking/PxCooking.h"
 
-class Physics {
+class PxPhysicsEngine : public PhysicsEngine {
 	physx::PxFoundation *foundation;
 	physx::PxProfileZoneManager *profileZoneManager;
 	physx::PxPhysics *physics;
@@ -44,23 +41,21 @@ class Physics {
 	physx::PxScene *scene;
 	physx::PxCpuDispatcher *dispatcher;
 
-	bool running;
-	F32 extraTime;
 public:
-	void init();
-	void destroy();
-	void simulate(F32 delta);
-	void addActor(physx::PxActor *actor);
-	void setRunning(bool running) { this->running = running; }
-	bool getRunning() { return running; }
+	virtual void init();
+	virtual void destroy();
+	virtual void simulate(F32 delta);
+	virtual void addBody(PhysicsBody *body);
+
+	virtual PhysicsBody *createInterior(Interior *interior);
+	virtual PhysicsBody *createSphere(F32 radius);
 
 	physx::PxPhysics *getPxPhysics() { return physics; }
 	physx::PxCooking *getPxCooking() { return cooking; }
 
-//	btDiscreteDynamicsWorld *getWorld() { return world; };
-//	btCollisionDispatcher *getDispatcher() { return dispatcher; }
-
-	static Physics *getPhysics();
+	//	btDiscreteDynamicsWorld *getWorld() { return world; };
+	//	btCollisionDispatcher *getDispatcher() { return dispatcher; }
+	
 };
 
 class AllocatorCallback : public physx::PxAllocatorCallback {
@@ -81,33 +76,21 @@ class ErrorCallback : public physx::PxErrorCallback {
 template <typename from, typename to>
 to pxConvert(from val);
 
-template<> inline Point3F pxConvert(physx::PxVec3 val) {
+inline Point3F pxConvert(const physx::PxVec3 &val) {
 	return Point3F(val.x, val.y, val.z);
 }
 
-template<> inline physx::PxVec3 pxConvert(Point3F val) {
+inline physx::PxVec3 pxConvert(const Point3F &val) {
 	return physx::PxVec3(val.x, val.y, val.z);
 }
 
-template<> inline QuatF pxConvert(physx::PxTransform val) {
-	return QuatF(val.q.x, val.q.y, val.q.z, val.q.w);
+inline AngAxisF pxConvert(const physx::PxTransform &val) {
+	return AngAxisF(QuatF(val.q.x, val.q.y, val.q.z, val.q.w));
 }
 
-template<> inline QuatF pxConvert(physx::PxQuat val) {
-	return QuatF(val.x, val.y, val.z, val.w);
+inline physx::PxQuat pxConvert(const AngAxisF &val) {
+	QuatF quat = QuatF(val);
+	return physx::PxQuat(quat.x, quat.y, quat.z, quat.w);
 }
 
-template<> inline Point3F pxConvert(physx::PxTransform val) {
-	return Point3F(val.p.x, val.p.y, val.p.z);
-}
-
-template<> inline physx::PxTransform pxConvert(Point3F val) {
-	return physx::PxTransform(val.x, val.y, val.z);
-}
-
-template<> inline physx::PxQuat pxConvert(QuatF val) {
-	return physx::PxQuat(val.x, val.y, val.z, val.w);
-}
-
-#endif
 #endif

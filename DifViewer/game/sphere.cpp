@@ -30,55 +30,16 @@
 #include "sphere.h"
 #include "math.h"
 #include "io.h"
+#include "physicsSphere.h"
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), renderBuffer(0), maxAngVel(100.0f) {
-	physx::PxMaterial *material = Physics::getPhysics()->getPxPhysics()->createMaterial(1.1f, 0.9f, 0.8f);
-	material->setFrictionCombineMode(physx::PxCombineMode::eMULTIPLY);
-	material->setRestitutionCombineMode(physx::PxCombineMode::eMULTIPLY);
-
-	actor = physx::PxCreateDynamic(*Physics::getPhysics()->getPxPhysics(), physx::PxTransform(origin.x, origin.y, origin.z), physx::PxSphereGeometry(radius), *material, 1.0f);
-	actor->setMaxAngularVelocity(maxAngVel);
-	physx::PxRigidBody *rigid = actor->is<physx::PxRigidBody>();
-	if (rigid) {
-		physx::PxRigidBodyExt::setMassAndUpdateInertia(*rigid, 1.0f);
-		rigid->setRigidBodyFlag(physx::PxRigidBodyFlag::eENABLE_CCD, true);
-	}
-
-	Physics::getPhysics()->addActor(actor);
-//	//Motion state and shape
-//	btMotionState *state = new btDefaultMotionState();
-//	btCollisionShape *shape = new btSphereShape(radius);
-//
-//	//Need this otherwise forces won't work!
-//	btVector3 fallInertia = btVector3(0.f, 0.f, 0.f);
-//	shape->calculateLocalInertia(1.0f, fallInertia);
-//	shape->setMargin(0.01f);
-//
-//	//Update position
-//	btTransform transform;
-//	transform.setIdentity();
-//	transform.setOrigin(btConvert(origin));
-//
-//	state->setWorldTransform(transform);
-//
-//	//Construction info
-//	btRigidBody::btRigidBodyConstructionInfo info(1, state, shape, fallInertia);
-//	info.m_linearDamping = 0.3f;
-//	info.m_angularDamping = 0.4f;
-//	info.m_restitution = 0.8f;
-//	info.m_friction = 1.1f;
-//	info.m_rollingFriction = 0.4f;
-//
-//	//Create the actor and add it to the scene
-//	actor = new btRigidBody(info);
-//	actor->setActivationState(DISABLE_DEACTIVATION);
-//	actor->setCcdMotionThreshold(1e-3);
-//	actor->setCcdSweptSphereRadius(radius / 10.0f);
-//	actor->setAnisotropicFriction(shape->getAnisotropicRollingFrictionDirection(), btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION);
-//	Physics::getPhysics()->addRigidBody(actor);
+	mActor = PhysicsEngine::getEngine()->createSphere(radius);
+	mActor->setPosition(origin);
+	mActor->setMass(1.0f);
+	PhysicsEngine::getEngine()->addBody(mActor);
 }
 
 void Sphere::generate() {
@@ -167,98 +128,36 @@ void Sphere::render(ColorF color) {
 	}
 }
 
-void Sphere::applyTorque(Point3F torque) {
-	physx::PxRigidDynamic *dynamic = actor->is<physx::PxRigidDynamic>();
-
-	if (dynamic)
-		dynamic->addTorque(pxConvert<Point3F, physx::PxVec3>(torque));
+void Sphere::applyTorque(const Point3F &torque) {
+	mActor->applyTorque(torque);
 }
 
-void Sphere::applyImpulse(Point3F force, Point3F origin) {
-	physx::PxRigidDynamic *dynamic = actor->is<physx::PxRigidDynamic>();
-
-	if (dynamic)
-		physx::PxRigidBodyExt::addForceAtPos(*dynamic, pxConvert<Point3F, physx::PxVec3>(force), pxConvert<Point3F, physx::PxVec3>(origin));
+void Sphere::applyImpulse(const Point3F &force, const Point3F &origin) {
+	mActor->applyImpulse(force, origin);
 }
 
-void Sphere::applyForce(Point3F force, Point3F origin) {
-	physx::PxRigidDynamic *dynamic = actor->is<physx::PxRigidDynamic>();
-
-	if (dynamic)
-		physx::PxRigidBodyExt::addForceAtPos(*dynamic, pxConvert<Point3F, physx::PxVec3>(force), pxConvert<Point3F, physx::PxVec3>(origin));
+void Sphere::applyForce(const Point3F &force, const Point3F &origin) {
+	mActor->applyForce(force, origin);
 }
 
-bool Sphere::colliding() {
-//	btDiscreteDynamicsWorld *world = Physics::getPhysics()->getWorld();
-//	U32 manifolds = world->getDispatcher()->getNumManifolds();
-//
-//	for (U32 i = 0; i < manifolds; i ++) {
-//		btPersistentManifold *manifold = world->getDispatcher()->getManifoldByIndexInternal(i);
-//		btCollisionObject *obj1 = (btCollisionObject *)manifold->getBody0();
-//		btCollisionObject *obj2 = (btCollisionObject *)manifold->getBody1();
-//
-//		if (obj1 == actor || obj2 == actor) {
-//			if (manifold->getNumContacts() > 0)
-//				return true;
-//		}
-//	}
-
-	return false;
+bool Sphere::getColliding() {
+	return dynamic_cast<PhysicsSphere *>(mActor)->getColliding();
 }
 
 Point3F Sphere::getCollisionNormal() {
-//	btDiscreteDynamicsWorld *world = Physics::getPhysics()->getWorld();
-//	U32 manifolds = world->getDispatcher()->getNumManifolds();
-//
-//	Point3F best = Point3F(0.0f, 0.0f, 0.0f);
-//	F32 dot = 0;
-//
-//	for (U32 i = 0; i < manifolds; i ++) {
-//		btPersistentManifold *manifold = world->getDispatcher()->getManifoldByIndexInternal(i);
-//		btCollisionObject *obj1 = (btCollisionObject *)manifold->getBody0();
-//		btCollisionObject *obj2 = (btCollisionObject *)manifold->getBody1();
-//
-//		if (obj1 == actor || obj2 == actor) {
-//			U32 contacts = manifold->getNumContacts();
-//			for (U32 j = 0; j < contacts; j ++) {
-//				Point3F normal = btConvert(manifold->getContactPoint(j).m_normalWorldOnB);
-//				if (obj2 == actor)
-//					normal *= -1;
-//				if (normal.dot(Point3F(0, 0, 1)) > dot) {
-//					best = normal;
-//					dot = normal.dot(Point3F(0, 0, 1));
-//				}
-//			}
-//		}
-//	}
-
-	return Point3F(0,0,0); //best
+	return dynamic_cast<PhysicsSphere *>(mActor)->getCollisionNormal();
 }
 
-Point3F Sphere::getPosition() {
-	return pxConvert<physx::PxTransform, Point3F>(actor->getGlobalPose());
+const Point3F Sphere::getPosition() {
+	return mActor->getPosition();
 }
 
-Point3F Sphere::getPosition() const {
-	return pxConvert<physx::PxTransform, Point3F>(actor->getGlobalPose());
+const AngAxisF Sphere::getRotation() {
+	return mActor->getRotation();
 }
 
-AngAxisF Sphere::getRotation() {
-	return AngAxisF(pxConvert<physx::PxTransform, QuatF>(actor->getGlobalPose()));
-}
-
-AngAxisF Sphere::getRotation() const {
-	return AngAxisF(pxConvert<physx::PxTransform, QuatF>(actor->getGlobalPose()));
-}
-
-void Sphere::setPosition(Point3F pos) {
-	actor->setGlobalPose(pxConvert<Point3F, physx::PxTransform>(pos));
-	actor->setLinearVelocity(physx::PxVec3(0, 0, 0));
-}
-
-void Sphere::setPosition(const Point3F pos) const {
-	actor->setGlobalPose(pxConvert<Point3F, physx::PxTransform>(pos));
-	actor->setLinearVelocity(physx::PxVec3(0, 0, 0));
+void Sphere::setPosition(const Point3F &pos) {
+	mActor->setPosition(pos);
 }
 
 #endif
