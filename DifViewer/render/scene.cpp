@@ -224,7 +224,7 @@ void Scene::loop() {
 	torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
 	delta = glm::rotate(delta, -pitch, glm::vec3(1, 0, 0));
 
-	torque /= 3.0;
+	torque *= 3.0;
 
 	Point3F force = Point3F(torque.x, torque.y, torque.z);
 	sphere->applyTorque(force);
@@ -232,9 +232,9 @@ void Scene::loop() {
 	if (sphere->getColliding()) {
 		Point3F normal = sphere->getCollisionNormal();
 		if (movement[8] && normal.dot(Point3F(0, 0, 1)) > 0.1)
-			sphere->applyImpulse((normal + Point3F(0, 0, 1)) / 2.f * 2.5f, Point3F(0, 0, -1));
+			sphere->applyImpulse((normal + Point3F(0, 0, 1)) / 2.f, Point3F(0, 0, -1));
 	} else {
-		sphere->applyImpulse(Point3F(torque.y, -torque.x, torque.z), Point3F(0, 0, 0));
+		sphere->applyImpulse(Point3F(torque.y, -torque.x, torque.z) / 4.f, Point3F(0, 0, 0));
 	}
 
 	Point3F pos = sphere->getPosition();
@@ -286,7 +286,7 @@ bool Scene::initGL() {
 	glDepthFunc(GL_LESS);
 
 	sphere = new Sphere(Point3F(0, 0, 60), 0.2f);
-	sphere->setMaterial(difs[0]->interior[0]->material[4]);
+//	sphere->setMaterial(difs[0]->interior[0]->material[4]);
 #else
 	//Initialize clear color
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);

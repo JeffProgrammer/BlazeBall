@@ -227,12 +227,14 @@ void Interior::render() {
 		if (renderInfo.numMaterialTriangles[i] > 0) {
 			if (material[i]) {
 				material[i]->activate();
+				noise->activate();
+			} else {
+				printf("Trying to render with invalid material %d: %s\n", i, (const char *)materialName[i]);
 			}
-			noise->activate();
 			glDrawArrays(GL_TRIANGLES, start * 3, renderInfo.numMaterialTriangles[i] * 3);
 			start += renderInfo.numMaterialTriangles[i];
-			noise->deactivate();
 			if (material[i]) {
+				noise->deactivate();
 				material[i]->deactivate();
 			}
 		}
