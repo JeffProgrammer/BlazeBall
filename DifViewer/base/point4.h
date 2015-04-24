@@ -64,7 +64,7 @@ public:
 	Point4<T> roundThousands() const;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 template <typename T>

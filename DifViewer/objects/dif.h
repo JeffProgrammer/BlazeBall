@@ -79,7 +79,7 @@ public:
 	 */
 	DIF(FILE *file, String directory);
 
-	bool write(FILE *file, String directory);
+	bool write(FILE *file, String directory) const;
 
 	/**
 	 Frees the DIF and all memory contained within it

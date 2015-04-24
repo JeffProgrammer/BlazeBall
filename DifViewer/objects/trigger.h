@@ -60,7 +60,7 @@ public:
 	 */
 	Trigger(FILE *file);
 
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 
 	/**
 	 Frees the Trigger and all memory contained within it

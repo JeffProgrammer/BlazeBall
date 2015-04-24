@@ -94,7 +94,7 @@ public:
 	 */
 	ForceField(FILE *file);
 
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 
 	/**
 	 Frees the ForceField and all memory contained within it

@@ -47,26 +47,26 @@ public:
 
 	static IO *getIO();
 
-	void reverse(FILE **file, U32 bytes);
+	void reverse(FILE **file, const U32 &bytes);
 
 	//Unsigned ints
-	bool read(FILE *file, U64 *value, String name);
-	bool read(FILE *file, U32 *value, String name);
-	bool read(FILE *file, U16 *value, String name);
-	bool read(FILE *file,  U8 *value, String name);
+	bool read(FILE *file, U64 *value, const String &name);
+	bool read(FILE *file, U32 *value, const String &name);
+	bool read(FILE *file, U16 *value, const String &name);
+	bool read(FILE *file,  U8 *value, const String &name);
 	
 	//Signed ints
-	bool read(FILE *file, S64 *value, String name);
-	bool read(FILE *file, S32 *value, String name);
-	bool read(FILE *file, S16 *value, String name);
-	bool read(FILE *file,  S8 *value, String name);
+	bool read(FILE *file, S64 *value, const String &name);
+	bool read(FILE *file, S32 *value, const String &name);
+	bool read(FILE *file, S16 *value, const String &name);
+	bool read(FILE *file,  S8 *value, const String &name);
 
 	//Floats
-	bool read(FILE *file, F32 *value, String name);
+	bool read(FILE *file, F32 *value, const String &name);
 
 	//Anything else that is a class can be templated
 	template <typename T>
-	inline bool read(FILE *file, T *value, String name) {
+	inline bool read(FILE *file, T *value, const String &name) {
 		return value->read(file);
 	}
 
@@ -77,33 +77,33 @@ public:
 	 */
 
 	//Unsigned ints
-	bool write(FILE *file, U64 value, String name);
-	bool write(FILE *file, U32 value, String name);
-	bool write(FILE *file, U16 value, String name);
-	bool write(FILE *file, U8  value, String name);
+	bool write(FILE *file, const U64 &value, const String &name);
+	bool write(FILE *file, const U32 &value, const String &name);
+	bool write(FILE *file, const U16 &value, const String &name);
+	bool write(FILE *file, const U8  &value, const String &name);
 
 	//Signed ints
-	bool write(FILE *file, S64 value, String name);
-	bool write(FILE *file, S32 value, String name);
-	bool write(FILE *file, S16 value, String name);
-	bool write(FILE *file, S8  value, String name);
+	bool write(FILE *file, const S64 &value, const String &name);
+	bool write(FILE *file, const S32 &value, const String &name);
+	bool write(FILE *file, const S16 &value, const String &name);
+	bool write(FILE *file, const S8  &value, const String &name);
 
 	//Floats
-	bool write(FILE *file, F32 value, String name);
+	bool write(FILE *file, const F32 &value, const String &name);
 
 	//Anything else that is a class can be templated
 	template <typename T>
-	inline bool write(FILE *file, T value, String name) {
+	inline bool write(FILE *file, const T &value, const String &name) {
 		return value.write(file);
 	}
 
-	String getPath(String file);
-	String getName(String file);
-	String getExtension(String file);
+	String getPath(const String &file);
+	String getName(const String &file);
+	String getExtension(const String &file);
 
-	bool isfile(String file);
-	U8 *readFile(String file, U32 *length);
-	Texture *loadTexture(String file);
+	bool isfile(const String &file);
+	U8 *readFile(const String &file, U32 *length);
+	Texture *loadTexture(const String &file);
 };
 
 template <typename T>
@@ -140,14 +140,14 @@ bool Color<T>::read(FILE *file) {
 }
 
 template <typename T>
-bool Point2<T>::write(FILE *file) {
+bool Point2<T>::write(FILE *file) const {
 	return
 	io->write(file, x, "x") &&
 	io->write(file, y, "y");
 }
 
 template <typename T>
-bool Point3<T>::write(FILE *file) {
+bool Point3<T>::write(FILE *file) const {
 	return
 	io->write(file, x, "x") &&
 	io->write(file, y, "y") &&
@@ -155,7 +155,7 @@ bool Point3<T>::write(FILE *file) {
 }
 
 template <typename T>
-bool Point4<T>::write(FILE *file) {
+bool Point4<T>::write(FILE *file) const {
 	return
 	io->write(file, w, "w") &&
 	io->write(file, x, "x") &&
@@ -164,7 +164,7 @@ bool Point4<T>::write(FILE *file) {
 }
 
 template <typename T>
-bool Color<T>::write(FILE *file) {
+bool Color<T>::write(FILE *file) const {
 	return
 	io->write(file, red, "red") &&
 	io->write(file, green, "green") &&

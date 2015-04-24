@@ -90,7 +90,7 @@ DIF::DIF(FILE *file, String directory) {
 	READ(U32); //dummy
 }
 
-bool DIF::write(FILE *file, String directory) {
+bool DIF::write(FILE *file, String directory) const {
 	WRITECHECK(44, U32); //interiorResourceFileVersion
 	WRITECHECK(0, U8); //previewIncluded
 

@@ -35,19 +35,19 @@ F32 tetrahedronF_area(TetrahetronF tetrahedron);
 
 F32 planeF_distance_to_point(PlaneF plane, Point3F point);
 
-inline U16 swapEndianness(U16 num) {
+inline U16 swapEndianness(const U16 &num) {
 	return U16(num >> 8) |
 	       U16(num << 8);
 }
 
-inline U32 swapEndianness(U32 num) {
+inline U32 swapEndianness(const U32 &num) {
 	return U32(num >> 24) |
 	       U32((num >> 8) & 0xFF00) |
 	       U32((num << 8) & 0xFF0000) |
 	       U32(num << 24);
 }
 
-inline U64 swapEndianness(U64 num) {
+inline U64 swapEndianness(const U64 &num) {
 	return U64(num >> 56) |
 	       U64((num >> 40) & 0xFF00) |
 	       U64((num >> 24) & 0xFF0000) |

@@ -18,13 +18,13 @@ public:
 	Point3<T> direction;
 
 	Ray(const Point3<T> &origin, const Point3<T> &direction) : origin(origin), direction(direction) {};
-	Ray(T ox, T oy, T oz, T dx, T dy, T dz) : origin(Point3<T>(ox, oy, oz)), direction(Point3<T>(dx, dy, dz)) {};
+	Ray(const T &ox, const T &oy, const T &oz, const T &dx, const T &dy, const T &dz) : origin(Point3<T>(ox, oy, oz)), direction(Point3<T>(dx, dy, dz)) {};
 
-	bool intersects(PlaneF plane);
-	bool intersects(TriangleF triangle);
+	bool intersects(const PlaneF &plane) const;
+	bool intersects(const TriangleF &triangle) const;
 
-	F32 distance(TriangleF triangle);
-	Point3<T> intersection(PlaneF plane);
+	F32 distance(const TriangleF &triangle) const;
+	Point3<T> intersection(const PlaneF &plane) const;
 };
 
 #endif

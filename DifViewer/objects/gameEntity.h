@@ -44,7 +44,7 @@ public:
 	 */
 	GameEntity(FILE *file);
 
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 
 	/**
 	 Frees the GameEntity and all memory contained within it

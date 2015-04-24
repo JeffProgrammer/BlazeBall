@@ -48,7 +48,7 @@ InteriorPathFollower::InteriorPathFollower(FILE *file) {
 	READTOVAR(totalMS, U32); //totalMS
 }
 
-bool InteriorPathFollower::write(FILE *file) {
+bool InteriorPathFollower::write(FILE *file) const {
 	WRITE(name, String); //name
 	WRITE(datablock, String); //datablock
 	WRITECHECK(interiorResIndex, U32); //interiorResIndex

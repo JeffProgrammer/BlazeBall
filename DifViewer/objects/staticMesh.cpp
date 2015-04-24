@@ -49,7 +49,7 @@ StaticMesh::StaticMesh(FILE *file) {
 	READTOVAR(scale, Point3F);
 }
 
-bool StaticMesh::write(FILE *file) {
+bool StaticMesh::write(FILE *file) const {
 	WRITELIST(numPrimitives, primitive, Primitive);
 	WRITELIST(numIndices, index, U16);
 	WRITELIST(numVertices, vertex, Point3F);
@@ -95,7 +95,7 @@ bool Primitive::read(FILE *file) {
 	return true;
 }
 
-bool Primitive::write(FILE *file) {
+bool Primitive::write(FILE *file) const {
 	WRITECHECK(alpha, U8);
 	WRITECHECK(texS, U32);
 	WRITECHECK(texT, U32);
@@ -118,7 +118,7 @@ bool MaterialList::read(FILE *file) {
 	return true;
 }
 
-bool MaterialList::write(FILE *file) {
+bool MaterialList::write(FILE *file) const {
 	//Not going to bother
 	assert(1);
 

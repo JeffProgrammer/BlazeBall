@@ -70,7 +70,7 @@ ForceField::ForceField(FILE *file) {
 	READTOVAR(color, ColorI); //color
 }
 
-bool ForceField::write(FILE *file) {
+bool ForceField::write(FILE *file) const {
 	WRITECHECK(forceFieldFileVersion, U32); //forceFieldFileVersion
 	WRITE(name, String); //name
 	WRITELOOP(numTriggers) { //trigger

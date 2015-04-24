@@ -94,7 +94,7 @@ public:
 	 */
 	VehicleCollision(FILE *file);
 
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 
 	/**
 	 Frees the VehicleCollision and all memory contained within it

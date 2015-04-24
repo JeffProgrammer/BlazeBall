@@ -50,7 +50,7 @@ Trigger::Trigger(FILE *file) {
 	READTOVAR(offset, Point3F); //offset
 }
 
-bool Trigger::write(FILE *file) {
+bool Trigger::write(FILE *file) const {
 	WRITE(name, String); //name
 	WRITE(datablock, String); //datablock
 	WRITE(properties, Dictionary); //properties
