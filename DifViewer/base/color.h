@@ -37,10 +37,10 @@ public:
 	T alpha;
 
 	Color() : red(0), green(0), blue(0), alpha(0) {};
-	Color(T red, T green, T blue, T alpha) : red(red), green(green), blue(blue), alpha(alpha) {};
+	Color(const T &red, const T &green, const T &blue, const T &alpha) : red(red), green(green), blue(blue), alpha(alpha) {};
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 

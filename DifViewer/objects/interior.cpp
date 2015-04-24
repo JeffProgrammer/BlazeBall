@@ -341,7 +341,7 @@ bool Interior::read(FILE *file) {
 	return true;
 }
 
-bool Interior::write(FILE *file) {
+bool Interior::write(FILE *file) const {
 	//We can only write version 0 maps at the moment.
 	WRITECHECK(0, U32); //interiorFileVersion
 	WRITECHECK(detailLevel, U32); //detailLevel
@@ -647,7 +647,7 @@ bool Plane::read(FILE *file) {
 	return true;
 }
 
-bool Plane::write(FILE *file) {
+bool Plane::write(FILE *file) const {
 	WRITECHECK(normalIndex, U16); //normalIndex
 	WRITECHECK(planeDistance, F32); //planeDistance
 	return true;
@@ -659,13 +659,13 @@ bool TexGenEq::read(FILE *file) {
 	return true;
 }
 
-bool TexGenEq::write(FILE *file) {
+bool TexGenEq::write(FILE *file) const {
 	WRITECHECK(planeX, PlaneF); //planeX
 	WRITECHECK(planeY, PlaneF); //planeY
 	return true;
 }
 
-bool BSPNode::write(FILE *file) {
+bool BSPNode::write(FILE *file) const {
 	WRITECHECK(planeIndex, U16); //planeIndex
 	WRITECHECK(frontIndex, U16); //frontIndex
 	WRITECHECK(backIndex, U16); //backIndex
@@ -678,7 +678,7 @@ bool BSPSolidLeaf::read(FILE *file) {
 	return true;
 }
 
-bool BSPSolidLeaf::write(FILE *file) {
+bool BSPSolidLeaf::write(FILE *file) const {
 	WRITECHECK(surfaceIndex, U32); //surfaceIndex
 	WRITECHECK(surfaceCount, U16); //surfaceCount
 	return true;
@@ -690,13 +690,13 @@ bool WindingIndex::read(FILE *file) {
 	return true;
 }
 
-bool WindingIndex::write(FILE *file) {
+bool WindingIndex::write(FILE *file) const {
 	WRITECHECK(windingStart, U32); //windingStart
 	WRITECHECK(windingCount, U32); //windingCount
 	return true;
 }
 
-bool Zone::write(FILE *file) {
+bool Zone::write(FILE *file) const {
 	WRITECHECK(portalStart, U16); //portalStart
 	WRITECHECK(portalCount, U16); //portalCount
 	WRITECHECK(surfaceStart, U32); //surfaceStart
@@ -712,7 +712,7 @@ bool Edge::read(FILE *file) {
 	return true;
 }
 
-bool Edge::write(FILE *file) {
+bool Edge::write(FILE *file) const {
 	WRITECHECK(pointIndex0, S32); //pointIndex0
 	WRITECHECK(pointIndex1, S32); //pointIndex1
 	WRITECHECK(surfaceIndex0, S32); //surfaceIndex0
@@ -729,7 +729,7 @@ bool Portal::read(FILE *file) {
 	return true;
 }
 
-bool Portal::write(FILE *file) {
+bool Portal::write(FILE *file) const {
 	WRITECHECK(planeIndex, U16); //planeIndex
 	WRITECHECK(triFanCount, U16); //triFanCount
 	WRITECHECK(triFanStart, U32); //triFanStart
@@ -738,7 +738,7 @@ bool Portal::write(FILE *file) {
 	return true;
 }
 
-bool Surface::write(FILE *file) {
+bool Surface::write(FILE *file) const {
 	WRITECHECK(windingStart, U32); //windingStart
 	WRITECHECK(windingCount, U8); //windingCount
 	U16 index = planeIndex;
@@ -761,7 +761,7 @@ bool Surface::write(FILE *file) {
 	return true;
 }
 
-bool NullSurface::write(FILE *file) {
+bool NullSurface::write(FILE *file) const {
 	WRITECHECK(windingStart, U32); //windingStart
 	WRITECHECK(planeIndex, U16); //planeIndex
 	WRITECHECK(surfaceFlags, U8); //surfaceFlags
@@ -769,7 +769,7 @@ bool NullSurface::write(FILE *file) {
 	return true;
 }
 
-bool LightMap::write(FILE *file) {
+bool LightMap::write(FILE *file) const {
 	WRITE(lightMap, PNG); //lightMap
 	WRITECHECK(keepLightMap, U8); //keepLightMap
 	return true;
@@ -784,7 +784,7 @@ bool AnimatedLight::read(FILE *file) {
 	return true;
 }
 
-bool AnimatedLight::write(FILE *file) {
+bool AnimatedLight::write(FILE *file) const {
 	WRITECHECK(nameIndex, U32); //nameIndex
 	WRITECHECK(stateIndex, U32); //stateIndex
 	WRITECHECK(stateCount, U16); //stateCount
@@ -803,7 +803,7 @@ bool LightState::read(FILE *file) {
 	return true;
 }
 
-bool LightState::write(FILE *file) {
+bool LightState::write(FILE *file) const {
 	WRITECHECK(red, U8); //red
 	WRITECHECK(green, U8); //green
 	WRITECHECK(blue, U8); //blue
@@ -820,14 +820,14 @@ bool StateData::read(FILE *file) {
 	return true;
 }
 
-bool StateData::write(FILE *file) {
+bool StateData::write(FILE *file) const {
 	WRITECHECK(surfaceIndex, U32); //surfaceIndex
 	WRITECHECK(mapIndex, U32); //mapIndex
 	WRITECHECK(lightStateIndex, U16); //lightStateIndex
 	return true;
 }
 
-bool ConvexHull::write(FILE *file) {
+bool ConvexHull::write(FILE *file) const {
 	WRITECHECK(hullStart, U32); //hullStart
 	WRITECHECK(hullCount, U16); //hullCount
 	WRITECHECK(minX, F32); //minX
@@ -852,7 +852,7 @@ bool TexMatrix::read(FILE *file) {
 	return true;
 }
 
-bool TexMatrix::write(FILE *file) {
+bool TexMatrix::write(FILE *file) const {
 	WRITECHECK(T, S32); //T
 	WRITECHECK(N, S32); //N
 	WRITECHECK(B, S32); //B

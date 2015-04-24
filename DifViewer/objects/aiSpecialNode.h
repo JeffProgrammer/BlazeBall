@@ -42,7 +42,7 @@ public:
 	 */
 	AISpecialNode(FILE *file);
 
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 
 	/**
 	 Frees the AISpecialNode and all memory contained within it

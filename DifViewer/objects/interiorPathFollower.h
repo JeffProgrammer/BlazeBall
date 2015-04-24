@@ -62,7 +62,7 @@ public:
 	InteriorPathFollower(FILE *file);
 	~InteriorPathFollower();
 
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 #endif

@@ -46,7 +46,7 @@ struct Primitive : public Readable, Writable {
 	Point2I lightMapSize;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct MaterialList : public Readable, Writable {
@@ -61,7 +61,7 @@ struct MaterialList : public Readable, Writable {
 	U32 *reflectionAmount;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 class StaticMesh {
@@ -102,7 +102,7 @@ public:
 	 */
 	StaticMesh(FILE *file);
 
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 
 	/**
 	 Frees the StaticMesh and all memory contained within it

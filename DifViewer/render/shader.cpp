@@ -30,11 +30,11 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/gl3.h>
 
-Shader::Shader(String vertPath, String fragPath) {
+Shader::Shader(const String &vertPath, const String &fragPath) {
 	programId = loadProgram(vertPath, fragPath);
 }
 
-GLuint Shader::loadShader(String path, GLenum type) {
+GLuint Shader::loadShader(const String &path, const GLenum &type) {
 	GLuint shaderId = glCreateShader(type);
 	U32 length;
 	U8 *data = io->readFile(path, &length);
@@ -62,7 +62,7 @@ GLuint Shader::loadShader(String path, GLenum type) {
 	return shaderId;
 }
 
-GLuint Shader::loadProgram(String vertPath, String fragPath) {
+GLuint Shader::loadProgram(const String &vertPath, const String &fragPath) {
 	vertId = loadShader(vertPath, GL_VERTEX_SHADER);
 	fragId = loadShader(fragPath, GL_FRAGMENT_SHADER);
 
@@ -97,11 +97,11 @@ GLuint Shader::getProgramId() {
 	return programId;
 }
 
-GLuint Shader::getUniformLocation(String name) {
+GLuint Shader::getUniformLocation(const String &name) {
 	return glGetUniformLocation(getProgramId(), name);
 }
 
-void Shader::setUniformLocation(String name, GLuint location) {
+void Shader::setUniformLocation(const String &name, const GLuint &location) {
 	GLuint glLocation = glGetUniformLocation(getProgramId(), name);
 	glUniform1i(glLocation, location);
 }

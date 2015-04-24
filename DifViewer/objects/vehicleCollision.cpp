@@ -80,7 +80,7 @@ VehicleCollision::VehicleCollision(FILE *file) {
 	}
 }
 
-bool VehicleCollision::write(FILE *file) {
+bool VehicleCollision::write(FILE *file) const {
 	WRITECHECK(vehicleCollisionFileVersion, U32);
 	WRITELOOP(numVehicleConvexHulls) {
 		WRITECHECK(vehicleConvexHull[i].hullStart, U32); //hullStart

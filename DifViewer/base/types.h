@@ -54,7 +54,7 @@ public:
 
 struct Writable {
 public:
-	bool write(FILE *file) { return false; };
+	bool write(FILE *file) const { return false; };
 };
 
 struct String : public Readable, Writable {
@@ -62,45 +62,45 @@ struct String : public Readable, Writable {
 	U32 length;
 	bool allocated;
 
-	inline operator const char *() {
+	inline operator const char *() const {
 		return (const char *)data;
 	}
-	inline operator char *() {
+	inline operator char *() const {
 		return (char *)data;
 	}
-	inline operator U8 *() {
+	inline operator U8 *() const {
 		return data;
 	}
-	inline operator const void *() {
+	inline operator const void *() const {
 		return data;
 	}
-	inline operator void *() {
+	inline operator void *() const {
 		return data;
 	}
-	inline bool operator==(const char *str) {
+	inline bool operator==(const char *str) const {
 		return strcmp((const char *)data, str) == 0;
 	}
-	inline bool operator==(String str) {
+	inline bool operator==(const String &str) const {
 		return strcmp((const char *)data, (const char *)str.data) == 0;
 	}
-	inline bool operator!=(String str) {
+	inline bool operator!=(const String &str) const {
 		return !operator==(str);
 	}
-	inline String operator+=(String str) {
+	inline String operator+=(const String &str) {
 		concat(str);
 		return *this;
 	}
-	inline String operator+(String str) {
+	inline String operator+(const String &str) const {
 		String newStr = String(*this);
 		newStr.concat(str);
 		return newStr;
 	}
-	inline String operator+(char chr) {
+	inline String operator+(const char &chr) const {
 		String newStr = String(*this);
 		newStr.concat(String(&chr));
 		return newStr;
 	}
-	inline String concat(String str) {
+	inline String concat(const String &str) {
 		U8 *cur = new U8[length + 1];
 		memcpy(cur, data, length + 1);
 		data = (U8 *)realloc(data, length + str.length + 1);
@@ -115,26 +115,26 @@ struct String : public Readable, Writable {
 		data[length] = 0;
 		allocated = true;
 	}
-	String(U32 length) : data(new U8[length + 1]), length(length) {
+	String(const U32 &length) : data(new U8[length + 1]), length(length) {
 		data[length] = 0;
 		allocated = true;
 	}
-	String(const char *bytes) : data(new U8[(U8)strlen(bytes) + 1]), length((U8)strlen(bytes)) {
+	String(const char * const &bytes) : data(new U8[(U8)strlen(bytes) + 1]), length((U8)strlen(bytes)) {
 		memcpy(data, bytes, length);
 		data[length] = 0;
 		allocated = true;
 	}
-	String(U8 *bytes, U32 length) : data(new U8[length + 1]), length(length) {
+	String(U8 * const &bytes, const U32 &length) : data(new U8[length + 1]), length(length) {
 		memcpy(data, bytes, length);
 		data[length] = 0;
 		allocated = true;
 	}
-	String(String const &other) : data(new U8[other.length + 1]), length(other.length) {
+	String(const String &other) : data(new U8[other.length + 1]), length(other.length) {
 		memcpy(data, other.data, length);
 		data[length] = 0;
 		allocated = true;
 	}
-	String(String other, U32 length) : data(new U8[length + 1]), length(length) {
+	String(const String &other, const U32 &length) : data(new U8[length + 1]), length(length) {
 		memcpy(data, other.data, length);
 		data[length] = 0;
 		allocated = true;
@@ -147,7 +147,7 @@ struct String : public Readable, Writable {
 	}
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 #include "point2.h"
@@ -167,13 +167,16 @@ typedef Color<F32> ColorF;
 
 //More names stolen from TGE
 
+class QuatF;
+
 class AngAxisF {
 public:
 	Point3F axis;
 	F32 angle;
 
-	AngAxisF(Point3F axis, F32 angle) : axis(axis), angle(angle) {};
-	AngAxisF(F32 angle, Point3F axis) : axis(axis), angle(angle) {};
+	AngAxisF(const Point3F &axis, const F32 &angle) : axis(axis), angle(angle) {};
+	AngAxisF(const F32 &angle, const Point3F &axis) : axis(axis), angle(angle) {};
+	AngAxisF(const QuatF &quat);
 };
 
 class QuatF : public Readable, Writable {
@@ -183,9 +186,31 @@ public:
 	F32 y;
 	F32 z;
 
+	QuatF() : x(0), y(0), z(0), w(0) {};
+	QuatF(const F32 &x, const F32 &y, const F32 &z, const F32 &w) : x(x), y(y), z(z), w(w) {};
+	QuatF(const AngAxisF &ang);
+
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
+
+inline AngAxisF::AngAxisF(const QuatF &quat) {
+	angle = acosf(quat.w);
+	F32 half = sqrtf(quat.x * quat.x + quat.y * quat.y + quat.z * quat.z);
+	if (half != 0.0f) {
+		axis = Point3F(quat.x / half, quat.y / half, quat.z / half);
+	} else {
+		axis = Point3F(1.0f, 0.0f, 0.0f);
+	}
+}
+
+inline QuatF::QuatF(const AngAxisF &ang) {
+	F32 sin2 = sinf(ang.angle / 2);
+	w = cosf(ang.angle / 2);
+	x = ang.axis.x * sin2;
+	y = ang.axis.y * sin2;
+	z = ang.axis.z * sin2;
+}
 
 class PlaneF : public Readable, Writable {
 public:
@@ -195,7 +220,7 @@ public:
 	F32 d;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 class BoxF : public Readable, Writable {
@@ -207,18 +232,18 @@ public:
 	F32 maxY;
 	F32 maxZ;
 
-	inline Point3F getMin() {
+	inline Point3F getMin() const {
 		return Point3F(minX, minY, minZ);
 	}
-	inline Point3F getMax() {
+	inline Point3F getMax() const {
 		return Point3F(maxX, maxY, maxZ);
 	}
-	inline Point3F getCenter() {
+	inline Point3F getCenter() const {
 		return (getMax() + getMin()) / 2;
 	}
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 class SphereF : public Readable, Writable {
@@ -229,7 +254,7 @@ public:
 	F32 radius;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 class Dictionary : public Readable, Writable {
@@ -239,9 +264,9 @@ public:
 	String *values;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 
-	String get(String key) {
+	String get(const String &key) const {
 		for (U32 i = 0; i < size; i ++) {
 			if (names[i] == key)
 				return values[i];
@@ -261,7 +286,7 @@ public:
 	U8 *data;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 class TriangleF {
@@ -284,7 +309,7 @@ public:
 	F32 m[16];
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 #include "ray.h"

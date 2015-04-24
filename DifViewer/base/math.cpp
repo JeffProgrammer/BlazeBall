@@ -61,7 +61,7 @@ Point2F point3F_project_plane(Point3F point, Point3F normal, Point3F origin) {
 }
 
 template <typename T>
-bool Ray<T>::intersects(PlaneF plane) {
+bool Ray<T>::intersects(const PlaneF &plane) const {
 	//http://antongerdelan.net/opengl/raycasting.html
 	//t = (RayOrigin • PlaneNormal + PlaneOffset) / (RayDirection • PlaneNormal)
 	//miss if denom == 0
@@ -84,7 +84,7 @@ bool Ray<T>::intersects(PlaneF plane) {
 }
 
 template <typename T>
-Point3<T> Ray<T>::intersection(PlaneF plane) {
+Point3<T> Ray<T>::intersection(const PlaneF &plane) const {
 	//http://antongerdelan.net/opengl/raycasting.html
 	//t = (RayOrigin • PlaneNormal + PlaneOffset) / (RayDirection • PlaneNormal)
 	//miss if denom == 0
@@ -107,7 +107,7 @@ Point3<T> Ray<T>::intersection(PlaneF plane) {
 	}
 }
 
-template<> F32 RayF::distance(TriangleF triangle) {
+template<> F32 RayF::distance(const TriangleF &triangle) const {
 //	triangle.point0 = triangle.point0.roundThousands();
 //	triangle.point1 = triangle.point1.roundThousands();
 //	triangle.point2 = triangle.point2.roundThousands();
@@ -175,6 +175,6 @@ template<> F32 RayF::distance(TriangleF triangle) {
 }
 
 template <typename T>
-bool Ray<T>::intersects(TriangleF triangle) {
+bool Ray<T>::intersects(const TriangleF &triangle) const {
 	return distance(triangle) > 0;
 }

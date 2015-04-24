@@ -38,16 +38,16 @@ protected:
 	GLuint fragId;
 	GLuint programId;
 
-	GLuint loadShader(String path, GLenum type);
-	GLuint loadProgram(String vertPath, String fragPath);
+	GLuint loadShader(const String &path, const GLenum &type);
+	GLuint loadProgram(const String &vertPath, const String &fragPath);
 public:
-	Shader(String vertPath, String fragPath);
+	Shader(const String &vertPath, const String &fragPath);
 	~Shader();
 
 	GLuint getProgramId();
 
-	GLuint getUniformLocation(String name);
-	void setUniformLocation(String name, GLuint location);
+	GLuint getUniformLocation(const String &name);
+	void setUniformLocation(const String &name, const GLuint &location);
 
 	void activate();
 	void deactivate();

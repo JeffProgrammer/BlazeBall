@@ -35,7 +35,7 @@ AISpecialNode::AISpecialNode(FILE *file) {
 	READTOVAR(position, Point3F); //position
 }
 
-bool AISpecialNode::write(FILE *file) {
+bool AISpecialNode::write(FILE *file) const {
 	WRITE(name, String); //name
 	WRITECHECK(position, Point3F); //position
 

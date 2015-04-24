@@ -37,7 +37,7 @@ GameEntity::GameEntity(FILE *file) {
 	READTOVAR(properties, Dictionary); //properties
 }
 
-bool GameEntity::write(FILE *file) {
+bool GameEntity::write(FILE *file) const {
 	WRITE(datablock, String); //datablock
 	WRITE(gameClass, String); //gameClass
 	WRITECHECK(position, Point3F); //position

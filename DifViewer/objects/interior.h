@@ -52,7 +52,7 @@ struct Plane : public Readable, Writable {
 	F32 planeDistance;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct TexGenEq : public Readable, Writable {
@@ -60,7 +60,7 @@ struct TexGenEq : public Readable, Writable {
 	PlaneF planeY;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct BSPNode : public Readable, Writable {
@@ -69,7 +69,7 @@ struct BSPNode : public Readable, Writable {
 	U16 backIndex;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct BSPSolidLeaf : public Readable, Writable {
@@ -77,7 +77,7 @@ struct BSPSolidLeaf : public Readable, Writable {
 	U16 surfaceCount;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct WindingIndex : public Readable, Writable {
@@ -85,7 +85,7 @@ struct WindingIndex : public Readable, Writable {
 	U32 windingCount;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct Edge : public Readable, Writable {
@@ -95,7 +95,7 @@ struct Edge : public Readable, Writable {
 	S32 surfaceIndex1;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct Zone : public Readable, Writable {
@@ -108,7 +108,7 @@ struct Zone : public Readable, Writable {
 	U16 flags;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct Portal : public Readable, Writable {
@@ -119,7 +119,7 @@ struct Portal : public Readable, Writable {
 	U16 zoneBack;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct LightMapF : public Readable, Writable {
@@ -134,7 +134,7 @@ struct LightMap : public Readable, Writable {
 	U8 keepLightMap;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct Surface : public Readable, Writable {
@@ -155,7 +155,7 @@ struct Surface : public Readable, Writable {
 	U8 mapSizeY;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct NullSurface : public Readable, Writable {
@@ -165,7 +165,7 @@ struct NullSurface : public Readable, Writable {
 	U8 windingCount;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct AnimatedLight : public Readable, Writable {
@@ -176,7 +176,7 @@ struct AnimatedLight : public Readable, Writable {
 	U32 duration;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct LightState : public Readable, Writable {
@@ -188,7 +188,7 @@ struct LightState : public Readable, Writable {
 	U16 dataCount;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct StateData : public Readable, Writable {
@@ -197,7 +197,7 @@ struct StateData : public Readable, Writable {
 	U16 lightStateIndex;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct ConvexHull : public Readable, Writable {
@@ -218,7 +218,7 @@ struct ConvexHull : public Readable, Writable {
 	U8 staticMesh;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct CoordBin : public Readable, Writable {
@@ -226,7 +226,7 @@ struct CoordBin : public Readable, Writable {
 	U32 binCount;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct TexMatrix : public Readable, Writable {
@@ -235,7 +235,7 @@ struct TexMatrix : public Readable, Writable {
 	S32 B;
 
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 };
 
 struct RenderInfo {
@@ -410,7 +410,7 @@ public:
 	 @arg directory - The base directory for images
 	 */
 	bool read(FILE *file);
-	bool write(FILE *file);
+	bool write(FILE *file) const;
 
 	/**
 	 Exports an interior into a Wavefront .obj file
