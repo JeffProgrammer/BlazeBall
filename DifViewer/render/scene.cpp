@@ -252,16 +252,16 @@ bool Scene::initGL() {
 	glGenVertexArrays(1, &vertexArrayID);
 	glBindVertexArray(vertexArrayID);
 
-	Shader *shader = new Shader(String("interiorV.glsl"), String("interiorF.glsl"));
+	Shader *shader = new Shader("interiorV.glsl", "interiorF.glsl");
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 
 	shader->activate();
-	shader->setUniformLocation(String("textureSampler"), 0);
-	shader->setUniformLocation(String("normalSampler"), 1);
-	shader->setUniformLocation(String("specularSampler"), 2);
-	shader->setUniformLocation(String("noiseSampler"), 3);
+	shader->setUniformLocation("textureSampler", 0);
+	shader->setUniformLocation("normalSampler", 1);
+	shader->setUniformLocation("specularSampler", 2);
+	shader->setUniformLocation("noiseSampler", 3);
 
 	mvpMatrixLocation = shader->getUniformLocation("modelViewProjectionMat");
 	modelMatrixLocation = shader->getUniformLocation("modelMat");
