@@ -25,6 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
+#ifdef BUILD_PHYSICS
+
 #ifndef btPhysicsSphere_h
 #define btPhysicsSphere_h
 
@@ -40,4 +42,6 @@ public:
 	virtual Point3F getCollisionNormal();
 };
 
-#endif
+#endif /* btPhysicsSphere_h */
+
+#endif /* BUILD_PHYSICS */

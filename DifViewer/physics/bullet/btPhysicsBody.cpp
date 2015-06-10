@@ -25,6 +25,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
+#ifdef BUILD_PHYSICS
 #include "btPhysicsBody.h"
 
 const Point3F btPhysicsBody::getPosition() {
@@ -60,3 +61,5 @@ void btPhysicsBody::applyImpulse(const Point3F &impulse, const Point3F &origin) 
 void btPhysicsBody::applyForce(const Point3F &force, const Point3F &origin) {
 	mActor->applyForce(btConvert(force), btConvert(origin));
 }
+
+#endif /* BUILD_PHYSICS */

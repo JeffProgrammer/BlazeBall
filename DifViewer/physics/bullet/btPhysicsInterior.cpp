@@ -25,6 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
+#ifdef BUILD_PHYSICS
+
 #include "btPhysicsInterior.h"
 #include "interior.h"
 
@@ -35,35 +37,32 @@ btPhysicsInterior::btPhysicsInterior(Interior *interior) : btPhysicsBody(), mInt
 void btPhysicsInterior::construct() {
 	//Create body
 	btMotionState *state = new btDefaultMotionState();
+	btCompoundShape *shape = new btCompoundShape();
 
-	btTriangleMesh *mesh = new btTriangleMesh;
+	btTransform identity;
+	identity.setIdentity();
+	identity.setOrigin(btVector3(0, 0, 0));
 
-	for (U32 i = 0; i < mInterior->numSurfaces; i ++) {
-		Surface surface = mInterior->surface[i];
+	for (U32 i = 0; i < mInterior->numConvexHulls; i ++) {
+		ConvexHull hull = mInterior->convexHull[i];
 
-		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
-			Point3F point0 = mInterior->point[mInterior->index[j + surface.windingStart + 0]];
-			Point3F point1 = mInterior->point[mInterior->index[j + surface.windingStart + 1]];
-			Point3F point2 = mInterior->point[mInterior->index[j + surface.windingStart + 2]];
-			mesh->addTriangle(btConvert(point0), btConvert(point1), btConvert(point2));
+		btConvexHullShape *hullShape = new btConvexHullShape();
+
+		for (U32 j = 0; j < hull.hullCount; j ++) {
+			Point3F vert = mInterior->point[mInterior->hullIndex[j + hull.hullStart]];
+			hullShape->addPoint(btConvert(vert));
 		}
+
+		hullShape->setMargin(0.01f);
+		shape->addChildShape(identity, hullShape);
 	}
 
-	btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(mesh, true, true);
-	btTriangleInfoMap *map = new btTriangleInfoMap();
-
-	btGenerateInternalEdgeInfo(shape, map);
-
-	shape->setMargin(0.01f);
-
-	btTransform transform;
-	transform.setIdentity();
-	transform.setOrigin(btVector3(0, 0, 0));
-
-	state->setWorldTransform(transform);
+	state->setWorldTransform(identity);
 
 	mActor = new btRigidBody(0, state, shape);
 	mActor->setRestitution(0.7f);
 	mActor->setFriction(1.0f);
 	mActor->setCollisionFlags(mActor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 }
+
+#endif /* BUILD_PHYSICS */

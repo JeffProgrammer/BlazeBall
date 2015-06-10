@@ -790,7 +790,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DEBUG,
 					GL_33,
-					BUILD_PHYSICS,
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -829,10 +828,7 @@
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					GL_33,
-					BUILD_PHYSICS,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = GL_33;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,

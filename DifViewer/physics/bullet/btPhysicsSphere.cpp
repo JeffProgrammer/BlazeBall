@@ -25,6 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
+#ifdef BUILD_PHYSICS
+
 #include "btPhysicsSphere.h"
 
 btPhysicsSphere::btPhysicsSphere(F32 radius) : mRadius(radius) {
@@ -106,3 +108,5 @@ Point3F btPhysicsSphere::getCollisionNormal() {
 	return best;
 
 }
+
+#endif /* BUILD_PHYSICS */

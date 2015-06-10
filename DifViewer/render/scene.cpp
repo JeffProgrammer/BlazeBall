@@ -215,19 +215,17 @@ void Scene::loop() {
 	if (mouseButtons[1])
 		speed *= 2.f;
 
-	glm::vec3 torque;
 	Point2F move = Point2F();
 	if (movement[0]) move.x -= speed;
 	if (movement[1]) move.x += speed;
 	if (movement[2]) move.y -= speed;
 	if (movement[3]) move.y += speed;
-	torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
+
+#ifdef BUILD_PHYSICS
+	glm::vec3 torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
 	delta = glm::rotate(delta, -pitch, glm::vec3(1, 0, 0));
 
-	torque *= 3.0;
-
-	Point3F force = Point3F(torque.x, torque.y, torque.z);
-	sphere->applyImpulse(force, Point3F(0, 0, 0.2));
+	sphere->applyTorque(Point3F(torque.x, torque.y, torque.z) * 20);
 
 	if (sphere->getColliding()) {
 		Point3F normal = sphere->getCollisionNormal();
@@ -244,6 +242,16 @@ void Scene::loop() {
 	if (sphere->getPosition().z < difs[0]->interior[0]->boundingBox.getMin().x) {
 		sphere->setPosition(Point3F(0, 30, 60));
 	}
+#else /* BUILD_PHYSICS */
+	move *= 3;
+	if (movement[8])
+		move *= 2;
+
+	delta = glm::rotate(delta, -pitch, glm::vec3(1, 0, 0));
+	delta = glm::translate(delta, glm::vec3(move.y, -move.x, 0));
+
+	cameraPosition += glm::vec3(delta[3]);
+#endif /* BUILD_PHYSICS */
 }
 
 bool Scene::initGL() {
@@ -285,9 +293,12 @@ bool Scene::initGL() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
+#ifdef BUILD_PHYSICS
 	sphere = new Sphere(Point3F(0, 0, 60), 0.2f);
 //	sphere->setMaterial(difs[0]->interior[0]->material[4]);
-#else
+#endif /* BUILD_PHYSICS */
+
+#else /* GL_33 */
 	//Initialize clear color
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 	glClearDepth(1.0f);
@@ -526,7 +537,9 @@ void Scene::run() {
 			printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
 		}
 
+#ifdef BUILD_PHYSICS
 		PhysicsEngine::getEngine()->simulate((end - start) / 1000000.0f);
+#endif
 	}
 	
 	//Clean up (duh)
