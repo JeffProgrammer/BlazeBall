@@ -30,7 +30,10 @@
 #include "btPhysicsBody.h"
 #include "btPhysicsInterior.h"
 #include "btPhysicsSphere.h"
+#include <BulletCollision/CollisionShapes/btCollisionShape.h>
 #include <BulletCollision/CollisionShapes/btTriangleShape.h>
+#include <algorithm>
+#include <vector>
 
 bool contactAdded(btManifoldPoint& cp,
 				  const btCollisionObjectWrapper* colObj0Wrap,
@@ -43,6 +46,48 @@ bool contactAdded(btManifoldPoint& cp,
 	btAdjustInternalEdgeContacts(cp,colObj1Wrap,colObj0Wrap, partId1,index1);
 
 	return true;
+}
+
+// This is where the FUN begins.
+// dear god I hope I can multithread this shit.
+void contactStarted(btPersistentManifold* const &manifold) {
+    std::vector<int> contactRemove;
+    
+    // find sphere and triangle pointers
+    // TODO: check userpointers as relying on static is kinda vague for later use
+    // for now assume static is triangle mesh and dynamic is sphere
+    
+    
+    //const btCollisionObject *obj = manifold->getBody0();
+    //obj->isStaticObject();
+    
+    int numContacts = manifold->getNumContacts();
+    for (int i = 0; i < numContacts; i++) {
+        const btManifoldPoint &point = manifold->getContactPoint(i);
+
+        //if (condition) {
+            for (int j = 0; j < numContacts; j++) {
+                if (i == j)
+                    continue;
+                
+                const btManifoldPoint &point2 = manifold->getContactPoint(j);
+                
+                
+                //if (condition) {
+                    // didn't find it yet, push it back
+                    //if (std::find(contactRemove.begin(), contactRemove.end(), j) == contactRemove.end())
+                        //contactRemove.push_back(j);
+                //}
+            }
+        //}
+    }
+    
+    // remove from manifolds
+    // sort to end then remove starting at last index to first
+    std::sort(contactRemove.begin(), contactRemove.end());
+    for (std::vector<int>::reverse_iterator iter = contactRemove.rbegin(); iter != contactRemove.rend(); ++iter) {
+        manifold->removeContactPoint(*iter);
+    }
 }
 
 btPhysicsEngine::btPhysicsEngine() : PhysicsEngine() {
@@ -59,6 +104,7 @@ void btPhysicsEngine::init() {
 	world->setGravity(btVector3(0, 0, -20.0f));
 
 	gContactAddedCallback = contactAdded;
+    gContactStartedCallback = contactStarted;
 	running = true;
 }
 
