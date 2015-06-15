@@ -47,7 +47,7 @@ btPhysicsSphere::btPhysicsSphere(F32 radius) : mRadius(radius) {
 
 	//Construction info
 	btRigidBody::btRigidBodyConstructionInfo info(1, state, shape, fallInertia);
-	info.m_restitution = 0.8f;
+	info.m_restitution = 0.5f;
 	info.m_friction = 1.1f;
 	info.m_rollingFriction = 0.4f;
 
