@@ -790,6 +790,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DEBUG,
 					GL_33,
+					BUILD_PHYSICS,
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
