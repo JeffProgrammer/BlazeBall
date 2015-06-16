@@ -57,11 +57,15 @@ void contactStarted(btPersistentManifold* const &manifold) {
     // TODO: check userpointers as relying on static is kinda vague for later use
     // for now assume static is triangle mesh and dynamic is sphere
     
-    
     //const btCollisionObject *obj = manifold->getBody0();
     //obj->isStaticObject();
     
     int numContacts = manifold->getNumContacts();
+    
+    if (numContacts > 1) {
+        printf("Num contacts: %d\n", numContacts);
+    }
+    
     for (int i = 0; i < numContacts; i++) {
         const btManifoldPoint &point = manifold->getContactPoint(i);
 

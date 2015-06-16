@@ -35,34 +35,34 @@ btPhysicsInterior::btPhysicsInterior(Interior *interior) : btPhysicsBody(), mInt
 }
 
 void btPhysicsInterior::construct() {
-	//Create body
-	btMotionState *state = new btDefaultMotionState();
-	btCompoundShape *shape = new btCompoundShape();
-
-	btTransform identity;
-	identity.setIdentity();
-	identity.setOrigin(btVector3(0, 0, 0));
-
-	for (U32 i = 0; i < mInterior->numConvexHulls; i ++) {
-		ConvexHull hull = mInterior->convexHull[i];
-
-		btConvexHullShape *hullShape = new btConvexHullShape();
-
-		for (U32 j = 0; j < hull.hullCount; j ++) {
-			Point3F vert = mInterior->point[mInterior->hullIndex[j + hull.hullStart]];
-			hullShape->addPoint(btConvert(vert));
-		}
-
-		hullShape->setMargin(0.01f);
-		shape->addChildShape(identity, hullShape);
-	}
-
-	state->setWorldTransform(identity);
-
-	mActor = new btRigidBody(0, state, shape);
-	mActor->setRestitution(1.0f);
-	mActor->setFriction(1.0f);
-	mActor->setCollisionFlags(mActor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+    //Create body
+    btMotionState *state = new btDefaultMotionState();
+    btCompoundShape *shape = new btCompoundShape();
+    
+    btTransform identity;
+    identity.setIdentity();
+    identity.setOrigin(btVector3(0, 0, 0));
+    
+    for (U32 i = 0; i < mInterior->numConvexHulls; i ++) {
+        ConvexHull hull = mInterior->convexHull[i];
+        
+        btConvexHullShape *hullShape = new btConvexHullShape();
+        
+        for (U32 j = 0; j < hull.hullCount; j ++) {
+            Point3F vert = mInterior->point[mInterior->hullIndex[j + hull.hullStart]];
+            hullShape->addPoint(btConvert(vert));
+        }
+        
+        hullShape->setMargin(0.01f);
+        shape->addChildShape(identity, hullShape);
+    }
+    
+    state->setWorldTransform(identity);
+    
+    mActor = new btRigidBody(0, state, shape);
+    mActor->setRestitution(1.0f);
+    mActor->setFriction(1.0f);
+    mActor->setCollisionFlags(mActor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 }
 
 #endif /* BUILD_PHYSICS */
