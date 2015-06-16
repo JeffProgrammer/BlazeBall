@@ -230,9 +230,9 @@ void Scene::loop() {
 	if (sphere->getColliding()) {
 		Point3F normal = sphere->getCollisionNormal();
 		if (movement[8] && normal.dot(Point3F(0, 0, 1)) > 0.1)
-			sphere->applyForce((normal + Point3F(0, 0, 1)) * 2.f, Point3F(0, 0, -1));
+			sphere->applyForce((normal + Point3F(0, 0, 1)) / 2.f, Point3F(0, 0, -1));
 	} else {
-		sphere->applyForce(Point3F(torque.y, -torque.x, torque.z) / 4.f, Point3F(0, 0, 0));
+		sphere->applyForce(Point3F(torque.y, -torque.x, torque.z) * 10.f, Point3F(0, 0, 0));
 	}
 
 	Point3F pos = sphere->getPosition();
