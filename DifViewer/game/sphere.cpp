@@ -160,4 +160,12 @@ void Sphere::setPosition(const Point3F &pos) {
 	mActor->setPosition(pos);
 }
 
+void Sphere::setVelocity(const Point3F &vel) {
+    mActor->setVelocity(vel);
+}
+
+void Sphere::setAngularVelocity(const Point3F &vel) {
+    mActor->setAngularVelocity(vel);
+}
+
 #endif

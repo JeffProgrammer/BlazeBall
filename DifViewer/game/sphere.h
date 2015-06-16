@@ -74,6 +74,9 @@ public:
 
 	bool getColliding();
 	Point3F getCollisionNormal();
+    
+    void setVelocity(const Point3F &vel);
+    void setAngularVelocity(const Point3F &vel);
 };
 
 #endif

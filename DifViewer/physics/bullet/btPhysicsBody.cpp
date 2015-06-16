@@ -62,4 +62,11 @@ void btPhysicsBody::applyForce(const Point3F &force, const Point3F &origin) {
 	mActor->applyForce(btConvert(force), btConvert(origin));
 }
 
+void btPhysicsBody::setVelocity(const Point3F &velocity) {
+    mActor->setLinearVelocity(btConvert(velocity));
+}
+void btPhysicsBody::setAngularVelocity(const Point3F &velocity) {
+    mActor->setAngularVelocity(btConvert(velocity));
+}
+
 #endif /* BUILD_PHYSICS */

@@ -38,6 +38,8 @@ public:
 	virtual void setMass(const F32 &mass) = 0;
 	virtual void setPosition(const Point3F &position) = 0;
 	virtual void setRotation(const AngAxisF &rotation) = 0;
+    virtual void setVelocity(const Point3F &velocity) = 0;
+    virtual void setAngularVelocity(const Point3F &velocity) = 0;
 
 	virtual void applyTorque(const Point3F &torque) = 0;
 	virtual void applyImpulse(const Point3F &impulse, const Point3F &origin) = 0;
