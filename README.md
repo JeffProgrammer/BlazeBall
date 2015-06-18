@@ -8,6 +8,11 @@ Rendering
 
 Run as `DifViewer <file>` to show the renderer
 
+Platforms Supported
+-------------------
+
+Mac OS 10.7+
+
 Exporting
 ---------
 
