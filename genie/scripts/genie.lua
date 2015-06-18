@@ -20,3 +20,4 @@ solution "DifViewer"
 	-- dependencies
 	dofile("glew.lua")
 	dofile("glfw.lua")
+	dofile("jpeg.lua")
