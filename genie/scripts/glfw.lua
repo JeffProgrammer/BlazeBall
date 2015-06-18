@@ -44,4 +44,24 @@ project "glfw"
 			"../../thirdparty/glfw/src/winmm_joystick.c",
 		}
 
-	-- TODO MacOSX and Linux
+	configuration "macosx"
+		defines {
+			"_GLFW_COCOA",
+			"_GLFW_NSGL",
+			"_GLFW_USE_OPENGL",
+		}
+
+		files {
+			"../../thirdparty/glfw/src/nsgl_context.h",
+			"../../thirdparty/glfw/src/cocoa_platform.h",
+			"../../thirdparty/glfw/src/iokit_joystick.h",
+			"../../thirdparty/glfw/src/posix_tls.h",
+
+			"../../thirdparty/glfw/src/nsgl_context.m",
+			"../../thirdparty/glfw/src/cocoa_init.m",
+			"../../thirdparty/glfw/src/cocoa_monitor.m",
+			"../../thirdparty/glfw/src/cocoa_window.m",
+			"../../thirdparty/glfw/src/iokit_joystick.m",
+			"../../thirdparty/glfw/src/mach_time.c",
+			"../../thirdparty/glfw/src/posix_tls.c",
+		}

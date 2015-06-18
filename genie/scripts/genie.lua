@@ -19,4 +19,4 @@ solution "DifViewer"
 
 	-- dependencies
 	dofile("glew.lua")
-	dofile("glfw3.lua")
+	dofile("glfw.lua")
