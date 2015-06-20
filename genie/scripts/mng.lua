@@ -7,7 +7,7 @@ project "mng"
 
 	includedirs {
 		"../../thirdparty/jpeg",
-		"../../thirdparty/mmng",
+		"../../thirdparty/mng",
 	}
 
 	files {
