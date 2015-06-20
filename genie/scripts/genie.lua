@@ -21,3 +21,4 @@ solution "DifViewer"
 	dofile("glew.lua")
 	dofile("glfw.lua")
 	dofile("jpeg.lua")
+	dofile("mng.lua")
