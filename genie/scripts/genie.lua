@@ -18,6 +18,7 @@ solution "DifViewer"
 	dofile("game.lua")
 
 	-- dependencies
+	dofile("bullet.lua")
 	dofile("glew.lua")
 	dofile("glfw.lua")
 	dofile("jpeg.lua")
