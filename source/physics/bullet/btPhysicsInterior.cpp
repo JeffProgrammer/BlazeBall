@@ -27,8 +27,8 @@
 
 #ifdef BUILD_PHYSICS
 
-#include "btPhysicsInterior.h"
-#include "interior.h"
+#include "physics/bullet/btPhysicsInterior.h"
+#include "objects/interior.h"
 
 btPhysicsInterior::btPhysicsInterior(Interior *interior) : btPhysicsBody(), mInterior(interior) {
 	construct();

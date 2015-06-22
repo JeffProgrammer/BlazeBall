@@ -29,7 +29,7 @@
 #ifndef SDLWindow_h
 #define SDLWindow_h
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 #include "platform/window.h"
 

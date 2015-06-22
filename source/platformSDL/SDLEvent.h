@@ -28,9 +28,9 @@
 #ifndef SDLEvent_h
 #define SDLEvent_h
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
-#include "platformSDL/event.h"
+#include "platform/event.h"
 
 namespace SDLEvent {
 	Event *convert(SDL_Event *event);
