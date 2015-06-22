@@ -53,7 +53,7 @@ private:
 	void generate();
 	const static U32 segments = 36;
 	const static U32 slices = 18;
-	constexpr const static F32 step = (M_PI * 2.0f / segments);
+	const F32 step = (M_PI * 2.0f / segments);
 
 public:
 	Sphere(Point3F origin, F32 radius);
