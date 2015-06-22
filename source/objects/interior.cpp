@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libgen.h>
+#include <limits.h>
 #include "base/io.h"
 #include "objects/interior.h"
 #include "bitmap/mngsupport.h"
@@ -553,7 +554,7 @@ U32 Interior::rayCast(RayF ray) {
 //	ray = RayF(ray.origin.convert(), ray.direction.convert());
 
 	U32 closest = -1;
-	F32 closestDistance = UINT32_MAX;
+	F32 closestDistance = UINT_MAX;
 
 //	printf("Ray: {(%f,%f,%f),(%f,%f,%f)}\n",ray.origin.x,ray.origin.y,ray.origin.z,ray.direction.x,ray.direction.y,ray.direction.z);
 
