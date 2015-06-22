@@ -2,9 +2,6 @@ cmake_minimum_required (VERSION 3.0)
 include (CheckIncludeFiles)
 project (DifViewerGame C CXX)
 
-# Enable C++11 support for executables and libraries
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
 # Enable Static Linking the C++ ABI directly into the executables and libraries
 if (MSVC)
 	SET(CMAKE_REQUIRED_LINKER_FLAGS "/SAFESEH:NO")
