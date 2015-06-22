@@ -14,6 +14,12 @@ if (MSVC)
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 endif()
 
+# http://stackoverflow.com/a/25286420/214063
+macro(ADD_FRAMEWORK appname fwname)
+	# Since CMake 2.8.12, this is really easy.
+	target_link_libraries(${appname} "-framework ${fwname}")
+endmacro(ADD_FRAMEWORK)
+
 #------------------------------------------------------------------------------
 # Bullet Physics Library
 #------------------------------------------------------------------------------
@@ -78,8 +84,14 @@ set (JPEG_SRC
 	thirdparty/jpeg/jmemmgr.c
 )
 
-add_library(libJpeg STATIC ${JPEG_SRC})
-set_property (TARGET libJpeg APPEND PROPERTY INCLUDE_DIRECTORIES ${Project_SOURCE_DIR}/thirdparty/jpeg)
+if (APPLE)
+	set(JPEG_SRC ${JPEG_SRC}
+		thirdparty/jpeg/jmemnobs.c
+	)
+endif()
+
+add_library(Jpeg STATIC ${JPEG_SRC})
+set_property (TARGET Jpeg APPEND PROPERTY INCLUDE_DIRECTORIES "${Project_SOURCE_DIR}/thirdparty/jpeg")
 
 #------------------------------------------------------------------------------
 # MNG Library
@@ -127,17 +139,17 @@ set (MNG_SRC
 	thirdparty/mng/libmng_zlib.h
 	thirdparty/mng/libmng.h
 )
-add_library(libMng STATIC ${MNG_SRC})
-target_link_libraries(libMng libJpeg)
-set_property (TARGET libMng APPEND PROPERTY INCLUDE_DIRECTORIES ${Project_SOURCE_DIR}/thirdparty/jpeg)
+add_library(Mng STATIC ${MNG_SRC})
+target_link_libraries(Mng libJpeg)
+set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${Project_SOURCE_DIR}/thirdparty/jpeg")
 
 #------------------------------------------------------------------------------
 # GLEW Library
 #------------------------------------------------------------------------------
 
-add_library(libGLEW STATIC thirdparty/glew/src/glew.c)
-set_property (TARGET libGLEW APPEND PROPERTY INCLUDE_DIRECTORIES ${Project_SOURCE_DIR}/thirdparty/glew/include)
-target_compile_definitions(libGLEW PUBLIC GLEW_STATIC)
+add_library(GLEW STATIC thirdparty/glew/src/glew.c)
+set_property(TARGET GLEW APPEND PROPERTY INCLUDE_DIRECTORIES "${Project_SOURCE_DIR}/thirdparty/glew/include")
+target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
 
 #------------------------------------------------------------------------------
 # Main Project Executable
@@ -147,11 +159,12 @@ target_compile_definitions(libGLEW PUBLIC GLEW_STATIC)
 set (DIFVIEWERGAME_INCLUDEDIR
 	source
 	thirdparty/bullet
-	thirdparty/glew
-	thirdparty/glm/include
+	thirdparty/bullet/src
+	thirdparty/glew/include
+	thirdparty/glm/
 	thirdparty/jpeg
 	thirdparty/mng
-	thirdparty/SDL2
+	thirdparty/SDL2/include
 	thirdparty
 )
 
@@ -217,6 +230,8 @@ set (DIFVIEWERGAME_SRC
 	source/physics/bullet/btPhysicsBody.h
 	source/physics/bullet/btPhysicsEngine.cpp
 	source/physics/bullet/btPhysicsEngine.h
+	source/physics/bullet/btPhysicsInterior.cpp
+	source/physics/bullet/btPhysicsInterior.h
 	source/physics/bullet/btPhysicsSphere.cpp
 	source/physics/bullet/btPhysicssphere.h
 
@@ -240,6 +255,27 @@ set (DIFVIEWERGAME_SRC
 	source/render/shader.h
 )
 
+set (DIFVIEWERGAME_LIBRARIES
+	# Bullet
+	${CMAKE_BINARY_DIR}/Bullet/src/BulletCollision/Debug/libBulletCollision.a
+	${CMAKE_BINARY_DIR}/Bullet/src/BulletDynamics/Debug/libBulletDynamics.a
+	${CMAKE_BINARY_DIR}/Bullet/src/BulletSoftBody/Debug/libBulletSoftBody.a
+	${CMAKE_BINARY_DIR}/Bullet/src/LinearMath/Debug/libLinearMath.a
+	
+	# SDL2
+	${CMAKE_BINARY_DIR}/SDL2/Debug/libSDL2.a
+
+	# GLEW
+	${CMAKE_BINARY_DIR}/Debug/libGLEW.a
+
+	# JPEG
+	${CMAKE_BINARY_DIR}/Debug/libJpeg.a
+
+	# MNG
+	${CMAKE_BINARY_DIR}/Debug/libMng.a
+	z #Zlib
+)
+
 include_directories(include ${DIFVIEWERGAME_INCLUDEDIR})
 
 #if (WIN32)
@@ -247,3 +283,16 @@ include_directories(include ${DIFVIEWERGAME_INCLUDEDIR})
 #else
 	add_executable(Game ${DIFVIEWERGAME_SRC})
 #endif()
+
+set_property(TARGET Game PROPERTY COMPILE_FLAGS "-DBUILD_PHYSICS -DGL_33")
+target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
+
+
+if (APPLE)
+	ADD_FRAMEWORK(Game Cocoa)
+	ADD_FRAMEWORK(Game Carbon)
+	ADD_FRAMEWORK(Game OpenGL)
+	ADD_FRAMEWORK(Game IOKit)
+	ADD_FRAMEWORK(Game ForceFeedback)
+
+endif()
