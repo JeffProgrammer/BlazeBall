@@ -1,4 +1,4 @@
-cmake_minimum_required (VERISON 3.0)
+cmake_minimum_required (VERSION 3.0)
 include (CheckIncludeFiles)
 project (DifViewerName C CXX)
 
@@ -72,7 +72,7 @@ set (JPEG_SRC
 	thirdparty/jpeg/jmemmgr.c
 )
 
-addlibrary(libJpeg STATIC ${JPEG_SRC})
+add_library(libJpeg STATIC ${JPEG_SRC})
 set_property (TARGET libJpeg APPEND PROPERTY INCLUDE_DIRECTORIES ${Project_SOURCE_DIR}/thirdparty/jpeg)
 
 #------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ set (MNG_SRC
 	thirdparty/mng/libmng_zlib.h
 	thirdparty/mng/libmng.h
 )
-addlibrary(libMng STATIC ${MNG_SRC})
+add_library(libMng STATIC ${MNG_SRC})
 target_link_libraries(libMng libJpeg)
 set_property (TARGET libMng APPEND PROPERTY INCLUDE_DIRECTORIES ${Project_SOURCE_DIR}/thirdparty/jpeg)
 
@@ -129,7 +129,7 @@ set_property (TARGET libMng APPEND PROPERTY INCLUDE_DIRECTORIES ${Project_SOURCE
 # GLEW Library
 #------------------------------------------------------------------------------
 
-addlibrary(libGLEW STATIC thirdparty/src/glew.c)
+add_library(libGLEW STATIC thirdparty/src/glew.c)
 set_property (TARGET libGLEW APPEND PROPERTY INCLUDE_DIRECTORIES ${Project_SOURCE_DIR}/thirdparty/glew/include)
 target_compile_definitions(libGLEW PUBLIC GLEW_STATIC)
 
