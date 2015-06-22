@@ -3,13 +3,16 @@ project "game"
 	language "C++"
 	kind "ConsoleApp"
 	flags { "StaticRuntime" }
-	targetdir (BUILD_LOCATION .. "/bin")
+	targetdir ("../..")
 
 	includedirs {
 		"../../source",
 		"../../thirdparty/glfw/include",
 		"../../thirdparty/glew/include",
+		"../../thirdparty",
+		"../../thirdparty/jpeg",
 		"../../thirdparty/glm",
+		"../../thirdparty/bullet/src",
 	}
 
 	files {
@@ -18,27 +21,39 @@ project "game"
 		"../../source/game/**",
 		"../../source/main.cpp",
 		"../../source/objects/**",
-		-- "../../source/physics/**",
+		"../../source/physics/**",
+		"../../source/platform/**",
+		"../../source/platformGLFW/**",
 		"../../source/render/**",
 	}
 
 	defines {
 		"GLEW_STATIC",
+		"BUILD_PHYSICS",
+		"GL_33",
 	}
 
 	links {
-		"jpeg"
+		"jpeg",
+		"glfw",
+		"glew",
+		"jpeg",
+		"mng",
+		"bullet",
 	}
 
 	configuration "macosx"
-		files {
-			"../../source/platformGLFW/**"
-		}
-
 		links {
 			"CoreFoundation.framework",
 			"OpenGL.framework",
 			"Cocoa.framework",
-			"glfw",
-			"glew",
+		}
+
+		buildoptions_cpp {
+			"-std=c++11",
+			"-stdlib=libc++",
+		}
+
+		linkoptions {
+			"-stdlib=libc++",
 		}
