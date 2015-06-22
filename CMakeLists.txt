@@ -1,4 +1,4 @@
-cmake_minimum_required (VERISON 3.0.2)
+cmake_minimum_required (VERISON 3.0)
 include (CheckIncludeFiles)
 project (DifViewerName C CXX)
 
@@ -13,6 +13,12 @@ if (MSVC)
 	set(CMAKE_CXX_FLAGS_RelWithDebInfo "${CMAKE_CXX_FLAGS_RELEASE} /MT")
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 endif()
+
+#------------------------------------------------------------------------------
+# Bullet Physics Library
+#------------------------------------------------------------------------------
+
+add_subdirectory("${Project_SOURCE_DIR}thirdparty/bullet/src" Bullet)
 
 #------------------------------------------------------------------------------
 # JPEG Library
@@ -115,7 +121,7 @@ set (MNG_SRC
 	thirdparty/mng/libmng_zlib.h
 	thirdparty/mng/libmng.h
 )
-addlibrary(libMng STATIC ${MNG_SRC}
+addlibrary(libMng STATIC ${MNG_SRC})
 target_link_libraries(libMng libJpeg)
 set_property (TARGET libMng APPEND PROPERTY INCLUDE_DIRECTORIES ${Project_SOURCE_DIR}/thirdparty/jpeg)
 
@@ -230,8 +236,8 @@ set (DIFVIEWERGAME_SRC
 
 include_directories(include ${DIFVIEWERGAME_INCLUDEDIR})
 
-if (WIN32)
-	add_executable(Game WIN32 ${DIFVIEWERGAME_SRC})
-else
+#if (WIN32)
+	#add_executable(Game WIN32 ${DIFVIEWERGAME_SRC})
+#else
 	add_executable(Game ${DIFVIEWERGAME_SRC})
-endif()
+#endif()
