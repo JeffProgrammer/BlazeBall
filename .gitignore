@@ -27,3 +27,5 @@ bullet3
 physx
 genie/OSX
 CMakeCache.txt
+Bullet/bullet.pc
+Bullet/BulletConfig.cmake
