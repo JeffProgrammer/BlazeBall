@@ -271,7 +271,7 @@ public:
 			if (names[i] == key)
 				return values[i];
 		}
-		return nullptr;
+		return "";
 	}
 
 	~Dictionary() {
