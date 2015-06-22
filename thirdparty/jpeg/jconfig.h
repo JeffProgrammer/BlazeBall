@@ -6,7 +6,7 @@
  * Same license as libjpeg
  */
 
-#ifdef MSVC
+#ifdef WIN32
 #include "jconfig_msvc.h"
 #elif __APPLE__
 #include "jconfig_mac.h"

@@ -31,8 +31,11 @@
 
 #include <stdio.h>
 #include <vector>
+#ifdef __APPLE__
 #include <OpenGL/gl.h>
-
+#else
+#include <GL/glew.h>
+#endif
 #include "base/types.h"
 #include "objects/interior.h"
 #include "physics/physicsBody.h"
