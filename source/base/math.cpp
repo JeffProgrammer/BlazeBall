@@ -37,7 +37,7 @@ F32 planeF_distance_to_point(PlaneF plane, Point3F point) {
 
 Point2F point3F_project_plane(Point3F point, Point3F normal, Point3F origin) {
 	if (normal.cross(Point3F(0, 0, 1)).length() == 0) {
-		return (Point2F){point.x, point.y};
+		return Point2F(point.x, point.y);
 	}
 	Point3F xcross = normal.cross(Point3F(0, 0, 1));
 	Point3F ycross = normal.cross(xcross);
@@ -49,7 +49,7 @@ Point2F point3F_project_plane(Point3F point, Point3F normal, Point3F origin) {
 	F32 hypotenuse = distance.length();
 
 	if (hypotenuse == 0)
-		return (Point2F){0, 0};
+		return Point2F(0, 0);
 
 	F32 theta = distance.angle(xcross);
 	//cos theta = adjacent / hypotenuse
@@ -57,7 +57,7 @@ Point2F point3F_project_plane(Point3F point, Point3F normal, Point3F origin) {
 	F32 adjacent = cosf(theta) * hypotenuse;
 	F32 opposite = sinf(theta) * hypotenuse;
 
-	return (Point2F){adjacent, opposite};
+	return Point2F(adjacent, opposite);
 }
 
 template <typename T>
@@ -94,7 +94,7 @@ Point3<T> Ray<T>::intersection(const PlaneF &plane) const {
 
 	F32 denominator = direction.dot(normal);
 	if (denominator == 0) {
-		return (Point3F){-0x80000000, -0x80000000, -0x80000000};
+		return Point3F(-0x80000000, -0x80000000, -0x80000000);
 	}
 
 	F32 numerator = (origin.dot(normal) + plane.d);
@@ -103,7 +103,7 @@ Point3<T> Ray<T>::intersection(const PlaneF &plane) const {
 		//xyz = RayOrigin + (RayNormal * t)
 		return origin + direction * (-numerator / denominator);
 	} else {
-		return (Point3F){-0x80000000, -0x80000000, -0x80000000};
+		return Point3F(-0x80000000, -0x80000000, -0x80000000);
 	}
 }
 
