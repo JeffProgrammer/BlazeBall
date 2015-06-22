@@ -386,7 +386,7 @@ void Scene::performClick(S32 mouseX, S32 mouseY) {
 
 void Scene::handleEvent(Event *event) {
 	//Quit
-	if (event->getType() == Event::Type::Quit) {
+	if (event->getType() == Event::Quit) {
 		running = false;
 	}
 

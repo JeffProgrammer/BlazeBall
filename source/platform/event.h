@@ -52,7 +52,7 @@ public:
 
 class QuitEvent : public Event {
 public:
-	QuitEvent() : Event(Event::Type::Quit) {};
+	QuitEvent() : Event(Quit) {};
 };
 
 class KeyDownEvent : public Event {
@@ -60,7 +60,7 @@ public:
 	U16 key;
 	U16 modifier;
 
-	KeyDownEvent() : Event(Event::Type::KeyDown) {};
+	KeyDownEvent() : Event(KeyDown) {};
 	U16 getKey() {
 		return key;
 	}
@@ -74,7 +74,7 @@ public:
 	U16 key;
 	U16 modifier;
 
-	KeyUpEvent() : Event(Event::Type::KeyUp) {};
+	KeyUpEvent() : Event(KeyUp) {};
 	U16 getKey() {
 		return key;
 	}
@@ -88,7 +88,7 @@ public:
 	Point2I position;
 	Point2I delta;
 
-	MouseMoveEvent() : Event(Event::Type::MouseMove) {};
+	MouseMoveEvent() : Event(MouseMove) {};
 	Point2I getPosition() {
 		return position;
 	}
@@ -102,7 +102,7 @@ public:
 	Point2I position;
 	U8 button;
 
-	MouseDownEvent() : Event(Event::Type::MouseDown) {};
+	MouseDownEvent() : Event(MouseDown) {};
 	Point2I getPosition() {
 		return position;
 	}
@@ -116,7 +116,7 @@ public:
 	Point2I position;
 	U8 button;
 
-	MouseUpEvent() : Event(Event::Type::MouseUp) {};
+	MouseUpEvent() : Event(MouseUp) {};
 	Point2I getPosition() {
 		return position;
 	}

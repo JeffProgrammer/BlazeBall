@@ -31,32 +31,32 @@ Event *SDLEvent::convert(SDL_Event *sdlevent) {
 	Event::Type type = convert((SDL_EventType)sdlevent->type);
 
 	switch (type) {
-		case Event::Type::Quit: return new QuitEvent();
-		case Event::Type::KeyDown: {
+		case Event::Quit: return new QuitEvent();
+		case Event::KeyDown: {
 			KeyDownEvent *event = new KeyDownEvent();
 			event->key = sdlevent->key.keysym.scancode;
 			event->modifier = sdlevent->key.keysym.mod;
 			return event;
 		}
-		case Event::Type::KeyUp: {
+		case Event::KeyUp: {
 			KeyUpEvent *event = new KeyUpEvent();
 			event->key = sdlevent->key.keysym.scancode;
 			event->modifier = sdlevent->key.keysym.mod;
 			return event;
 		}
-		case Event::Type::MouseDown: {
+		case Event::MouseDown: {
 			MouseDownEvent *event = new MouseDownEvent();
 			event->button = sdlevent->button.button;
 			event->position = Point2I(sdlevent->button.x, sdlevent->button.y);
 			return event;
 		}
-		case Event::Type::MouseUp: {
+		case Event::MouseUp: {
 			MouseUpEvent *event = new MouseUpEvent();
 			event->button = sdlevent->button.button;
 			event->position = Point2I(sdlevent->button.x, sdlevent->button.y);
 			return event;
 		}
-		case Event::Type::MouseMove: {
+		case Event::MouseMove: {
 			MouseMoveEvent *event = new MouseMoveEvent();
 			event->position = Point2I(sdlevent->motion.x, sdlevent->motion.y);
 			event->delta = Point2I(sdlevent->motion.xrel, sdlevent->motion.yrel);

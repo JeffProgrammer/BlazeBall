@@ -37,13 +37,13 @@ namespace SDLEvent {
 
 	inline Event::Type convert(SDL_EventType sdlType) {
 		switch (sdlType) {
-			case SDL_QUIT:    return Event::Type::Quit;
-			case SDL_KEYDOWN: return Event::Type::KeyDown;
-			case SDL_KEYUP:   return Event::Type::KeyUp;
-			case SDL_MOUSEBUTTONDOWN: return Event::Type::MouseDown;
-			case SDL_MOUSEBUTTONUP:   return Event::Type::MouseUp;
-			case SDL_MOUSEMOTION:     return Event::Type::MouseMove;
-			default: return Event::Type::None;
+			case SDL_QUIT:    return Event::Quit;
+			case SDL_KEYDOWN: return Event::KeyDown;
+			case SDL_KEYUP:   return Event::KeyUp;
+			case SDL_MOUSEBUTTONDOWN: return Event::MouseDown;
+			case SDL_MOUSEBUTTONUP:   return Event::MouseUp;
+			case SDL_MOUSEMOTION:     return Event::MouseMove;
+			default: return Event::None;
 		}
 	}
 };
