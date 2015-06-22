@@ -28,8 +28,8 @@
 #ifndef window_h
 #define window_h
 
-#include "types.h"
-#include "event.h"
+#include "base/types.h"
+#include "platform/event.h"
 
 class Window {
 public:

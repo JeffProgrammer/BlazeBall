@@ -28,8 +28,8 @@
 #ifndef physicsBody_h
 #define physicsBody_h
 
-#include "types.h"
-#include "physicsEngine.h"
+#include "base/types.h"
+#include "physics/physicsEngine.h"
 
 class PhysicsBody {
 public:

@@ -28,7 +28,7 @@
 #ifndef physicsSphere_h
 #define physicsSphere_h
 
-#include "types.h"
+#include "base/types.h"
 
 class PhysicsSphere {
 public:

@@ -29,8 +29,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <OpenGL/glu.h>
-#include "io.h"
-#include "texture.h"
+#include "base/io.h"
+#include "bitmap/texture.h"
 
 #define TEXTURE_MAX_SIZE 1024
 

@@ -28,9 +28,9 @@
 #ifndef io_h
 #define io_h
 
-#include "types.h"
-#include "math.h"
-#include "texture.h"
+#include "base/types.h"
+#include "base/math.h"
+#include "bitmap/texture.h"
 
 #define LIGHT_MAP_SIZE 0x400
 #define io IO::getIO()

@@ -30,7 +30,7 @@
 #define physicsEngine_h
 
 #include <stdio.h>
-#include "types.h"
+#include "base/types.h"
 
 class PhysicsBody;
 class Interior;

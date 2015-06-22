@@ -27,8 +27,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "io.h"
-#include "interiorPathFollower.h"
+#include "base/io.h"
+#include "objects/interiorPathFollower.h"
 
 InteriorPathFollower::InteriorPathFollower(FILE *file) {
 	READTOVAR(name, String); //name

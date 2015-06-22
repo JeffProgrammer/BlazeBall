@@ -27,7 +27,7 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "math.h"
+#include "base/math.h"
 
 #define Sign3d(x) ((x) > 0 ? 1 : ((x) < 0 ? -1 : 0))
 

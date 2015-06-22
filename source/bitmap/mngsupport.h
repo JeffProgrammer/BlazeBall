@@ -29,7 +29,7 @@
 #define mngsupport_h
 
 #include <stdbool.h>
-#include "types.h"
+#include "base/types.h"
 
 /**
  Reads an image from a given file using MNG (PNG/MNG support)

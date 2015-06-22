@@ -27,9 +27,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "types.h"
-#include "io.h"
-#include "trigger.h"
+#include "base/types.h"
+#include "base/io.h"
+#include "objects/trigger.h"
 
 Trigger::Trigger(FILE *file) {
 	READTOVAR(name, String); //name

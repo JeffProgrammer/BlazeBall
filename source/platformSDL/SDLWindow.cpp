@@ -25,8 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "SDLWindow.h"
-#include "SDLEvent.h"
+#include "platformSDL/SDLWindow.h"
+#include "platformSDL/SDLEvent.h"
 
 bool SDLWindow::createContext() {
 	//Init SDL

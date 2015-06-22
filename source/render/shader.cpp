@@ -25,8 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "shader.h"
-#include "io.h"
+#include "render/shader.h"
+#include "base/io.h"
 #include <OpenGL/gl.h>
 #include <OpenGL/gl3.h>
 

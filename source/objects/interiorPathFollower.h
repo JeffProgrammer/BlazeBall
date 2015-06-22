@@ -28,7 +28,7 @@
 #ifndef interiorPathFollower_h
 #define interiorPathFollower_h
 
-#include "types.h"
+#include "base/types.h"
 
 class WayPoint {
 public:

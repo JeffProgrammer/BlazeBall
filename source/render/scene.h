@@ -30,17 +30,17 @@
 #define scene_h
 
 #include <stdio.h>
-#include "math.h"
-#include "types.h"
-#include "io.h"
-#include "dif.h"
-#include "texture.h"
-#include "sphere.h"
-#include "physicsEngine.h"
-#include "shader.h"
-#include "scene.h"
-#include "window.h"
-#include "event.h"
+#include "base/math.h"
+#include "base/types.h"
+#include "base/io.h"
+#include "objects/dif.h"
+#include "bitmap/texture.h"
+#include "game/sphere.h"
+#include "physics/physicsEngine.h"
+#include "render/shader.h"
+#include "render/scene.h"
+#include "platform/window.h"
+#include "platform/event.h"
 
 #include <OpenGL/gl.h>
 #include <OpenGL/gl3.h>

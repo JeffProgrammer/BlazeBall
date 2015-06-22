@@ -29,8 +29,8 @@
 #define staticMesh_h
 
 #include <stdio.h>
-#include "types.h"
-#include "io.h"
+#include "base/types.h"
+#include "base/io.h"
 
 struct Primitive : public Readable, Writable {
 	U8 alpha;

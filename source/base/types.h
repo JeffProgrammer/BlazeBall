@@ -150,10 +150,10 @@ struct String : public Readable, Writable {
 	bool write(FILE *file) const;
 };
 
-#include "point2.h"
-#include "point3.h"
-#include "point4.h"
-#include "color.h"
+#include "base/point2.h"
+#include "base/point3.h"
+#include "base/point4.h"
+#include "base/color.h"
 
 typedef Point2<S16> Point2I;
 typedef Point2<F32> Point2F;
@@ -312,7 +312,7 @@ public:
 	bool write(FILE *file) const;
 };
 
-#include "ray.h"
+#include "base/ray.h"
 typedef Ray<F32> RayF;
 
 #endif

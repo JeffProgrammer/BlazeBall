@@ -29,7 +29,7 @@
 #define jpegsupport_h
 
 #include <stdbool.h>
-#include "types.h"
+#include "base/types.h"
 
 /**
  Reads an image from a given file using JPEG

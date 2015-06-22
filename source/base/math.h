@@ -28,7 +28,7 @@
 #ifndef math_h
 #define math_h
 
-#include "types.h"
+#include "base/types.h"
 
 Point2F point3F_project_plane(Point3F point, Point3F normal, Point3F origin);
 F32 tetrahedronF_area(TetrahetronF tetrahedron);

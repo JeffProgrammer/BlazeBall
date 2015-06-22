@@ -28,15 +28,15 @@
 #ifndef dif_h
 #define dif_h
 
-#include "types.h"
-#include "interior.h"
-#include "pathedInterior.h"
-#include "trigger.h"
-#include "interiorPathFollower.h"
-#include "forceField.h"
-#include "aiSpecialNode.h"
-#include "vehicleCollision.h"
-#include "gameEntity.h"
+#include "base/types.h"
+#include "objects/interior.h"
+#include "objects/pathedInterior.h"
+#include "objects/trigger.h"
+#include "objects/interiorPathFollower.h"
+#include "objects/forceField.h"
+#include "objects/aiSpecialNode.h"
+#include "objects/vehicleCollision.h"
+#include "objects/gameEntity.h"
 
 class DIF {
 public:

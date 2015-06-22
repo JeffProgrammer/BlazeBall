@@ -29,9 +29,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "io.h"
-#include "mngsupport.h"
-#include "jpegsupport.h"
+#include "base/io.h"
+#include "bitmap/mngsupport.h"
+#include "bitmap/jpegsupport.h"
 
 #if 0
 #define DEBUG_PRINT(...) printf(__VA_ARGS__)

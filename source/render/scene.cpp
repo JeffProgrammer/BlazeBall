@@ -25,7 +25,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "scene.h"
+#include "render/scene.h"
 #include <stdlib.h>
 #include <stdbool.h>
 #include <sys/time.h>

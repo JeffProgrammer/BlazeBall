@@ -30,7 +30,7 @@
 
 #include <stdio.h>
 #include <OpenGL/OpenGL.h>
-#include "types.h"
+#include "base/types.h"
 
 class Shader {
 protected:

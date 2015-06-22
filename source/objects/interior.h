@@ -28,10 +28,10 @@
 #ifndef interior_h
 #define interior_h
 
-#include "types.h"
-#include "material.h"
-#include "physicsEngine.h"
-#include "staticMesh.h"
+#include "base/types.h"
+#include "render/material.h"
+#include "physics/physicsEngine.h"
+#include "objects/staticMesh.h"
 
 struct Vertex {
 	Point3F point;

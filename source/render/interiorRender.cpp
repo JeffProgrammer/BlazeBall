@@ -27,8 +27,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "interior.h"
-#include "math.h"
+#include "objects/interior.h"
+#include "base/math.h"
 
 void Interior::render() {
 #ifdef GL_33

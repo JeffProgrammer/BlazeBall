@@ -25,8 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "material.h"
-#include "io.h"
+#include "render/material.h"
+#include "base/io.h"
 
 Material::Material() : shader(nullptr), diffuse(nullptr), normal(nullptr), specular(nullptr), name(new String("")), path(new String("")) {
 

@@ -28,7 +28,7 @@
 #ifndef aiSpecialNode_h
 #define aiSpecialNode_h
 
-#include "types.h"
+#include "base/types.h"
 
 class AISpecialNode {
 public:

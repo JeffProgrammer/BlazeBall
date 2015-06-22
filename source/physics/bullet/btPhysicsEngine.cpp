@@ -26,10 +26,10 @@
 //------------------------------------------------------------------------------
 
 #ifdef BUILD_PHYSICS
-#include "btPhysicsEngine.h"
-#include "btPhysicsBody.h"
-#include "btPhysicsInterior.h"
-#include "btPhysicsSphere.h"
+#include "physics/bullet/btPhysicsEngine.h"
+#include "physics/bullet/btPhysicsBody.h"
+#include "physics/bullet/btPhysicsInterior.h"
+#include "physics/bullet/btPhysicsSphere.h"
 #include <BulletCollision/CollisionShapes/btCollisionShape.h>
 #include <BulletCollision/CollisionShapes/btTriangleShape.h>
 #include <algorithm>

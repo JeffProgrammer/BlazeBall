@@ -28,7 +28,7 @@
 #ifndef vehicleCollision_h
 #define vehicleCollision_h
 
-#include "types.h"
+#include "base/types.h"
 
 typedef struct {
 	U32 hullStart;

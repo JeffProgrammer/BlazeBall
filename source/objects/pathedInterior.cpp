@@ -25,7 +25,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "pathedInterior.h"
+#include "objects/pathedInterior.h"
 
 PathedInterior::PathedInterior() {
 	Parent();

@@ -27,9 +27,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "io.h"
-#include "dif.h"
-#include "scene.h"
+#include "base/io.h"
+#include "objects/dif.h"
+#include "render/scene.h"
 
 DIF::DIF(FILE *file, String directory) {
 	//http://rustycode.com/tutorials/DIF_File_Format_44_14.html

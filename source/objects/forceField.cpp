@@ -27,8 +27,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "io.h"
-#include "forceField.h"
+#include "base/io.h"
+#include "objects/forceField.h"
 
 ForceField::ForceField(FILE *file) {
 	READTOVAR(forceFieldFileVersion, U32); //forceFieldFileVersion

@@ -31,11 +31,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libgen.h>
-#include "io.h"
-#include "interior.h"
-#include "mngsupport.h"
-#include "jpegsupport.h"
-#include "math.h"
+#include "base/io.h"
+#include "objects/interior.h"
+#include "bitmap/mngsupport.h"
+#include "bitmap/jpegsupport.h"
+#include "base/math.h"
 
 bool Interior::read(FILE *file) {
 	READTOVAR(interiorFileVersion, U32); //interiorFileVersion

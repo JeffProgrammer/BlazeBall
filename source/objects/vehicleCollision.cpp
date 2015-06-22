@@ -27,8 +27,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "io.h"
-#include "vehicleCollision.h"
+#include "base/io.h"
+#include "objects/vehicleCollision.h"
 
 VehicleCollision::VehicleCollision(FILE *file) {
 	READTOVAR(vehicleCollisionFileVersion, U32); //vehicleCollisionFileVersion

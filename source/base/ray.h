@@ -9,7 +9,7 @@
 #ifndef ray_h
 #define ray_h
 
-#include "point3.h"
+#include "base/point3.h"
 
 template <typename T>
 class Ray {

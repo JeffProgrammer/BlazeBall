@@ -27,7 +27,7 @@
 
 #ifdef BUILD_PHYSICS
 
-#include "btPhysicsSphere.h"
+#include "physics/bullet/btPhysicsSphere.h"
 
 btPhysicsSphere::btPhysicsSphere(F32 radius) : mRadius(radius) {
 	//Motion state and shape

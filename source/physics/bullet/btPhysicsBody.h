@@ -30,8 +30,8 @@
 #ifndef btPhysicsBody_h
 #define btPhysicsBody_h
 
-#include "btPhysicsEngine.h"
-#include "physicsBody.h"
+#include "physics/bullet/btPhysicsEngine.h"
+#include "physics/physicsBody.h"
 
 class btPhysicsBody : public PhysicsBody {
 protected:

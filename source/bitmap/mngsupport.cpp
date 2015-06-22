@@ -27,8 +27,8 @@
 
 #include <stdio.h>
 #include <stdbool.h>
-#include "mngsupport.h"
-#include "types.h"
+#include "bitmap/mngsupport.h"
+#include "base/types.h"
 #include <mng/libmng.h>
 
 typedef enum {

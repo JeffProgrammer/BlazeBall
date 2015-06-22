@@ -28,7 +28,7 @@
 #ifndef event_h
 #define event_h
 
-#include "types.h"
+#include "base/types.h"
 
 class Event {
 public:

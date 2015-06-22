@@ -25,7 +25,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "SDLEvent.h"
+#include "platformSDL/SDLEvent.h"
 
 Event *SDLEvent::convert(SDL_Event *sdlevent) {
 	Event::Type type = convert((SDL_EventType)sdlevent->type);

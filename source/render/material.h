@@ -29,9 +29,9 @@
 #define material_h
 
 #include <stdio.h>
-#include "types.h"
-#include "texture.h"
-#include "shader.h"
+#include "base/types.h"
+#include "bitmap/texture.h"
+#include "render/shader.h"
 
 class Material {
 	Texture *diffuse;

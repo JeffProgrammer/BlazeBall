@@ -30,8 +30,8 @@
 #ifndef btPhysicsSphere_h
 #define btPhysicsSphere_h
 
-#include "btPhysicsBody.h"
-#include "physicsSphere.h"
+#include "physics/bullet/btPhysicsBody.h"
+#include "physics/physicsSphere.h"
 
 class btPhysicsSphere : public btPhysicsBody, public PhysicsSphere {
 	F32 mRadius;

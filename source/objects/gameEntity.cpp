@@ -27,8 +27,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "io.h"
-#include "gameEntity.h"
+#include "base/io.h"
+#include "objects/gameEntity.h"
 
 GameEntity::GameEntity(FILE *file) {
 	READTOVAR(datablock, String); //datablock

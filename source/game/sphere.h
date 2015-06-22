@@ -33,10 +33,10 @@
 #include <vector>
 #include <OpenGL/gl.h>
 
-#include "types.h"
-#include "interior.h"
-#include "physicsBody.h"
-#include "material.h"
+#include "base/types.h"
+#include "objects/interior.h"
+#include "physics/physicsBody.h"
+#include "render/material.h"
 
 class Sphere {
 protected:

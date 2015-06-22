@@ -32,8 +32,8 @@
 #define PHYSICS_TICK 0.016
 
 #include <stdio.h>
-#include "types.h"
-#include "physicsEngine.h"
+#include "base/types.h"
+#include "physics/physicsEngine.h"
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision/CollisionDispatch/btInternalEdgeUtility.h>
 

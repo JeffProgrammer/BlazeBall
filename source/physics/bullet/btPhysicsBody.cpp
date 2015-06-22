@@ -26,7 +26,7 @@
 //------------------------------------------------------------------------------
 
 #ifdef BUILD_PHYSICS
-#include "btPhysicsBody.h"
+#include "physics/bullet/btPhysicsBody.h"
 
 const Point3F btPhysicsBody::getPosition() {
 	return btConvert(mActor->getWorldTransform().getOrigin());

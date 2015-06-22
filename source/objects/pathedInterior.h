@@ -29,7 +29,7 @@
 #define pathedInterior_h
 
 #include <stdio.h>
-#include "interior.h"
+#include "objects/interior.h"
 
 class PathedInterior : public Interior {
 	typedef Interior Parent;

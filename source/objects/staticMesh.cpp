@@ -25,7 +25,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "staticMesh.h"
+#include "objects/staticMesh.h"
 #include <assert.h>
 
 StaticMesh::StaticMesh(FILE *file) {

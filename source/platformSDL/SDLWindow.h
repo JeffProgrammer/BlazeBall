@@ -31,7 +31,7 @@
 
 #include <SDL2/SDL.h>
 #include <stdio.h>
-#include "window.h"
+#include "platform/window.h"
 
 class SDLWindow : public Window {
 protected:

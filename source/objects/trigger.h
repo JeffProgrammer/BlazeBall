@@ -28,7 +28,7 @@
 #ifndef trigger_h
 #define trigger_h
 
-#include "types.h"
+#include "base/types.h"
 
 typedef struct {
 	U32 face0;

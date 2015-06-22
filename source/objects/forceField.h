@@ -28,7 +28,7 @@
 #ifndef forceField_h
 #define forceField_h
 
-#include "types.h"
+#include "base/types.h"
 
 typedef struct {
 	U32 normalIndex;

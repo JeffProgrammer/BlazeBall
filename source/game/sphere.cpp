@@ -27,10 +27,10 @@
 
 #ifdef BUILD_PHYSICS
 
-#include "sphere.h"
-#include "math.h"
-#include "io.h"
-#include "physicsSphere.h"
+#include "game/sphere.h"
+#include "base/math.h"
+#include "base/io.h"
+#include "physics/physicsSphere.h"
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>

@@ -27,8 +27,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "io.h"
-#include "aiSpecialNode.h"
+#include "base/io.h"
+#include "objects/aiSpecialNode.h"
 
 AISpecialNode::AISpecialNode(FILE *file) {
 	READTOVAR(name, String); //name

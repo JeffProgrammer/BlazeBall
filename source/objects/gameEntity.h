@@ -28,7 +28,7 @@
 #ifndef gameEntity_h
 #define gameEntity_h
 
-#include "types.h"
+#include "base/types.h"
 
 class GameEntity {
 public:

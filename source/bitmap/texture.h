@@ -30,7 +30,7 @@
 
 #include <OpenGL/gl.h>
 #include <stdbool.h>
-#include "types.h"
+#include "base/types.h"
 
 class Texture {
 public:

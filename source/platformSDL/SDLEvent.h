@@ -30,7 +30,7 @@
 
 #include <SDL2/SDL.h>
 #include <stdio.h>
-#include "event.h"
+#include "platformSDL/event.h"
 
 namespace SDLEvent {
 	Event *convert(SDL_Event *event);

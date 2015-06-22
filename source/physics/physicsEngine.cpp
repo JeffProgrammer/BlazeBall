@@ -26,7 +26,7 @@
 //------------------------------------------------------------------------------
 
 #ifdef BUILD_PHYSICS
-#include "physicsEngine.h"
+#include "physics/physicsEngine.h"
 
 PhysicsEngine *PhysicsEngine::gEngine = nullptr;
 

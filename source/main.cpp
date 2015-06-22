@@ -31,10 +31,10 @@
 #include <sys/time.h>
 #include <libgen.h>
 #include <unistd.h>
-#include "SDLWindow.h"
-#include "scene.h"
+#include "platformSDL/SDLWindow.h"
+#include "render/scene.h"
 
-#include "btPhysicsEngine.h"
+#include "physics/bullet/btPhysicsEngine.h"
 
 
 int main(int argc, const char * argv[])
