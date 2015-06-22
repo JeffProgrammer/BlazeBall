@@ -1,6 +1,6 @@
 *.xcuserdatad
+cmake_install.cmake
 CMakeFiles
-*.cmake
 Makefile
 glm/doc
 glm/test
