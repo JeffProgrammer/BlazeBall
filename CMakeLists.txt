@@ -18,7 +18,7 @@ endif()
 # Bullet Physics Library
 #------------------------------------------------------------------------------
 
-add_subdirectory("${Project_SOURCE_DIR}thirdparty/bullet/src" Bullet)
+add_subdirectory("${Project_SOURCE_DIR}thirdparty/bullet" Bullet)
 
 #------------------------------------------------------------------------------
 # JPEG Library
@@ -129,7 +129,7 @@ set_property (TARGET libMng APPEND PROPERTY INCLUDE_DIRECTORIES ${Project_SOURCE
 # GLEW Library
 #------------------------------------------------------------------------------
 
-add_library(libGLEW STATIC thirdparty/src/glew.c)
+add_library(libGLEW STATIC thirdparty/glew/src/glew.c)
 set_property (TARGET libGLEW APPEND PROPERTY INCLUDE_DIRECTORIES ${Project_SOURCE_DIR}/thirdparty/glew/include)
 target_compile_definitions(libGLEW PUBLIC GLEW_STATIC)
 
@@ -184,14 +184,14 @@ set (DIFVIEWERGAME_SRC
 	source/objects/dif.cpp
 	source/objects/dif.h
 	source/objects/forceField.cpp
-	source/objects/forceFeild.h
+	source/objects/forceField.h
 	source/objects/gameEntity.cpp
 	source/objects/gameEntity.h
 	source/objects/Interior.cpp
 	source/objects/Interior.h
 	source/objects/InteriorPathFollower.cpp
 	source/objects/InteriorPathFollower.h
-	source/objects/pathedInteiror.cpp
+	source/objects/pathedInterior.cpp
 	source/objects/pathedInterior.h
 	source/objects/staticMesh.cpp
 	source/objects/staticMesh.h
@@ -210,7 +210,7 @@ set (DIFVIEWERGAME_SRC
 	source/physics/bullet/btPhysicsBody.cpp
 	source/physics/bullet/btPhysicsBody.h
 	source/physics/bullet/btPhysicsEngine.cpp
-	source/physics/bullet/btPhyysicsengine.h
+	source/physics/bullet/btPhysicsEngine.h
 	source/physics/bullet/btPhysicsSphere.cpp
 	source/physics/bullet/btPhysicssphere.h
 
