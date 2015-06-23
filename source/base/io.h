@@ -186,9 +186,9 @@ inline T __read(FILE *file, T *thing) {
 #endif
 	return __garbage;
 }
-//I'm so sorry about (type *)nullptr, but that's the only way to get C++ to interpret
+//I'm so sorry about (type *)NULL, but that's the only way to get C++ to interpret
 // the type and let the template work
-#define READ(type) __read(file, (type *)nullptr)
+#define READ(type) __read(file, (type *)NULL)
 
 #ifdef DEBUG
 	#define READVAR(name, type) \

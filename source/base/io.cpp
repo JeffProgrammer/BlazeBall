@@ -40,9 +40,9 @@
 #endif
 
 IO *IO::getIO() {
-	static IO *gIO;
+	static IO *gIO = NULL;
 
-	if (gIO == nullptr) {
+	if (gIO == NULL) {
 		gIO = new IO;
 	}
 	return gIO;
@@ -431,5 +431,5 @@ Texture *IO::loadTexture(const String &file) {
 		return tex;
 	}
 
-	return nullptr;
+	return NULL;
 }

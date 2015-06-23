@@ -37,7 +37,7 @@ class btPhysicsBody : public PhysicsBody {
 protected:
 	btRigidBody *mActor;
 public:
-	btPhysicsBody() : mActor(nullptr) {};
+	btPhysicsBody() : mActor(NULL) {};
 	btPhysicsBody(btRigidBody *actor) : mActor(actor) {};
 
 	virtual const Point3F getPosition();

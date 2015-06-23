@@ -45,7 +45,7 @@ public:
 	Material();
 	~Material();
 
-	Material(String path) : diffuse(nullptr), normal(nullptr), specular(nullptr), shader(nullptr) {
+	Material(String path) : diffuse(NULL), normal(NULL), specular(NULL), shader(NULL) {
 		loadDiffuse(path);
 	}
 

@@ -505,7 +505,7 @@ void Scene::run() {
 
 		//Input
 		while (window->pollEvents(&event)) {
-			if (event != nullptr) {
+			if (event != NULL) {
 				handleEvent(event);
 				delete event;
 			}

@@ -62,6 +62,7 @@ Event *SDLEvent::convert(SDL_Event *sdlevent) {
 			event->delta = Point2I(sdlevent->motion.xrel, sdlevent->motion.yrel);
 			return event;
 		}
-		default: return nullptr;
+		default:
+            return NULL;
 	}
 }
