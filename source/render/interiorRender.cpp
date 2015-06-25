@@ -282,7 +282,7 @@ void Interior::render() {
 				glEnd();
 				if (currentTexture)
 					currentTexture->deactivate();
-				currentTexture = nullptr;
+                currentTexture = NULL;
 				glBegin(GL_TRIANGLES);
 			}
 		}

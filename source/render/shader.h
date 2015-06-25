@@ -29,7 +29,11 @@
 #define shader_h
 
 #include <stdio.h>
-#include <OpenGL/OpenGL.h>
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <GL/glew.h>
+#endif
 #include "base/types.h"
 
 class Shader {

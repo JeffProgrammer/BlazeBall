@@ -42,9 +42,14 @@
 #include "platform/window.h"
 #include "platform/event.h"
 
+#ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/gl3.h>
 #include <OpenGL/glu.h>
+#else
+#include <GL/GLU.h>
+#include <GL/glew.h>
+#endif
 
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>

@@ -28,7 +28,11 @@
 #ifndef texture_h
 #define texture_h
 
+#ifdef __APPLE__
 #include <OpenGL/gl.h>
+#else
+#include <GL/glew.h>
+#endif
 #include <stdbool.h>
 #include "base/types.h"
 

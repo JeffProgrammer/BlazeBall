@@ -28,7 +28,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+#ifdef __APPLE__
 #include <OpenGL/glu.h>
+#include <OpenGL/gl.h>
+#else
+#include <GL/GLU.h>
+#include <GL/glew.h>
+#endif
+
 #include "base/io.h"
 #include "bitmap/texture.h"
 

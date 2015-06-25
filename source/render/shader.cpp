@@ -27,8 +27,13 @@
 
 #include "render/shader.h"
 #include "base/io.h"
+
+#ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/gl3.h>
+#else
+#include <GL/glew.h>
+#endif
 
 Shader::Shader(const String &vertPath, const String &fragPath) {
 	programId = loadProgram(vertPath, fragPath);
