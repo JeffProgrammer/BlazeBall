@@ -281,6 +281,17 @@ include_directories(include ${DIFVIEWERGAME_INCLUDEDIR})
 	add_executable(Game ${DIFVIEWERGAME_SRC})
 #endif()
 
+source_group("main"                  FILES source/main.cpp)
+source_group("render"                REGULAR_EXPRESSION render/.*)
+source_group("base"                  REGULAR_EXPRESSION base/.*)
+source_group("render\\bitmap"        REGULAR_EXPRESSION bitmap/.*)
+source_group("game"                  REGULAR_EXPRESSION game/.*)
+source_group("objects"               REGULAR_EXPRESSION objects/.*)
+source_group("game\\physics"         REGULAR_EXPRESSION physics/.*)
+source_group("game\\physics\\bullet" REGULAR_EXPRESSION bullet/.*)
+source_group("platform"              REGULAR_EXPRESSION platform/.*)
+source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
+
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "-DBUILD_PHYSICS -DGL_33")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
 
