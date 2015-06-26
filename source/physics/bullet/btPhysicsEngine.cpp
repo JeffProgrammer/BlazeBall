@@ -116,7 +116,7 @@ void btPhysicsEngine::simulate(F32 delta) {
 	if (running) {
 		extraTime += delta;
 		for ( ; extraTime > PHYSICS_TICK; extraTime -= PHYSICS_TICK) {
-			world->stepSimulation(PHYSICS_TICK);
+			world->stepSimulation(PHYSICS_TICK, 10);
 		}
 		world->stepSimulation(extraTime);
 		extraTime = 0;
