@@ -27,42 +27,109 @@
 
 #ifdef BUILD_PHYSICS
 
+#include "physics/bullet/btPhysicsEngine.h"
 #include "physics/bullet/btPhysicsInterior.h"
 #include "objects/interior.h"
+#include <vector>
+
+extern std::vector<ShapeInfo> shapes;
+extern std::vector<BodyInfo> bodies;
+extern std::vector<BodyMovement> moves;
+
+#define ADJACENCY_NORMAL_THRESHOLD 0.01f
 
 btPhysicsInterior::btPhysicsInterior(Interior *interior) : btPhysicsBody(), mInterior(interior) {
-	construct();
+    construct();
 }
 
 void btPhysicsInterior::construct() {
     //Create body
     btMotionState *state = new btDefaultMotionState();
-    btCompoundShape *shape = new btCompoundShape();
     
-    btTransform identity;
-    identity.setIdentity();
-    identity.setOrigin(btVector3(0, 0, 0));
+    btTriangleMesh *mesh = new btTriangleMesh;
     
-    for (U32 i = 0; i < mInterior->numConvexHulls; i ++) {
-        ConvexHull hull = mInterior->convexHull[i];
+    std::vector<BulletTriangle> triData;
+    std::vector<std::pair<int, int> > adjacent;
+    U32 index = 0;
+    
+    for (U32 i = 0; i < mInterior->numSurfaces; i ++) {
+        Surface surface = mInterior->surface[i];
         
-        btConvexHullShape *hullShape = new btConvexHullShape();
-        
-        for (U32 j = 0; j < hull.hullCount; j ++) {
-            Point3F vert = mInterior->point[mInterior->hullIndex[j + hull.hullStart]];
-            hullShape->addPoint(btConvert(vert));
+        for (U32 j = 0; j < surface.windingCount - 2; j ++) {
+            Point3F point0 = mInterior->point[mInterior->index[j + surface.windingStart + 0]];
+            Point3F point1 = mInterior->point[mInterior->index[j + surface.windingStart + 1]];
+            Point3F point2 = mInterior->point[mInterior->index[j + surface.windingStart + 2]];
+            mesh->addTriangle(btConvert(point0), btConvert(point1), btConvert(point2));
+            
+            BulletTriangle points;
+            points.point0 = btConvert(point0);
+            points.point1 = btConvert(point1);
+            points.point2= btConvert(point2);
+            for (int k = 0; k < triData.size(); k++) {
+                // Figure out if they're adjacent!
+                const BulletTriangle &others = triData[j];
+                
+                if (i == 14 && j == 13) {
+                    i += 0 * i * 3;
+                }
+                
+                // Count number of matched vertices
+                int matches = 0;
+                if (points.point0 == others.point0 || points.point0 == others.point1 || points.point0 == others.point2)
+                    matches++;
+                if (points.point1 == others.point0 || points.point1 == others.point1|| points.point1 == others.point2)
+                    matches++;
+                if (points.point2 == others.point0 || points.point2 == others.point1 || points.point2 == others.point2)
+                    matches++;
+                
+                // Calculate normals
+                btVector3 normal1 = (points.point1 - points.point0).cross(points.point2 - points.point0);
+                btVector3 normal2 = (others.point1 - others.point0).cross(others.point2 - others.point0);
+                normal1.safeNormalize();
+                normal2.safeNormalize();
+                btVector3 cross = normal1.cross(normal2);
+                
+                if (cross.length() < sin(ADJACENCY_NORMAL_THRESHOLD) && matches >= 1) {
+                    adjacent.push_back(std::make_pair(index, k));
+                    adjacent.push_back(std::make_pair(k, index));
+                }
+            }
+            
+            triData.push_back(points);
+            index ++;
         }
-        
-        hullShape->setMargin(0.01f);
-        shape->addChildShape(identity, hullShape);
     }
     
-    state->setWorldTransform(identity);
+    btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(mesh, true, true);
+    btTriangleInfoMap *map = new btTriangleInfoMap();
+    
+    btGenerateInternalEdgeInfo(shape, map);
+    
+    shape->setMargin(0.01f);
+    
+    btTransform transform;
+    transform.setIdentity();
+    transform.setOrigin(btVector3(0, 0, 0));
+    
+    state->setWorldTransform(transform);
     
     mActor = new btRigidBody(0, state, shape);
     mActor->setRestitution(1.0f);
     mActor->setFriction(1.0f);
     mActor->setCollisionFlags(mActor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+    
+    ShapeInfo info;
+    info.shape = shape;
+    info.triangleData = triData;
+    info.adjacent = adjacent;
+    shapes.push_back(info);
+    
+    BodyInfo infoo;
+    infoo.body = mActor;
+    infoo.collisionNormal = btVector3(0.0f, 0.0f, 0.0f);
+    infoo.isDynamic = false;
+    infoo.shape = info;
+    bodies.push_back(infoo);
 }
 
 #endif /* BUILD_PHYSICS */

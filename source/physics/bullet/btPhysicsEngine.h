@@ -36,6 +36,34 @@
 #include "physics/physicsEngine.h"
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision/CollisionDispatch/btInternalEdgeUtility.h>
+#include <vector>
+
+struct BulletTriangle {
+    btVector3 point0;
+    btVector3 point1;
+    btVector3 point2;
+};
+
+struct ShapeInfo {
+    btCollisionShape *shape;
+    std::vector<BulletTriangle> triangleData;
+    std::vector<std::pair<int, int> > adjacent;
+};
+
+struct BodyInfo {
+    btRigidBody* body;
+    ShapeInfo shape;
+    btVector3 collisionNormal;
+    btVector3 collisionNormalTemp;
+    bool isDynamic;
+    float timeout;
+};
+
+struct BodyMovement {
+    btRigidBody *body;
+    btVector3 velocity;
+    btVector3 angularVelocity;
+};
 
 class btPhysicsEngine : public PhysicsEngine {
 	btDiscreteDynamicsWorld *world;
