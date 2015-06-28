@@ -151,7 +151,7 @@ void btManifoldResult::addContactPoint(const btVector3& normalOnBInWorld,const b
 		(*gContactAddedCallback)(m_manifoldPtr->getContactPoint(insertIndex),obj0Wrap,newPt.m_partId0,newPt.m_index0,obj1Wrap,newPt.m_partId1,newPt.m_index1);
 	}
 
-    if (gContactStartedCallback && isNewCollision)
+    if (gContactStartedCallback)// && isNewCollision)
     {
         gContactStartedCallback(m_manifoldPtr);
     }
