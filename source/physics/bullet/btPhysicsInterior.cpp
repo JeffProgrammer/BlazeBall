@@ -36,7 +36,7 @@ extern std::vector<ShapeInfo> shapes;
 extern std::vector<BodyInfo> bodies;
 extern std::vector<BodyMovement> moves;
 
-#define ADJACENCY_NORMAL_THRESHOLD 0.01f
+#define ADJACENCY_NORMAL_THRESHOLD 0.001f
 
 btPhysicsInterior::btPhysicsInterior(Interior *interior) : btPhysicsBody(), mInterior(interior) {
     construct();
@@ -67,10 +67,10 @@ void btPhysicsInterior::construct() {
             points.point2= btConvert(point2);
             for (int k = 0; k < triData.size(); k++) {
                 // Figure out if they're adjacent!
-                const BulletTriangle &others = triData[j];
+                const BulletTriangle &others = triData[k];
                 
-                if (i == 14 && j == 13) {
-                    i += 0 * i * 3;
+                if (index == 14 && k == 13) {
+                    index += 0 * index * 3;
                 }
                 
                 // Count number of matched vertices
@@ -99,6 +99,8 @@ void btPhysicsInterior::construct() {
             index ++;
         }
     }
+    
+    int count = triData.size();
     
     btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(mesh, true, true);
     btTriangleInfoMap *map = new btTriangleInfoMap();

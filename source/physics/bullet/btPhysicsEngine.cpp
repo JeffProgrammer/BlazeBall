@@ -90,7 +90,8 @@ void contactStarted(btPersistentManifold* const &manifold) {
     std::vector<int> triangleIndices;
     bool removed = false;
     
-    for (int i = 0; i < manifold->getNumContacts(); i++) {
+    int count = manifold->getNumContacts();
+    for (int i = 0; i < count; i++) {
         int index;
         if (trimesh0 != NULL)
             index = manifold->getContactPoint(i).m_index0;
@@ -161,7 +162,7 @@ void btPhysicsEngine::init() {
 	world = new btDiscreteDynamicsWorld(dispatcher, interface, solver, configuration);
 	world->setGravity(btVector3(0, 0, -20.0f));
 
-	gContactAddedCallback = contactAdded;
+	//gContactAddedCallback = contactAdded;
     gContactStartedCallback = contactStarted;
     world->setInternalTickCallback(physicsWorldTickCallback);
 	running = true;
