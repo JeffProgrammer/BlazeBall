@@ -56,23 +56,30 @@ void btPhysicsInterior::construct() {
         Surface surface = mInterior->surface[i];
         
         for (U32 j = 0; j < surface.windingCount - 2; j ++) {
-            Point3F point0 = mInterior->point[mInterior->index[j + surface.windingStart + 0]];
-            Point3F point1 = mInterior->point[mInterior->index[j + surface.windingStart + 1]];
-            Point3F point2 = mInterior->point[mInterior->index[j + surface.windingStart + 2]];
+			Point3F point0;
+			Point3F point1;
+			Point3F point2;
+
+			if (j % 2 == 0) {
+				point0 = mInterior->point[mInterior->index[j + surface.windingStart + 2]];
+				point1 = mInterior->point[mInterior->index[j + surface.windingStart + 1]];
+				point2 = mInterior->point[mInterior->index[j + surface.windingStart + 0]];
+			} else {
+				point0 = mInterior->point[mInterior->index[j + surface.windingStart + 0]];
+				point1 = mInterior->point[mInterior->index[j + surface.windingStart + 1]];
+				point2 = mInterior->point[mInterior->index[j + surface.windingStart + 2]];
+			}
+
             mesh->addTriangle(btConvert(point0), btConvert(point1), btConvert(point2));
             
             BulletTriangle points;
             points.point0 = btConvert(point0);
             points.point1 = btConvert(point1);
-            points.point2= btConvert(point2);
+            points.point2 = btConvert(point2);
             for (int k = 0; k < triData.size(); k++) {
                 // Figure out if they're adjacent!
                 const BulletTriangle &others = triData[k];
-                
-                if (index == 14 && k == 13) {
-                    index += 0 * index * 3;
-                }
-                
+
                 // Count number of matched vertices
                 int matches = 0;
                 if (points.point0 == others.point0 || points.point0 == others.point1 || points.point0 == others.point2)
