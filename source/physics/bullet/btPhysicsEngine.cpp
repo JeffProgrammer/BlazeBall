@@ -104,7 +104,7 @@ void contactStarted(btPersistentManifold* const &manifold) {
                     manifold->removeContactPoint(j);
                 else
                     manifold->removeContactPoint(i);
-                printf("Point removed\n");
+                //printf("Point removed\n");
                 removed = true;
                 break;
             }

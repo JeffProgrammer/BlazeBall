@@ -36,7 +36,8 @@ extern std::vector<ShapeInfo> shapes;
 extern std::vector<BodyInfo> bodies;
 extern std::vector<BodyMovement> moves;
 
-#define ADJACENCY_NORMAL_THRESHOLD 0.001f
+/// BEHOLD, THE MAGIC NUMBER
+#define ADJACENCY_NORMAL_THRESHOLD 0.01f
 
 btPhysicsInterior::btPhysicsInterior(Interior *interior) : btPhysicsBody(), mInterior(interior) {
     construct();

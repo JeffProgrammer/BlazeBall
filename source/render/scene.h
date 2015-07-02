@@ -60,7 +60,7 @@ protected:
 	void (*loopCallback)();
 
 	bool running;
-	bool printFPS = false;
+    bool printFPS = false;
 
 	F32 maxFPS = 60.0f;
 
