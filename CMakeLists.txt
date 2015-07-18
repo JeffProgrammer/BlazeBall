@@ -241,6 +241,7 @@ set (DIFVIEWERGAME_SRC
 	source/platformSDL/SDLEvent.h
 	source/platformSDL/SDLWindow.cpp
 	source/platformSDL/SDLWindow.h
+	source/platformSDL/SDLConfig.h
 
 	# Render folder
 	source/render/InteriorRender.cpp

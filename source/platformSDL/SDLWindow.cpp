@@ -34,24 +34,19 @@ bool SDLWindow::createContext() {
 		fprintf(stderr, "SDL Error: %s", SDL_GetError());
 		return false;
 	}
-
-#ifdef GL_33
-	//Use OpenGL 3.3
+    
+	// Try using the core profile first.
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, SDL_CONFIG_CORE_MAJOR_GL_VERSION);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, SDL_CONFIG_CORE_MINOR_GL_VERSION);
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-#else
-	//Use OpenGL 2.1
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-#endif
 
+    // set various other window hints
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 4);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
-
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
+    // Grab bounds for placing the window in the center of the screen the best we can.
 	SDL_Rect bounds;
 	SDL_GetDisplayBounds(0, &bounds);
 
@@ -62,7 +57,15 @@ bool SDLWindow::createContext() {
 
 	//Create context
 	if ((context = SDL_GL_CreateContext(window)) == NULL) {
-		return false;
+        // Fall back to legacy profile if the core opengl profile fails on this platform.
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, SDL_CONFIG_LEGACY_MAJOR_GL_VERSION);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, SDL_CONFIG_LEGACY_MINOR_GL_VERSION);
+        
+        if ((context = SDL_GL_CreateContext(window)) == NULL) {
+            printf("Unable to load a valid OpenGL context. Please make sure your drivers are up to date.");
+            printf("OpenGL %d.%d is required.", SDL_CONFIG_LEGACY_MAJOR_GL_VERSION, SDL_CONFIG_LEGACY_MINOR_GL_VERSION);
+            return false;
+        }
 	}
 
 	//Use Vsync

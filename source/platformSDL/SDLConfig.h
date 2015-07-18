@@ -1,5 +1,6 @@
 //------------------------------------------------------------------------------
 // Copyright (c) 2015 Glenn Smith
+// Copyright (c) 2015 Jeff Hutchinson
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -26,26 +27,24 @@
 //------------------------------------------------------------------------------
 
 
-#ifndef SDLWindow_h
-#define SDLWindow_h
+#ifndef _PLATFORMSDL_SDLCONFIG_H_
+#define _PLATFORMSDL_SDLCONFIG_H_
 
-#include <stdio.h>
-#include "platform/window.h"
-#include "platformSDL/SDLConfig.h"
+#include <SDL.h>
 
-class SDLWindow : public Window {
-protected:
-	SDL_Window *window;
-	SDL_GLContext context;
+/// We are using SDL
+#define USING_SDL
 
-public:
-	virtual bool createContext();
-	virtual void destroyContext();
-	virtual void swapBuffers();
-	virtual void lockCursor(bool locked);
+/// The major opengl version required for the core profile
+#define SDL_CONFIG_CORE_MAJOR_GL_VERSION 3
 
-	virtual Point2I getWindowSize();
-	virtual bool pollEvents(Event **event);
-};
+/// The minor opengl version required for the core profile
+#define SDL_CONFIG_CORE_MINOR_GL_VERSION 3
 
-#endif
+/// The major opengl version required for the legacy profile (pre 3.0)
+#define SDL_CONFIG_LEGACY_MAJOR_GL_VERSION 2
+
+/// The minor opengl version required for the legacy profile (pre 3.0)
+#define SDL_CONFIG_LEGACY_MINOR_GL_VERSION 1
+
+#endif // _PLATFORMSDL_SDLCONFIG_H_
