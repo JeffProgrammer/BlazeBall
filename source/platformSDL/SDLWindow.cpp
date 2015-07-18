@@ -57,15 +57,20 @@ bool SDLWindow::createContext() {
 
 	//Create context
 	if ((context = SDL_GL_CreateContext(window)) == NULL) {
+		printf("A Core OpenGL profile has failed. Attempting to create a legacy profile.\n");
+		
         // Fall back to legacy profile if the core opengl profile fails on this platform.
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0x0000);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, SDL_CONFIG_LEGACY_MAJOR_GL_VERSION);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, SDL_CONFIG_LEGACY_MINOR_GL_VERSION);
         
         if ((context = SDL_GL_CreateContext(window)) == NULL) {
-            printf("Unable to load a valid OpenGL context. Please make sure your drivers are up to date.");
-            printf("OpenGL %d.%d is required.", SDL_CONFIG_LEGACY_MAJOR_GL_VERSION, SDL_CONFIG_LEGACY_MINOR_GL_VERSION);
+            printf("Unable to load a valid OpenGL context. Please make sure your drivers are up to date.\n");
+            printf("OpenGL %d.%d is required.\n", SDL_CONFIG_LEGACY_MAJOR_GL_VERSION, SDL_CONFIG_LEGACY_MINOR_GL_VERSION);
             return false;
         }
+		
+		printf("Created a legacy OpenGL profile successfully.\n");
 	}
 
 	//Use Vsync
