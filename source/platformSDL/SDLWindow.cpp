@@ -34,49 +34,48 @@ bool SDLWindow::createContext() {
 		fprintf(stderr, "SDL Error: %s", SDL_GetError());
 		return false;
 	}
-    
+
 	// Try using the core profile first.
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, SDL_CONFIG_CORE_MAJOR_GL_VERSION);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, SDL_CONFIG_CORE_MINOR_GL_VERSION);
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-    // set various other window hints
+	// set various other window hints
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 4);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    // Grab bounds for placing the window in the center of the screen the best we can.
+	// Grab bounds for placing the window in the center of the screen the best we can.
 	SDL_Rect bounds;
 	SDL_GetDisplayBounds(0, &bounds);
 
 	//Create the window
-	if ((window = SDL_CreateWindow("DIF Viewer", (bounds.w - 1280) / 2, (bounds.h - 720) / 2, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI)) == NULL) {
+	const U32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
+	if ((window = SDL_CreateWindow("DIF Viewer", (bounds.w - 1280) / 2, (bounds.h - 720) / 2, 1280, 720, flags)) == NULL)
 		return false;
-	}
 
 	//Create context
 	if ((context = SDL_GL_CreateContext(window)) == NULL) {
 		printf("A Core OpenGL profile has failed. Attempting to create a legacy profile.\n");
-		
-        // Fall back to legacy profile if the core opengl profile fails on this platform.
+
+		// Fall back to legacy profile if the core opengl profile fails on this platform.
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0x0000);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, SDL_CONFIG_LEGACY_MAJOR_GL_VERSION);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, SDL_CONFIG_LEGACY_MINOR_GL_VERSION);
-        
-        if ((context = SDL_GL_CreateContext(window)) == NULL) {
-            printf("Unable to load a valid OpenGL context. Please make sure your drivers are up to date.\n");
-            printf("OpenGL %d.%d is required.\n", SDL_CONFIG_LEGACY_MAJOR_GL_VERSION, SDL_CONFIG_LEGACY_MINOR_GL_VERSION);
-            return false;
-        }
-		
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, SDL_CONFIG_LEGACY_MAJOR_GL_VERSION);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, SDL_CONFIG_LEGACY_MINOR_GL_VERSION);
+
+		if ((context = SDL_GL_CreateContext(window)) == NULL) {
+			printf("Unable to load a valid OpenGL context. Please make sure your drivers are up to date.\n");
+			printf("OpenGL %d.%d is required.\n", SDL_CONFIG_LEGACY_MAJOR_GL_VERSION, SDL_CONFIG_LEGACY_MINOR_GL_VERSION);
+			return false;
+		}
+
 		printf("Created a legacy OpenGL profile successfully.\n");
 	}
 
 	//Use Vsync
-	if (SDL_GL_SetSwapInterval(1) < 0) {
+	if (SDL_GL_SetSwapInterval(1) < 0)
 		return false;
-	}
 
 	//Lock cursor
 	lockCursor(true);
