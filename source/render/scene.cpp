@@ -33,7 +33,6 @@
 #include <unistd.h>
 
 void Scene::render() {
-#ifdef GL_33
 	//Light
 	glUniform3fv(lightDirectionLocation, 1, &lightDirection.x);
 	glUniform4fv(lightColorLocation, 1, &lightColor.red);
@@ -94,110 +93,6 @@ void Scene::render() {
 
 	sphere->render(ColorF(1, 1, 0, 1));
 #endif
-#else
-	//Load the model matrix
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_ALPHA);
-	glEnable(GL_MULTISAMPLE);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	//Camera
-	viewMatrix = glm::mat4x4(1);
-	viewMatrix = glm::rotate(viewMatrix, pitch, glm::vec3(1, 0, 0));
-	viewMatrix = glm::rotate(viewMatrix, yaw, glm::vec3(0, 1, 0));
-	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
-	//	viewMatrix = glm::translate(viewMatrix, -cameraPosition);
-	viewMatrix = glm::translate(viewMatrix, cameraPosition);
-
-	glLoadMatrixf(&modelviewMatrix[0][0]);
-
-	//Clear
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-	glLightfv(GL_LIGHT0, GL_POSITION, gLightDirection);
-
-	Point3F offset = {0.f, 0.f, 0.f};
-
-	if (listNeedsDisplay) {
-		displayList = glGenLists(1);
-		glNewList(displayList, GL_COMPILE_AND_EXECUTE);
-		for (U32 index = 0; index < difCount; index ++) {
-			difs[index]->render();
-		}
-		glEndList();
-		listNeedsDisplay = false;
-	} else {
-		glCallList(displayList);
-	}
-
-	sphere->render(ColorF(1, 1, 0, 1));
-	glDisable(GL_CULL_FACE);
-
-	if (selection.hasSelection) {
-		Surface surface = selection.interior->surface[selection.surfaceIndex];
-		TexGenEq texGenEq = selection.interior->texGenEq[surface.texGenIndex];
-		Point3F normal = selection.interior->normal[selection.interior->plane[surface.planeIndex].normalIndex];
-		Point3F first = selection.interior->point[selection.interior->index[surface.windingStart]];
-		F32 len = 0;
-
-		glBegin(GL_TRIANGLE_STRIP);
-		for (U32 i = 0; i < surface.windingCount; i ++) {
-			Point3F vert = selection.interior->point[selection.interior->index[surface.windingStart + i]];
-
-			glVertex3f(vert.x, vert.y, vert.z);
-
-			Point2F point = point3F_project_plane(vert, normal, first);
-			F32 distance = point.length();
-			len = (distance > len ? distance : len);
-		}
-		glEnd();
-
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
-		glOrtho(-1, 1, -1, 1, -100, 100);
-		glMatrixMode(GL_MODELVIEW);
-		glDisable(GL_LIGHTING);
-		glEnable(GL_TEXTURE_2D);
-		glLoadIdentity();
-
-		Texture *texture = selection.interior->texture[surface.textureIndex];
-		if (texture) {
-			if (!texture->generated) {
-				texture->generateBuffer();
-			}
-			texture->activate();
-		}
-
-		glBegin(GL_TRIANGLE_STRIP);
-
-		int w, h;
-		SDL_GetWindowSize(window, &w, &h);
-
-		GLfloat aspect = (GLfloat)w / (GLfloat)h;
-
-		for (U32 i = 0; i < surface.windingCount; i ++) {
-			Point3F vert = selection.interior->point[selection.interior->index[surface.windingStart + i]];
-
-			Point2F texuv = Point2F(planeF_distance_to_point(texGenEq.planeX, vert), planeF_distance_to_point(texGenEq.planeY, vert));
-			glTexCoord2fv(&texuv.x);
-
-			Point2F point = point3F_project_plane(vert, (surface.planeFlipped ? normal * -1 : normal), first);
-			glVertex3f(point.x / len / aspect, point.y / len, 0);
-		}
-		glEnd();
-
-		if (texture)
-			texture->deactivate();
-		glDisable(GL_TEXTURE_2D);
-		glEnable(GL_LIGHTING);
-		glMatrixMode(GL_PROJECTION);
-		glPopMatrix();
-	}
-#endif
 }
 
 void Scene::loop() {
@@ -257,7 +152,6 @@ void Scene::loop() {
 }
 
 bool Scene::initGL() {
-#ifdef GL_33
 	GLuint vertexArrayID;
 	glGenVertexArrays(1, &vertexArrayID);
 	glBindVertexArray(vertexArrayID);
@@ -299,40 +193,6 @@ bool Scene::initGL() {
 	sphere = new Sphere(Point3F(0, 0, 60), 0.2f);
 //	sphere->setMaterial(difs[0]->interior[0]->material[4]);
 #endif /* BUILD_PHYSICS */
-
-#else /* GL_33 */
-	//Initialize clear color
-	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
-	glClearDepth(1.0f);
-
-	//Enable and set some shit for rendering
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-	glShadeModel(GL_SMOOTH);
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
-	//Window size for viewport
-	int w, h;
-	SDL_GetWindowSize(window, &w, &h);
-
-	GLfloat aspect = (GLfloat)w / (GLfloat)h;
-	glViewport(0, 0, w * 2, h * 2);
-
-	//Initialize Projection Matrix
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	projectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
-	glMultMatrixf(&projectionMatrix[0][0]);
-
-	glMaterialfv(GL_FRONT, GL_AMBIENT, gAmbientColor);
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, gDiffuseColor);
-
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, gLightColor);
-	glLightfv(GL_LIGHT0, GL_POSITION, gLightDirection);
-#endif
 
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {

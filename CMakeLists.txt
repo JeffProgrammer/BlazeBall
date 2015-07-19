@@ -293,7 +293,7 @@ source_group("game\\physics\\bullet" REGULAR_EXPRESSION bullet/.*)
 source_group("platform"              REGULAR_EXPRESSION platform/.*)
 source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
 
-set_property(TARGET Game PROPERTY COMPILE_FLAGS "-DBUILD_PHYSICS -DGL_33")
+set_property(TARGET Game PROPERTY COMPILE_FLAGS "-DBUILD_PHYSICS")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
 
 
