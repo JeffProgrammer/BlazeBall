@@ -27,6 +27,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
 #include "objects/interior.h"
 #include "base/math.h"
 
@@ -147,7 +148,8 @@ void Interior::render() {
 				materialTriangles[surface.textureIndex] ++;
 			}
 		}
-		Triangle *triangle = new Triangle[numTriangles];
+
+        std::vector<Triangle> triangle(numTriangles);
 
 		//Load all the textures
 		numTriangles = 0;
@@ -167,9 +169,7 @@ void Interior::render() {
 		glBindBuffer(GL_ARRAY_BUFFER, renderInfo.vertexBuffer);
 
 		//Upload the buffer data to OpenGL
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * numTriangles, triangle, GL_STATIC_DRAW);
-
-		delete [] triangle;
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * numTriangles, &triangle[0], GL_STATIC_DRAW);
 
 		renderInfo.generated = true;
 	}
