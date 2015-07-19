@@ -34,6 +34,7 @@
 void Interior::render() {
 	if (!renderInfo.generated) {
 		Triangle **perMaterialTriangles = new Triangle*[numMaterials];
+		std::vector<Triangle*> 
 
 		U32 *materialTriangles = new U32[numMaterials];
 		renderInfo.numMaterialTriangles = new U32[numMaterials];
@@ -149,7 +150,7 @@ void Interior::render() {
 			}
 		}
 
-        std::vector<Triangle> triangle(numTriangles);
+		std::vector<Triangle> triangle(numTriangles);
 
 		//Load all the textures
 		numTriangles = 0;
