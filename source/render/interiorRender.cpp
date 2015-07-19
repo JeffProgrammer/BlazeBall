@@ -31,150 +31,149 @@
 #include "objects/interior.h"
 #include "base/math.h"
 
-void Interior::render() {
-	if (!renderInfo.generated) {
-		Triangle **perMaterialTriangles = new Triangle*[numMaterials];
-		std::vector<Triangle*> 
-
-		U32 *materialTriangles = new U32[numMaterials];
-		renderInfo.numMaterialTriangles = new U32[numMaterials];
-
-		U32 numTriangles = 0;
-
-		for (U32 i = 0; i < numMaterials; i ++) {
-			renderInfo.numMaterialTriangles[i] = 0;
-		}
-
-		//Generate our triangle mesh for rendering
-		for (U32 i = 0; i < numSurfaces; i ++) {
-			Surface surface = this->surface[i];
-			renderInfo.numMaterialTriangles[surface.textureIndex] += surface.windingCount - 2;
-			numTriangles += surface.windingCount - 2;
-		}
-
-		//Load all the textures
-		for (U32 i = 0; i < numMaterials; i ++) {
-			perMaterialTriangles[i] = new Triangle[renderInfo.numMaterialTriangles[i]];
-			materialTriangles[i] = 0;
-
-			Material *mat = material[i];
-			if (mat) {
-				mat->generate();
-			}
-		}
-		noise->generateBuffer();
-
-		Point3F *tangentMap = new Point3F[numNormals];
-		Point3F *bitangentMap = new Point3F[numNormals];
-
-		for (U32 i = 0; i < numNormals; i ++) {
-			tangentMap[i] = Point3F();
-			bitangentMap[i] = Point3F();
-		}
-
-		for (U32 i = 0; i < numSurfaces; i ++) {
-			Surface surface = this->surface[i];
-
-			Point3F normal = this->normal[plane[surface.planeIndex].normalIndex];
-			if (surface.planeFlipped) {
-				normal *= -1;
-			}
-
-//			Point3F color((F32)surface.planeIndex / (F32)numPlanes, (F32)(surface.planeIndex % 32)/32.f, (F32)(surface.planeIndex % 8)/8.f);
-
-			//New and improved rendering with actual Triangle Strips this time
-			for (U32 j = surface.windingStart + 2; j < surface.windingStart + surface.windingCount; j ++) {
-				Point3F v0, v1, v2;
-
-				if ((j - (surface.windingStart + 2)) % 2 == 0) {
-					v0 = point[index[j]];
-					v1 = point[index[j - 1]];
-					v2 = point[index[j - 2]];
-				} else {
-					v0 = point[index[j - 2]];
-					v1 = point[index[j - 1]];
-					v2 = point[index[j]];
-				}
-
-				TexGenEq texGenEq = this->texGenEq[surface.texGenIndex];
-
-				Point2F uv0 = Point2F(planeF_distance_to_point(texGenEq.planeX, v0), planeF_distance_to_point(texGenEq.planeY, v0));
-				Point2F uv1 = Point2F(planeF_distance_to_point(texGenEq.planeX, v1), planeF_distance_to_point(texGenEq.planeY, v1));
-				Point2F uv2 = Point2F(planeF_distance_to_point(texGenEq.planeX, v2), planeF_distance_to_point(texGenEq.planeY, v2));
-
-//				U32 plane = this->plane[surface.planeIndex].normalIndex;
-//				Point3F tangent;
-//				Point3F bitangent;
-//				if (tangentMap[plane].length()) {
-//					tangent = tangentMap[plane];
-//					bitangent = bitangentMap[plane];
-//				} else {
-					Point3F deltaPos1 = v1 - v0;
-					Point3F deltaPos2 = v2 - v0;
-					Point2F deltaUV1 = uv1 - uv0;
-					Point2F deltaUV2 = uv2 - uv0;
-
-					F32 r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
-
-					Point3F tangent   = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
-					Point3F bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
-
-					tangent = (tangent - (normal * normal.dot(tangent))).normalize();
-					if ((normal.cross(tangent)).dot(bitangent) < 0.0f) {
-						tangent *= -1.0f;
-					}
-
-					tangent = tangent.normalize();
-					bitangent = bitangent.normalize();
-
-//					tangentMap[plane] = tangent;
-//					bitangentMap[plane] = bitangent;
-//				}
-
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].point = v0;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].point = v1;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].point = v2;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].uv = uv0;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].uv = uv1;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].uv = uv2;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].normal = normal;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].normal = normal;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].normal = normal;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].tangent = tangent;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].tangent = tangent;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].tangent = tangent;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].bitangent = bitangent;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].bitangent = bitangent;
-				perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].bitangent = bitangent;
-				materialTriangles[surface.textureIndex] ++;
-			}
-		}
-
-		std::vector<Triangle> triangle(numTriangles);
-
-		//Load all the textures
-		numTriangles = 0;
-		for (U32 i = 0; i < numMaterials; i ++) {
-			for (U32 j = 0; j < materialTriangles[i]; j ++) {
-				triangle[numTriangles] = perMaterialTriangles[i][j];
-				numTriangles ++;
-			}
-			delete [] perMaterialTriangles[i];
-		}
-		delete [] perMaterialTriangles;
-
-		//Generate us a vertex buffer
-		glGenBuffers(1, &renderInfo.vertexBuffer);
-
-		//Use the vertex buffer
-		glBindBuffer(GL_ARRAY_BUFFER, renderInfo.vertexBuffer);
-
-		//Upload the buffer data to OpenGL
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * numTriangles, &triangle[0], GL_STATIC_DRAW);
-
-		renderInfo.generated = true;
+void Interior::init() {
+	Triangle **perMaterialTriangles = new Triangle*[numMaterials];
+	
+	U32 *materialTriangles = new U32[numMaterials];
+	renderInfo.numMaterialTriangles = new U32[numMaterials];
+	
+	U32 numTriangles = 0;
+	
+	for (U32 i = 0; i < numMaterials; i ++) {
+		renderInfo.numMaterialTriangles[i] = 0;
 	}
+	
+	//Generate our triangle mesh for rendering
+	for (U32 i = 0; i < numSurfaces; i ++) {
+		Surface surface = this->surface[i];
+		renderInfo.numMaterialTriangles[surface.textureIndex] += surface.windingCount - 2;
+		numTriangles += surface.windingCount - 2;
+	}
+	
+	//Load all the textures
+	for (U32 i = 0; i < numMaterials; i ++) {
+		perMaterialTriangles[i] = new Triangle[renderInfo.numMaterialTriangles[i]];
+		materialTriangles[i] = 0;
+		
+		Material *mat = material[i];
+		if (mat) {
+			mat->generate();
+		}
+	}
+	noise->generateBuffer();
+	
+	Point3F *tangentMap = new Point3F[numNormals];
+	Point3F *bitangentMap = new Point3F[numNormals];
+	
+	for (U32 i = 0; i < numNormals; i ++) {
+		tangentMap[i] = Point3F();
+		bitangentMap[i] = Point3F();
+	}
+	
+	for (U32 i = 0; i < numSurfaces; i ++) {
+		Surface surface = this->surface[i];
+		
+		Point3F normal = this->normal[plane[surface.planeIndex].normalIndex];
+		if (surface.planeFlipped) {
+			normal *= -1;
+		}
+		
+		//			Point3F color((F32)surface.planeIndex / (F32)numPlanes, (F32)(surface.planeIndex % 32)/32.f, (F32)(surface.planeIndex % 8)/8.f);
+		
+		//New and improved rendering with actual Triangle Strips this time
+		for (U32 j = surface.windingStart + 2; j < surface.windingStart + surface.windingCount; j ++) {
+			Point3F v0, v1, v2;
+			
+			if ((j - (surface.windingStart + 2)) % 2 == 0) {
+				v0 = point[index[j]];
+				v1 = point[index[j - 1]];
+				v2 = point[index[j - 2]];
+			} else {
+				v0 = point[index[j - 2]];
+				v1 = point[index[j - 1]];
+				v2 = point[index[j]];
+			}
+			
+			TexGenEq texGenEq = this->texGenEq[surface.texGenIndex];
+			
+			Point2F uv0 = Point2F(planeF_distance_to_point(texGenEq.planeX, v0), planeF_distance_to_point(texGenEq.planeY, v0));
+			Point2F uv1 = Point2F(planeF_distance_to_point(texGenEq.planeX, v1), planeF_distance_to_point(texGenEq.planeY, v1));
+			Point2F uv2 = Point2F(planeF_distance_to_point(texGenEq.planeX, v2), planeF_distance_to_point(texGenEq.planeY, v2));
+			
+			//				U32 plane = this->plane[surface.planeIndex].normalIndex;
+			//				Point3F tangent;
+			//				Point3F bitangent;
+			//				if (tangentMap[plane].length()) {
+			//					tangent = tangentMap[plane];
+			//					bitangent = bitangentMap[plane];
+			//				} else {
+			Point3F deltaPos1 = v1 - v0;
+			Point3F deltaPos2 = v2 - v0;
+			Point2F deltaUV1 = uv1 - uv0;
+			Point2F deltaUV2 = uv2 - uv0;
+			
+			F32 r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+			
+			Point3F tangent   = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+			Point3F bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
+			
+			tangent = (tangent - (normal * normal.dot(tangent))).normalize();
+			if ((normal.cross(tangent)).dot(bitangent) < 0.0f) {
+				tangent *= -1.0f;
+			}
+			
+			tangent = tangent.normalize();
+			bitangent = bitangent.normalize();
+			
+			//					tangentMap[plane] = tangent;
+			//					bitangentMap[plane] = bitangent;
+			//				}
+			
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].point = v0;
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].point = v1;
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].point = v2;
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].uv = uv0;
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].uv = uv1;
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].uv = uv2;
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].normal = normal;
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].normal = normal;
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].normal = normal;
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].tangent = tangent;
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].tangent = tangent;
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].tangent = tangent;
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].bitangent = bitangent;
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].bitangent = bitangent;
+			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].bitangent = bitangent;
+			materialTriangles[surface.textureIndex] ++;
+		}
+	}
+	
+	std::vector<Triangle> triangle(numTriangles);
+	
+	//Load all the textures
+	numTriangles = 0;
+	for (U32 i = 0; i < numMaterials; i ++) {
+		for (U32 j = 0; j < materialTriangles[i]; j ++) {
+			triangle[numTriangles] = perMaterialTriangles[i][j];
+			numTriangles ++;
+		}
+		delete [] perMaterialTriangles[i];
+	}
+	delete [] perMaterialTriangles;
+	
+	//Generate us a vertex buffer
+	glGenBuffers(1, &renderInfo.vertexBuffer);
+	
+	//Use the vertex buffer
+	glBindBuffer(GL_ARRAY_BUFFER, renderInfo.vertexBuffer);
+	
+	//Upload the buffer data to OpenGL
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * numTriangles, &triangle[0], GL_STATIC_DRAW);
+	
+	renderInfo.generated = true;
+}
 
+void Interior::render() {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);

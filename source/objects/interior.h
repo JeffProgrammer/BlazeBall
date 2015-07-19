@@ -417,6 +417,11 @@ public:
 	 @arg file - The FILE to export to
 	 */
 	void exportObj(FILE *file);
+	
+	/**
+	 Initializes the interior. The Vertex Buffer is built and sent to the GL here.
+	 */
+	void init();
 
 	/**
 	 Renders an interior with OpenGL
