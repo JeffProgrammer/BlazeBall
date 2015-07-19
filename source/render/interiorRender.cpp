@@ -31,7 +31,6 @@
 #include "base/math.h"
 
 void Interior::render() {
-#ifdef GL_33
 	if (!renderInfo.generated) {
 		Triangle **perMaterialTriangles = new Triangle*[numMaterials];
 
@@ -246,85 +245,4 @@ void Interior::render() {
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
-
-#else
-	//Actual rendering is here (GL 1.1 in a 2.1 context. Take THAT, good practice!)
-
-	glEnable(GL_TEXTURE_2D);
-	Texture *currentTexture = NULL;
-
-	//Draw all the surfaces
-	glBegin(GL_TRIANGLES);
-	for (U32 i = 0; i < numSurfaces; i ++) {
-		Surface surface = this->surface[i];
-
-		if (this->texture) {
-			Texture *texture = this->texture[surface.textureIndex];
-			//Make sure our texture is active before drawing
-			if (texture && texture != currentTexture) {
-				glEnd();
-				if (currentTexture)
-					currentTexture->deactivate();
-
-				if (surface.textureIndex < numMaterials) {
-					//Generate if needed
-					if (!texture->generated) {
-						texture->generateBuffer();
-					}
-					texture->activate();
-				} else {
-					glDisable(GL_LIGHTING);
-				}
-
-				currentTexture = texture;
-				glBegin(GL_TRIANGLES);
-			} else {
-				glEnd();
-				if (currentTexture)
-					currentTexture->deactivate();
-                currentTexture = NULL;
-				glBegin(GL_TRIANGLES);
-			}
-		}
-
-		//New and improved rendering with actual Triangle Strips this time
-		for (U32 j = surface.windingStart + 2; j < surface.windingStart + surface.windingCount; j ++) {
-			Point3F n = normal[plane[surface.planeIndex].normalIndex];
-			if (surface.planeFlipped) {
-				n *= -1;
-			}
-			Point3F u0, u1, u2;
-
-			if ((j - (surface.windingStart + 2)) % 2 == 0) {
-				u0 = point[index[j]];
-				u1 = point[index[j - 1]];
-				u2 = point[index[j - 2]];
-			} else {
-				u0 = point[index[j - 2]];
-				u1 = point[index[j - 1]];
-				u2 = point[index[j]];
-			}
-
-			TexGenEq texGenEq = this->texGenEq[surface.texGenIndex];
-
-			//Reference: TGE InteriorRender.cc
-			glNormal3f(n.x, n.y, n.z);
-			glTexCoord2f(planeF_distance_to_point(texGenEq.planeX, u0), planeF_distance_to_point(texGenEq.planeY, u0));
-			glVertex3f(u0.x, u0.y, u0.z);
-
-			glTexCoord2f(planeF_distance_to_point(texGenEq.planeX, u1), planeF_distance_to_point(texGenEq.planeY, u1));
-			glVertex3f(u1.x, u1.y, u1.z);
-
-			glTexCoord2f(planeF_distance_to_point(texGenEq.planeX, u2), planeF_distance_to_point(texGenEq.planeY, u2));
-			glVertex3f(u2.x, u2.y, u2.z);
-		}
-	}
-	glEnd();
-
-	//Don't forget to deactivate the last texture
-	if (currentTexture)
-		currentTexture->deactivate();
-
-	glDisable(GL_TEXTURE_2D);
-#endif
 }
