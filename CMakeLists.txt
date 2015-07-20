@@ -2,6 +2,9 @@ cmake_minimum_required (VERSION 3.0)
 include (CheckIncludeFiles)
 project (DifViewerGame C CXX)
 
+# Force C++11 standard on compilers
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
 # Enable Static Linking the C++ ABI directly into the executables and libraries
 if (MSVC)
 	SET(CMAKE_REQUIRED_LINKER_FLAGS "/SAFESEH:NO")
@@ -259,7 +262,7 @@ set (DIFVIEWERGAME_LIBRARIES
 	${CMAKE_BINARY_DIR}/Bullet/src/BulletDynamics/Debug/libBulletDynamics.a
 	${CMAKE_BINARY_DIR}/Bullet/src/BulletSoftBody/Debug/libBulletSoftBody.a
 	${CMAKE_BINARY_DIR}/Bullet/src/LinearMath/Debug/libLinearMath.a
-	
+
 	# SDL2
 	${CMAKE_BINARY_DIR}/SDL2/Debug/libSDL2.a
 
