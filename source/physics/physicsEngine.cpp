@@ -25,7 +25,6 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
 #include "physics/physicsEngine.h"
 
 PhysicsEngine *PhysicsEngine::gEngine = NULL;
@@ -39,5 +38,3 @@ void PhysicsEngine::setEngine(PhysicsEngine *engine) {
 
 	gEngine->init();
 }
-
-#endif

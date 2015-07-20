@@ -25,8 +25,6 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
-
 #include "physics/bullet/btPhysicsEngine.h"
 #include "physics/bullet/btPhysicsInterior.h"
 #include "objects/interior.h"
@@ -141,5 +139,3 @@ void btPhysicsInterior::construct() {
     infoo.shape = info;
     bodies.push_back(infoo);
 }
-
-#endif /* BUILD_PHYSICS */

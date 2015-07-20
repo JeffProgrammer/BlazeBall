@@ -25,8 +25,6 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
-
 #include "physics/bullet/btPhysicsEngine.h"
 #include "physics/bullet/btPhysicsSphere.h"
 
@@ -122,5 +120,3 @@ Point3F btPhysicsSphere::getCollisionNormal() {
 	return best;
 
 }
-
-#endif /* BUILD_PHYSICS */

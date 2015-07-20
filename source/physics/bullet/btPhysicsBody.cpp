@@ -25,7 +25,6 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
 #include "physics/bullet/btPhysicsBody.h"
 
 const Point3F btPhysicsBody::getPosition() {
@@ -68,5 +67,3 @@ void btPhysicsBody::setVelocity(const Point3F &velocity) {
 void btPhysicsBody::setAngularVelocity(const Point3F &velocity) {
     mActor->setAngularVelocity(btConvert(velocity));
 }
-
-#endif /* BUILD_PHYSICS */

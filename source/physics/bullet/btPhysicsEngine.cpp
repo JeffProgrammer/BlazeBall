@@ -25,7 +25,6 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
 #include "physics/bullet/btPhysicsEngine.h"
 #include "physics/bullet/btPhysicsBody.h"
 #include "physics/bullet/btPhysicsInterior.h"
@@ -195,5 +194,3 @@ PhysicsBody *btPhysicsEngine::createInterior(Interior *interior) {
 PhysicsBody *btPhysicsEngine::createSphere(F32 radius) {
 	return new btPhysicsSphere(radius);
 }
-
-#endif

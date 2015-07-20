@@ -25,7 +25,6 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
 #ifndef btPhysicsEngine_h
 #define btPhysicsEngine_h
 
@@ -102,5 +101,4 @@ inline static const AngAxisF btConvert(const btQuaternion &point) {
 	return AngAxisF(btConvert(point.getAxis()), point.getAngle());
 }
 
-#endif
 #endif

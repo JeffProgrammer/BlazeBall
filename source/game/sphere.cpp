@@ -25,8 +25,6 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
-
 #include "game/sphere.h"
 #include "base/math.h"
 #include "base/io.h"
@@ -167,5 +165,3 @@ void Sphere::setVelocity(const Point3F &vel) {
 void Sphere::setAngularVelocity(const Point3F &vel) {
     mActor->setAngularVelocity(vel);
 }
-
-#endif

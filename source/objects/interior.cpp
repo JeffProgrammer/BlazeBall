@@ -497,12 +497,10 @@ void Interior::generateMaterials(String directory) {
 	this->noise->setTexNum(GL_TEXTURE3);
 }
 
-#ifdef BUILD_PHYSICS
 void Interior::generateMesh() {
 	mActor = PhysicsEngine::getEngine()->createInterior(this);
 	PhysicsEngine::getEngine()->addBody(mActor);
 }
-#endif
 
 void Interior::exportObj(FILE *file) {
 	for (U32 j = 0; j < numPoints; j ++) {

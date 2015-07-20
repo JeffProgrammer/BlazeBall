@@ -25,8 +25,6 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
-
 #ifndef btPhysicsBody_h
 #define btPhysicsBody_h
 
@@ -58,5 +56,3 @@ public:
 };
 
 #endif /* btPhysicsBody_h */
-
-#endif /* BUILD_PHYSICS */

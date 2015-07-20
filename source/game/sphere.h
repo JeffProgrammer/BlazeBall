@@ -25,7 +25,6 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
 #ifndef sphere_h
 #define sphere_h
 
@@ -82,5 +81,4 @@ public:
     void setAngularVelocity(const Point3F &vel);
 };
 
-#endif
 #endif

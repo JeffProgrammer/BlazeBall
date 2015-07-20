@@ -74,7 +74,6 @@ void Scene::render() {
 		difs[index]->render();
 	}
 
-#ifdef BUILD_PHYSICS
 	Point3F pos = sphere->getPosition();
 	AngAxisF rot = sphere->getRotation();
 
@@ -92,7 +91,6 @@ void Scene::render() {
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &viewMatrix[0][0]);
 
 	sphere->render(ColorF(1, 1, 0, 1));
-#endif
 }
 
 void Scene::loop() {
@@ -116,7 +114,6 @@ void Scene::loop() {
 	if (movement[2]) move.y -= speed;
 	if (movement[3]) move.y += speed;
 
-#ifdef BUILD_PHYSICS
 	glm::vec3 torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
 	delta = glm::rotate(delta, -pitch, glm::vec3(1, 0, 0));
 
@@ -139,7 +136,7 @@ void Scene::loop() {
         sphere->setVelocity(Point3F(0, 0, 0));
         sphere->setAngularVelocity(Point3F(0, 0, 0));
 	}
-#else /* BUILD_PHYSICS */
+#if 0
 	move *= 3;
 	if (movement[8])
 		move *= 2;
@@ -148,7 +145,7 @@ void Scene::loop() {
 	delta = glm::translate(delta, glm::vec3(move.y, -move.x, 0));
 
 	cameraPosition += glm::vec3(delta[3]);
-#endif /* BUILD_PHYSICS */
+#endif // 0
 }
 
 bool Scene::initGL() {
@@ -189,10 +186,8 @@ bool Scene::initGL() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-#ifdef BUILD_PHYSICS
 	sphere = new Sphere(Point3F(0, 0, 60), 0.2f);
 //	sphere->setMaterial(difs[0]->interior[0]->material[4]);
-#endif /* BUILD_PHYSICS */
 
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
@@ -399,9 +394,7 @@ void Scene::run() {
 			printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
 		}
 
-#ifdef BUILD_PHYSICS
 		PhysicsEngine::getEngine()->simulate((end - start) / 1000000.0f);
-#endif
 	}
 	
 	//Clean up (duh)

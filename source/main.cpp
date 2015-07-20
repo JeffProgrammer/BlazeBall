@@ -45,9 +45,7 @@ int main(int argc, const char * argv[])
 		return 1;
 	}
 
-#ifdef BUILD_PHYSICS
 	PhysicsEngine::setEngine(new btPhysicsEngine());
-#endif
 
 	U32 argstart = 1;
 

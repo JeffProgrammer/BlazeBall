@@ -25,7 +25,6 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifdef BUILD_PHYSICS
 #ifndef physicsEngine_h
 #define physicsEngine_h
 
@@ -56,5 +55,4 @@ public:
 	static PhysicsEngine *getEngine();
 };
 
-#endif
 #endif
