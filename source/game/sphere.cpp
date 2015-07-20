@@ -44,7 +44,8 @@ void Sphere::generate() {
 	S32 segments2 = segments / 2;
 	S32 slices2 = slices / 2;
 
-	Vertex *points = new Vertex[segments * slices * 2];
+	constexpr S32 size = segments * slices * 2;
+	Vertex points[size];
 	U32 point = 0;
 
 	for (S32 y = -slices2; y < slices2; y ++) {
@@ -93,8 +94,6 @@ void Sphere::generate() {
 	glGenBuffers(1, &renderBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, renderBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * point, points, GL_STATIC_DRAW);
-
-	delete [] points;
 }
 
 void Sphere::render(ColorF color) {
