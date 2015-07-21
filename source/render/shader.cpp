@@ -42,7 +42,7 @@ Shader::Shader(const String &vertPath, const String &fragPath) {
 GLuint Shader::loadShader(const String &path, const GLenum &type) {
 	GLuint shaderId = glCreateShader(type);
 	U32 length;
-	U8 *data = io->readFile(path, &length);
+	U8 *data = IO::readFile(path, &length);
 	if (data == NULL)
 		return 0;
 

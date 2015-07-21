@@ -37,10 +37,10 @@ Material::~Material() {
 }
 
 void Material::loadDiffuse(String path) {
-	this->name = new String(io->getName(path));
+	this->name = new String(IO::getName(path));
 	this->path = new String(path);
 
-	if ((diffuse = io->loadTexture(path)) == NULL) {
+	if ((diffuse = IO::loadTexture(path)) == NULL) {
 		fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)path);
 	} else {
 		//So we set the texNum

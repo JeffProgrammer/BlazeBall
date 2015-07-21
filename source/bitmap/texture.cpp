@@ -126,13 +126,13 @@ String Texture::find(String name, String directory) {
 
 		//If we can't find the PNG, try for JPEG
 		//TODO: BMP Support?
-		if (!io->isfile(imageFile)) {
+		if (!IO::isfile(imageFile)) {
 			//Swap the last 3 chars with jpg
 			imageFile.data[pathlen - 3] = 'j';
 			imageFile.data[pathlen - 2] = 'p';
 			imageFile.data[pathlen - 1] = 'g';
 		}
-		if (!io->isfile(imageFile)) {
+		if (!IO::isfile(imageFile)) {
 			//Swap the last 3 chars with jng
 			imageFile.data[pathlen - 3] = 'j';
 			imageFile.data[pathlen - 2] = 'n';
@@ -143,13 +143,13 @@ String Texture::find(String name, String directory) {
 			break;
 
 		//If we still can't find it, recurse (hacky but effective method)
-		if (!io->isfile(imageFile)) {
+		if (!IO::isfile(imageFile)) {
 			*strrchr((const char *)base.data, '/') = 0;
 		}
-	} while (!io->isfile(imageFile) && strcmp(base, ""));
+	} while (!IO::isfile(imageFile) && strcmp(base, ""));
 
 	//If we can't find it, just chuck the lot and keep going.
-	if (!io->isfile(imageFile)) {
+	if (!IO::isfile(imageFile)) {
 		return "";
 	}
 	return imageFile;

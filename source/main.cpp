@@ -65,7 +65,7 @@ int main(int argc, const char * argv[])
 	scene->filenames = new String*[argc - argstart];
 
 	for (U32 i = 0; i < (argc - argstart); i ++) {
-		String directory = io->getPath(argv[i + argstart]);
+		String directory = IO::getPath(argv[i + argstart]);
 
 		//Open file
 		FILE *file = fopen(argv[i + argstart], "r");
@@ -89,7 +89,7 @@ int main(int argc, const char * argv[])
 		fclose(out);
 	} else if (!strcmp(argv[1], "-c")) {
 		for (U32 i = 0; i < scene->difCount; i ++) {
-			String directory = io->getPath(*scene->filenames[i]);
+			String directory = IO::getPath(*scene->filenames[i]);
 
 			FILE *output = fopen((const char *)scene->filenames[i], "w");
 			scene->difs[i]->write(output, directory);
