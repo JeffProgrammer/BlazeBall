@@ -25,8 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef aiSpecialNode_h
-#define aiSpecialNode_h
+#ifndef dif_aiSpecialNode_h
+#define dif_aiSpecialNode_h
 
 #include <dif/base/types.h>
 

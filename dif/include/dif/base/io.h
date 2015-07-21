@@ -25,8 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef io_h
-#define io_h
+#ifndef dif_io_h
+#define dif_io_h
 
 #include <dif/base/types.h>
 #include <type_traits>

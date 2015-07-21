@@ -25,8 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef vehicleCollision_h
-#define vehicleCollision_h
+#ifndef dif_vehicleCollision_h
+#define dif_vehicleCollision_h
 
 #include <dif/base/types.h>
 

@@ -25,8 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef gameEntity_h
-#define gameEntity_h
+#ifndef dif_gameEntity_h
+#define dif_gameEntity_h
 
 #include <dif/base/types.h>
 

@@ -25,8 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef forceField_h
-#define forceField_h
+#ifndef dif_forceField_h
+#define dif_forceField_h
 
 #include <dif/base/types.h>
 

@@ -25,8 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef types_h
-#define types_h
+#ifndef dif_types_h
+#define dif_types_h
 
 #include <fstream>
 #include <iostream>

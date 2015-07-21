@@ -25,8 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef dif_h
-#define dif_h
+#ifndef dif_dif_h
+#define dif_dif_h
 
 #include <dif/base/types.h>
 #include <dif/objects/interior.h>

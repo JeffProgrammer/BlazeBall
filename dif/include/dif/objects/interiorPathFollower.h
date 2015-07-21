@@ -25,8 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef interiorPathFollower_h
-#define interiorPathFollower_h
+#ifndef dif_interiorPathFollower_h
+#define dif_interiorPathFollower_h
 
 #include <dif/base/types.h>
 

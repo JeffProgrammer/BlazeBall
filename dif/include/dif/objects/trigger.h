@@ -25,8 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef trigger_h
-#define trigger_h
+#ifndef dif_trigger_h
+#define dif_trigger_h
 
 #include <dif/base/types.h>
 

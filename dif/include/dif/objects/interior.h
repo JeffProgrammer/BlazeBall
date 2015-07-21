@@ -25,8 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef interior_h
-#define interior_h
+#ifndef dif_interior_h
+#define dif_interior_h
 
 #include <dif/base/types.h>
 #include <dif/objects/staticMesh.h>

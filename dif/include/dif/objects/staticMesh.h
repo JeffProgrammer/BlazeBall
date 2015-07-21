@@ -25,8 +25,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef staticMesh_h
-#define staticMesh_h
+#ifndef dif_staticMesh_h
+#define dif_staticMesh_h
 
 #include <dif/base/types.h>
 #include <dif/base/io.h>
