@@ -32,7 +32,7 @@
 #include <limits>
 
 template <typename T>
-class Point4 : public Readable, Writable {
+class Point4 {
 public:
 	T x;
 	T y;
@@ -62,9 +62,6 @@ public:
 
 	Point4<T> normalize() const;
 	Point4<T> roundThousands() const;
-
-	bool read(FILE *file);
-	bool write(FILE *file) const;
 };
 
 template <typename T>

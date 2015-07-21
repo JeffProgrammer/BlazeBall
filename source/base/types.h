@@ -47,17 +47,7 @@ typedef signed long long S64;
 typedef float F32;
 typedef double F64;
 
-struct Readable {
-public:
-	bool read(FILE *file) { return false; };
-};
-
-struct Writable {
-public:
-	bool write(FILE *file) const { return false; };
-};
-
-struct String : public Readable, Writable {
+struct String {
 	U8 *data;
 	U32 length;
 	bool allocated;
@@ -145,9 +135,6 @@ struct String : public Readable, Writable {
 			allocated = false;
 		}
 	}
-
-	bool read(FILE *file);
-	bool write(FILE *file) const;
 };
 
 #include "base/point2.h"
@@ -179,7 +166,7 @@ public:
 	AngAxisF(const QuatF &quat);
 };
 
-class QuatF : public Readable, Writable {
+class QuatF {
 public:
 	F32 w;
 	F32 x;
@@ -189,9 +176,6 @@ public:
 	QuatF() : x(0), y(0), z(0), w(0) {};
 	QuatF(const F32 &x, const F32 &y, const F32 &z, const F32 &w) : x(x), y(y), z(z), w(w) {};
 	QuatF(const AngAxisF &ang);
-
-	bool read(FILE *file);
-	bool write(FILE *file) const;
 };
 
 inline AngAxisF::AngAxisF(const QuatF &quat) {
@@ -212,18 +196,15 @@ inline QuatF::QuatF(const AngAxisF &ang) {
 	z = ang.axis.z * sin2;
 }
 
-class PlaneF : public Readable, Writable {
+class PlaneF {
 public:
 	F32 x;
 	F32 y;
 	F32 z;
 	F32 d;
-
-	bool read(FILE *file);
-	bool write(FILE *file) const;
 };
 
-class BoxF : public Readable, Writable {
+class BoxF {
 public:
 	F32 minX;
 	F32 minY;
@@ -241,30 +222,21 @@ public:
 	inline Point3F getCenter() const {
 		return (getMax() + getMin()) / 2;
 	}
-
-	bool read(FILE *file);
-	bool write(FILE *file) const;
 };
 
-class SphereF : public Readable, Writable {
+class SphereF {
 public:
 	F32 x;
 	F32 y;
 	F32 z;
 	F32 radius;
-
-	bool read(FILE *file);
-	bool write(FILE *file) const;
 };
 
-class Dictionary : public Readable, Writable {
+class Dictionary {
 public:
 	U32 size;
 	String *names;
 	String *values;
-
-	bool read(FILE *file);
-	bool write(FILE *file) const;
 
 	String get(const String &key) const {
 		for (U32 i = 0; i < size; i ++) {
@@ -280,13 +252,10 @@ public:
 	}
 };
 
-class PNG : public Readable, Writable {
+class PNG {
 public:
 	U32 size;
 	U8 *data;
-
-	bool read(FILE *file);
-	bool write(FILE *file) const;
 };
 
 class TriangleF {
@@ -304,12 +273,9 @@ public:
 	Point3F point3;
 };
 
-class MatrixF : public Readable, Writable {
+class MatrixF {
 public:
 	F32 m[16];
-
-	bool read(FILE *file);
-	bool write(FILE *file) const;
 };
 
 #include "base/ray.h"
