@@ -24,13 +24,13 @@ endmacro(ADD_FRAMEWORK)
 # Bullet Physics Library
 #------------------------------------------------------------------------------
 
-add_subdirectory("${Project_SOURCE_DIR}thirdparty/bullet" Bullet)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
 
 #------------------------------------------------------------------------------
 # SDL
 #------------------------------------------------------------------------------
 
-add_subdirectory("${Project_SOURCE_DIR}thirdparty/SDL2" SDL2)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
 
 #------------------------------------------------------------------------------
 # JPEG Library
@@ -91,7 +91,7 @@ if (APPLE)
 endif()
 
 add_library(Jpeg STATIC ${JPEG_SRC})
-set_property (TARGET Jpeg APPEND PROPERTY INCLUDE_DIRECTORIES "${Project_SOURCE_DIR}/thirdparty/jpeg")
+set_property (TARGET Jpeg APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
 
 #------------------------------------------------------------------------------
 # MNG Library
@@ -141,15 +141,65 @@ set (MNG_SRC
 )
 add_library(Mng STATIC ${MNG_SRC})
 target_link_libraries(Mng libJpeg)
-set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${Project_SOURCE_DIR}/thirdparty/jpeg")
+set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
 
 #------------------------------------------------------------------------------
 # GLEW Library
 #------------------------------------------------------------------------------
 
 add_library(GLEW STATIC thirdparty/glew/src/glew.c)
-set_property(TARGET GLEW APPEND PROPERTY INCLUDE_DIRECTORIES "${Project_SOURCE_DIR}/thirdparty/glew/include")
+set_property(TARGET GLEW APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include")
 target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
+
+#------------------------------------------------------------------------------
+# DIF Library
+#------------------------------------------------------------------------------
+
+set (DIF_SRC
+	############################################################################
+	# Sources
+	############################################################################
+
+	# Base
+	dif/src/dif/base/io.cpp
+
+	# Objects
+	dif/src/dif/objects/aiSpecialNode.cpp
+	dif/src/dif/objects/dif.cpp
+	dif/src/dif/objects/forceField.cpp
+	dif/src/dif/objects/gameEntity.cpp
+	dif/src/dif/objects/interior.cpp
+	dif/src/dif/objects/interiorPathFollower.cpp
+	dif/src/dif/objects/staticMesh.cpp
+	dif/src/dif/objects/trigger.cpp
+	dif/src/dif/objects/vehicleCollision.cpp
+
+	############################################################################
+	# Headers
+	############################################################################
+
+	# Base
+	dif/include/dif/base/color.h
+	dif/include/dif/base/io.h
+	dif/include/dif/base/point2.h
+	dif/include/dif/base/point3.h
+	dif/include/dif/base/types.h
+
+	# Objects
+	dif/include/dif/objects/aiSpecialNode.h
+	dif/include/dif/objects/dif.h
+	dif/include/dif/objects/forceField.h
+	dif/include/dif/objects/gameEntity.h
+	dif/include/dif/objects/interior.h
+	dif/include/dif/objects/interiorPathFollower.h
+	dif/include/dif/objects/staticMesh.h
+	dif/include/dif/objects/trigger.h
+	dif/include/dif/objects/vehicleCollision.h
+)
+
+# Create the library
+add_library(Dif STATIC ${DIF_SRC})
+set_property(TARGET Dif APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/dif/include")
 
 #------------------------------------------------------------------------------
 # Main Project Executable
@@ -166,6 +216,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/mng
 	thirdparty/SDL2/include
 	thirdparty
+	dif/include
 )
 
 # Main project source
@@ -196,28 +247,6 @@ set (DIFVIEWERGAME_SRC
 	# Game folder
 	source/game/sphere.cpp
 	source/game/sphere.h
-
-	# Objects folder
-	source/objects/aiSpecialNode.cpp
-	source/objects/aiSpecialNode.h
-	source/objects/dif.cpp
-	source/objects/dif.h
-	source/objects/forceField.cpp
-	source/objects/forceField.h
-	source/objects/gameEntity.cpp
-	source/objects/gameEntity.h
-	source/objects/Interior.cpp
-	source/objects/Interior.h
-	source/objects/InteriorPathFollower.cpp
-	source/objects/InteriorPathFollower.h
-	source/objects/pathedInterior.cpp
-	source/objects/pathedInterior.h
-	source/objects/staticMesh.cpp
-	source/objects/staticMesh.h
-	source/objects/trigger.cpp
-	source/objects/trigger.h
-	source/objects/vehicleCollision.cpp
-	source/objects/vehicleCollision.h
 
 	# Physics folder
 	source/physics/physicsBody.cpp
@@ -275,6 +304,9 @@ set (DIFVIEWERGAME_LIBRARIES
 	# MNG
 	${CMAKE_BINARY_DIR}/Debug/libMng.a
 	z #Zlib
+
+	# DIF
+	${CMAKE_BINARY_DIR}/Debug/libDif.a
 )
 
 include_directories(include ${DIFVIEWERGAME_INCLUDEDIR})
