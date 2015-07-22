@@ -33,7 +33,7 @@
 #include "base/math.h"
 #include "base/types.h"
 #include "base/io.h"
-#include "objects/dif.h"
+#include <dif/objects/dif.h>
 #include "bitmap/texture.h"
 #include "game/sphere.h"
 #include "physics/physicsEngine.h"
@@ -88,7 +88,7 @@ protected:
 	struct {
 		bool hasSelection;
 		U32 surfaceIndex;
-		Interior *interior;
+		GameInterior *interior;
 	} selection;
 
 	GLuint displayList;
@@ -113,7 +113,7 @@ protected:
 	const U32 specularExponent   = 7;
 public:
 	U32 difCount;
-	DIF **difs;
+	DIF::DIF **difs;
 	String **filenames;
 	Sphere *sphere;
 

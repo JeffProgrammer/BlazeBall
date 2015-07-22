@@ -34,6 +34,7 @@
 #include <unistd.h>
 #include "platformSDL/SDLWindow.h"
 #include "render/scene.h"
+#include "game/gameInterior.h"
 
 #include "physics/bullet/btPhysicsEngine.h"
 
