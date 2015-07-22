@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <fstream>
 #include <sys/time.h>
 #include <libgen.h>
 #include <unistd.h>
@@ -61,40 +62,40 @@ int main(int argc, const char * argv[])
 	}
 
 	scene->difCount = 0;
-	scene->difs = new DIF*[argc - argstart];
+	scene->difs = new DIF::DIF*[argc - argstart];
 	scene->filenames = new String*[argc - argstart];
 
 	for (U32 i = 0; i < (argc - argstart); i ++) {
 		String directory = IO::getPath(argv[i + argstart]);
 
-		//Open file
-		FILE *file = fopen(argv[i + argstart], "r");
+		std::ifstream file(argv[i + argstart]);
 
 		//Read the .dif
-		scene->difs[i] = new DIF(file, directory);
+		scene->difs[i] = new DIF::DIF();
+		scene->difs[i]->read(file);
 		if (scene->difs[i]) {
 			scene->difCount ++;
 		}
 
 		//Clean up
-		fclose(file);
+		file.close();
 
 		scene->filenames[i] = new String(argv[i + argstart]);
 	}
 
 	if (!strcmp(argv[1], "-o")) {
 		FILE *out = fopen(argv[2], "w");
-		scene->difs[0]->interior[0]->exportObj(out);
+//		((GameInterior)scene->difs[0]->interior[0]).exportObj(out);
 		fflush(out);
 		fclose(out);
 	} else if (!strcmp(argv[1], "-c")) {
 		for (U32 i = 0; i < scene->difCount; i ++) {
 			String directory = IO::getPath(*scene->filenames[i]);
 
-			FILE *output = fopen((const char *)scene->filenames[i], "w");
-			scene->difs[i]->write(output, directory);
-			fflush(output);
-			fclose(output);
+			std::ofstream output((const char *)scene->filenames[i]);
+			scene->difs[i]->write(output);
+			output.flush();
+			output.close();
 		}
 	} else {
 		//Init SDL and go!

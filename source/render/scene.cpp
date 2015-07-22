@@ -256,10 +256,10 @@ void Scene::handleEvent(Event *event) {
 					for (U32 i = 0; i < difCount; i ++) {
 						String directory = IO::getPath(*filenames[i]);
 
-						FILE *output = fopen(*filenames[i], "w");
-						difs[i]->write(output, directory);
-						fflush(output);
-						fclose(output);
+						std::ofstream output(*filenames[i]);
+						difs[i]->write(output);
+						output.flush();
+						output.close();
 					}
 				} else {
 					movement[1] = true;
