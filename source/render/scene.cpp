@@ -71,7 +71,7 @@ void Scene::render() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	for (U32 index = 0; index < difCount; index ++) {
-		difs[index]->render();
+//		difs[index]->render();
 	}
 
 	Point3F pos = sphere->getPosition();
@@ -131,7 +131,7 @@ void Scene::loop() {
 	cameraPosition = glm::vec3(pos.x, pos.y, pos.z);
 	cameraPosition += glm::vec3(glm::translate(delta, glm::vec3(0, -2.5, 0))[3]);
 
-	if (sphere->getPosition().z < difs[0]->interior[0]->boundingBox.getMin().x) {
+	if (sphere->getPosition().z < difs[0]->interior[0].boundingBox.getMin().x) {
 		sphere->setPosition(Point3F(0, 30, 60));
         sphere->setVelocity(Point3F(0, 0, 0));
         sphere->setAngularVelocity(Point3F(0, 0, 0));
@@ -221,20 +221,20 @@ void Scene::performClick(S32 mouseX, S32 mouseY) {
 	RayF ray(cameraPosition.x, cameraPosition.y, cameraPosition.z,
 			 world.x, world.y, world.z);
 
-	for (U32 i = 0; i < difCount; i ++) {
-		DIF *dif = difs[i];
-		for (U32 j = 0; j < dif->numDetailLevels; j ++) {
-			Interior *interior = dif->interior[j];
-
-			U32 surfaceNum = interior->rayCast(ray);
-			if (surfaceNum != -1) {
-				selection.hasSelection = true;
-				selection.surfaceIndex = surfaceNum;
-				selection.interior = interior;
-				return;
-			}
-		}
-	}
+//	for (U32 i = 0; i < difCount; i ++) {
+//		DIF *dif = difs[i];
+//		for (U32 j = 0; j < dif->numDetailLevels; j ++) {
+//			Interior *interior = dif->interior[j];
+//
+//			U32 surfaceNum = interior->rayCast(ray);
+//			if (surfaceNum != -1) {
+//				selection.hasSelection = true;
+//				selection.surfaceIndex = surfaceNum;
+//				selection.interior = interior;
+//				return;
+//			}
+//		}
+//	}
 
 	selection.hasSelection = false;
 }
