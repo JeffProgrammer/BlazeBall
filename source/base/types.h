@@ -202,6 +202,8 @@ public:
 	F32 y;
 	F32 z;
 	F32 d;
+
+	PlaneF(const DIF::PlaneF plane) : x(plane.x), y(plane.y), z(plane.z), d(plane.d) {}
 };
 
 class BoxF {
@@ -280,5 +282,17 @@ public:
 
 #include "base/ray.h"
 typedef Ray<F32> RayF;
+
+struct Vertex {
+	Point3F point;
+	Point2F uv;
+	Point3F normal;
+	Point3F tangent;
+	Point3F bitangent;
+};
+
+struct Triangle {
+	Vertex verts[3];
+};
 
 #endif

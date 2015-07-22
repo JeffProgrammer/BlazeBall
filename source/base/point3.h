@@ -30,6 +30,7 @@
 
 #include <math.h>
 #include <limits>
+#include <dif/base/types.h>
 
 template <typename T>
 class Point3 {
@@ -41,6 +42,7 @@ public:
 	Point3() : x(0), y(0), z(0) {};
 	Point3(const T &x, const T &y, const T &z) : x(x), y(y), z(z) {};
 	Point3(const Point3 &point) : x((T) point.x), y((T) point.y), z((T) point.z) {}
+	Point3<T>(const DIF::Point3<T> &point) : x((T) point.x), y((T) point.y), z((T) point.z) {}
 
 	bool operator==(const Point3<T> &point) const;
 	bool operator!=(const Point3<T> &point) const;
