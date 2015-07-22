@@ -32,7 +32,7 @@
 #include "base/types.h"
 
 class PhysicsBody;
-class Interior;
+class GameInterior;
 
 class PhysicsEngine {
 	static PhysicsEngine *gEngine;
@@ -45,7 +45,7 @@ public:
 	virtual void simulate(F32 delta) = 0;
 	virtual void addBody(PhysicsBody *body) = 0;
 
-	virtual PhysicsBody *createInterior(Interior *interior) = 0;
+	virtual PhysicsBody *createInterior(GameInterior *interior) = 0;
 	virtual PhysicsBody *createSphere(F32 radius) = 0;
 
 	void setRunning(bool running) { this->running = running; }

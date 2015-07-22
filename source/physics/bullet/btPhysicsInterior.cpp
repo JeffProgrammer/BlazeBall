@@ -27,7 +27,7 @@
 
 #include "physics/bullet/btPhysicsEngine.h"
 #include "physics/bullet/btPhysicsInterior.h"
-#include "objects/interior.h"
+#include "game/gameInterior.h"
 #include <vector>
 
 extern std::vector<ShapeInfo> shapes;
@@ -37,7 +37,7 @@ extern std::vector<BodyMovement> moves;
 /// BEHOLD, THE MAGIC NUMBER
 #define ADJACENCY_NORMAL_THRESHOLD 0.01f
 
-btPhysicsInterior::btPhysicsInterior(Interior *interior) : btPhysicsBody(), mInterior(interior) {
+btPhysicsInterior::btPhysicsInterior(GameInterior *interior) : btPhysicsBody(), mInterior(interior) {
     construct();
 }
 
@@ -51,8 +51,8 @@ void btPhysicsInterior::construct() {
     std::vector<std::pair<int, int> > adjacent;
     U32 index = 0;
     
-    for (U32 i = 0; i < mInterior->numSurfaces; i ++) {
-        Surface surface = mInterior->surface[i];
+    for (U32 i = 0; i < mInterior->surface.size(); i ++) {
+		DIF::Interior::Surface surface = mInterior->surface[i];
         
         for (U32 j = 0; j < surface.windingCount - 2; j ++) {
 			Point3F point0;

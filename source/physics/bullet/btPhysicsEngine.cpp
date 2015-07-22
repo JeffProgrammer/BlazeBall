@@ -187,7 +187,7 @@ void btPhysicsEngine::addBody(PhysicsBody *body) {
 	world->addRigidBody(rigid);
 }
 
-PhysicsBody *btPhysicsEngine::createInterior(Interior *interior) {
+PhysicsBody *btPhysicsEngine::createInterior(GameInterior *interior) {
 	return new btPhysicsInterior(interior);
 }
 

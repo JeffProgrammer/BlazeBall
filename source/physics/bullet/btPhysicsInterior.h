@@ -31,9 +31,9 @@
 #include "btPhysicsBody.h"
 
 class btPhysicsInterior : public btPhysicsBody {
-	Interior *mInterior;
+	GameInterior *mInterior;
 public:
-	btPhysicsInterior(Interior *interior);
+	btPhysicsInterior(GameInterior *interior);
 	void construct();
 };
 

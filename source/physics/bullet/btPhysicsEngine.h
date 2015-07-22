@@ -75,7 +75,7 @@ public:
 	virtual void init();
 	virtual void simulate(F32 delta);
 	virtual void addBody(PhysicsBody *body);
-	virtual PhysicsBody *createInterior(Interior *interior);
+	virtual PhysicsBody *createInterior(GameInterior *interior);
 	virtual PhysicsBody *createSphere(F32 radius);
 
 	btDiscreteDynamicsWorld *getWorld() { return world; };
