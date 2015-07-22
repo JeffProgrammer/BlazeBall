@@ -36,7 +36,6 @@
 #include <GL/glew.h>
 #endif
 #include "base/types.h"
-#include "objects/interior.h"
 #include "physics/physicsBody.h"
 #include "render/material.h"
 
