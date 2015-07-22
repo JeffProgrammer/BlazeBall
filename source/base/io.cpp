@@ -33,11 +33,41 @@
 #include "bitmap/mngsupport.h"
 #include "bitmap/jpegsupport.h"
 
+bool IO::isfile(const String &file) {
+	FILE *stream = fopen((const char *)file.data, "r");
+	if (stream) {
+		fclose(stream);
+		return true;
+	}
+	return false;
+}
+
+U8 *IO::readFile(const String &file, U32 *length) {
+	FILE *stream = fopen((const char *)file.data, "rb");
+
+	if (!stream)
+		return NULL;
+
+	//Read length of file
+	fseek(stream, 0L, SEEK_END);
+	*length = (U32)ftell(stream);
+	fseek(stream, 0L, SEEK_SET);
+
+	U8 *data = new U8[*length + 1];
+	fread(data, sizeof(U8), *length, stream);
+	data[*length ++] = 0;
+
+	fclose(stream);
+
+	return data;
+}
+
 #ifdef _WIN32
 #define DIR_SEP '\\'
 #else
 #define DIR_SEP '/'
 #endif
+
 
 String IO::getPath(const String &file) {
 	S64 last = (S64)((U8 *)strrchr((const char *)file.data, DIR_SEP) - file.data);
