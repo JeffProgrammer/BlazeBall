@@ -33,20 +33,27 @@
 #include "physics/physicsEngine.h"
 
 #include <dif/objects/interior.h>
-
-struct RenderInfo {
-	GLuint vertexBuffer;
-	U32 *numMaterialTriangles;
-	bool generated;
-};
+#include <vector>
 
 class GameInterior : public DIF::Interior {
-	Material **material;
-	Texture *noise;
+private:
+	DIF::Interior *mInterior;
+	std::vector<Material*> mMaterialList;
+	Texture mNoiseList;
 
 	PhysicsBody *mActor;
+	
+	struct RenderInfo {
+		GLuint vertexBuffer;
+		U32 *numMaterialTriangles;
+		bool generated;
+	};
 	RenderInfo renderInfo;
 
+public:
+	GameInterior();
+	~GameInterior();
+	
 	void generateMaterials(std::string directory);
 	void generateMesh();
 	void exportObj(FILE *file);

@@ -71,7 +71,7 @@ void Scene::render() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	for (U32 index = 0; index < difCount; index ++) {
-//		difs[index]->render();
+		difs[index]->render();
 	}
 
 	Point3F pos = sphere->getPosition();

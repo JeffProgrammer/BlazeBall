@@ -26,20 +26,21 @@
 //------------------------------------------------------------------------------
 
 #include "game/gameInterior.h"
+#include <string>
 
-void Interior::generateMaterials(String directory) {
+void GameInterior::generateMaterials(std::string directory) {
 	//Allocate all textures for the interior
-	if (numMaterials) {
-		material = new Material*[numMaterials];
-		for (U32 i = 0; i < numMaterials; i ++) {
-			printf("Generating materials for texture %s\n", (char *)this->materialName[i]);
-			String materialName = io->getName(this->materialName[i]);
-			String diffuseFile = Texture::find(materialName, directory);
+	if (mInterior->materialName.size()) {
+		material = new Material*[mInterior->materialName.size()];
+		for (U32 i = 0; i < mInterior->materialName.size(); i ++) {
+			printf("Generating materials for texture %s\n", mInterior->materialName[i].c_str());
+			std::string materialName = io->getName(mInterior->materialName[i]);
+			std::string diffuseFile = Texture::find(materialName);
 
 			//If we can't find it, just chuck the lot and keep going.
-			if (!diffuseFile.length) {
-				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", (char *)materialName);
-				this->material[i] = NULL;
+			if (!diffuseFile.length()) {
+				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", materialName.c_str());
+				mMaterialList[i] = NULL;
 				continue;
 			}
 			Material *material = new Material(diffuseFile);
@@ -68,30 +69,30 @@ void Interior::generateMaterials(String directory) {
 	this->noise->setTexNum(GL_TEXTURE3);
 }
 
-void Interior::generateMesh() {
+void GameInterior::generateMesh() {
 	mActor = PhysicsEngine::getEngine()->createInterior(this);
 	PhysicsEngine::getEngine()->addBody(mActor);
 }
 
-void Interior::exportObj(FILE *file) {
-	for (U32 j = 0; j < numPoints; j ++) {
+void GameInterior::exportObj(FILE *file) {
+	for (U32 j = 0; j < mInterior->point.size(); j ++) {
 		//Build triangles
-		Point3F point = this->point[j];
+		Point3F point = mInterior->point[j];
 		fprintf(file, "v %g %g %g\n", -point.x, point.z, point.y);
 	}
 
-	for (U32 j = 0; j < numNormals; j ++) {
+	for (U32 j = 0; j < mInterior->normal.size(); j ++) {
 		//Build triangles
-		Point3F point = normal[j];
+		Point3F point = mInterior->normal[j];
 		fprintf(file, "vn %g %g %g\n", -point.x, point.z, point.y);
 	}
 
 	fprintf(file, "\n");
 
-	for (U32 surfaceNum = 0; surfaceNum < numSurfaces; surfaceNum ++) {
-		Surface surface = this->surface[surfaceNum];
+	for (U32 surfaceNum = 0; surfaceNum < mInterior->surface.size(); surfaceNum ++) {
+		const Surface &surface = mInterior->surface[surfaceNum];
 
-		Point3F normal = this->normal[plane[surface.planeIndex].normalIndex];
+		Point3F normal = mInterior->normal[mInterior->plane[surface.planeIndex].normalIndex];
 		if (surface.planeFlipped) {
 			normal *= -1;
 		}
@@ -101,25 +102,25 @@ void Interior::exportObj(FILE *file) {
 			U32 v0, v1, v2;
 
 			if ((j - (surface.windingStart + 2)) % 2 == 0) {
-				v0 = index[j];
-				v1 = index[j - 1];
-				v2 = index[j - 2];
+				v0 = mInterior->index[j];
+				v1 = mInterior->index[j - 1];
+				v2 = mInterior->index[j - 2];
 			} else {
-				v0 = index[j - 2];
-				v1 = index[j - 1];
-				v2 = index[j];
+				v0 = mInterior->index[j - 2];
+				v1 = mInterior->index[j - 1];
+				v2 = mInterior->index[j];
 			}
 			//Build triangles
 			fprintf(file, "f");
-			fprintf(file, " %d//%d", v0 + 1, plane[surface.planeIndex].normalIndex + 1);
-			fprintf(file, " %d//%d", v1 + 1, plane[surface.planeIndex].normalIndex + 1);
-			fprintf(file, " %d//%d", v2 + 1, plane[surface.planeIndex].normalIndex + 1);
+			fprintf(file, " %d//%d", v0 + 1, mInterior->plane[surface.planeIndex].normalIndex + 1);
+			fprintf(file, " %d//%d", v1 + 1, mInterior->plane[surface.planeIndex].normalIndex + 1);
+			fprintf(file, " %d//%d", v2 + 1, mInterior->plane[surface.planeIndex].normalIndex + 1);
 			fprintf(file, "\n");
 		}
 	}
 }
 
-U32 Interior::rayCast(RayF ray) {
+U32 GameInterior::rayCast(RayF ray) {
 	//	ray = RayF(ray.origin.convert(), ray.direction.convert());
 
 	U32 closest = -1;
@@ -127,14 +128,14 @@ U32 Interior::rayCast(RayF ray) {
 
 	//	printf("Ray: {(%f,%f,%f),(%f,%f,%f)}\n",ray.origin.x,ray.origin.y,ray.origin.z,ray.direction.x,ray.direction.y,ray.direction.z);
 
-	for (U32 i = 0; i < numSurfaces; i ++) {
-		Surface surface = this->surface[i];
+	for (U32 i = 0; i < mInterior->surface.size(); i ++) {
+		const Surface &surface = mInterior->surface[i];
 
 		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
 			TriangleF triangle;
-			triangle.point0 = point[index[surface.windingStart + j]];
-			triangle.point1 = point[index[surface.windingStart + j + 1]];
-			triangle.point2 = point[index[surface.windingStart + j + 2]];
+			triangle.point0 = mInterior->point[mInterior->index[surface.windingStart + j]];
+			triangle.point1 = mInterior->point[mInterior->index[surface.windingStart + j + 1]];
+			triangle.point2 = mInterior->point[mInterior->index[surface.windingStart + j + 2]];
 
 			F32 distance = ray.distance(triangle);
 			if (distance > 0 && distance < closestDistance) {
