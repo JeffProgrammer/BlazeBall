@@ -136,40 +136,6 @@ public:
 	}
 };
 
-class SphereF {
-public:
-	F32 x;
-	F32 y;
-	F32 z;
-	F32 radius;
-};
-
-class Dictionary {
-public:
-	U32 size;
-	std::string *names;
-	std::string *values;
-
-	std::string get(const std::string &key) const {
-		for (U32 i = 0; i < size; i ++) {
-			if (names[i] == key)
-				return values[i];
-		}
-		return "";
-	}
-
-	~Dictionary() {
-		delete [] names;
-		delete [] values;
-	}
-};
-
-class PNG {
-public:
-	U32 size;
-	U8 *data;
-};
-
 class TriangleF {
 public:
 	Point3F point0;
