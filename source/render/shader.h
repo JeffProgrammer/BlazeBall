@@ -29,31 +29,81 @@
 #define shader_h
 
 #include <stdio.h>
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/glew.h>
-#endif
 #include "base/types.h"
+
+#ifdef _WIN32
+#include <GL/glew.h>
+#else
+#include <OpenGL/OpenGL.h>
+#endif
+
+#include <string>
 
 class Shader {
 protected:
 	GLuint vertId;
 	GLuint fragId;
 	GLuint programId;
-
-	GLuint loadShader(const String &path, const GLenum &type);
-	GLuint loadProgram(const String &vertPath, const String &fragPath);
+	
+	/**
+	 * Load a shader from a given path with a given type.
+	 * @param path The file path of the shader to load
+	 * @param type The shader's type (fragment/vertex)
+	 * @return The OpenGL id for the shader, or 0 if the operation fails.
+	 */
+	GLuint loadShader(const std::string &path, const GLenum &type);
+	/**
+	 * Load a program from vertex and fragment shader files
+	 * @param vertPath The path to the file containing the vertex shader
+	 * @param fragPath The path to the file containing the fragment shader
+	 * @return The OpenGL id for the program, or 0 if the operation fails.
+	 */
+	GLuint loadProgram(const std::string &vertPath, const std::string &fragPath);
 public:
-	Shader(const String &vertPath, const String &fragPath);
+	/**
+	 * Construct a shader from given vertex and fragment shader files.
+	 * @param vertPath The path to the file containing the vertex shader
+	 * @param fragPath The path to the file containing the fragment shader
+	 */
+	Shader(const std::string &vertPath, const std::string &fragPath);
+	/**
+	 * Destroy the shader and free its program.
+	 */
 	~Shader();
-
+	
+	/**
+	 * Get the OpenGL id of the shader's program, for activating.
+	 * @return The shader's program id.
+	 */
 	GLuint getProgramId();
-
-	GLuint getUniformLocation(const String &name);
-	void setUniformLocation(const String &name, const GLuint &location);
-
+	
+	/**
+	 * Get the location of a uniform accessed by the shader
+	 * @param name The name of the uniform
+	 * @return The uniform's location.
+	 */
+	GLuint getUniformLocation(const std::string &name);
+	/**
+	 * Set the location of a uniform for the shader.
+	 * @param name The name of the uniform
+	 * @param location The desired location for the uniform
+	 */
+	void setUniformLocation(const std::string &name, const GLuint &location);
+	
+	/**
+	 * Get the location of an attribute in the shader
+	 * @param name The name of the attribute
+	 * @return The attribute's location
+	 */
+	GLuint getAttributeLocation(const std::string &name);
+	
+	/**
+	 * Activate and bind the shader.
+	 */
 	void activate();
+	/**
+	 * Deactivate and unbind the shader.
+	 */
 	void deactivate();
 };
 

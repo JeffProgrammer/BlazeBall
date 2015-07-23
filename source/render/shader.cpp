@@ -28,73 +28,119 @@
 #include "render/shader.h"
 #include "base/io.h"
 
-#ifdef __APPLE__
+#ifdef _WIN32
+#include <GL/glew.h>
+#else
 #include <OpenGL/gl.h>
 #include <OpenGL/gl3.h>
-#else
-#include <GL/glew.h>
+#include <OpenGL/glu.h>
 #endif
 
-Shader::Shader(const String &vertPath, const String &fragPath) {
+Shader::Shader(const std::string &vertPath, const std::string &fragPath) {
+	//Try to generate the shader
 	programId = loadProgram(vertPath, fragPath);
 }
 
-GLuint Shader::loadShader(const String &path, const GLenum &type) {
+Shader::~Shader() {
+	//If we have successfully generated, tell OpenGL to delete our program
+	if (getProgramId())
+		glDeleteProgram(getProgramId());
+}
+
+GLuint Shader::loadShader(const std::string &path, const GLenum &type) {
+	//Create a new shader into which we will load our code
 	GLuint shaderId = glCreateShader(type);
+	
+	//Read the file's data
 	U32 length;
 	U8 *data = IO::readFile(path, &length);
 	if (data == NULL)
 		return 0;
-
+	
 	GLint result = GL_FALSE;
 	S32 infoLogLength;
-
-	glShaderSource(shaderId, 1, (GLchar **)&data, NULL);
+	
+	//Try to compile the shader
+	glShaderSource(shaderId, 1, (const GLchar **)&data, NULL);
 	glCompileShader(shaderId);
 	delete data;
-
+	
+	//Check if we had any errors
 	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &result);
 	glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-	String log = String(infoLogLength);
-	glGetShaderInfoLog(shaderId, infoLogLength, NULL, (GLchar *)log.data);
-
+	
+	//Get a log of the errors
+	GLchar log[infoLogLength];
+	glGetShaderInfoLog(shaderId, infoLogLength, NULL, log);
+	
+	//Did we actually have an error? If so, terminate here
 	if (!result) {
-		printf("%s error: %s\n", path.data, log.data);
+		printf("%s error: %s\n", path.c_str(), log);
+
+		//Errored so we can't return an id
 		return 0;
 	}
-
+	
 	return shaderId;
 }
 
-GLuint Shader::loadProgram(const String &vertPath, const String &fragPath) {
+GLuint Shader::loadProgram(const std::string &vertPath, const std::string &fragPath) {
+	//Clear error so we don't confuse it for our own
+	while (glGetError() != GL_NO_ERROR);
+	
+	//Try to load both the vertex and fragment shaders
 	vertId = loadShader(vertPath, GL_VERTEX_SHADER);
 	fragId = loadShader(fragPath, GL_FRAGMENT_SHADER);
-
-	if (glGetError())
+	
+	//If either failed, we can't create a program.
+	if (vertId == 0 || fragId == 0)
 		return 0;
-
+	
+	//If there was any error, then let us know.
+	GLenum error = glGetError();
+	if (error) {
+#ifdef _WIN32
+		const char *err = "gluErrorString is not implemented on win32. please check the OSX build for shader errors.";
+#else
+		const char *err = (const char *)gluErrorString(error);
+#endif
+		printf("Error loading shader: %s (code %d)\n", err, error);
+		return 0;
+	}
+	
+	//Try to create a program from the shaders
 	GLuint progID = glCreateProgram();
 	glAttachShader(progID, vertId);
 	glAttachShader(progID, fragId);
 	glLinkProgram(progID);
-
+	
 	GLint result = GL_FALSE;
 	S32 infoLogLength;
-
+	
+	//Check the log to see if we succeeded
 	glGetProgramiv(progID, GL_LINK_STATUS, &result);
 	glGetProgramiv(progID, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-	String log = String(infoLogLength);
+	
+	//Get the log from the info
+	GLchar log[infoLogLength];
 	glGetProgramInfoLog(progID, infoLogLength, NULL, log);
-
+	
+	//If we didn't create a shader successfully, let us know.
 	if (!result) {
-		printf("%s\n", log.data);
-	}
+		printf("%s\n", log);
 
+		//Clean up the shaders
+		glDeleteShader(vertId);
+		glDeleteShader(fragId);
+		
+		//Can't return an id if we didn't succeed.
+		return 0;
+	}
+	
+	//Clean up the shaders
 	glDeleteShader(vertId);
 	glDeleteShader(fragId);
-
+	
 	return progID;
 }
 
@@ -102,13 +148,17 @@ GLuint Shader::getProgramId() {
 	return programId;
 }
 
-GLuint Shader::getUniformLocation(const String &name) {
-	return glGetUniformLocation(getProgramId(), name);
+GLuint Shader::getUniformLocation(const std::string &name) {
+	return glGetUniformLocation(getProgramId(), name.c_str());
 }
 
-void Shader::setUniformLocation(const String &name, const GLuint &location) {
-	GLuint glLocation = glGetUniformLocation(getProgramId(), name);
+void Shader::setUniformLocation(const std::string &name, const GLuint &location) {
+	GLuint glLocation = glGetUniformLocation(getProgramId(), name.c_str());
 	glUniform1i(glLocation, location);
+}
+
+GLuint Shader::getAttributeLocation(const std::string &name) {
+	return glGetAttribLocation(getProgramId(), name.c_str());
 }
 
 void Shader::activate() {
