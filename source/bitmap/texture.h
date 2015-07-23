@@ -84,7 +84,7 @@ public:
 	/**
 	 Find a texture in a directory
 	 */
-	static String find(String name, String directory);
+	static std::string find(const std::string &fullName);
 };
 
 #endif

@@ -30,11 +30,11 @@
 #include <stdlib.h>
 #include <jpeglib.h>
 
-bool jpegReadImage(String file, U8 **bitmap, Point2I *dims) {
+bool jpegReadImage(std::string file, U8 **bitmap, Point2I *dims) {
 	struct jpeg_decompress_struct dptr;
 	struct jpeg_error_mgr errmgr;
 
-	FILE *stream = fopen((const char *)file, "r");
+	FILE *stream = fopen(file.c_str(), "r");
 
 	dptr.err = jpeg_std_error(&errmgr);
 

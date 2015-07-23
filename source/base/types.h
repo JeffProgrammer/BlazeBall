@@ -30,7 +30,7 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-#include <string.h>
+#include <string>
 #include <stdlib.h>
 
 //Base types (names stolen from TGE because lazy)
@@ -46,96 +46,6 @@ typedef signed long long S64;
 
 typedef float F32;
 typedef double F64;
-
-struct String {
-	U8 *data;
-	U32 length;
-	bool allocated;
-
-	inline operator const char *() const {
-		return (const char *)data;
-	}
-	inline operator char *() const {
-		return (char *)data;
-	}
-	inline operator U8 *() const {
-		return data;
-	}
-	inline operator const void *() const {
-		return data;
-	}
-	inline operator void *() const {
-		return data;
-	}
-	inline bool operator==(const char *str) const {
-		return strcmp((const char *)data, str) == 0;
-	}
-	inline bool operator==(const String &str) const {
-		return strcmp((const char *)data, (const char *)str.data) == 0;
-	}
-	inline bool operator!=(const String &str) const {
-		return !operator==(str);
-	}
-	inline String operator+=(const String &str) {
-		concat(str);
-		return *this;
-	}
-	inline String operator+(const String &str) const {
-		String newStr = String(*this);
-		newStr.concat(str);
-		return newStr;
-	}
-	inline String operator+(const char &chr) const {
-		String newStr = String(*this);
-		newStr.concat(String(&chr));
-		return newStr;
-	}
-	inline String concat(const String &str) {
-		U8 *cur = new U8[length + 1];
-		memcpy(cur, data, length + 1);
-		data = (U8 *)realloc(data, length + str.length + 1);
-		memcpy(data, cur, length);
-		memcpy(data + length, str, str.length);
-		length += str.length;
-		memset(data + length, 0, 1);
-		delete [] cur;
-		return *this;
-	}
-	String() : data(new U8[1]), length(0) {
-		data[length] = 0;
-		allocated = true;
-	}
-	String(const U32 &length) : data(new U8[length + 1]), length(length) {
-		data[length] = 0;
-		allocated = true;
-	}
-	String(const char * const &bytes) : data(new U8[(U8)strlen(bytes) + 1]), length((U8)strlen(bytes)) {
-		memcpy(data, bytes, length);
-		data[length] = 0;
-		allocated = true;
-	}
-	String(U8 * const &bytes, const U32 &length) : data(new U8[length + 1]), length(length) {
-		memcpy(data, bytes, length);
-		data[length] = 0;
-		allocated = true;
-	}
-	String(const String &other) : data(new U8[other.length + 1]), length(other.length) {
-		memcpy(data, other.data, length);
-		data[length] = 0;
-		allocated = true;
-	}
-	String(const String &other, const U32 &length) : data(new U8[length + 1]), length(length) {
-		memcpy(data, other.data, length);
-		data[length] = 0;
-		allocated = true;
-	}
-	~String() {
-		if (allocated) {
-			delete [] data;
-			allocated = false;
-		}
-	}
-};
 
 #include "base/point2.h"
 #include "base/point3.h"
@@ -237,10 +147,10 @@ public:
 class Dictionary {
 public:
 	U32 size;
-	String *names;
-	String *values;
+	std::string *names;
+	std::string *values;
 
-	String get(const String &key) const {
+	std::string get(const std::string &key) const {
 		for (U32 i = 0; i < size; i ++) {
 			if (names[i] == key)
 				return values[i];

@@ -47,7 +47,7 @@ class GameInterior : public DIF::Interior {
 	PhysicsBody *mActor;
 	RenderInfo renderInfo;
 
-	void generateMaterials(String directory);
+	void generateMaterials(std::string directory);
 	void generateMesh();
 	void exportObj(FILE *file);
 	U32 rayCast(RayF ray);

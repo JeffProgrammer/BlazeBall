@@ -64,10 +64,10 @@ int main(int argc, const char * argv[])
 
 	scene->difCount = 0;
 	scene->difs = new DIF::DIF*[argc - argstart];
-	scene->filenames = new String*[argc - argstart];
+	scene->filenames = new std::string*[argc - argstart];
 
 	for (U32 i = 0; i < (argc - argstart); i ++) {
-		String directory = IO::getPath(argv[i + argstart]);
+		std::string directory = IO::getPath(argv[i + argstart]);
 
 		std::ifstream file(argv[i + argstart]);
 
@@ -81,7 +81,7 @@ int main(int argc, const char * argv[])
 		//Clean up
 		file.close();
 
-		scene->filenames[i] = new String(argv[i + argstart]);
+		scene->filenames[i] = new std::string(argv[i + argstart]);
 	}
 
 	if (!strcmp(argv[1], "-o")) {
@@ -91,7 +91,7 @@ int main(int argc, const char * argv[])
 		fclose(out);
 	} else if (!strcmp(argv[1], "-c")) {
 		for (U32 i = 0; i < scene->difCount; i ++) {
-			String directory = IO::getPath(*scene->filenames[i]);
+			std::string directory = IO::getPath(*scene->filenames[i]);
 
 			std::ofstream output((const char *)scene->filenames[i]);
 			scene->difs[i]->write(output);

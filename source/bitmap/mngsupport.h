@@ -38,6 +38,6 @@
  @param dims - The address of a Point2I to read image dimensions into
  @return Whether or not the operation succeeded
  */
-bool mngReadImage(String file, U8 **bitmap, Point2I *dims);
+bool mngReadImage(std::string file, U8 **bitmap, Point2I *dims);
 
 #endif

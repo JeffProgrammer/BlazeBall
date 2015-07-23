@@ -38,7 +38,7 @@ typedef enum {
 
 typedef struct {
 	bool inited;
-	String file;
+	std::string file;
 	FILE *stream;
 	Point2I extent;
 	U8 **pixels;
@@ -148,14 +148,14 @@ mng_bool mng__settimer(mng_handle handle, mng_uint32 msecs) {
 	return MNG_TRUE;
 }
 
-bool mngReadImage(String file, U8 **bitmap, Point2I *dims) {
+bool mngReadImage(std::string file, U8 **bitmap, Point2I *dims) {
 	if (!initMNG()) {
 		return false;
 	}
 
 	gMNGInfo.file = file;
 	gMNGInfo.pixels = bitmap;
-	gMNGInfo.stream = fopen((const char *)file, "r");
+	gMNGInfo.stream = fopen(file.c_str(), "r");
 
 	if (mng_set_suspensionmode(gMNG, MNG_FALSE) != MNG_NOERROR) {
 		mng_reset(gMNG);

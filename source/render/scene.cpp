@@ -254,7 +254,7 @@ void Scene::handleEvent(Event *event) {
 				if (((KeyDownEvent *)event)->modifier & KeyEvent::MOD_LGUI) { //LGUI -> LCmd
 					//Save
 					for (U32 i = 0; i < difCount; i ++) {
-						String directory = IO::getPath(*filenames[i]);
+						std::string directory = IO::getPath(*filenames[i]);
 
 						std::ofstream output(*filenames[i]);
 						difs[i]->write(output);

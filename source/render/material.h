@@ -39,13 +39,13 @@ class Material {
 	Texture *specular;
 	Shader *shader;
 
-	String *name;
-	String *path;
+	std::string name;
+	std::string path;
 public:
 	Material();
 	~Material();
 
-	Material(String path) : diffuse(NULL), normal(NULL), specular(NULL), shader(NULL) {
+	Material(std::string path) : diffuse(NULL), normal(NULL), specular(NULL), shader(NULL) {
 		loadDiffuse(path);
 	}
 
@@ -69,7 +69,7 @@ public:
 		this->shader = shader;
 	}
 
-	void loadDiffuse(String path);
+	void loadDiffuse(std::string path);
 	void generate();
 	void activate();
 	void deactivate();

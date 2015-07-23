@@ -26,7 +26,7 @@
 //------------------------------------------------------------------------------
 
 #include <stdio.h>
-#include <string.h>
+#include <string>
 #include <stdlib.h>
 
 #ifdef __APPLE__
@@ -112,45 +112,63 @@ void Texture::deactivate() {
 	glActiveTexture(0);
 }
 
-String Texture::find(String name, String directory) {
-	//For some reason these two like to become the same.
-	String base = directory;
+/**
+ * Check if a texture exists at the given path that Torque can use. Textures should
+ * be passed without any extension.
+ * @param path The path for the texture to check
+ * @param name The base name of the texture
+ * @param final A string into which the final result will be stored if there was success
+ * @return If the texture exists
+ */
+inline bool checkTexture(const std::string &path, const std::string &name, std::string &final) {
+	//Check for no extension
+	final = path + '/' + name;
+	if (IO::isfile(final))
+		return true;
+	//Check for .png
+	final = path + '/' + name + ".png";
+	if (IO::isfile(final))
+		return true;
+	//Check for .jpg
+	final = path + '/' + name + ".jpg";
+	if (IO::isfile(final))
+		return true;
+	// Check for .jng
+	final  =path + '/' + name + ".jng";
+	if (IO::isfile(final))
+		return true;
+	//Couldn't find it, clean up
+	final = "";
+	return false;
+}
 
-	//Allocate enough space in each of these so we can work comfortably
-	U32 pathlen = (U32)(base.length + name.length + 1);
-	String imageFile = String(pathlen + 5);
-
-	do {
-		//Init imageFile to base/file.png
-		pathlen = sprintf(imageFile, "%s/%s.png", (char *)base, (char *)name);
-
-		//If we can't find the PNG, try for JPEG
-		//TODO: BMP Support?
-		if (!IO::isfile(imageFile)) {
-			//Swap the last 3 chars with jpg
-			imageFile.data[pathlen - 3] = 'j';
-			imageFile.data[pathlen - 2] = 'p';
-			imageFile.data[pathlen - 1] = 'g';
+/**
+ * Find the closest texture to a given texture name, as Torque adds unnecessary
+ * directories onto texture paths. This will attempt to find the texture in any
+ * parent directory of the given texture's directory.
+ * @param fullName The texture's path for which to search
+ * @return The closest actually existing texture's path for the given texture, or
+ *         just the texture name again if none is found.
+ */
+std::string Texture::find(const std::string &fullName) {
+	//Search recurse directories
+	std::string testName(fullName);
+	//Base file name for checking
+	std::string baseName = fullName.substr(fullName.find_last_of('/') + 1);
+	
+	//Iterate over every subdirectory in the path and check if it has the file
+	while (testName.find_last_of('/') != std::string::npos) {
+		//Strip off the last directory
+		testName = IO::getPath(testName, '/');
+		
+		//Check if the texture exists at the current location
+		std::string finalName;
+		if (checkTexture(testName, baseName, finalName)) {
+			//Let us know
+			printf("%s found best: %s\n", fullName.c_str(), finalName.c_str());
+			return finalName;
 		}
-		if (!IO::isfile(imageFile)) {
-			//Swap the last 3 chars with jng
-			imageFile.data[pathlen - 3] = 'j';
-			imageFile.data[pathlen - 2] = 'n';
-			imageFile.data[pathlen - 1] = 'g';
-		}
-		//Can't recurse any further
-		if (!strrchr(base, '/'))
-			break;
-
-		//If we still can't find it, recurse (hacky but effective method)
-		if (!IO::isfile(imageFile)) {
-			*strrchr((const char *)base.data, '/') = 0;
-		}
-	} while (!IO::isfile(imageFile) && strcmp(base, ""));
-
-	//If we can't find it, just chuck the lot and keep going.
-	if (!IO::isfile(imageFile)) {
-		return "";
 	}
-	return imageFile;
+	//Couldn't find it?
+	return fullName;
 }

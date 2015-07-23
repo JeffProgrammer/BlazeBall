@@ -114,7 +114,7 @@ protected:
 public:
 	U32 difCount;
 	DIF::DIF **difs;
-	String **filenames;
+	std::string **filenames;
 	Sphere *sphere;
 
 	Window *window;

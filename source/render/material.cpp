@@ -28,7 +28,7 @@
 #include "render/material.h"
 #include "base/io.h"
 
-Material::Material() : shader(NULL), diffuse(NULL), normal(NULL), specular(NULL), name(new String("")), path(new String("")) {
+Material::Material() : shader(NULL), diffuse(NULL), normal(NULL), specular(NULL), name(""), path("") {
 
 }
 
@@ -36,12 +36,12 @@ Material::~Material() {
 
 }
 
-void Material::loadDiffuse(String path) {
-	this->name = new String(IO::getName(path));
-	this->path = new String(path);
+void Material::loadDiffuse(std::string path) {
+	this->name = IO::getName(path);
+	this->path = path;
 
 	if ((diffuse = IO::loadTexture(path)) == NULL) {
-		fprintf(stderr, "Error in reading bitmap: %s Other error\n", (char *)path);
+		fprintf(stderr, "Error in reading bitmap: %s Other error\n", path.c_str());
 	} else {
 		//So we set the texNum
 		setDiffuseTex(diffuse);
