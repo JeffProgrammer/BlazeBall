@@ -241,67 +241,71 @@ void Scene::performClick(S32 mouseX, S32 mouseY) {
 }
 
 void Scene::handleEvent(Event *event) {
-	//Quit
-	if (event->getType() == Event::Quit) {
-		running = false;
-	}
-
 	//Key events, movement
-	if (event->getType() == Event::KeyDown) {
-		switch (((KeyDownEvent *)event)->key) {
-				//Same for Colemak...
-			case KeyEvent::KEY_W: movement[0] = true; break;
-			case KeyEvent::KEY_S: movement[1] = true; break;
-			case KeyEvent::KEY_A: movement[2] = true; break;
-			case KeyEvent::KEY_D: movement[3] = true; break;
-			case KeyEvent::KEY_UP:    movement[4] = true; break;
-			case KeyEvent::KEY_DOWN:  movement[5] = true; break;
-			case KeyEvent::KEY_LEFT:  movement[6] = true; break;
-			case KeyEvent::KEY_RIGHT: movement[7] = true; break;
-			case KeyEvent::KEY_SPACE: movement[8] = true; break;
-			default: break;
-		}
-	} else if (event->getType() == Event::KeyUp) {
-		switch (((KeyUpEvent *)event)->key) {
-			case KeyEvent::KEY_W: movement[0] = false; break;
-			case KeyEvent::KEY_S:
-				movement[1] = false;
-				break;
-			case KeyEvent::KEY_A: movement[2] = false; break;
-			case KeyEvent::KEY_D: movement[3] = false; break;
-			case KeyEvent::KEY_UP:    movement[4] = false; break;
-			case KeyEvent::KEY_DOWN:  movement[5] = false; break;
-			case KeyEvent::KEY_LEFT:  movement[6] = false; break;
-			case KeyEvent::KEY_RIGHT: movement[7] = false; break;
-			case KeyEvent::KEY_Q: listNeedsDisplay = true; break;
-			case KeyEvent::KEY_SPACE: movement[8] = false; break;
-			default: break;
-		}
-	}
-	//Mouse for rotation
-	if (event->getType() == Event::MouseMove) {
-		if (mouseButtons[2]) {
-			yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x * cameraSpeed;
-			pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y * cameraSpeed;
-		}
-	}
-	if (event->getType() == Event::MouseDown) {
-		mouseButtons[((MouseDownEvent *)event)->button - 1] = true;
+	switch (event->getType()) {
+		//Quit
+		case Event::Quit:
+			running = false;
+			break;
+		case Event::KeyDown:
+			switch (((KeyDownEvent *)event)->key) {
+					//Same for Colemak...
+				case KeyEvent::KEY_W: movement[0] = true; break;
+				case KeyEvent::KEY_S: movement[1] = true; break;
+				case KeyEvent::KEY_A: movement[2] = true; break;
+				case KeyEvent::KEY_D: movement[3] = true; break;
+				case KeyEvent::KEY_UP:    movement[4] = true; break;
+				case KeyEvent::KEY_DOWN:  movement[5] = true; break;
+				case KeyEvent::KEY_LEFT:  movement[6] = true; break;
+				case KeyEvent::KEY_RIGHT: movement[7] = true; break;
+				case KeyEvent::KEY_SPACE: movement[8] = true; break;
+				default: break;
+			}
+			break;
+		case Event::KeyUp:
+			switch (((KeyUpEvent *)event)->key) {
+				case KeyEvent::KEY_W: movement[0] = false; break;
+				case KeyEvent::KEY_S:
+					movement[1] = false;
+					break;
+				case KeyEvent::KEY_A: movement[2] = false; break;
+				case KeyEvent::KEY_D: movement[3] = false; break;
+				case KeyEvent::KEY_UP:    movement[4] = false; break;
+				case KeyEvent::KEY_DOWN:  movement[5] = false; break;
+				case KeyEvent::KEY_LEFT:  movement[6] = false; break;
+				case KeyEvent::KEY_RIGHT: movement[7] = false; break;
+				case KeyEvent::KEY_Q: listNeedsDisplay = true; break;
+				case KeyEvent::KEY_SPACE: movement[8] = false; break;
+				default: break;
+			}
+			break;
+		//Mouse for rotation
+		case Event::MouseMove:
+			if (mouseButtons[2]) {
+				yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x * cameraSpeed;
+				pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y * cameraSpeed;
+			}
+			break;
+		case Event::MouseDown:
+			mouseButtons[((MouseDownEvent *)event)->button - 1] = true;
 
-		if (((MouseDownEvent *)event)->button == 3) {
-			window->lockCursor(true);
-		}
+			if (((MouseDownEvent *)event)->button == 3) {
+				window->lockCursor(true);
+			}
 
-		if (((MouseDownEvent *)event)->button == 1) {
-			performClick(((MouseDownEvent *)event)->position.x, ((MouseDownEvent *)event)->position.y);
-		}
+			if (((MouseDownEvent *)event)->button == 1) {
+				performClick(((MouseDownEvent *)event)->position.x, ((MouseDownEvent *)event)->position.y);
+			}
+			break;
+		case Event::MouseUp:
+			mouseButtons[((MouseUpEvent *)event)->button - 1] = false;
 
-	} else if (event->getType() == Event::MouseUp) {
-		mouseButtons[((MouseUpEvent *)event)->button - 1] = false;
-
-		if (((MouseUpEvent *)event)->button == 3) {
-			window->lockCursor(false);
-		}
+			if (((MouseUpEvent *)event)->button == 3) {
+				window->lockCursor(false);
+			}
+			break;
+		default:
+			break;
 	}
 }
 

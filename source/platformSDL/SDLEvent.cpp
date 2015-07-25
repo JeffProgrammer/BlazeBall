@@ -28,7 +28,7 @@
 #include "platformSDL/SDLEvent.h"
 
 Event *SDLEvent::convert(SDL_Event *sdlevent) {
-	Event::Type type = convert((SDL_EventType)sdlevent->type);
+	Event::Type type = convertType(sdlevent);
 
 	switch (type) {
 		case Event::Quit: return new QuitEvent();
@@ -62,6 +62,8 @@ Event *SDLEvent::convert(SDL_Event *sdlevent) {
 			event->delta = Point2I(sdlevent->motion.xrel, sdlevent->motion.yrel);
 			return event;
 		}
+		case Event::WindowFocus: return new WindowFocusEvent();
+		case Event::WindowBlur: return new WindowBlurEvent();
 		default:
             return NULL;
 	}

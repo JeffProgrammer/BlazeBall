@@ -39,7 +39,9 @@ public:
 		KeyUp,
 		MouseMove,
 		MouseDown,
-		MouseUp
+		MouseUp,
+		WindowFocus,
+		WindowBlur
 	};
 
 	Type type;
@@ -387,5 +389,15 @@ namespace KeyEvent {
 		MOD_RESERVED = 0x8000
 	};
 }
+
+class WindowFocusEvent : public Event {
+public:
+	WindowFocusEvent() : Event(WindowFocus) {};
+};
+
+class WindowBlurEvent : public Event {
+public:
+	WindowBlurEvent() : Event(WindowBlur) {};
+};
 
 #endif
