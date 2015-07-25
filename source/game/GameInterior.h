@@ -36,10 +36,8 @@
 #include <vector>
 
 class GameInterior {
-public:
-	DIF::Interior *mInterior;
-	
 private:
+	DIF::Interior *mInterior;
 	std::vector<Material*> mMaterialList;
 	Texture *mNoiseTexture;
 
@@ -60,6 +58,8 @@ public:
 	void generateMesh();
 	void exportObj(FILE *file);
 	U32 rayCast(RayF ray);
+
+	DIF::Interior *getInterior() {return mInterior;}
 
 	void init();
 	void render();
