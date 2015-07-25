@@ -38,6 +38,6 @@
  @param dims - The address of a glm::ivec2 to read image dimensions into
  @return Whether or not the operation succeeded
  */
-bool mngReadImage(std::string file, U8 **bitmap, glm::ivec2 *dims);
+bool mngReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims);
 
 #endif

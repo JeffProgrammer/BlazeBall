@@ -41,7 +41,7 @@ typedef struct {
 	std::string file;
 	FILE *stream;
 	glm::ivec2 extent;
-	U8 **pixels;
+	U8 *pixels;
 	BitmapFormat format;
 } MNGInfo;
 
@@ -125,7 +125,7 @@ mng_bool mng__processheader(mng_handle handle, mng_uint32 width, mng_uint32 heig
 	}
 
 	//Allocate the image
-	*info->pixels = new U8[width * height * info->format];
+	info->pixels = new U8[width * height * info->format];
 
 	return MNG_TRUE;
 }
@@ -133,7 +133,7 @@ mng_bool mng__processheader(mng_handle handle, mng_uint32 width, mng_uint32 heig
 mng_ptr mng__getcanvasline(mng_handle handle, mng_uint32 line) {
 	MNGInfo *info = (MNGInfo *)mng_get_userdata(handle);
 
-	return *info->pixels + (line * gMNGInfo.extent.x * info->format);
+	return info->pixels + (line * gMNGInfo.extent.x * info->format);
 }
 
 mng_bool mng__refresh(mng_handle handle, mng_uint32 x, mng_uint32 y, mng_uint32 w, mng_uint32 h) {
@@ -148,8 +148,9 @@ mng_bool mng__settimer(mng_handle handle, mng_uint32 msecs) {
 	return MNG_TRUE;
 }
 
-bool mngReadImage(std::string file, U8 **bitmap, glm::ivec2 *dims) {
+bool mngReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims) {
 	if (!initMNG()) {
+		bitmap = NULL;
 		return false;
 	}
 
@@ -159,6 +160,7 @@ bool mngReadImage(std::string file, U8 **bitmap, glm::ivec2 *dims) {
 
 	if (mng_set_suspensionmode(gMNG, MNG_FALSE) != MNG_NOERROR) {
 		mng_reset(gMNG);
+		bitmap = NULL;
 		return false;
 	}
 
@@ -169,6 +171,7 @@ bool mngReadImage(std::string file, U8 **bitmap, glm::ivec2 *dims) {
 
 	if (status != MNG_NOERROR) {
 		mng_reset(gMNG);
+		bitmap = NULL;
 		return false;
 	}
 
@@ -179,13 +182,14 @@ bool mngReadImage(std::string file, U8 **bitmap, glm::ivec2 *dims) {
 	}
 	if (status != MNG_NOERROR) {
 		mng_reset(gMNG);
+		bitmap = NULL;
 		return false;
 	}
 
 	mng_reset(gMNG);
 
-	(*dims).x = gMNGInfo.extent.x;
-	(*dims).y = gMNGInfo.extent.y;
+	dims.x = gMNGInfo.extent.x;
+	dims.y = gMNGInfo.extent.y;
 
 	closeMNG();
 

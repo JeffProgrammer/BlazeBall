@@ -64,7 +64,7 @@ class Material {
 	 * @param index The index where the texture will be assigned
 	 * @return If the texture was loaded successfully.
 	 */
-	bool tryLoadTexture(const std::string &path, GLuint index);
+	bool tryLoadTexture(const std::string &path, const GLuint &index);
 public:
 	/**
 	 * Construct a material from only a diffuse texture path, attempting to resolve
@@ -93,7 +93,7 @@ public:
 	 * @param index The OpenGL texture index
 	 * @return The currently assigned texture at that index
 	 */
-	Texture *getTexture(GLuint index) {
+	Texture *getTexture(const GLuint &index) {
 		return this->textures[index];
 	}
 	/**
@@ -116,7 +116,7 @@ public:
 	 * @param texture The texture to assign
 	 * @param index The desired index for that texture
 	 */
-	void setTexture(Texture *texture, GLuint index);
+	void setTexture(Texture *texture, const GLuint &index);
 	/**
 	 * Set the material's shader info
 	 * @param shaderInfo the new shader info for the material

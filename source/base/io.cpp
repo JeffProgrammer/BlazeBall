@@ -101,7 +101,7 @@ Texture *IO::loadTexture(const std::string &file) {
 
 	std::string extension = getExtension(file);
 
-	bool (*readFn)(std::string file, U8 **bitmap, glm::ivec2 *dims);
+	bool (*readFn)(const std::string &file, U8 *&bitmap, glm::ivec2 &dims);
 
 	//Try to read the image based on format
 	if (extension == "png" || extension == "jng")
@@ -113,7 +113,7 @@ Texture *IO::loadTexture(const std::string &file) {
 		readFn = mngReadImage;
 	}
 
-	if (readFn(file, &bitmap, &dims)) {
+	if (readFn(file, bitmap, dims)) {
 		Texture *tex = new Texture(bitmap, dims);
 		delete [] bitmap;
 

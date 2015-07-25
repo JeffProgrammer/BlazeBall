@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <jpeglib.h>
 
-bool jpegReadImage(std::string file, U8 **bitmap, glm::ivec2 *dims) {
+bool jpegReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims) {
 	struct jpeg_decompress_struct dptr;
 	struct jpeg_error_mgr errmgr;
 
@@ -43,23 +43,23 @@ bool jpegReadImage(std::string file, U8 **bitmap, glm::ivec2 *dims) {
 
 	jpeg_read_header(&dptr, TRUE);
 	jpeg_start_decompress(&dptr);
-	dims->x = dptr.output_width;
-	dims->y = dptr.output_height;
+	dims.x = dptr.output_width;
+	dims.y = dptr.output_height;
 
-	if (dims->x == 0 || dims->y == 0) {
-		*bitmap = NULL;
+	if (dims.x == 0 || dims.y == 0) {
+		bitmap = NULL;
 		return false;
 	}
 
-	*bitmap = new U8[dims->x * dims->y * 4];
+	bitmap = new U8[dims.x * dims.y * 4];
 
-	U8 *b = *bitmap;
+	U8 *b = bitmap;
 
-	for (U32 y = 0; y < dims->y; y ++) {
-		JSAMPROW row = new U8[dims->x * 4];
+	for (U32 y = 0; y < dims.y; y ++) {
+		JSAMPROW row = new U8[dims.x * 4];
 		jpeg_read_scanlines(&dptr, &row, 1);
 
-		for (U32 x = 0; x < dims->x; x ++) {
+		for (U32 x = 0; x < dims.x; x ++) {
 			switch (dptr.output_components) {
 				case 1: //Grayscale
 					*b++ = row[x];

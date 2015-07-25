@@ -79,7 +79,7 @@ void Material::loadTextures(const std::string &diffusePath, const std::string &n
 	}
 }
 
-bool Material::tryLoadTexture(const std::string &path, GLuint index) {
+bool Material::tryLoadTexture(const std::string &path, const GLuint &index) {
 	//See if we have a previous texture so we can delete it
 	Texture *previous = getTexture(index);
 
@@ -130,6 +130,6 @@ void Material::deactivate() {
 	}
 }
 
-void Material::setTexture(Texture *texture, GLuint index) {
+void Material::setTexture(Texture *texture, const GLuint &index) {
 	this->textures[index] = texture;
 }

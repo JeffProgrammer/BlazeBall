@@ -38,6 +38,6 @@
  @param dims - The address of a glm::ivec2 to read image dimensions into
  @return Whether or not the operation succeeded
  */
-bool jpegReadImage(std::string file, U8 **bitmap, glm::ivec2 *dims);
+bool jpegReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims);
 
 #endif

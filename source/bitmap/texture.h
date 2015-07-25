@@ -50,14 +50,14 @@ public:
 	 @arg pixels - A 4-component list of pixels in a RGBA list
 	 @arg extent - A glm::ivec2 with the image extent
 	 */
-	Texture(U8 *pixels, glm::ivec2 extent);
+	Texture(U8 *pixels, const glm::ivec2 &extent);
 
 	/**
 	 Releases a Texture, freeing both its store and its buffer
 	 */
 	~Texture();
 
-	void setTexNum(GLenum texNum) {
+	void setTexNum(const GLenum &texNum) {
 		this->texNum = texNum;
 	}
 
