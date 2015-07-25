@@ -93,7 +93,7 @@ void Scene::render() {
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]);
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &viewMatrix[0][0]);
 
-	sphere->render(ColorF(1, 1, 0, 1));
+	sphere->render();
 }
 
 void Scene::loop() {

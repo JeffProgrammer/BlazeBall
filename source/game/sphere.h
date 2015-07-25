@@ -64,7 +64,7 @@ private:
 public:
 	Sphere(glm::vec3 origin, F32 radius);
 
-	void render(ColorF color);
+	void render();
 	const glm::vec3 getPosition();
 	const glm::quat getRotation();
 

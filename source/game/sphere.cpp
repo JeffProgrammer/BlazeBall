@@ -92,7 +92,7 @@ void Sphere::generate() {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * point, points, GL_STATIC_DRAW);
 }
 
-void Sphere::render(ColorF color) {
+void Sphere::render() {
 	if (!renderBuffer)
 		generate();
 
