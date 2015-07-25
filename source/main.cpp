@@ -43,24 +43,12 @@ int main(int argc, const char * argv[])
 {
 	//Usage prompt
 	if (argc < 2) {
-		printf("Usage: %s <file>\n", argv[0]);
+		printf("Usage: %s <files ...>\n", argv[0]);
 		return 1;
 	}
 
 	PhysicsEngine::setEngine(new btPhysicsEngine());
-
-	U32 argstart = 1;
-
 	Scene *scene = Scene::getSingleton();
-
-	if (!strcmp(argv[1], "-o")) {
-		argstart += 2;
-		scene->setConvertMode(true);
-	}
-	if (!strcmp(argv[1], "-c")) {
-		argstart += 1;
-		scene->setConvertMode(true);
-	}
 
 	scene->difCount = 0;
 	scene->difs = new DIF::DIF*[argc - argstart];
