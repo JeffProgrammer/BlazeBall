@@ -64,7 +64,6 @@ int main(int argc, const char * argv[])
 
 	scene->difCount = 0;
 	scene->difs = new DIF::DIF*[argc - argstart];
-	scene->filenames = new std::string*[argc - argstart];
 
 	for (U32 i = 0; i < (argc - argstart); i ++) {
 		std::string directory = IO::getPath(argv[i + argstart]);
@@ -80,29 +79,10 @@ int main(int argc, const char * argv[])
 
 		//Clean up
 		file.close();
-
-		scene->filenames[i] = new std::string(argv[i + argstart]);
 	}
-
-	if (!strcmp(argv[1], "-o")) {
-		FILE *out = fopen(argv[2], "w");
-//		((GameInterior)scene->difs[0]->interior[0]).exportObj(out);
-		fflush(out);
-		fclose(out);
-	} else if (!strcmp(argv[1], "-c")) {
-		for (U32 i = 0; i < scene->difCount; i ++) {
-			std::string directory = IO::getPath(*scene->filenames[i]);
-
-			std::ofstream output((const char *)scene->filenames[i]);
-			scene->difs[i]->write(output);
-			output.flush();
-			output.close();
-		}
-	} else {
-		//Init SDL and go!
-		scene->window = new SDLWindow();
-		scene->run();
-	}
+	//Init SDL and go!
+	scene->window = new SDLWindow();
+	scene->run();
 
 	return 0;
 }

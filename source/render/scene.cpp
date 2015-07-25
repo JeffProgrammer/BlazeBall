@@ -250,21 +250,7 @@ void Scene::handleEvent(Event *event) {
 		switch (((KeyDownEvent *)event)->key) {
 				//Same for Colemak...
 			case KeyEvent::KEY_W: movement[0] = true; break;
-			case KeyEvent::KEY_S:
-				if (((KeyDownEvent *)event)->modifier & KeyEvent::MOD_LGUI) { //LGUI -> LCmd
-					//Save
-					for (U32 i = 0; i < difCount; i ++) {
-						std::string directory = IO::getPath(*filenames[i]);
-
-						std::ofstream output(*filenames[i]);
-						difs[i]->write(output);
-						output.flush();
-						output.close();
-					}
-				} else {
-					movement[1] = true;
-				}
-				break;
+			case KeyEvent::KEY_S: movement[1] = true; break;
 			case KeyEvent::KEY_A: movement[2] = true; break;
 			case KeyEvent::KEY_D: movement[3] = true; break;
 			case KeyEvent::KEY_UP:    movement[4] = true; break;
