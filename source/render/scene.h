@@ -41,6 +41,7 @@
 #include "render/scene.h"
 #include "platform/window.h"
 #include "platform/event.h"
+#include <vector>
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -112,8 +113,7 @@ protected:
 	const F32 sunPower           = 1000.0f;
 	const U32 specularExponent   = 7;
 public:
-	U32 difCount;
-	DIF::DIF **difs;
+	std::vector<GameInterior *>interiors;
 	Sphere *sphere;
 
 	Window *window;

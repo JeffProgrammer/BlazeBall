@@ -50,19 +50,19 @@ int main(int argc, const char * argv[])
 	PhysicsEngine::setEngine(new btPhysicsEngine());
 	Scene *scene = Scene::getSingleton();
 
-	scene->difCount = 0;
-	scene->difs = new DIF::DIF*[argc - argstart];
+	for (U32 i = 1; i < argc; i ++) {
+		std::string directory = IO::getPath(argv[i]);
 
-	for (U32 i = 0; i < (argc - argstart); i ++) {
-		std::string directory = IO::getPath(argv[i + argstart]);
-
-		std::ifstream file(argv[i + argstart]);
+		std::ifstream file(argv[i]);
 
 		//Read the .dif
-		scene->difs[i] = new DIF::DIF();
-		scene->difs[i]->read(file);
-		if (scene->difs[i]) {
-			scene->difCount ++;
+		DIF::DIF dif;
+		if (dif.read(file)) {
+			for (auto dinterior : dif.interior) {
+				GameInterior *interior = new GameInterior(dinterior);
+				interior->generateMaterials(directory);
+				scene->interiors.push_back(interior);
+			}
 		}
 
 		//Clean up

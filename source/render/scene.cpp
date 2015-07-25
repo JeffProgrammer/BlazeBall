@@ -31,6 +31,7 @@
 #include <sys/time.h>
 #include <libgen.h>
 #include <unistd.h>
+#include "game/gameInterior.h"
 
 void Scene::render() {
 	//Light
@@ -70,8 +71,8 @@ void Scene::render() {
 	glEnable(GL_MULTISAMPLE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	for (U32 index = 0; index < difCount; index ++) {
-		difs[index]->render();
+	for (auto interior : interiors) {
+		interior->render();
 	}
 
 	Point3F pos = sphere->getPosition();
@@ -131,7 +132,7 @@ void Scene::loop() {
 	cameraPosition = glm::vec3(pos.x, pos.y, pos.z);
 	cameraPosition += glm::vec3(glm::translate(delta, glm::vec3(0, -2.5, 0))[3]);
 
-	if (sphere->getPosition().z < difs[0]->interior[0].boundingBox.getMin().x) {
+	if (sphere->getPosition().z < interiors[0]->getInterior().boundingBox.getMin().x) {
 		sphere->setPosition(Point3F(0, 30, 60));
         sphere->setVelocity(Point3F(0, 0, 0));
         sphere->setAngularVelocity(Point3F(0, 0, 0));
