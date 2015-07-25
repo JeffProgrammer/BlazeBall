@@ -33,10 +33,10 @@
 #include "platformSDL/SDLConfig.h"
 
 namespace SDLEvent {
-	Event *convert(SDL_Event *event);
+	Event *convert(SDL_Event event);
 
-	inline Event::Type convertType(SDL_Event *event) {
-		SDL_EventType sdlType = (SDL_EventType)event->type;
+	inline Event::Type convertType(SDL_Event event) {
+		SDL_EventType sdlType = (SDL_EventType)event.type;
 		switch (sdlType) {
 			case SDL_QUIT:    return Event::Quit;
 			case SDL_KEYDOWN: return Event::KeyDown;
@@ -45,7 +45,7 @@ namespace SDLEvent {
 			case SDL_MOUSEBUTTONUP:   return Event::MouseUp;
 			case SDL_MOUSEMOTION:     return Event::MouseMove;
 			case SDL_WINDOWEVENT:
-				switch (event->window.event) {
+				switch (event.window.event) {
 					case SDL_WINDOWEVENT_FOCUS_LOST:   return Event::WindowBlur;
 					case SDL_WINDOWEVENT_FOCUS_GAINED: return Event::WindowFocus;
 				}

@@ -91,7 +91,7 @@ void SDLWindow::swapBuffers() {
 	SDL_GL_SwapWindow(window);
 }
 
-void SDLWindow::lockCursor(bool locked) {
+void SDLWindow::lockCursor(const bool &locked) {
 	SDL_SetRelativeMouseMode((SDL_bool)locked);
 }
 
@@ -101,10 +101,10 @@ glm::ivec2 SDLWindow::getWindowSize() {
 	return glm::ivec2(screenWidth, screenHeight);
 }
 
-bool SDLWindow::pollEvents(Event **event) {
+bool SDLWindow::pollEvents(Event *&event) {
 	SDL_Event sdlevent;
 	if (SDL_PollEvent(&sdlevent)) {
-		*event = SDLEvent::convert(&sdlevent);
+		event = SDLEvent::convert(sdlevent);
 		return true;
 	} else {
 		return false;

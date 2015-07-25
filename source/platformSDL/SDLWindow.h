@@ -42,10 +42,10 @@ public:
 	virtual bool createContext();
 	virtual void destroyContext();
 	virtual void swapBuffers();
-	virtual void lockCursor(bool locked);
+	virtual void lockCursor(const bool &locked);
 
 	virtual glm::ivec2 getWindowSize();
-	virtual bool pollEvents(Event **event);
+	virtual bool pollEvents(Event *&event);
 };
 
 #endif

@@ -49,6 +49,9 @@ public:
 	Type getType() {
 		return type;
 	}
+	Type getType() const {
+		return type;
+	}
 	Event(Type type) : type(type) {};
 };
 

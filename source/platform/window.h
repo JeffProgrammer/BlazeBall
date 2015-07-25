@@ -36,10 +36,10 @@ public:
 	virtual bool createContext() = 0;
 	virtual void destroyContext() = 0;
 	virtual void swapBuffers() = 0;
-	virtual void lockCursor(bool locked) = 0;
+	virtual void lockCursor(const bool &locked) = 0;
 
 	virtual glm::ivec2 getWindowSize() = 0;
-	virtual bool pollEvents(Event **event) = 0;
+	virtual bool pollEvents(Event *&event) = 0;
 };
 
 #endif

@@ -324,7 +324,7 @@ void Scene::run() {
 		gettimeofday(&startTime, NULL);
 
 		//Input
-		while (window->pollEvents(&event)) {
+		while (window->pollEvents(event)) {
 			if (event != NULL) {
 				handleEvent(event);
 				delete event;
