@@ -58,7 +58,7 @@ public:
 	
 	Material *getMaterial(const std::string &name) const;
 	
-	bool containsMaterial(const std::string &name) const;
+	bool isNull(const Material *material) const;
 	
 	void addMaterial(Material *material);
 	

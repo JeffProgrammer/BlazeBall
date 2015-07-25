@@ -47,12 +47,8 @@ Material* MaterialManager::getMaterial(const std::string &name) const {
 	return nullptr;
 }
 
-bool MaterialManager::containsMaterial(const std::string &name) const {
-	for (auto material : mMaterialList) {
-		if (material->getName() == name)
-			return true;
-	}
-	return false;
+bool MaterialManager::isNull(const Material *material) const {
+	return std::find(mMaterialList.begin(), mMaterialList.end(), material) == mMaterialList.end();
 }
 
 void MaterialManager::addMaterial(Material *material) {
