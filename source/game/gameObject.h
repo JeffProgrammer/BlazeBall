@@ -25,65 +25,18 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef sphere_h
-#define sphere_h
+#ifndef gameObject_h
+#define gameObject_h
 
-#include <stdio.h>
-#include <vector>
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/glew.h>
-#endif
-#include "gameObject.h"
 #include "base/types.h"
-#include "physics/physicsBody.h"
-#include "render/material.h"
 #include "game/movement.h"
 #include <glm/matrix.hpp>
 
-class Sphere : public GameObject {
+class GameObject {
 protected:
-	std::vector<Point3F> geometry;
+	Point3F mOrigin;
+	
 public:
-	PhysicsBody *mActor;
-	F32 radius;
-	F32 maxAngVel;
-	Material *material;
-
-	GLuint renderBuffer;
-
-	F32 cameraYaw;
-	F32 cameraPitch;
-private:
-	void generate();
-	const static U32 segments = 36;
-	const static U32 slices = 18;
-	static constexpr F32 step = (M_PI * 2.0f / segments);
-
-public:
-	Sphere(Point3F origin, F32 radius);
-
-	void render(ColorF color);
-	const Point3F getPosition();
-	const AngAxisF getRotation();
-
-	void setPosition(const Point3F &pos);
-
-	void setMaterial(Material *material) {
-		this->material = material;
-	}
-
-	void applyTorque(const Point3F &torque);
-	void applyImpulse(const Point3F &force, const Point3F &origin);
-	void applyForce(const Point3F &force, const Point3F &origin);
-
-	bool getColliding();
-	Point3F getCollisionNormal();
-    
-    void setVelocity(const Point3F &vel);
-    void setAngularVelocity(const Point3F &vel);
-
 	virtual void updateCamera(const Movement &movement);
 	virtual void updateMove(const Movement &movement);
 	virtual void getCameraPosition(glm::mat4x4 &mat);

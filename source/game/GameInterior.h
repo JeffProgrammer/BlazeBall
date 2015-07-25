@@ -31,11 +31,12 @@
 #include "base/types.h"
 #include "render/material.h"
 #include "physics/physicsEngine.h"
+#include "game/gameObject.h"
 
 #include <dif/objects/interior.h>
 #include <vector>
 
-class GameInterior {
+class GameInterior : public GameObject {
 private:
 	DIF::Interior mInterior;
 	std::vector<Material*> mMaterialList;

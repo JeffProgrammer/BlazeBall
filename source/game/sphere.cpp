@@ -34,7 +34,7 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Sphere::Sphere(Point3F origin, F32 radius) : origin(origin), radius(radius), renderBuffer(0), maxAngVel(1000.0f), material(NULL) {
+Sphere::Sphere(Point3F origin, F32 radius) : radius(radius), renderBuffer(0), maxAngVel(1000.0f), material(NULL) {
 	mActor = PhysicsEngine::getEngine()->createSphere(radius);
 	mActor->setPosition(origin);
 	mActor->setMass(1.0f);
