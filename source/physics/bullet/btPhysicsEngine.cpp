@@ -167,7 +167,7 @@ void btPhysicsEngine::init() {
 	running = true;
 }
 
-void btPhysicsEngine::simulate(const F32 &delta) {
+void btPhysicsEngine::simulate(const F32 &delta) {
 	if (running) {
 		extraTime += delta;
 		for ( ; extraTime > PHYSICS_TICK; extraTime -= PHYSICS_TICK) {
