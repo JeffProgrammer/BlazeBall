@@ -267,11 +267,13 @@ set (DIFVIEWERGAME_SRC
 
 	# Platform folder
 	source/platform/event.h
+	source/platform/timer.h
 	source/platform/window.h
 
 	# PlatformSDL folder
 	source/platformSDL/SDLEvent.cpp
 	source/platformSDL/SDLEvent.h
+	source/platformSDL/SDLTimer.h
 	source/platformSDL/SDLWindow.cpp
 	source/platformSDL/SDLWindow.h
 	source/platformSDL/SDLConfig.h
