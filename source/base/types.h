@@ -40,6 +40,8 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+#include "base/ray.h"
+
 //Base types (names stolen from TGE because lazy)
 typedef unsigned char      U8;
 typedef unsigned short     U16;
@@ -54,7 +56,7 @@ typedef signed long long S64;
 typedef float F32;
 typedef double F64;
 
-//More names stolen from TGE
+typedef Ray<F32> RayF;
 
 class PlaneF {
 public:
@@ -100,9 +102,6 @@ public:
 	glm::vec3 point2;
 	glm::vec3 point3;
 };
-
-#include "base/ray.h"
-typedef Ray<F32> RayF;
 
 struct Vertex {
 	glm::vec3 point;
