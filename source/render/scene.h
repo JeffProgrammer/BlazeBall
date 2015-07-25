@@ -42,6 +42,7 @@
 #include "platform/window.h"
 #include "platform/event.h"
 #include <vector>
+#include "game/movement.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -97,7 +98,7 @@ protected:
 
 	bool captureMouse = false;
 	bool mouseButtons[3] = {false, false, false};
-	bool movement[9] = {false, false, false, false, false, false, false, false, false};
+	Movement movement;
 
 	bool convertMode;
 

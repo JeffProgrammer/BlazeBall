@@ -98,23 +98,24 @@ void Scene::loop() {
 	//Basic movement
 	glm::mat4x4 delta = glm::mat4x4(1);
 
-	if (movement[4]) pitch -= keyCameraSpeed;
-	if (movement[5]) pitch += keyCameraSpeed;
-	if (movement[6]) yaw -= keyCameraSpeed;
-	if (movement[7]) yaw += keyCameraSpeed;
+	if (movement.pitchUp) pitch -= keyCameraSpeed;
+	if (movement.pitchDown) pitch += keyCameraSpeed;
+	if (movement.yawLeft) yaw -= keyCameraSpeed;
+	if (movement.yawRight) yaw += keyCameraSpeed;
+
+	pitch += movement.pitch * cameraSpeed;
+	yaw += movement.yaw * cameraSpeed;
+
+	movement.pitch = 0;
+	movement.yaw = 0;
 
 	delta = glm::rotate(delta, -yaw, glm::vec3(0, 0, 1));
 
 	Point2F move = Point2F();
-	if (movement[0]) move.x --;
-	if (movement[1]) move.x ++;
-	if (movement[2]) move.y --;
-	if (movement[3]) move.y ++;
-
-
-//	btApplyCentralForce(%obj.btBody, VectorScale(%forward, ($mvForwardAction - $mvBackwardAction) * %this.btControlLinear));
-//	btApplyCentralForce(%obj.btBody, VectorScale(%right, ($mvRightAction - $mvLeftAction) * %this.btControlLinear));
-//	btApplyCentralImpulse(%obj.btBody, VectorScale(%nor, %this.btControlJump - VectorDot(%vel, %nor)));
+	if (movement.forward) move.x --;
+	if (movement.backward) move.x ++;
+	if (movement.left) move.y --;
+	if (movement.right) move.y ++;
 
 	glm::vec3 torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
 	delta = glm::rotate(delta, -pitch, glm::vec3(1, 0, 0));
@@ -123,7 +124,7 @@ void Scene::loop() {
 
 	if (sphere->getColliding()) {
 		Point3F normal = sphere->getCollisionNormal();
-		if (movement[8] && normal.dot(Point3F(0, 0, 1)) > 0.1) {
+		if (movement.jump && normal.dot(Point3F(0, 0, 1)) > 0.1) {
 			sphere->applyImpulse((normal + Point3F(0, 0, 1)) / 2.f * 7.5f, Point3F(0, 0, 0));
 			printf("Jump\n");
 		}
@@ -253,40 +254,38 @@ void Scene::handleEvent(Event *event) {
 		case Event::KeyDown:
 			switch (((KeyDownEvent *)event)->key) {
 					//Same for Colemak...
-				case KeyEvent::KEY_W: movement[0] = true; break;
-				case KeyEvent::KEY_S: movement[1] = true; break;
-				case KeyEvent::KEY_A: movement[2] = true; break;
-				case KeyEvent::KEY_D: movement[3] = true; break;
-				case KeyEvent::KEY_UP:    movement[4] = true; break;
-				case KeyEvent::KEY_DOWN:  movement[5] = true; break;
-				case KeyEvent::KEY_LEFT:  movement[6] = true; break;
-				case KeyEvent::KEY_RIGHT: movement[7] = true; break;
-				case KeyEvent::KEY_SPACE: movement[8] = true; break;
+				case KeyEvent::KEY_W:     movement.forward   = true; break;
+				case KeyEvent::KEY_S:     movement.backward  = true; break;
+				case KeyEvent::KEY_A:     movement.left      = true; break;
+				case KeyEvent::KEY_D:     movement.right     = true; break;
+				case KeyEvent::KEY_UP:    movement.pitchUp   = true; break;
+				case KeyEvent::KEY_DOWN:  movement.pitchDown = true; break;
+				case KeyEvent::KEY_LEFT:  movement.yawLeft   = true; break;
+				case KeyEvent::KEY_RIGHT: movement.yawRight  = true; break;
+				case KeyEvent::KEY_SPACE: movement.jump      = true; break;
 				default: break;
 			}
 			break;
 		case Event::KeyUp:
 			switch (((KeyUpEvent *)event)->key) {
-				case KeyEvent::KEY_W: movement[0] = false; break;
-				case KeyEvent::KEY_S:
-					movement[1] = false;
-					break;
-				case KeyEvent::KEY_A: movement[2] = false; break;
-				case KeyEvent::KEY_D: movement[3] = false; break;
-				case KeyEvent::KEY_UP:    movement[4] = false; break;
-				case KeyEvent::KEY_DOWN:  movement[5] = false; break;
-				case KeyEvent::KEY_LEFT:  movement[6] = false; break;
-				case KeyEvent::KEY_RIGHT: movement[7] = false; break;
+				case KeyEvent::KEY_W:     movement.forward   = false; break;
+				case KeyEvent::KEY_S:     movement.backward  = false; break;
+				case KeyEvent::KEY_A:     movement.left      = false; break;
+				case KeyEvent::KEY_D:     movement.right     = false; break;
+				case KeyEvent::KEY_UP:    movement.pitchUp   = false; break;
+				case KeyEvent::KEY_DOWN:  movement.pitchDown = false; break;
+				case KeyEvent::KEY_LEFT:  movement.yawLeft   = false; break;
+				case KeyEvent::KEY_RIGHT: movement.yawRight  = false; break;
+				case KeyEvent::KEY_SPACE: movement.jump      = false; break;
 				case KeyEvent::KEY_Q: listNeedsDisplay = true; break;
-				case KeyEvent::KEY_SPACE: movement[8] = false; break;
 				default: break;
 			}
 			break;
 		//Mouse for rotation
 		case Event::MouseMove:
 			if (mouseButtons[2]) {
-				yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x * cameraSpeed;
-				pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y * cameraSpeed;
+				movement.yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x;
+				movement.pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y;
 			}
 			break;
 		case Event::MouseDown:
