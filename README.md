@@ -19,7 +19,7 @@ in any compatible DIF format (supported versions 0 (MB), 0 (TGE), 0 (TGEA), 1, 2
 Requirements
 -------------------
 
-C++11 support
+C++11 support  
 OpenGL 3.3+
 
 License
