@@ -263,7 +263,7 @@ set (DIFVIEWERGAME_SRC
 	source/physics/bullet/btPhysicsInterior.cpp
 	source/physics/bullet/btPhysicsInterior.h
 	source/physics/bullet/btPhysicsSphere.cpp
-	source/physics/bullet/btPhysicssphere.h
+	source/physics/bullet/btPhysicsSphere.h
 
 	# Platform folder
 	source/platform/event.h
