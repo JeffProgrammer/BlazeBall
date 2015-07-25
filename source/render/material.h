@@ -33,8 +33,8 @@
 #include "bitmap/texture.h"
 #include "render/shader.h"
 
-#define DEFAULT_NORMAL_TEXTURE   "platinum/data/shaders/DefaultNormal.png"
-#define DEFAULT_SPECULAR_TEXTURE "platinum/data/shaders/DefaultSpec.png"
+#define DEFAULT_NORMAL_TEXTURE   "DefaultNormal.png"
+#define DEFAULT_SPECULAR_TEXTURE "DefaultSpec.png"
 
 struct ShaderInfo;
 class Material {

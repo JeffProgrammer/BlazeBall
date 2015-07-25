@@ -86,6 +86,8 @@ bool Material::tryLoadTexture(const std::string &path, GLuint index) {
 	//Try to load the bitmap at the given path
 	Texture *loaded = IO::loadTexture(path);
 	if (loaded) {
+		loaded->setTexNum(index);
+
 		//If we have a new texture, trash the old one.
 		if (previous) {
 			delete previous;
@@ -110,8 +112,7 @@ void Material::activate() {
 				iter.second->generateBuffer();
 			}
 
-			glActiveTexture(iter.first);
-			glBindTexture(GL_TEXTURE_2D, iter.second->texNum);
+			iter.second->activate();
 		}
 	}
 }
@@ -124,8 +125,7 @@ void Material::deactivate() {
 	//Deactivate all of the textures on this shader.
 	for (auto iter : textures) {
 		if (iter.second) {
-			glActiveTexture(iter.first);
-			glBindTexture(GL_TEXTURE_2D, 0);
+			iter.second->deactivate();
 		}
 	}
 }
