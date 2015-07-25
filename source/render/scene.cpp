@@ -345,20 +345,21 @@ void Scene::run() {
 		if (loopCallback)
 			loopCallback();
 		render();
-
+		
+		// simulate the physics engine.
+		PhysicsEngine::getEngine()->simulate(mTimer->getDelta() / 1000.0);
+		
 		//Flip buffers
 		window->swapBuffers();
-
-		//Count how long a frame took
-		//auto end = std::chrono::high_resolution_clock::now();
-		mTimer->end();
 
 		//Profiling
 		if (printFPS) {
 			printf("%f FPS, %f mspf\n", 1.0 / (mTimer->getDelta() / 1000.0), mTimer->getDelta());
 		}
-
-		PhysicsEngine::getEngine()->simulate(mTimer->getDelta() / 1000.0);
+		
+		//Count how long a frame took
+		// calculate delta of this elapsed frame.
+		mTimer->end();
 	}
 	
 	//Clean up (duh)

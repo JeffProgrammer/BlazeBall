@@ -37,36 +37,28 @@
 class SDLTimer : public Timer {
 private:
 	/// Internal timer tracked.
-	U64 mTime;
+	U64 mStartTime;
 	
-	/// If the delta can be retrieved
-	bool mCanGetDelta;
-	
+	U64 mEndTime;
 public:
-	SDLTimer() : mTime(0), mCanGetDelta(false) {}
+	SDLTimer() : mStartTime(0), mEndTime(0) {}
 	virtual ~SDLTimer() {}
 	
 	/// Starts the timer and keeps track of the time.
 	/// Do not call getDelta() until end() is called.
 	inline virtual void start() {
-		mTime = SDL_GetPerformanceCounter();
-		mCanGetDelta = false;
+		mStartTime = SDL_GetPerformanceCounter();
 	}
 	
 	/// Ends the timer.
 	inline virtual void end() {
-		mTime = SDL_GetPerformanceCounter() - mTime;
-		mCanGetDelta = true;
+		mEndTime = SDL_GetPerformanceCounter() - mStartTime;
 	}
 	
 	/// Gets the time delta between the start() and end() calls.
 	/// @return the delta between the timer calls.
 	inline virtual F64 getDelta() const {
-		// TODO: use AssertFatal to check.
-		
-		if (mCanGetDelta)
-			return static_cast<F64>((mTime * 1000.0) / SDL_GetPerformanceFrequency());
-		return 0.0;
+		return static_cast<F64>((mEndTime * 1000) / SDL_GetPerformanceFrequency());
 	}
 };
 
