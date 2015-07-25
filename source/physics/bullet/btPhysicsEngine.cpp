@@ -167,7 +167,7 @@ void btPhysicsEngine::init() {
 	running = true;
 }
 
-void btPhysicsEngine::simulate(F32 delta) {
+void btPhysicsEngine::simulate(const F32 &delta) {
 	if (running) {
 		extraTime += delta;
 		for ( ; extraTime > PHYSICS_TICK; extraTime -= PHYSICS_TICK) {
@@ -191,6 +191,6 @@ PhysicsBody *btPhysicsEngine::createInterior(GameInterior *interior) {
 	return new btPhysicsInterior(interior);
 }
 
-PhysicsBody *btPhysicsEngine::createSphere(F32 radius) {
+PhysicsBody *btPhysicsEngine::createSphere(const F32 &radius) {
 	return new btPhysicsSphere(radius);
 }

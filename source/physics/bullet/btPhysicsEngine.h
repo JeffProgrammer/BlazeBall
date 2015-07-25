@@ -73,10 +73,10 @@ public:
 	btPhysicsEngine();
 	
 	virtual void init();
-	virtual void simulate(F32 delta);
+	virtual void simulate(const F32 &delta);
 	virtual void addBody(PhysicsBody *body);
 	virtual PhysicsBody *createInterior(GameInterior *interior);
-	virtual PhysicsBody *createSphere(F32 radius);
+	virtual PhysicsBody *createSphere(const F32 &radius);
 
 	btDiscreteDynamicsWorld *getWorld() { return world; };
 	btCollisionDispatcher *getDispatcher() { return dispatcher; }
