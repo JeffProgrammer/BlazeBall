@@ -40,8 +40,6 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-#include "base/ray.h"
-
 //Base types (names stolen from TGE because lazy)
 typedef unsigned char      U8;
 typedef unsigned short     U16;
@@ -55,8 +53,6 @@ typedef signed long long S64;
 
 typedef float F32;
 typedef double F64;
-
-typedef Ray<F32> RayF;
 
 class PlaneF {
 public:

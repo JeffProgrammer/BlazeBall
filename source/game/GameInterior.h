@@ -32,6 +32,7 @@
 #include "render/material.h"
 #include "physics/physicsEngine.h"
 #include "game/gameObject.h"
+#include "base/ray.h"
 
 #include <dif/objects/interior.h>
 #include <vector>

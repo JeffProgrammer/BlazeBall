@@ -29,6 +29,7 @@
 #include <math.h>
 #include "base/math.h"
 #include <glm/ext.hpp>
+#include "base/ray.h"
 
 #define Sign3d(x) ((x) > 0 ? 1 : ((x) < 0 ? -1 : 0))
 
