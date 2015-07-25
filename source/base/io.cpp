@@ -79,7 +79,7 @@ const std::string IO::getName(const std::string &file, const char &seperator) {
 const std::string IO::getExtension(const std::string &file) {
 	std::string::size_type last = file.find_last_of('.') + 1;
 	if (last != std::string::npos)
-		return file.substr(0, last);
+		return file.substr(last);
 	return "";
 }
 
