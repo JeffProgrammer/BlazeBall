@@ -74,6 +74,7 @@ public:
 	Material(const std::string &path) : shaderInfo(NULL) {
 		loadTextures(path);
 	}
+	
 	/**
 	 * Construct a material from a diffuse, normal, and specular texture path.
 	 * @param diffusePath The path for the material's diffuse texture.
@@ -83,6 +84,7 @@ public:
 	Material(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) : shaderInfo(NULL) {
 		loadTextures(diffusePath, normalPath, specularPath);
 	}
+	
 	/**
 	 * Destroy the material, releasing its textures
 	 */
@@ -96,19 +98,29 @@ public:
 	Texture *getTexture(GLuint index) {
 		return this->textures[index];
 	}
+	
 	/**
 	 * Get the material's shader info
 	 * @return The material's shader info
 	 */
-	ShaderInfo *getShaderInfo() {
+	ShaderInfo *getShaderInfo() const {
 		return this->shaderInfo;
 	}
+	
 	/**
 	 * Get the material's texture path (by default the diffuse texture)
 	 * @return The material's texture path
 	 */
-	std::string getPath() {
+	std::string getPath() const {
 		return this->path;
+	}
+	
+	/**
+	 * Get the material's name.
+	 * @return The material's name.
+	 */
+	std::string getName() const {
+		return this->name;
 	}
 
 	/**
@@ -117,6 +129,7 @@ public:
 	 * @param index The desired index for that texture
 	 */
 	void setTexture(Texture *texture, GLuint index);
+	
 	/**
 	 * Set the material's shader info
 	 * @param shaderInfo the new shader info for the material
@@ -129,6 +142,7 @@ public:
 	 * Activate the texture, and its shader if one is defined.
 	 */
 	void activate();
+	
 	/**
 	 * Deactivate the texture, and its shader if one is defined.
 	 */
