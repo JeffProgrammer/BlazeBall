@@ -49,23 +49,12 @@ void GameInterior::generateMaterials(std::string directory) {
 				mMaterialList.push_back(NULL);
 				continue;
 			}
-			Material *material = new Material(diffuseFile);
-
-			//Find spec/normal
-
 			std::string normalName = materialName + ".normal";
 			std::string normalFile = Texture::find(directory + '/' + normalName);
-
-			if (normalFile.length()) {
-				material->setNormalTex(IO::loadTexture(normalFile));
-			}
-
 			std::string specularName = materialName + ".alpha";
 			std::string specularFile = Texture::find(directory + '/' + specularName);
 
-			if (specularFile.length()) {
-				material->setSpecularTex(IO::loadTexture(specularFile));
-			}
+			Material *material = new Material(diffuseFile, normalFile, specularFile);
 
 			//Assign the texture
 			mMaterialList.push_back(material);

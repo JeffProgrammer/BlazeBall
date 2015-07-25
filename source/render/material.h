@@ -33,45 +33,105 @@
 #include "bitmap/texture.h"
 #include "render/shader.h"
 
+#define DEFAULT_NORMAL_TEXTURE   "platinum/data/shaders/DefaultNormal.png"
+#define DEFAULT_SPECULAR_TEXTURE "platinum/data/shaders/DefaultSpec.png"
+
+struct ShaderInfo;
 class Material {
-	Texture *diffuse;
-	Texture *normal;
-	Texture *specular;
-	Shader *shader;
+	std::map<GLuint, Texture *> textures;
+	ShaderInfo *shaderInfo;
 
 	std::string name;
 	std::string path;
+
+	/**
+	 * Attempt to load textures for the material from a given diffuse path, resolving
+	 * normal and specular texures.
+	 * @param path The path for the material's diffuse texture.
+	 */
+	void loadTextures(const std::string &path);
+	/**
+	 * Attempt to load textures for the material from a diffuse, normal, and specular
+	 * file path.
+	 * @param diffusePath The path for the material's diffuse texture.
+	 * @param normalPath The path for the material's normal texture.
+	 * @param specularPath The path for the material's specular texture.
+	 */
+	void loadTextures(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath);
+	/**
+	 * Attempt to load a single texture into a given index
+	 * @param path The path of the texture to load
+	 * @param index The index where the texture will be assigned
+	 * @return If the texture was loaded successfully.
+	 */
+	bool tryLoadTexture(const std::string &path, GLuint index);
 public:
-	Material();
+	/**
+	 * Construct a material from only a diffuse texture path, attempting to resolve
+	 * specular and normal map paths from the diffuse texture.
+	 * @param path The path for the material's diffuse texture.
+	 */
+	Material(const std::string &path) : shaderInfo(NULL) {
+		loadTextures(path);
+	}
+	/**
+	 * Construct a material from a diffuse, normal, and specular texture path.
+	 * @param diffusePath The path for the material's diffuse texture.
+	 * @param normalPath The path for the material's normal texture.
+	 * @param specularPath The path for the material's specular texture.
+	 */
+	Material(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) : shaderInfo(NULL) {
+		loadTextures(diffusePath, normalPath, specularPath);
+	}
+	/**
+	 * Destroy the material, releasing its textures
+	 */
 	~Material();
 
-	Material(std::string path) : diffuse(NULL), normal(NULL), specular(NULL), shader(NULL) {
-		loadDiffuse(path);
+	/**
+	 * Get the texture that the material has assigned for a given index
+	 * @param index The OpenGL texture index
+	 * @return The currently assigned texture at that index
+	 */
+	Texture *getTexture(GLuint index) {
+		return this->textures[index];
+	}
+	/**
+	 * Get the material's shader info
+	 * @return The material's shader info
+	 */
+	ShaderInfo *getShaderInfo() {
+		return this->shaderInfo;
+	}
+	/**
+	 * Get the material's texture path (by default the diffuse texture)
+	 * @return The material's texture path
+	 */
+	std::string getPath() {
+		return this->path;
 	}
 
-	Texture *getDiffuseTex() {
-		return this->diffuse;
-	}
-	Texture *getNormalTex() {
-		return this->normal;
-	}
-	Texture *getSpecularTex() {
-		return this->specular;
-	}
-	Shader *getShader() {
-		return this->shader;
-	}
-
-	void setDiffuseTex(Texture *texture);
-	void setNormalTex(Texture *texture);
-	void setSpecularTex(Texture *texture);
-	void setShader(Shader *shader) {
-		this->shader = shader;
+	/**
+	 * Assign a texture on the material at a given index
+	 * @param texture The texture to assign
+	 * @param index The desired index for that texture
+	 */
+	void setTexture(Texture *texture, GLuint index);
+	/**
+	 * Set the material's shader info
+	 * @param shaderInfo the new shader info for the material
+	 */
+	void setShaderInfo(ShaderInfo *shaderInfo) {
+		this->shaderInfo = shaderInfo;
 	}
 
-	void loadDiffuse(std::string path);
-	void generate();
+	/**
+	 * Activate the texture, and its shader if one is defined.
+	 */
 	void activate();
+	/**
+	 * Deactivate the texture, and its shader if one is defined.
+	 */
 	void deactivate();
 };
 

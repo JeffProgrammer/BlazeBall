@@ -48,11 +48,6 @@ void GameInterior::init() {
 	//Load all the textures
 	for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
 		perMaterialTriangles[i] = std::vector<Triangle>(renderInfo.numMaterialTriangles[i]);
-
-		Material *mat = mMaterialList[i];
-		if (mat) {
-			mat->generate();
-		}
 	}
 	mNoiseTexture->generateBuffer();
 

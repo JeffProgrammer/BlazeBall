@@ -28,94 +28,108 @@
 #include "render/material.h"
 #include "base/io.h"
 
-Material::Material() : shader(NULL), diffuse(NULL), normal(NULL), specular(NULL), name(""), path("") {
-
-}
-
 Material::~Material() {
 
 }
 
-void Material::loadDiffuse(std::string path) {
-	this->name = IO::getName(path);
+void Material::loadTextures(const std::string &path) {
+	//Don't try to load a texture if we don't have one
+	if (path.length() == 0)
+		return;
+
+	//Some basic fields for identifying the material
+	this->name = IO::getName(path, '/');
 	this->path = path;
 
-	if ((diffuse = IO::loadTexture(path)) == NULL) {
-		fprintf(stderr, "Error in reading bitmap: %s Other error\n", path.c_str());
-	} else {
-		//So we set the texNum
-		setDiffuseTex(diffuse);
+	//Normal and specular maps are .normal.png and .spec.png
+	std::string norm = path + ".normal.png";
+	std::string spec = path + ".alpha.png";
+
+	//Try to load these textures
+	loadTextures(path, norm, spec);
+}
+
+void Material::loadTextures(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) {
+	//Some basic fields for identifying the material in case we don't call the above method
+	this->name = IO::getName(diffusePath, '/');
+	this->path = diffusePath;
+
+	//Diffuse texture- needs to be loaded or else we can't have a material.
+	if (!tryLoadTexture(diffusePath, GL_TEXTURE0)) {
+		printf("Could not load diffuse texture %s\n", diffusePath.c_str());
+		return;
+	}
+	//Normal texture
+	if (!tryLoadTexture(normalPath, GL_TEXTURE1)) {
+		printf("Could not load normal texture %s\n", normalPath.c_str());
+
+		//Attempt to load the default normal texture so we at least have something
+		if (!tryLoadTexture(DEFAULT_NORMAL_TEXTURE, GL_TEXTURE1)) {
+			printf("Could not load default normal texture!\n");
+		}
+	}
+	//Specular texture
+	if (!tryLoadTexture(specularPath, GL_TEXTURE2)) {
+		printf("Could not load specular texture %s\n", specularPath.c_str());
+
+		//Attempt to load the default specular texture so we at least have something
+		if (!tryLoadTexture(DEFAULT_SPECULAR_TEXTURE, GL_TEXTURE2)) {
+			printf("Could not load default specular texture!\n");
+		}
 	}
 }
 
-void Material::generate() {
-	if (diffuse) {
-		if (!diffuse->generated) {
-			diffuse->generateBuffer();
+bool Material::tryLoadTexture(const std::string &path, GLuint index) {
+	//See if we have a previous texture so we can delete it
+	Texture *previous = getTexture(index);
+
+	//Try to load the bitmap at the given path
+	Texture *loaded = IO::loadTexture(path);
+	if (loaded) {
+		//If we have a new texture, trash the old one.
+		if (previous) {
+			delete previous;
 		}
+		//Update our texture to use this new one
+		setTexture(loaded, index);
+		return true;
 	}
-	if (normal) {
-		if (!normal->generated) {
-			normal->generateBuffer();
-		}
-	}
-	if (specular) {
-		if (!specular->generated) {
-			specular->generateBuffer();
-		}
-	}
+	//Either couldn't load the bitmap or the object...
+	return false;
 }
 
 void Material::activate() {
-	if (shader) {
-		shader->activate();
-	}
-	if (diffuse) {
-		if (!diffuse->generated) {
-			diffuse->generateBuffer();
+	//If this material has a shader, we should use it.
+//	if (shaderInfo && shaderInfo->shader) {
+//		shaderInfo->shader->activate();
+//	}
+	//Activate all of the textures on this shader.
+	for (auto iter : textures) {
+		if (iter.second) {
+			if (!iter.second->generated) {
+				iter.second->generateBuffer();
+			}
+
+			glActiveTexture(iter.first);
+			glBindTexture(GL_TEXTURE_2D, iter.second->texNum);
 		}
-		diffuse->activate();
-	}
-	if (normal) {
-		if (!normal->generated) {
-			normal->generateBuffer();
-		}
-		normal->activate();
-	}
-	if (specular) {
-		if (!specular->generated) {
-			specular->generateBuffer();
-		}
-		specular->activate();
 	}
 }
 
 void Material::deactivate() {
-	if (shader) {
-		shader->deactivate();
-	}
-	if (diffuse) {
-		diffuse->deactivate();
-	}
-	if (normal) {
-		normal->deactivate();
-	}
-	if (specular) {
-		specular->deactivate();
+	//If this material has a shader, we need to deactivate it
+//	if (shaderInfo && shaderInfo->shader) {
+//		shaderInfo->shader->deactivate();
+//	}
+	//Deactivate all of the textures on this shader.
+	for (auto iter : textures) {
+		if (iter.second) {
+			glActiveTexture(iter.first);
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 	}
 }
 
-void Material::setDiffuseTex(Texture *texture) {
-	this->diffuse = texture;
-	this->diffuse->setTexNum(GL_TEXTURE0);
-}
-
-void Material::setNormalTex(Texture *texture) {
-	this->normal = texture;
-	this->normal->setTexNum(GL_TEXTURE1);
-}
-
-void Material::setSpecularTex(Texture *texture) {
-	this->specular = texture;
-	this->specular->setTexNum(GL_TEXTURE2);
+void Material::setTexture(Texture *texture, GLuint index) {
+	this->textures[index] = texture;
 }
