@@ -61,7 +61,7 @@ public:
 	F32 z;
 	F32 d;
 
-	PlaneF(const DIF::PlaneF plane) : x(plane.x), y(plane.y), z(plane.z), d(plane.d) {}
+	PlaneF(const DIF::PlaneF &plane) : x(plane.x), y(plane.y), z(plane.z), d(plane.d) {}
 };
 
 class BoxF {
