@@ -41,16 +41,16 @@ public:
 	bool generated;
 	GLuint buffer;
 	GLenum texNum;
-	Point2I extent;
+	glm::ivec2 extent;
 	U8 *pixels;
 
 
 	/**
 	 Creates and allocates a Texture from a pixel array and extent
 	 @arg pixels - A 4-component list of pixels in a RGBA list
-	 @arg extent - A Point2I with the image extent
+	 @arg extent - A glm::ivec2 with the image extent
 	 */
-	Texture(U8 *pixels, Point2I extent);
+	Texture(U8 *pixels, glm::ivec2 extent);
 
 	/**
 	 Releases a Texture, freeing both its store and its buffer

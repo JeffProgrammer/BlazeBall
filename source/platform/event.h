@@ -87,25 +87,25 @@ public:
 
 class MouseMoveEvent : public Event {
 public:
-	Point2I position;
-	Point2I delta;
+	glm::ivec2 position;
+	glm::ivec2 delta;
 
 	MouseMoveEvent() : Event(MouseMove) {};
-	Point2I getPosition() {
+	glm::ivec2 getPosition() {
 		return position;
 	}
-	Point2I getDelta() {
+	glm::ivec2 getDelta() {
 		return delta;
 	}
 };
 
 class MouseDownEvent : public Event {
 public:
-	Point2I position;
+	glm::ivec2 position;
 	U8 button;
 
 	MouseDownEvent() : Event(MouseDown) {};
-	Point2I getPosition() {
+	glm::ivec2 getPosition() {
 		return position;
 	}
 	U8 getButton() {
@@ -115,11 +115,11 @@ public:
 
 class MouseUpEvent : public Event {
 public:
-	Point2I position;
+	glm::ivec2 position;
 	U8 button;
 
 	MouseUpEvent() : Event(MouseUp) {};
-	Point2I getPosition() {
+	glm::ivec2 getPosition() {
 		return position;
 	}
 	U8 getButton() {

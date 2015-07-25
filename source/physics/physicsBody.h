@@ -33,17 +33,17 @@
 
 class PhysicsBody {
 public:
-	virtual const Point3F getPosition() = 0;
+	virtual const glm::vec3 getPosition() = 0;
 	virtual const AngAxisF getRotation() = 0;
 	virtual void setMass(const F32 &mass) = 0;
-	virtual void setPosition(const Point3F &position) = 0;
+	virtual void setPosition(const glm::vec3 &position) = 0;
 	virtual void setRotation(const AngAxisF &rotation) = 0;
-    virtual void setVelocity(const Point3F &velocity) = 0;
-    virtual void setAngularVelocity(const Point3F &velocity) = 0;
+    virtual void setVelocity(const glm::vec3 &velocity) = 0;
+    virtual void setAngularVelocity(const glm::vec3 &velocity) = 0;
 
-	virtual void applyTorque(const Point3F &torque) = 0;
-	virtual void applyImpulse(const Point3F &impulse, const Point3F &origin) = 0;
-	virtual void applyForce(const Point3F &force, const Point3F &origin) = 0;
+	virtual void applyTorque(const glm::vec3 &torque) = 0;
+	virtual void applyImpulse(const glm::vec3 &impulse, const glm::vec3 &origin) = 0;
+	virtual void applyForce(const glm::vec3 &force, const glm::vec3 &origin) = 0;
 
 };
 

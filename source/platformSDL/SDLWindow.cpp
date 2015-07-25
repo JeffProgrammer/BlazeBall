@@ -95,10 +95,10 @@ void SDLWindow::lockCursor(bool locked) {
 	SDL_SetRelativeMouseMode((SDL_bool)locked);
 }
 
-Point2I SDLWindow::getWindowSize() {
+glm::ivec2 SDLWindow::getWindowSize() {
 	S32 screenWidth, screenHeight;
 	SDL_GetWindowSize(window, &screenWidth, &screenHeight);
-	return Point2I(screenWidth, screenHeight);
+	return glm::ivec2(screenWidth, screenHeight);
 }
 
 bool SDLWindow::pollEvents(Event **event) {

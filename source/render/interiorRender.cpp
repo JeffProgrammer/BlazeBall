@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include <glm/ext.hpp>
 #include "game/gameInterior.h"
 #include "base/math.h"
 
@@ -51,22 +52,22 @@ void GameInterior::init() {
 	}
 	mNoiseTexture->generateBuffer();
 
-	std::vector<Point3F> tangentMap(mInterior.normal.size());
-	std::vector<Point3F> bitangentMap(mInterior.normal.size());
+	std::vector<glm::vec3> tangentMap(mInterior.normal.size());
+	std::vector<glm::vec3> bitangentMap(mInterior.normal.size());
 	
 	for (U32 i = 0; i < mInterior.surface.size(); i ++) {
 		DIF::Interior::Surface surface = mInterior.surface[i];
 		
-		Point3F normal = mInterior.normal[mInterior.plane[surface.planeIndex].normalIndex];
+		glm::vec3 normal = mInterior.normal[mInterior.plane[surface.planeIndex].normalIndex];
 		if (surface.planeFlipped) {
 			normal *= -1;
 		}
 		
-		//			Point3F color((F32)surface.planeIndex / (F32)numPlanes, (F32)(surface.planeIndex % 32)/32.f, (F32)(surface.planeIndex % 8)/8.f);
+		//			glm::vec3 color((F32)surface.planeIndex / (F32)numPlanes, (F32)(surface.planeIndex % 32)/32.f, (F32)(surface.planeIndex % 8)/8.f);
 		
 		//New and improved rendering with actual Triangle Strips this time
 		for (U32 j = surface.windingStart + 2; j < surface.windingStart + surface.windingCount; j ++) {
-			Point3F v0, v1, v2;
+			glm::vec3 v0, v1, v2;
 			
 			if ((j - (surface.windingStart + 2)) % 2 == 0) {
 				v0 = mInterior.point[mInterior.index[j]];
@@ -80,34 +81,34 @@ void GameInterior::init() {
 			
 			DIF::Interior::TexGenEq texGenEq = mInterior.texGenEq[surface.texGenIndex];
 			
-			Point2F uv0 = Point2F(planeF_distance_to_point(texGenEq.planeX, v0), planeF_distance_to_point(texGenEq.planeY, v0));
-			Point2F uv1 = Point2F(planeF_distance_to_point(texGenEq.planeX, v1), planeF_distance_to_point(texGenEq.planeY, v1));
-			Point2F uv2 = Point2F(planeF_distance_to_point(texGenEq.planeX, v2), planeF_distance_to_point(texGenEq.planeY, v2));
+			glm::vec2 uv0 = glm::vec2(planeF_distance_to_point(texGenEq.planeX, v0), planeF_distance_to_point(texGenEq.planeY, v0));
+			glm::vec2 uv1 = glm::vec2(planeF_distance_to_point(texGenEq.planeX, v1), planeF_distance_to_point(texGenEq.planeY, v1));
+			glm::vec2 uv2 = glm::vec2(planeF_distance_to_point(texGenEq.planeX, v2), planeF_distance_to_point(texGenEq.planeY, v2));
 			
 			//				U32 plane = this->plane[surface.planeIndex].normalIndex;
-			//				Point3F tangent;
-			//				Point3F bitangent;
+			//				glm::vec3 tangent;
+			//				glm::vec3 bitangent;
 			//				if (tangentMap[plane].length()) {
 			//					tangent = tangentMap[plane];
 			//					bitangent = bitangentMap[plane];
 			//				} else {
-			Point3F deltaPos1 = v1 - v0;
-			Point3F deltaPos2 = v2 - v0;
-			Point2F deltaUV1 = uv1 - uv0;
-			Point2F deltaUV2 = uv2 - uv0;
+			glm::vec3 deltaPos1 = v1 - v0;
+			glm::vec3 deltaPos2 = v2 - v0;
+			glm::vec2 deltaUV1 = uv1 - uv0;
+			glm::vec2 deltaUV2 = uv2 - uv0;
 			
 			F32 r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
 			
-			Point3F tangent   = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
-			Point3F bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
+			glm::vec3 tangent   = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+			glm::vec3 bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
 			
-			tangent = (tangent - (normal * normal.dot(tangent))).normalize();
-			if ((normal.cross(tangent)).dot(bitangent) < 0.0f) {
+			tangent = glm::normalize(tangent - (normal * glm::dot(normal, tangent)));
+			if (glm::dot(glm::cross(normal, tangent), bitangent) < 0.0f) {
 				tangent *= -1.0f;
 			}
 			
-			tangent = tangent.normalize();
-			bitangent = bitangent.normalize();
+			tangent = glm::normalize(tangent);
+			bitangent = glm::normalize(bitangent);
 			
 			//					tangentMap[plane] = tangent;
 			//					bitangentMap[plane] = bitangent;

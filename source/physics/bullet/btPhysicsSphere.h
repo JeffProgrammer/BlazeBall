@@ -37,7 +37,7 @@ public:
 	btPhysicsSphere(F32 mRadius);
 
 	virtual bool getColliding();
-	virtual Point3F getCollisionNormal();
+	virtual glm::vec3 getCollisionNormal();
 };
 
 #endif /* btPhysicsSphere_h */

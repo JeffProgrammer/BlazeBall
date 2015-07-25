@@ -30,9 +30,9 @@
 
 #include "base/types.h"
 
-Point2F point3F_project_plane(Point3F point, Point3F normal, Point3F origin);
+glm::vec2 point3_project_plane(glm::vec3 point, glm::vec3 normal, glm::vec3 origin);
 F32 tetrahedronF_area(TetrahetronF tetrahedron);
 
-F32 planeF_distance_to_point(PlaneF plane, Point3F point);
+F32 planeF_distance_to_point(PlaneF plane, glm::vec3 point);
 
 #endif

@@ -33,6 +33,12 @@
 #include <string>
 #include <stdlib.h>
 
+#include <dif/base/types.h>
+
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+
 //Base types (names stolen from TGE because lazy)
 typedef unsigned char      U8;
 typedef unsigned short     U16;
@@ -47,17 +53,7 @@ typedef signed long long S64;
 typedef float F32;
 typedef double F64;
 
-#include "base/point2.h"
-#include "base/point3.h"
-#include "base/point4.h"
 #include "base/color.h"
-
-typedef Point2<S16> Point2I;
-typedef Point2<F32> Point2F;
-typedef Point3<S32> Point3I;
-typedef Point3<F32> Point3F;
-typedef Point3<F64> Point3D;
-typedef Point4<F32> Point4F;
 
 typedef Color<U8>  ColorI;
 typedef Color<F32> ColorF;
@@ -68,11 +64,11 @@ class QuatF;
 
 class AngAxisF {
 public:
-	Point3F axis;
+	glm::vec3 axis;
 	F32 angle;
 
-	AngAxisF(const Point3F &axis, const F32 &angle) : axis(axis), angle(angle) {};
-	AngAxisF(const F32 &angle, const Point3F &axis) : axis(axis), angle(angle) {};
+	AngAxisF(const glm::vec3 &axis, const F32 &angle) : axis(axis), angle(angle) {};
+	AngAxisF(const F32 &angle, const glm::vec3 &axis) : axis(axis), angle(angle) {};
 	AngAxisF(const QuatF &quat);
 };
 
@@ -92,9 +88,9 @@ inline AngAxisF::AngAxisF(const QuatF &quat) {
 	angle = acosf(quat.w);
 	F32 half = sqrtf(quat.x * quat.x + quat.y * quat.y + quat.z * quat.z);
 	if (half != 0.0f) {
-		axis = Point3F(quat.x / half, quat.y / half, quat.z / half);
+		axis = glm::vec3(quat.x / half, quat.y / half, quat.z / half);
 	} else {
-		axis = Point3F(1.0f, 0.0f, 0.0f);
+		axis = glm::vec3(1.0f, 0.0f, 0.0f);
 	}
 }
 
@@ -125,30 +121,30 @@ public:
 	F32 maxY;
 	F32 maxZ;
 
-	inline Point3F getMin() const {
-		return Point3F(minX, minY, minZ);
+	inline glm::vec3 getMin() const {
+		return glm::vec3(minX, minY, minZ);
 	}
-	inline Point3F getMax() const {
-		return Point3F(maxX, maxY, maxZ);
+	inline glm::vec3 getMax() const {
+		return glm::vec3(maxX, maxY, maxZ);
 	}
-	inline Point3F getCenter() const {
-		return (getMax() + getMin()) / 2;
+	inline glm::vec3 getCenter() const {
+		return (getMax() + getMin()) / 2.0f;
 	}
 };
 
 class TriangleF {
 public:
-	Point3F point0;
-	Point3F point1;
-	Point3F point2;
+	glm::vec3 point0;
+	glm::vec3 point1;
+	glm::vec3 point2;
 };
 
 class TetrahetronF {
 public:
-	Point3F point0;
-	Point3F point1;
-	Point3F point2;
-	Point3F point3;
+	glm::vec3 point0;
+	glm::vec3 point1;
+	glm::vec3 point2;
+	glm::vec3 point3;
 };
 
 class MatrixF {
@@ -160,11 +156,11 @@ public:
 typedef Ray<F32> RayF;
 
 struct Vertex {
-	Point3F point;
-	Point2F uv;
-	Point3F normal;
-	Point3F tangent;
-	Point3F bitangent;
+	glm::vec3 point;
+	glm::vec2 uv;
+	glm::vec3 normal;
+	glm::vec3 tangent;
+	glm::vec3 bitangent;
 };
 
 struct Triangle {

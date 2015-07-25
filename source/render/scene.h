@@ -100,10 +100,10 @@ public:
 	constexpr static const float keyCameraSpeed = 3.f;
 
 	const ColorF lightColor      = ColorF(1.000000f, 1.000000f, 1.000000f, 1.400000f);
-	const Point3F lightDirection = Point3F(0.60f, 0.40f, 1.0f);
+	const glm::vec3 lightDirection = glm::vec3(0.60f, 0.40f, 1.0f);
 	const ColorF ambientColor    = ColorF(0.700000f, 0.700000f, 0.700000f, 1.000000f);
 
-	const Point3F sunPosition    = Point3F(100.0f, 75.0f, 100.0f);
+	const glm::vec3 sunPosition    = glm::vec3(100.0f, 75.0f, 100.0f);
 	const F32 sunPower           = 1000.0f;
 	const U32 specularExponent   = 7;
 

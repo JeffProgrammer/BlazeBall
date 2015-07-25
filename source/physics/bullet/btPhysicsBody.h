@@ -38,17 +38,17 @@ public:
 	btPhysicsBody() : mActor(NULL) {};
 	btPhysicsBody(btRigidBody *actor) : mActor(actor) {};
 
-	virtual const Point3F getPosition();
+	virtual const glm::vec3 getPosition();
 	virtual const AngAxisF getRotation();
 	virtual void setMass(const F32 &mass);
-	virtual void setPosition(const Point3F &position);
+	virtual void setPosition(const glm::vec3 &position);
 	virtual void setRotation(const AngAxisF &rotation);
-    virtual void setVelocity(const Point3F &velocity);
-    virtual void setAngularVelocity(const Point3F &velocity);
+    virtual void setVelocity(const glm::vec3 &velocity);
+    virtual void setAngularVelocity(const glm::vec3 &velocity);
 
-	virtual void applyTorque(const Point3F &torque);
-	virtual void applyImpulse(const Point3F &impulse, const Point3F &origin);
-	virtual void applyForce(const Point3F &force, const Point3F &origin);
+	virtual void applyTorque(const glm::vec3 &torque);
+	virtual void applyImpulse(const glm::vec3 &impulse, const glm::vec3 &origin);
+	virtual void applyForce(const glm::vec3 &force, const glm::vec3 &origin);
 
 	btRigidBody *getActor() {
 		return mActor;

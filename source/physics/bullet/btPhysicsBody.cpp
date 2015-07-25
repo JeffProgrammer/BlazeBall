@@ -27,7 +27,7 @@
 
 #include "physics/bullet/btPhysicsBody.h"
 
-const Point3F btPhysicsBody::getPosition() {
+const glm::vec3 btPhysicsBody::getPosition() {
 	return btConvert(mActor->getWorldTransform().getOrigin());
 }
 const AngAxisF btPhysicsBody::getRotation() {
@@ -40,7 +40,7 @@ void btPhysicsBody::setMass(const F32 &mass) {
 
 	mActor->setMassProps(mass, inertia);
 }
-void btPhysicsBody::setPosition(const Point3F &position) {
+void btPhysicsBody::setPosition(const glm::vec3 &position) {
 	btTransform worldTrans = mActor->getWorldTransform();
 	worldTrans.setOrigin(btConvert(position));
 	mActor->setWorldTransform(worldTrans);
@@ -51,19 +51,19 @@ void btPhysicsBody::setRotation(const AngAxisF &rotation) {
 	mActor->setWorldTransform(worldTrans);
 }
 
-void btPhysicsBody::applyTorque(const Point3F &torque) {
+void btPhysicsBody::applyTorque(const glm::vec3 &torque) {
 	mActor->applyTorque(btConvert(torque));
 }
-void btPhysicsBody::applyImpulse(const Point3F &impulse, const Point3F &origin) {
+void btPhysicsBody::applyImpulse(const glm::vec3 &impulse, const glm::vec3 &origin) {
 	mActor->applyImpulse(btConvert(impulse), btConvert(origin));
 }
-void btPhysicsBody::applyForce(const Point3F &force, const Point3F &origin) {
+void btPhysicsBody::applyForce(const glm::vec3 &force, const glm::vec3 &origin) {
 	mActor->applyForce(btConvert(force), btConvert(origin));
 }
 
-void btPhysicsBody::setVelocity(const Point3F &velocity) {
+void btPhysicsBody::setVelocity(const glm::vec3 &velocity) {
     mActor->setLinearVelocity(btConvert(velocity));
 }
-void btPhysicsBody::setAngularVelocity(const Point3F &velocity) {
+void btPhysicsBody::setAngularVelocity(const glm::vec3 &velocity) {
     mActor->setAngularVelocity(btConvert(velocity));
 }

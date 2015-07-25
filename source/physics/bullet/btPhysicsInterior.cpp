@@ -57,9 +57,9 @@ void btPhysicsInterior::construct() {
 		DIF::Interior::Surface surface = interior.surface[i];
         
         for (U32 j = 0; j < surface.windingCount - 2; j ++) {
-			Point3F point0;
-			Point3F point1;
-			Point3F point2;
+			glm::vec3 point0;
+			glm::vec3 point1;
+			glm::vec3 point2;
 
 			if (j % 2 == 0) {
 				point0 = interior.point[interior.index[j + surface.windingStart + 2]];

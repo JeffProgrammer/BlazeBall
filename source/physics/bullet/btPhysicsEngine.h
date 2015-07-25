@@ -85,12 +85,12 @@ public:
 template <typename from, typename to>
 static to btConvert(from point);
 
-inline static const btVector3 btConvert(const Point3F &point) {
+inline static const btVector3 btConvert(const glm::vec3 &point) {
 	return btVector3(point.x, point.y, point.z);
 }
 
-inline static const Point3F btConvert(const btVector3 &point) {
-	return Point3F(point.x(), point.y(), point.z());
+inline static const glm::vec3 btConvert(const btVector3 &point) {
+	return glm::vec3(point.x(), point.y(), point.z());
 }
 
 inline static const btQuaternion btConvert(const AngAxisF &point) {

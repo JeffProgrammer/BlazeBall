@@ -28,36 +28,37 @@
 #include <stdio.h>
 #include <math.h>
 #include "base/math.h"
+#include <glm/ext.hpp>
 
 #define Sign3d(x) ((x) > 0 ? 1 : ((x) < 0 ? -1 : 0))
 
-F32 planeF_distance_to_point(PlaneF plane, Point3F point) {
+F32 planeF_distance_to_point(PlaneF plane, glm::vec3 point) {
 	return (plane.x * point.x + plane.y * point.y + plane.z * point.z) + plane.d;
 }
 
-Point2F point3F_project_plane(Point3F point, Point3F normal, Point3F origin) {
-	if (normal.cross(Point3F(0, 0, 1)).length() == 0) {
-		return Point2F(point.x, point.y);
+glm::vec2 point_project_plane(glm::vec3 point, glm::vec3 normal, glm::vec3 origin) {
+	if (glm::cross(normal, glm::vec3(0, 0, 1)).length() == 0) {
+		return glm::vec2(point.x, point.y);
 	}
-	Point3F xcross = normal.cross(Point3F(0, 0, 1));
-	Point3F ycross = normal.cross(xcross);
+	glm::vec3 xcross = glm::cross(normal, glm::vec3(0, 0, 1));
+	glm::vec3 ycross = glm::cross(normal, xcross);
 
 	xcross = xcross * (1.0f / xcross.length());
 	ycross = ycross * (1.0f / ycross.length());
 
-	Point3F distance = point - origin;
+	glm::vec3 distance = point - origin;
 	F32 hypotenuse = distance.length();
 
 	if (hypotenuse == 0)
-		return Point2F(0, 0);
+		return glm::vec2(0, 0);
 
-	F32 theta = distance.angle(xcross);
+	F32 theta = glm::angle(distance, xcross);
 	//cos theta = adjacent / hypotenuse
 	//adjacent = cos theta * hypotenuse
 	F32 adjacent = cosf(theta) * hypotenuse;
 	F32 opposite = sinf(theta) * hypotenuse;
 
-	return Point2F(adjacent, opposite);
+	return glm::vec2(adjacent, opposite);
 }
 
 template <typename T>
@@ -67,14 +68,14 @@ bool Ray<T>::intersects(const PlaneF &plane) const {
 	//miss if denom == 0
 	//intersect if t > 0
 
-	Point3F normal(plane.x, plane.y, plane.z);
+	glm::vec3 normal(plane.x, plane.y, plane.z);
 
-	F32 denominator = direction.dot(normal);
+	F32 denominator = glm::dot(direction, normal);
 	if (denominator == 0) {
 		return false;
 	}
 
-	F32 numerator = (origin.dot(normal) + plane.d);
+	F32 numerator = (glm::dot(origin, normal) + plane.d);
 
 	if (-numerator / denominator > 0) {
 		return true;
@@ -84,26 +85,26 @@ bool Ray<T>::intersects(const PlaneF &plane) const {
 }
 
 template <typename T>
-Point3<T> Ray<T>::intersection(const PlaneF &plane) const {
+glm::vec3 Ray<T>::intersection(const PlaneF &plane) const {
 	//http://antongerdelan.net/opengl/raycasting.html
 	//t = (RayOrigin • PlaneNormal + PlaneOffset) / (RayDirection • PlaneNormal)
 	//miss if denom == 0
 	//intersect if t > 0
 
-	Point3F normal(plane.x, plane.y, plane.z);
+	glm::vec3 normal(plane.x, plane.y, plane.z);
 
-	F32 denominator = direction.dot(normal);
+	F32 denominator = glm::dot(direction, normal);
 	if (denominator == 0) {
-		return Point3F(-0x80000000, -0x80000000, -0x80000000);
+		return glm::vec3(-0x80000000, -0x80000000, -0x80000000);
 	}
 
-	F32 numerator = (origin.dot(normal) + plane.d);
+	F32 numerator = (glm::dot(origin, normal) + plane.d);
 
 	if (-numerator / denominator > 0) {
 		//xyz = RayOrigin + (RayNormal * t)
 		return origin + direction * (-numerator / denominator);
 	} else {
-		return Point3F(-0x80000000, -0x80000000, -0x80000000);
+		return glm::vec3(-0x80000000, -0x80000000, -0x80000000);
 	}
 }
 
@@ -112,19 +113,19 @@ template<> F32 RayF::distance(const TriangleF &triangle) const {
 //	triangle.point1 = triangle.point1.roundThousands();
 //	triangle.point2 = triangle.point2.roundThousands();
 
-	Point3F ab = triangle.point1 - triangle.point0;
-	Point3F ac = triangle.point2 - triangle.point0;
-	Point3F nor = ab.cross(ac);
-	Point3F oa = triangle.point0 - origin;
-	F32 num = nor.dot(oa);
-	F32 denom = nor.dot(direction);
+	glm::vec3 ab = triangle.point1 - triangle.point0;
+	glm::vec3 ac = triangle.point2 - triangle.point0;
+	glm::vec3 nor = glm::cross(ab, ac);
+	glm::vec3 oa = triangle.point0 - origin;
+	F32 num = glm::dot(nor, oa);
+	F32 denom = glm::dot(nor, direction);
 	if (denom == 0.0f)
 		return -1.0f;
 	F32 r = num/denom;
 	if (r < 0.0f)
 		return -1.0f;
-	Point3F p = origin + direction * r;
-	Point3F ap = p - triangle.point0;
+	glm::vec3 p = origin + direction * r;
+	glm::vec3 ap = p - triangle.point0;
 	bool canXY = true, canYZ = true, canZX = true;
 	if (ab.x*ac.y - ab.y*ac.x == 0.0f)
 		canXY = false;
@@ -157,7 +158,7 @@ template<> F32 RayF::distance(const TriangleF &triangle) const {
 		c1 = ap.z;
 		c2 = ap.y;
 	}
-	else if (ab.cross(ac).length() == 0.0f) {
+	else if (glm::cross(ab, ac).length() == 0.0f) {
 		return -1.0f;
 	}
 	else {
@@ -170,7 +171,7 @@ template<> F32 RayF::distance(const TriangleF &triangle) const {
 	F32 k = kn/kld;
 	F32 l = ln/kld;
 	if (k >= 0.0f && l >= 0.0f && k + l <= 1.0f)
-		return p.distance(origin);
+		return glm::distance(p, origin);
 	return -1.0f;
 }
 

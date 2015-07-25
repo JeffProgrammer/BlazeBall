@@ -47,19 +47,19 @@ Event *SDLEvent::convert(SDL_Event *sdlevent) {
 		case Event::MouseDown: {
 			MouseDownEvent *event = new MouseDownEvent();
 			event->button = sdlevent->button.button;
-			event->position = Point2I(sdlevent->button.x, sdlevent->button.y);
+			event->position = glm::ivec2(sdlevent->button.x, sdlevent->button.y);
 			return event;
 		}
 		case Event::MouseUp: {
 			MouseUpEvent *event = new MouseUpEvent();
 			event->button = sdlevent->button.button;
-			event->position = Point2I(sdlevent->button.x, sdlevent->button.y);
+			event->position = glm::ivec2(sdlevent->button.x, sdlevent->button.y);
 			return event;
 		}
 		case Event::MouseMove: {
 			MouseMoveEvent *event = new MouseMoveEvent();
-			event->position = Point2I(sdlevent->motion.x, sdlevent->motion.y);
-			event->delta = Point2I(sdlevent->motion.xrel, sdlevent->motion.yrel);
+			event->position = glm::ivec2(sdlevent->motion.x, sdlevent->motion.y);
+			event->delta = glm::ivec2(sdlevent->motion.xrel, sdlevent->motion.yrel);
 			return event;
 		}
 		case Event::WindowFocus: return new WindowFocusEvent();

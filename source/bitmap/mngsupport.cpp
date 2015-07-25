@@ -40,7 +40,7 @@ typedef struct {
 	bool inited;
 	std::string file;
 	FILE *stream;
-	Point2I extent;
+	glm::ivec2 extent;
 	U8 **pixels;
 	BitmapFormat format;
 } MNGInfo;
@@ -148,7 +148,7 @@ mng_bool mng__settimer(mng_handle handle, mng_uint32 msecs) {
 	return MNG_TRUE;
 }
 
-bool mngReadImage(std::string file, U8 **bitmap, Point2I *dims) {
+bool mngReadImage(std::string file, U8 **bitmap, glm::ivec2 *dims) {
 	if (!initMNG()) {
 		return false;
 	}

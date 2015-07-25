@@ -34,7 +34,7 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Sphere::Sphere(Point3F origin, F32 radius) : radius(radius), renderBuffer(0), maxAngVel(1000.0f), material(NULL) {
+Sphere::Sphere(glm::vec3 origin, F32 radius) : radius(radius), renderBuffer(0), maxAngVel(1000.0f), material(NULL) {
 	mActor = PhysicsEngine::getEngine()->createSphere(radius);
 	mActor->setPosition(origin);
 	mActor->setMass(1.0f);
@@ -60,21 +60,16 @@ void Sphere::generate() {
 			float sini = sin(i * step);
 
 			//Math not invented by me
-			Point3F point0 = Point3F(radius * cosi * cosy, radius * siny, radius * sini * cosy);
-			Point3F point1 = Point3F(radius * cosi * cosy1, radius * siny1, radius * sini * cosy1);
-			Point4F color0 = Point4F(fabs(point0.x), fabs(point0.y), fabs(point0.z), radius).normalize();
-			Point4F color1 = Point4F(fabs(point1.x), fabs(point1.y), fabs(point1.z), radius).normalize();
+			glm::vec3 point0 = glm::vec3(radius * cosi * cosy, radius * siny, radius * sini * cosy);
+			glm::vec3 point1 = glm::vec3(radius * cosi * cosy1, radius * siny1, radius * sini * cosy1);
 
-			color0 /= color0.z;
-			color1 /= color1.z;
+			glm::vec2 uv0 = glm::vec2((F32)i / (F32)segments2, (F32)y / (F32)slices2);
+			glm::vec2 uv1 = glm::vec2((F32)i / (F32)segments2, (F32)(y + 1) / (F32)slices2);
 
-			Point2F uv0 = Point2F((F32)i / (F32)segments2, (F32)y / (F32)slices2);
-			Point2F uv1 = Point2F((F32)i / (F32)segments2, (F32)(y + 1) / (F32)slices2);
-
-			Point3F tangent0 = point0.cross(Point3F(0, 0, 1)).normalize();
-			Point3F tangent1 = point1.cross(Point3F(0, 0, 1)).normalize();
-			Point3F bitangent0 = point0.cross(tangent0).normalize();
-			Point3F bitangent1 = point0.cross(tangent0).normalize();
+			glm::vec3 tangent0 = glm::normalize(glm::cross(point0, glm::vec3(0, 0, 1)));
+			glm::vec3 tangent1 = glm::normalize(glm::cross(point1, glm::vec3(0, 0, 1)));
+			glm::vec3 bitangent0 = glm::normalize(glm::cross(point0, tangent0));
+			glm::vec3 bitangent1 = glm::normalize(glm::cross(point0, tangent0));
 
 			points[point].point = point0;
 			points[point].uv = uv0;
@@ -126,15 +121,15 @@ void Sphere::render(ColorF color) {
 	}
 }
 
-void Sphere::applyTorque(const Point3F &torque) {
+void Sphere::applyTorque(const glm::vec3 &torque) {
 	mActor->applyTorque(torque);
 }
 
-void Sphere::applyImpulse(const Point3F &force, const Point3F &origin) {
+void Sphere::applyImpulse(const glm::vec3 &force, const glm::vec3 &origin) {
 	mActor->applyImpulse(force, origin);
 }
 
-void Sphere::applyForce(const Point3F &force, const Point3F &origin) {
+void Sphere::applyForce(const glm::vec3 &force, const glm::vec3 &origin) {
 	mActor->applyForce(force, origin);
 }
 
@@ -142,11 +137,11 @@ bool Sphere::getColliding() {
 	return dynamic_cast<PhysicsSphere *>(mActor)->getColliding();
 }
 
-Point3F Sphere::getCollisionNormal() {
+glm::vec3 Sphere::getCollisionNormal() {
 	return dynamic_cast<PhysicsSphere *>(mActor)->getCollisionNormal();
 }
 
-const Point3F Sphere::getPosition() {
+const glm::vec3 Sphere::getPosition() {
 	return mActor->getPosition();
 }
 
@@ -154,15 +149,15 @@ const AngAxisF Sphere::getRotation() {
 	return mActor->getRotation();
 }
 
-void Sphere::setPosition(const Point3F &pos) {
+void Sphere::setPosition(const glm::vec3 &pos) {
 	mActor->setPosition(pos);
 }
 
-void Sphere::setVelocity(const Point3F &vel) {
+void Sphere::setVelocity(const glm::vec3 &vel) {
     mActor->setVelocity(vel);
 }
 
-void Sphere::setAngularVelocity(const Point3F &vel) {
+void Sphere::setAngularVelocity(const glm::vec3 &vel) {
     mActor->setAngularVelocity(vel);
 }
 
@@ -182,7 +177,7 @@ void Sphere::updateMove(const Movement &movement) {
 	delta = glm::rotate(delta, -cameraYaw, glm::vec3(0, 0, 1));
 
 	//Convert the movement into a vector
-	Point2F move = Point2F();
+	glm::vec2 move = glm::vec2();
 	if (movement.forward) move.x --;
 	if (movement.backward) move.x ++;
 	if (movement.left) move.y --;
@@ -192,20 +187,20 @@ void Sphere::updateMove(const Movement &movement) {
 	glm::vec3 torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
 
 	//Multiplied by 2.5 (magic number alert)
-	applyTorque(Point3F(torque.x, torque.y, torque.z) * 2.5);
+	applyTorque(glm::vec3(torque.x, torque.y, torque.z) * 2.5f);
 
 	//If we are colliding with the ground, we have the chance to jump
 	if (getColliding()) {
 		//Make sure we're not trying to jump off a wall. Anything with a dot product > 0.1 is considered "not a wall"
-		Point3F normal = getCollisionNormal();
-		if (movement.jump && normal.dot(Point3F(0, 0, 1)) > 0.1) {
+		glm::vec3 normal = getCollisionNormal();
+		if (movement.jump && glm::dot(normal, glm::vec3(0, 0, 1)) > 0.1) {
 			//Jump takes the average of the collision normal and the up vector to provide a mostly upwards
 			// jump but still taking the surface into account.
-			applyImpulse((normal + Point3F(0, 0, 1)) / 2.f * 7.5f, Point3F(0, 0, 0));
+			applyImpulse((normal + glm::vec3(0, 0, 1)) / 2.f * 7.5f, glm::vec3(0, 0, 0));
 		}
 	} else {
 		//If we're not touching the ground, apply slight air movement.
-		applyForce(Point3F(torque.y, -torque.x, torque.z) * 5.f, Point3F(0, 0, 0));
+		applyForce(glm::vec3(torque.y, -torque.x, torque.z) * 5.f, glm::vec3(0, 0, 0));
 	}
 }
 
@@ -222,6 +217,6 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat) {
 
 	//Offset the camera by the negative position to bring us into the center.
 	// This is not affected by pitch/yaw
-	Point3F pos = getPosition();
+	glm::vec3 pos = getPosition();
 	mat = glm::translate(mat, glm::vec3(-pos.x, -pos.y, -pos.z));
 }

@@ -28,6 +28,8 @@
 #include "physics/bullet/btPhysicsEngine.h"
 #include "physics/bullet/btPhysicsSphere.h"
 
+#include <glm/ext.hpp>
+
 extern std::vector<ShapeInfo> shapes;
 extern std::vector<BodyInfo> bodies;
 extern std::vector<BodyMovement> moves;
@@ -91,11 +93,11 @@ bool btPhysicsSphere::getColliding() {
 	return false;
 }
 
-Point3F btPhysicsSphere::getCollisionNormal() {
+glm::vec3 btPhysicsSphere::getCollisionNormal() {
 	btDiscreteDynamicsWorld *world = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld();
 	U32 manifolds = world->getDispatcher()->getNumManifolds();
 
-	Point3F best = Point3F(0.0f, 0.0f, 0.0f);
+	glm::vec3 best = glm::vec3(0.0f, 0.0f, 0.0f);
 	F32 dot = 0;
 
 	for (U32 i = 0; i < manifolds; i ++) {
@@ -106,12 +108,12 @@ Point3F btPhysicsSphere::getCollisionNormal() {
 		if (obj1 == mActor || obj2 == mActor) {
 			U32 contacts = manifold->getNumContacts();
 			for (U32 j = 0; j < contacts; j ++) {
-				Point3F normal = btConvert(manifold->getContactPoint(j).m_normalWorldOnB);
+				glm::vec3 normal = btConvert(manifold->getContactPoint(j).m_normalWorldOnB);
 				if (obj2 == mActor)
 					normal *= -1;
-				if (normal.dot(Point3F(0, 0, 1)) > dot) {
+				if (glm::dot(normal, glm::vec3(0, 0, 1)) > dot) {
 					best = normal;
-					dot = normal.dot(Point3F(0, 0, 1));
+					dot = glm::dot(normal, glm::vec3(0, 0, 1));
 				}
 			}
 		}

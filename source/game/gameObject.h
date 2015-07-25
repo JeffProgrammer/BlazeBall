@@ -34,7 +34,7 @@
 
 class GameObject {
 protected:
-	Point3F mOrigin;
+	glm::vec3 mOrigin;
 	
 public:
 	virtual void updateCamera(const Movement &movement);

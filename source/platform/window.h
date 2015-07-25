@@ -38,7 +38,7 @@ public:
 	virtual void swapBuffers() = 0;
 	virtual void lockCursor(bool locked) = 0;
 
-	virtual Point2I getWindowSize() = 0;
+	virtual glm::ivec2 getWindowSize() = 0;
 	virtual bool pollEvents(Event **event) = 0;
 };
 

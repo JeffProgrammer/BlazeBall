@@ -9,22 +9,20 @@
 #ifndef ray_h
 #define ray_h
 
-#include "base/point3.h"
-
 template <typename T>
 class Ray {
 public:
-	Point3<T> origin;
-	Point3<T> direction;
+	glm::vec3 origin;
+	glm::vec3 direction;
 
-	Ray(const Point3<T> &origin, const Point3<T> &direction) : origin(origin), direction(direction) {};
-	Ray(const T &ox, const T &oy, const T &oz, const T &dx, const T &dy, const T &dz) : origin(Point3<T>(ox, oy, oz)), direction(Point3<T>(dx, dy, dz)) {};
+	Ray(const glm::vec3 &origin, const glm::vec3 &direction) : origin(origin), direction(direction) {};
+	Ray(const T &ox, const T &oy, const T &oz, const T &dx, const T &dy, const T &dz) : origin(glm::vec3(ox, oy, oz)), direction(glm::vec3(dx, dy, dz)) {};
 
 	bool intersects(const PlaneF &plane) const;
 	bool intersects(const TriangleF &triangle) const;
 
 	F32 distance(const TriangleF &triangle) const;
-	Point3<T> intersection(const PlaneF &plane) const;
+	glm::vec3 intersection(const PlaneF &plane) const;
 };
 
 #endif

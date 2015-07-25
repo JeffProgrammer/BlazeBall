@@ -35,9 +35,9 @@
  Reads an image from a given file using MNG (PNG/MNG support)
  @param file - The file to read from
  @param bitmap - The address of a U8* to read pixel data into
- @param dims - The address of a Point2I to read image dimensions into
+ @param dims - The address of a glm::ivec2 to read image dimensions into
  @return Whether or not the operation succeeded
  */
-bool mngReadImage(std::string file, U8 **bitmap, Point2I *dims);
+bool mngReadImage(std::string file, U8 **bitmap, glm::ivec2 *dims);
 
 #endif

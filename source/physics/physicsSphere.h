@@ -33,7 +33,7 @@
 class PhysicsSphere {
 public:
 	virtual bool getColliding() = 0;
-	virtual Point3F getCollisionNormal() = 0;
+	virtual glm::vec3 getCollisionNormal() = 0;
 };
 
 #endif

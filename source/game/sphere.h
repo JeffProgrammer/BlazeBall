@@ -44,7 +44,7 @@
 
 class Sphere : public GameObject {
 protected:
-	std::vector<Point3F> geometry;
+	std::vector<glm::vec3> geometry;
 public:
 	PhysicsBody *mActor;
 	F32 radius;
@@ -62,27 +62,27 @@ private:
 	static constexpr F32 step = (M_PI * 2.0f / segments);
 
 public:
-	Sphere(Point3F origin, F32 radius);
+	Sphere(glm::vec3 origin, F32 radius);
 
 	void render(ColorF color);
-	const Point3F getPosition();
+	const glm::vec3 getPosition();
 	const AngAxisF getRotation();
 
-	void setPosition(const Point3F &pos);
+	void setPosition(const glm::vec3 &pos);
 
 	void setMaterial(Material *material) {
 		this->material = material;
 	}
 
-	void applyTorque(const Point3F &torque);
-	void applyImpulse(const Point3F &force, const Point3F &origin);
-	void applyForce(const Point3F &force, const Point3F &origin);
+	void applyTorque(const glm::vec3 &torque);
+	void applyImpulse(const glm::vec3 &force, const glm::vec3 &origin);
+	void applyForce(const glm::vec3 &force, const glm::vec3 &origin);
 
 	bool getColliding();
-	Point3F getCollisionNormal();
+	glm::vec3 getCollisionNormal();
     
-    void setVelocity(const Point3F &vel);
-    void setAngularVelocity(const Point3F &vel);
+    void setVelocity(const glm::vec3 &vel);
+    void setAngularVelocity(const glm::vec3 &vel);
 
 	virtual void updateCamera(const Movement &movement);
 	virtual void updateMove(const Movement &movement);

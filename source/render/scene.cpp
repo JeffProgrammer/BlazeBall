@@ -77,7 +77,7 @@ void Scene::render() {
 		interior->render();
 	}
 
-	Point3F pos = sphere->getPosition();
+	glm::vec3 pos = sphere->getPosition();
 	AngAxisF rot = sphere->getRotation();
 
 	//Model
@@ -104,9 +104,9 @@ void Scene::loop() {
 	movement.yaw = 0;
 
 	if (sphere->getPosition().z < interiors[0]->getInterior().boundingBox.getMin().x) {
-		sphere->setPosition(Point3F(0, 30, 60));
-        sphere->setVelocity(Point3F(0, 0, 0));
-        sphere->setAngularVelocity(Point3F(0, 0, 0));
+		sphere->setPosition(glm::vec3(0, 30, 60));
+        sphere->setVelocity(glm::vec3(0, 0, 0));
+        sphere->setAngularVelocity(glm::vec3(0, 0, 0));
 	}
 #if 0
 	move *= 3;
@@ -150,7 +150,7 @@ bool Scene::initGL() {
 	specularExponentLocation = shader->getUniformLocation("specularExponent");
 
 	//Window size for viewport
-	Point2I screenSize = window->getWindowSize();
+	glm::ivec2 screenSize = window->getWindowSize();
 
 	GLfloat aspect = (GLfloat)screenSize.x / (GLfloat)screenSize.y;
 	projectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
@@ -158,7 +158,7 @@ bool Scene::initGL() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	sphere = new Sphere(Point3F(0, 0, 60), 0.2f);
+	sphere = new Sphere(glm::vec3(0, 0, 60), 0.2f);
 //	sphere->setMaterial(difs[0]->interior[0]->material[4]);
 
 	GLenum err = glGetError();
@@ -170,7 +170,7 @@ bool Scene::initGL() {
 }
 
 void Scene::performClick(S32 mouseX, S32 mouseY) {
-	Point2I screenSize = window->getWindowSize();
+	glm::ivec2 screenSize = window->getWindowSize();
 	//http://antongerdelan.net/opengl/raycasting.html
 	//(x, y) are in device coordinates. We need to convert that to model coords
 
