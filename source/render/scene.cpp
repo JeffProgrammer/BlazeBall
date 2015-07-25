@@ -43,6 +43,10 @@ void Scene::render() {
 	glUniform1f(sunPowerLocation, sunPower);
 	glUniform1f(specularExponentLocation, specularExponent);
 
+	//Get the camera transform from the marble
+	glm::mat4 cameraTransform;
+	sphere->getCameraPosition(cameraTransform);
+
 	//Camera
 	viewMatrix = glm::mat4x4(1);
 	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
@@ -98,8 +102,6 @@ void Scene::loop() {
 
 	movement.pitch = 0;
 	movement.yaw = 0;
-
-	sphere->getCameraPosition(cameraTransform);
 
 	if (sphere->getPosition().z < interiors[0]->getInterior().boundingBox.getMin().x) {
 		sphere->setPosition(Point3F(0, 30, 60));
@@ -290,9 +292,6 @@ bool Scene::init() {
 	}
 
 	captureMouse = true;
-
-	//	Point3F center = difs[0]->interior[0]->boundingBox.getCenter();
-//	cameraPosition = glm::vec3(0, 0, 0);
 
 	return true;
 }

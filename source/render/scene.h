@@ -68,10 +68,6 @@ protected:
 
 	GLfloat angle;
 
-	F32 yaw;
-	F32 pitch;
-	glm::mat4 cameraTransform;
-
 	GLuint mvpMatrixLocation;
 	GLuint modelMatrixLocation;
 	GLuint viewMatrixLocation;
