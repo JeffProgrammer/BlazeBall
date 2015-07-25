@@ -3,10 +3,24 @@ DifViewerGame
 
 A small marble game project based upon DifViewer.
 
-Platforms
+Building
 -------------------
 
-Mac OSX 10.10+
+Run CMake on the root project directory. It is recommended to build project/binary
+files to another directory, such as `build/`.
+
+Running
+-------------------
+
+The executable is run as `DifViewerGame <dif file> [dif file 2, ...]`. Files can be
+in any compatible DIF format (supported versions 0 (MB), 0 (TGE), 0 (TGEA), 1, 2, 3,
+4, 10, 14, and possibly those in the middle).
+
+Requirements
+-------------------
+
+C++11 support
+OpenGL 3.3+
 
 License
 -------
