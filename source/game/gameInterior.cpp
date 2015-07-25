@@ -31,33 +31,37 @@
 #include <string>
 #include <cfloat>
 
+GameInterior::GameInterior(DIF::Interior interior) : mInterior(interior) {
+	
+}
+
 void GameInterior::generateMaterials(std::string directory) {
 	//Allocate all textures for the interior
-	if (mInterior->materialName.size()) {
-		for (U32 i = 0; i < mInterior->materialName.size(); i ++) {
-			printf("Generating materials for texture %s\n", mInterior->materialName[i].c_str());
-			std::string materialName = IO::getName(mInterior->materialName[i]);
-			std::string diffuseFile = Texture::find(materialName);
+	if (mInterior.materialName.size()) {
+		for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
+			printf("Generating materials for texture %s\n", mInterior.materialName[i].c_str());
+			std::string materialName = IO::getName(mInterior.materialName[i]);
+			std::string diffuseFile = Texture::find(directory + '/' + materialName);
 
 			//If we can't find it, just chuck the lot and keep going.
 			if (!diffuseFile.length()) {
 				fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", materialName.c_str());
-				mMaterialList[i] = NULL;
+				mMaterialList.push_back(NULL);
 				continue;
 			}
 			Material *material = new Material(diffuseFile);
 
 			//Find spec/normal
 
-			std::string normalName = directory + materialName + ".normal";
-			std::string normalFile = Texture::find(normalName);
+			std::string normalName = materialName + ".normal";
+			std::string normalFile = Texture::find(directory + '/' + normalName);
 
 			if (normalFile.length()) {
 				material->setNormalTex(IO::loadTexture(normalFile));
 			}
 
-			std::string specularName = directory + materialName + ".alpha";
-			std::string specularFile = Texture::find(specularName);
+			std::string specularName = materialName + ".alpha";
+			std::string specularFile = Texture::find(directory + '/' + specularName);
 
 			if (specularFile.length()) {
 				material->setSpecularTex(IO::loadTexture(specularFile));
@@ -77,24 +81,24 @@ void GameInterior::generateMesh() {
 }
 
 void GameInterior::exportObj(FILE *file) {
-	for (U32 j = 0; j < mInterior->point.size(); j ++) {
+	for (U32 j = 0; j < mInterior.point.size(); j ++) {
 		//Build triangles
-		Point3F point = mInterior->point[j];
+		Point3F point = mInterior.point[j];
 		fprintf(file, "v %g %g %g\n", -point.x, point.z, point.y);
 	}
 
-	for (U32 j = 0; j < mInterior->normal.size(); j ++) {
+	for (U32 j = 0; j < mInterior.normal.size(); j ++) {
 		//Build triangles
-		Point3F point = mInterior->normal[j];
+		Point3F point = mInterior.normal[j];
 		fprintf(file, "vn %g %g %g\n", -point.x, point.z, point.y);
 	}
 
 	fprintf(file, "\n");
 
-	for (U32 surfaceNum = 0; surfaceNum < mInterior->surface.size(); surfaceNum ++) {
-		const DIF::Interior::Surface &surface = mInterior->surface[surfaceNum];
+	for (U32 surfaceNum = 0; surfaceNum < mInterior.surface.size(); surfaceNum ++) {
+		const DIF::Interior::Surface &surface = mInterior.surface[surfaceNum];
 
-		Point3F normal = mInterior->normal[mInterior->plane[surface.planeIndex].normalIndex];
+		Point3F normal = mInterior.normal[mInterior.plane[surface.planeIndex].normalIndex];
 		if (surface.planeFlipped) {
 			normal *= -1;
 		}
@@ -104,19 +108,19 @@ void GameInterior::exportObj(FILE *file) {
 			U32 v0, v1, v2;
 
 			if ((j - (surface.windingStart + 2)) % 2 == 0) {
-				v0 = mInterior->index[j];
-				v1 = mInterior->index[j - 1];
-				v2 = mInterior->index[j - 2];
+				v0 = mInterior.index[j];
+				v1 = mInterior.index[j - 1];
+				v2 = mInterior.index[j - 2];
 			} else {
-				v0 = mInterior->index[j - 2];
-				v1 = mInterior->index[j - 1];
-				v2 = mInterior->index[j];
+				v0 = mInterior.index[j - 2];
+				v1 = mInterior.index[j - 1];
+				v2 = mInterior.index[j];
 			}
 			//Build triangles
 			fprintf(file, "f");
-			fprintf(file, " %d//%d", v0 + 1, mInterior->plane[surface.planeIndex].normalIndex + 1);
-			fprintf(file, " %d//%d", v1 + 1, mInterior->plane[surface.planeIndex].normalIndex + 1);
-			fprintf(file, " %d//%d", v2 + 1, mInterior->plane[surface.planeIndex].normalIndex + 1);
+			fprintf(file, " %d//%d", v0 + 1, mInterior.plane[surface.planeIndex].normalIndex + 1);
+			fprintf(file, " %d//%d", v1 + 1, mInterior.plane[surface.planeIndex].normalIndex + 1);
+			fprintf(file, " %d//%d", v2 + 1, mInterior.plane[surface.planeIndex].normalIndex + 1);
 			fprintf(file, "\n");
 		}
 	}
@@ -130,14 +134,14 @@ U32 GameInterior::rayCast(RayF ray) {
 
 	//	printf("Ray: {(%f,%f,%f),(%f,%f,%f)}\n",ray.origin.x,ray.origin.y,ray.origin.z,ray.direction.x,ray.direction.y,ray.direction.z);
 
-	for (U32 i = 0; i < mInterior->surface.size(); i ++) {
-		const DIF::Interior::Surface &surface = mInterior->surface[i];
+	for (U32 i = 0; i < mInterior.surface.size(); i ++) {
+		const DIF::Interior::Surface &surface = mInterior.surface[i];
 
 		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
 			TriangleF triangle;
-			triangle.point0 = mInterior->point[mInterior->index[surface.windingStart + j]];
-			triangle.point1 = mInterior->point[mInterior->index[surface.windingStart + j + 1]];
-			triangle.point2 = mInterior->point[mInterior->index[surface.windingStart + j + 2]];
+			triangle.point0 = mInterior.point[mInterior.index[surface.windingStart + j]];
+			triangle.point1 = mInterior.point[mInterior.index[surface.windingStart + j + 1]];
+			triangle.point2 = mInterior.point[mInterior.index[surface.windingStart + j + 2]];
 
 			F32 distance = ray.distance(triangle);
 			if (distance > 0 && distance < closestDistance) {
