@@ -54,8 +54,6 @@ typedef signed long long S64;
 typedef float F32;
 typedef double F64;
 
-#include "base/color.h"
-
 //More names stolen from TGE
 
 class PlaneF {

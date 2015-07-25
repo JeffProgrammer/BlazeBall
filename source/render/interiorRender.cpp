@@ -62,9 +62,7 @@ void GameInterior::init() {
 		if (surface.planeFlipped) {
 			normal *= -1;
 		}
-		
-		//			glm::vec3 color((F32)surface.planeIndex / (F32)numPlanes, (F32)(surface.planeIndex % 32)/32.f, (F32)(surface.planeIndex % 8)/8.f);
-		
+
 		//New and improved rendering with actual Triangle Strips this time
 		for (U32 j = surface.windingStart + 2; j < surface.windingStart + surface.windingCount; j ++) {
 			glm::vec3 v0, v1, v2;
@@ -85,13 +83,6 @@ void GameInterior::init() {
 			glm::vec2 uv1 = glm::vec2(planeF_distance_to_point(texGenEq.planeX, v1), planeF_distance_to_point(texGenEq.planeY, v1));
 			glm::vec2 uv2 = glm::vec2(planeF_distance_to_point(texGenEq.planeX, v2), planeF_distance_to_point(texGenEq.planeY, v2));
 			
-			//				U32 plane = this->plane[surface.planeIndex].normalIndex;
-			//				glm::vec3 tangent;
-			//				glm::vec3 bitangent;
-			//				if (tangentMap[plane].length()) {
-			//					tangent = tangentMap[plane];
-			//					bitangent = bitangentMap[plane];
-			//				} else {
 			glm::vec3 deltaPos1 = v1 - v0;
 			glm::vec3 deltaPos2 = v2 - v0;
 			glm::vec2 deltaUV1 = uv1 - uv0;
@@ -109,11 +100,7 @@ void GameInterior::init() {
 			
 			tangent = glm::normalize(tangent);
 			bitangent = glm::normalize(bitangent);
-			
-			//					tangentMap[plane] = tangent;
-			//					bitangentMap[plane] = bitangent;
-			//				}
-			
+
 			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[0].point = v0;
 			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[1].point = v1;
 			perMaterialTriangles[surface.textureIndex][materialTriangles[surface.textureIndex]].verts[2].point = v2;
