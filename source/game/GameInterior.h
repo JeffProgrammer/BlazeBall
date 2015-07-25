@@ -37,7 +37,7 @@
 
 class GameInterior {
 private:
-	DIF::Interior *mInterior;
+	DIF::Interior mInterior;
 	std::vector<Material*> mMaterialList;
 	Texture *mNoiseTexture;
 
@@ -45,13 +45,13 @@ private:
 	
 	struct RenderInfo {
 		GLuint vertexBuffer;
-		U32 *numMaterialTriangles;
+		std::vector<U32> numMaterialTriangles;
 		bool generated;
 	};
 	RenderInfo renderInfo;
 
 public:
-	GameInterior();
+	GameInterior(DIF::Interior interior);
 	~GameInterior();
 	
 	void generateMaterials(std::string directory);
@@ -59,7 +59,7 @@ public:
 	void exportObj(FILE *file);
 	U32 rayCast(RayF ray);
 
-	DIF::Interior *getInterior() {return mInterior;}
+	DIF::Interior getInterior() {return mInterior;}
 
 	void init();
 	void render();
