@@ -26,15 +26,17 @@
 //------------------------------------------------------------------------------
 
 #include "game/gameInterior.h"
+#include "base/io.h"
+#include "bitmap/texture.h"
 #include <string>
+#include <cfloat>
 
 void GameInterior::generateMaterials(std::string directory) {
 	//Allocate all textures for the interior
 	if (mInterior->materialName.size()) {
-		material = new Material*[mInterior->materialName.size()];
 		for (U32 i = 0; i < mInterior->materialName.size(); i ++) {
 			printf("Generating materials for texture %s\n", mInterior->materialName[i].c_str());
-			std::string materialName = io->getName(mInterior->materialName[i]);
+			std::string materialName = IO::getName(mInterior->materialName[i]);
 			std::string diffuseFile = Texture::find(materialName);
 
 			//If we can't find it, just chuck the lot and keep going.
@@ -47,26 +49,26 @@ void GameInterior::generateMaterials(std::string directory) {
 
 			//Find spec/normal
 
-			String normalName = materialName + ".normal";
-			String normalFile = Texture::find(normalName, directory);
+			std::string normalName = directory + materialName + ".normal";
+			std::string normalFile = Texture::find(normalName);
 
-			if (normalFile.length) {
-				material->setNormalTex(io->loadTexture(normalFile));
+			if (normalFile.length()) {
+				material->setNormalTex(IO::loadTexture(normalFile));
 			}
 
-			String specularName = materialName + ".alpha";
-			String specularFile = Texture::find(specularName, directory);
+			std::string specularName = directory + materialName + ".alpha";
+			std::string specularFile = Texture::find(specularName);
 
-			if (specularFile.length) {
-				material->setSpecularTex(io->loadTexture(specularFile));
+			if (specularFile.length()) {
+				material->setSpecularTex(IO::loadTexture(specularFile));
 			}
 
 			//Assign the texture
-			this->material[i] = material;
+			mMaterialList.push_back(material);
 		}
 	}
-	this->noise = io->loadTexture("noise.jpg");
-	this->noise->setTexNum(GL_TEXTURE3);
+	mNoiseTexture = IO::loadTexture("noise.jpg");
+	mNoiseTexture->setTexNum(GL_TEXTURE3);
 }
 
 void GameInterior::generateMesh() {
@@ -90,7 +92,7 @@ void GameInterior::exportObj(FILE *file) {
 	fprintf(file, "\n");
 
 	for (U32 surfaceNum = 0; surfaceNum < mInterior->surface.size(); surfaceNum ++) {
-		const Surface &surface = mInterior->surface[surfaceNum];
+		const DIF::Interior::Surface &surface = mInterior->surface[surfaceNum];
 
 		Point3F normal = mInterior->normal[mInterior->plane[surface.planeIndex].normalIndex];
 		if (surface.planeFlipped) {
@@ -129,7 +131,7 @@ U32 GameInterior::rayCast(RayF ray) {
 	//	printf("Ray: {(%f,%f,%f),(%f,%f,%f)}\n",ray.origin.x,ray.origin.y,ray.origin.z,ray.direction.x,ray.direction.y,ray.direction.z);
 
 	for (U32 i = 0; i < mInterior->surface.size(); i ++) {
-		const Surface &surface = mInterior->surface[i];
+		const DIF::Interior::Surface &surface = mInterior->surface[i];
 
 		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
 			TriangleF triangle;

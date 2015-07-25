@@ -35,11 +35,13 @@
 #include <dif/objects/interior.h>
 #include <vector>
 
-class GameInterior : public DIF::Interior {
-private:
+class GameInterior {
+public:
 	DIF::Interior *mInterior;
+	
+private:
 	std::vector<Material*> mMaterialList;
-	Texture mNoiseList;
+	Texture *mNoiseTexture;
 
 	PhysicsBody *mActor;
 	

@@ -51,8 +51,8 @@ void btPhysicsInterior::construct() {
     std::vector<std::pair<int, int> > adjacent;
     U32 index = 0;
     
-    for (U32 i = 0; i < mInterior->surface.size(); i ++) {
-		DIF::Interior::Surface surface = mInterior->surface[i];
+    for (U32 i = 0; i < mInterior->mInterior->surface.size(); i ++) {
+		DIF::Interior::Surface surface = mInterior->mInterior->surface[i];
         
         for (U32 j = 0; j < surface.windingCount - 2; j ++) {
 			Point3F point0;
@@ -60,13 +60,13 @@ void btPhysicsInterior::construct() {
 			Point3F point2;
 
 			if (j % 2 == 0) {
-				point0 = mInterior->point[mInterior->index[j + surface.windingStart + 2]];
-				point1 = mInterior->point[mInterior->index[j + surface.windingStart + 1]];
-				point2 = mInterior->point[mInterior->index[j + surface.windingStart + 0]];
+				point0 = mInterior->mInterior->point[mInterior->mInterior->index[j + surface.windingStart + 2]];
+				point1 = mInterior->mInterior->point[mInterior->mInterior->index[j + surface.windingStart + 1]];
+				point2 = mInterior->mInterior->point[mInterior->mInterior->index[j + surface.windingStart + 0]];
 			} else {
-				point0 = mInterior->point[mInterior->index[j + surface.windingStart + 0]];
-				point1 = mInterior->point[mInterior->index[j + surface.windingStart + 1]];
-				point2 = mInterior->point[mInterior->index[j + surface.windingStart + 2]];
+				point0 = mInterior->mInterior->point[mInterior->mInterior->index[j + surface.windingStart + 0]];
+				point1 = mInterior->mInterior->point[mInterior->mInterior->index[j + surface.windingStart + 1]];
+				point2 = mInterior->mInterior->point[mInterior->mInterior->index[j + surface.windingStart + 2]];
 			}
 
             mesh->addTriangle(btConvert(point0), btConvert(point1), btConvert(point2));
@@ -105,9 +105,7 @@ void btPhysicsInterior::construct() {
             index ++;
         }
     }
-    
-    int count = triData.size();
-    
+
     btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(mesh, true, true);
     btTriangleInfoMap *map = new btTriangleInfoMap();
     
