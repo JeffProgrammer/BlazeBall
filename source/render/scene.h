@@ -88,7 +88,11 @@ protected:
 	} selection;
 
 	bool captureMouse = false;
-	bool mouseButtons[3] = {false, false, false};
+	struct {
+		bool left;
+		bool middle;
+		bool right;
+	} mouseButtons;
 	Movement movement;
 
 public:

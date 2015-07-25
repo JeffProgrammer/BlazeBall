@@ -249,26 +249,36 @@ void Scene::handleEvent(Event *event) {
 			break;
 		//Mouse for rotation
 		case Event::MouseMove:
-			if (mouseButtons[2]) {
+			if (mouseButtons.right) {
 				movement.yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x;
 				movement.pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y;
 			}
 			break;
 		case Event::MouseDown:
-			mouseButtons[((MouseDownEvent *)event)->button - 1] = true;
+			switch (((MouseDownEvent *)event)->button) {
+				case 1: mouseButtons.left   = true; break;
+				case 2: mouseButtons.middle = true; break;
+				case 3: mouseButtons.right  = true; break;
+				default: break;
+			}
 
-			if (((MouseDownEvent *)event)->button == 3) {
+			if (((MouseDownEvent *)event)->button == 3) { //Right mouse: lock cursor
 				window->lockCursor(true);
 			}
 
-			if (((MouseDownEvent *)event)->button == 1) {
+			if (((MouseDownEvent *)event)->button == 1) { //Left mouse: click
 				performClick(((MouseDownEvent *)event)->position.x, ((MouseDownEvent *)event)->position.y);
 			}
 			break;
 		case Event::MouseUp:
-			mouseButtons[((MouseUpEvent *)event)->button - 1] = false;
+			switch (((MouseDownEvent *)event)->button) {
+				case 1: mouseButtons.left   = false; break;
+				case 2: mouseButtons.middle = false; break;
+				case 3: mouseButtons.right  = false; break;
+				default: break;
+			}
 
-			if (((MouseUpEvent *)event)->button == 3) {
+			if (((MouseUpEvent *)event)->button == 3) { //Right mouse: lock cursor
 				window->lockCursor(false);
 			}
 			break;
