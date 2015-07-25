@@ -36,8 +36,8 @@
 void Scene::render() {
 	//Light
 	glUniform3fv(lightDirectionLocation, 1, &lightDirection.x);
-	glUniform4fv(lightColorLocation, 1, &lightColor.red);
-	glUniform4fv(ambientColorLocation, 1, &ambientColor.red);
+	glUniform4fv(lightColorLocation, 1, &lightColor.r);
+	glUniform4fv(ambientColorLocation, 1, &ambientColor.r);
 
 	glUniform3fv(sunPositionLocation, 1, &sunPosition.x);
 	glUniform1f(sunPowerLocation, sunPower);

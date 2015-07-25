@@ -56,9 +56,6 @@ typedef double F64;
 
 #include "base/color.h"
 
-typedef Color<U8>  ColorI;
-typedef Color<F32> ColorF;
-
 //More names stolen from TGE
 
 class PlaneF {
