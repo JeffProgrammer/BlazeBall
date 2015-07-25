@@ -38,6 +38,7 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 //Base types (names stolen from TGE because lazy)
 typedef unsigned char      U8;
@@ -60,8 +61,6 @@ typedef Color<F32> ColorF;
 
 //More names stolen from TGE
 
-class QuatF;
-
 class AngAxisF {
 public:
 	glm::vec3 axis;
@@ -69,22 +68,13 @@ public:
 
 	AngAxisF(const glm::vec3 &axis, const F32 &angle) : axis(axis), angle(angle) {};
 	AngAxisF(const F32 &angle, const glm::vec3 &axis) : axis(axis), angle(angle) {};
-	AngAxisF(const QuatF &quat);
+	AngAxisF(const glm::quat &quat);
+
+	operator glm::quat();
+	operator glm::quat() const;
 };
 
-class QuatF {
-public:
-	F32 w;
-	F32 x;
-	F32 y;
-	F32 z;
-
-	QuatF() : x(0), y(0), z(0), w(0) {};
-	QuatF(const F32 &x, const F32 &y, const F32 &z, const F32 &w) : x(x), y(y), z(z), w(w) {};
-	QuatF(const AngAxisF &ang);
-};
-
-inline AngAxisF::AngAxisF(const QuatF &quat) {
+inline AngAxisF::AngAxisF(const glm::quat &quat) {
 	angle = acosf(quat.w);
 	F32 half = sqrtf(quat.x * quat.x + quat.y * quat.y + quat.z * quat.z);
 	if (half != 0.0f) {
@@ -94,12 +84,14 @@ inline AngAxisF::AngAxisF(const QuatF &quat) {
 	}
 }
 
-inline QuatF::QuatF(const AngAxisF &ang) {
-	F32 sin2 = sinf(ang.angle / 2);
-	w = cosf(ang.angle / 2);
-	x = ang.axis.x * sin2;
-	y = ang.axis.y * sin2;
-	z = ang.axis.z * sin2;
+inline AngAxisF::operator glm::quat() {
+	F32 sin2 = sinf(angle / 2);
+	return glm::quat(cosf(angle / 2), axis.x * sin2, axis.y * sin2, axis.z * sin2);
+}
+
+inline AngAxisF::operator glm::quat() const {
+	F32 sin2 = sinf(angle / 2);
+	return glm::quat(cosf(angle / 2), axis.x * sin2, axis.y * sin2, axis.z * sin2);
 }
 
 class PlaneF {
@@ -145,11 +137,6 @@ public:
 	glm::vec3 point1;
 	glm::vec3 point2;
 	glm::vec3 point3;
-};
-
-class MatrixF {
-public:
-	F32 m[16];
 };
 
 #include "base/ray.h"
