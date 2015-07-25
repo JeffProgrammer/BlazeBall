@@ -225,14 +225,10 @@ set (DIFVIEWERGAME_SRC
 	source/main.cpp
 
 	# Base folder
-	source/base/color.h
-	source/base/Io.cpp
-	source/base/Io.h
+	source/base/io.cpp
+	source/base/io.h
 	source/base/math.cpp
 	source/base/math.h
-	source/base/point2.h
-	source/base/point3.h
-	source/base/point4.h
 	source/base/ray.h
 	source/base/types.h
 
