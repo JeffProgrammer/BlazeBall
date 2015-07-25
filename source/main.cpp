@@ -61,6 +61,7 @@ int main(int argc, const char * argv[])
 			for (auto dinterior : dif.interior) {
 				GameInterior *interior = new GameInterior(dinterior);
 				interior->generateMaterials(directory);
+				interior->generateMesh();
 				scene->interiors.push_back(interior);
 			}
 		}
