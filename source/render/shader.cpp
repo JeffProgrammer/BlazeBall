@@ -53,7 +53,7 @@ GLuint Shader::loadShader(const std::string &path, const GLenum &type) {
 	
 	//Read the file's data
 	U32 length;
-	U8 *data = IO::readFile(path, &length);
+	U8 *data = IO::readFile(path, length);
 	if (data == NULL)
 		return 0;
 	

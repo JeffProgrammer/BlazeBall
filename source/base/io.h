@@ -82,7 +82,7 @@ public:
 	 * @return A character buffer containing the contents of the file, or NULL if
 	 *         the file could not be found.
 	 */
-	static U8 *readFile(const std::string &file, U32 *length);
+	static U8 *readFile(const std::string &file, U32 &length);
 	
 	static Texture *loadTexture(const std::string &file);
 };

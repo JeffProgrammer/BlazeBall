@@ -42,7 +42,7 @@ bool IO::isfile(const std::string &file) {
 	return false;
 }
 
-U8 *IO::readFile(const std::string &file, U32 *length) {
+U8 *IO::readFile(const std::string &file, U32 &length) {
 	FILE *stream = fopen(file.c_str(), "rb");
 
 	if (!stream)
@@ -50,12 +50,12 @@ U8 *IO::readFile(const std::string &file, U32 *length) {
 
 	//Read length of file
 	fseek(stream, 0L, SEEK_END);
-	*length = (U32)ftell(stream);
+	length = (U32)ftell(stream);
 	fseek(stream, 0L, SEEK_SET);
 
-	U8 *data = new U8[*length + 1];
-	fread(data, sizeof(U8), *length, stream);
-	data[*length ++] = 0;
+	U8 *data = new U8[length + 1];
+	fread(data, sizeof(U8), length, stream);
+	data[length ++] = 0;
 
 	fclose(stream);
 
