@@ -33,11 +33,11 @@
 
 #define Sign3d(x) ((x) > 0 ? 1 : ((x) < 0 ? -1 : 0))
 
-F32 planeF_distance_to_point(PlaneF plane, glm::vec3 point) {
+F32 planeF_distance_to_point(const PlaneF &plane, const glm::vec3 &point) {
 	return (plane.x * point.x + plane.y * point.y + plane.z * point.z) + plane.d;
 }
 
-glm::vec2 point_project_plane(glm::vec3 point, glm::vec3 normal, glm::vec3 origin) {
+glm::vec2 point_project_plane(const glm::vec3 &point, const glm::vec3 &normal, const glm::vec3 &origin) {
 	if (glm::cross(normal, glm::vec3(0, 0, 1)).length() == 0) {
 		return glm::vec2(point.x, point.y);
 	}
