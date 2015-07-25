@@ -42,10 +42,130 @@ public:
 	bool intersects(const PlaneF &plane) const;
 	bool intersects(const TriangleF &triangle) const;
 
-	F32 distance(const TriangleF &triangle) const;
+	T distance(const TriangleF &triangle) const;
 	glm::vec3 intersection(const PlaneF &plane) const;
 };
 
 typedef Ray<F32> RayF;
+
+template <typename T>
+bool Ray<T>::intersects(const PlaneF &plane) const {
+	//http://antongerdelan.net/opengl/raycasting.html
+	//t = (RayOrigin • PlaneNormal + PlaneOffset) / (RayDirection • PlaneNormal)
+	//miss if denom == 0
+	//intersect if t > 0
+
+	glm::vec3 normal(plane.x, plane.y, plane.z);
+
+	F32 denominator = glm::dot(direction, normal);
+	if (denominator == 0) {
+		return false;
+	}
+
+	F32 numerator = (glm::dot(origin, normal) + plane.d);
+
+	if (-numerator / denominator > 0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+template <typename T>
+glm::vec3 Ray<T>::intersection(const PlaneF &plane) const {
+	//http://antongerdelan.net/opengl/raycasting.html
+	//t = (RayOrigin • PlaneNormal + PlaneOffset) / (RayDirection • PlaneNormal)
+	//miss if denom == 0
+	//intersect if t > 0
+
+	glm::vec3 normal(plane.x, plane.y, plane.z);
+
+	F32 denominator = glm::dot(direction, normal);
+	if (denominator == 0) {
+		return glm::vec3(-0x80000000, -0x80000000, -0x80000000);
+	}
+
+	F32 numerator = (glm::dot(origin, normal) + plane.d);
+
+	if (-numerator / denominator > 0) {
+		//xyz = RayOrigin + (RayNormal * t)
+		return origin + direction * (-numerator / denominator);
+	} else {
+		return glm::vec3(-0x80000000, -0x80000000, -0x80000000);
+	}
+}
+
+template<typename T>
+T Ray<T>::distance(const TriangleF &triangle) const {
+	//	triangle.point0 = triangle.point0.roundThousands();
+	//	triangle.point1 = triangle.point1.roundThousands();
+	//	triangle.point2 = triangle.point2.roundThousands();
+
+	glm::vec3 ab = triangle.point1 - triangle.point0;
+	glm::vec3 ac = triangle.point2 - triangle.point0;
+	glm::vec3 nor = glm::cross(ab, ac);
+	glm::vec3 oa = triangle.point0 - origin;
+	F32 num = glm::dot(nor, oa);
+	F32 denom = glm::dot(nor, direction);
+	if (denom == 0.0f)
+		return -1.0f;
+	F32 r = num/denom;
+	if (r < 0.0f)
+		return -1.0f;
+	glm::vec3 p = origin + direction * r;
+	glm::vec3 ap = p - triangle.point0;
+	bool canXY = true, canYZ = true, canZX = true;
+	if (ab.x*ac.y - ab.y*ac.x == 0.0f)
+		canXY = false;
+	if (ab.x*ac.z - ab.z*ac.x == 0.0f)
+		canZX = false;
+	if (ab.y*ac.z - ab.z*ac.y == 0.0f)
+		canYZ = false;
+	F32 kc1, lc1, kc2, lc2, c1, c2;
+	if (canXY) {
+		kc1 = ab.x;
+		kc2 = ab.y;
+		lc1 = ac.x;
+		lc2 = ac.y;
+		c1 = ap.x;
+		c2 = ap.y;
+	}
+	else if (canZX) {
+		kc1 = ab.x;
+		kc2 = ab.z;
+		lc1 = ac.x;
+		lc2 = ac.z;
+		c1 = ap.x;
+		c2 = ap.z;
+	}
+	else if (canYZ) {
+		kc1 = ab.z;
+		kc2 = ab.y;
+		lc1 = ac.z;
+		lc2 = ac.y;
+		c1 = ap.z;
+		c2 = ap.y;
+	}
+	else if (glm::cross(ab, ac).length() == 0.0f) {
+		return -1.0f;
+	}
+	else {
+		fprintf(stderr, "Collinear triangle?\n%f %f %f\n%f %f %f\n%f %f %f\n", ab.x, ab.y, ab.z, ac.x, ac.y, ac.z, ap.x, ap.y, ap.z);
+		return -1.0f;
+	}
+	F32 kld = kc1*lc2 - kc2*lc1;
+	F32 kn = c1*lc2 - c2*lc1;
+	F32 ln = kc1*c2 - kc2*c1;
+	F32 k = kn/kld;
+	F32 l = ln/kld;
+	if (k >= 0.0f && l >= 0.0f && k + l <= 1.0f)
+		return glm::distance(p, origin);
+	return -1.0f;
+}
+
+template <typename T>
+bool Ray<T>::intersects(const TriangleF &triangle) const {
+	return distance(triangle) > 0;
+}
 
 #endif
