@@ -170,5 +170,5 @@ std::string Texture::find(const std::string &fullName) {
 		}
 	}
 	//Couldn't find it?
-	return fullName;
+	return "";
 }
