@@ -244,7 +244,6 @@ void Scene::handleEvent(Event *event) {
 				case KeyEvent::KEY_LEFT:  movement.yawLeft   = false; break;
 				case KeyEvent::KEY_RIGHT: movement.yawRight  = false; break;
 				case KeyEvent::KEY_SPACE: movement.jump      = false; break;
-				case KeyEvent::KEY_Q: listNeedsDisplay = true; break;
 				default: break;
 			}
 			break;
@@ -280,7 +279,6 @@ void Scene::handleEvent(Event *event) {
 
 bool Scene::init() {
 	running = true;
-	listNeedsDisplay = true;
 
 	if (!window->createContext()) {
 		return false;

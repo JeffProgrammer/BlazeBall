@@ -66,8 +66,6 @@ protected:
 
 	F32 maxFPS = 60.0f;
 
-	GLfloat angle;
-
 	GLuint mvpMatrixLocation;
 	GLuint modelMatrixLocation;
 	GLuint viewMatrixLocation;
@@ -89,14 +87,9 @@ protected:
 		GameInterior *interior;
 	} selection;
 
-	GLuint displayList;
-	bool listNeedsDisplay = true;
-
 	bool captureMouse = false;
 	bool mouseButtons[3] = {false, false, false};
 	Movement movement;
-
-	bool convertMode;
 
 public:
 	constexpr static const float cameraSpeed = 0.3f;
@@ -123,13 +116,6 @@ public:
 	}
 	void setLoopCallback(void (*callback)()) {
 		loopCallback = callback;
-	}
-
-	bool getConvertMode() {
-		return convertMode;
-	}
-	void setConvertMode(bool convertMode) {
-		this->convertMode = convertMode;
 	}
 
 	void render();
