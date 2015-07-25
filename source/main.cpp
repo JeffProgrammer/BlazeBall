@@ -26,13 +26,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
 #include <fstream>
-#include <sys/time.h>
-#include <libgen.h>
-#include <unistd.h>
 #include "platformSDL/SDLWindow.h"
 #include "render/scene.h"
 #include "game/gameInterior.h"

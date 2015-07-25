@@ -27,12 +27,10 @@
 //------------------------------------------------------------------------------
 
 #include "render/scene.h"
-#include <stdlib.h>
-#include <stdbool.h>
 #include <sys/time.h>
-#include <libgen.h>
-#include <unistd.h>
 #include "game/gameInterior.h"
+#include <chrono>
+#include <thread>
 
 void Scene::render() {
 	//Light
@@ -350,7 +348,7 @@ void Scene::run() {
 		//This is bad. This means that we get ~4000 "FPS" because no frames are actually drawn.
 		//This code here mitigates that by sleeping away the extra frames that OS X skips.
 		if (end - start < (1000000.0f / maxFPS)) {
-			usleep((1000000.0f / maxFPS) - (end - start));
+			std::this_thread::sleep_for(std::chrono::microseconds((U64)(1000000.0f / maxFPS) - (end - start)));
 		}
 
 		//Profiling
