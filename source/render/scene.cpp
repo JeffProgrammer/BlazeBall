@@ -78,12 +78,12 @@ void Scene::render() {
 	}
 
 	glm::vec3 pos = sphere->getPosition();
-	AngAxisF rot = sphere->getRotation();
+	glm::quat rot = sphere->getRotation();
 
 	//Model
 	modelMatrix = glm::mat4x4(1);
 	modelMatrix = glm::translate(modelMatrix, glm::vec3(pos.x, pos.y, pos.z));
-	modelMatrix = glm::rotate(modelMatrix, rot.angle * (F32)(180.0f / M_PI), glm::vec3(rot.axis.x, rot.axis.y, rot.axis.z));
+	modelMatrix = glm::rotate(modelMatrix, glm::angle(rot), glm::axis(rot));
 
 	//Combined
 	mvpMat = projectionMatrix * viewMatrix * modelMatrix;

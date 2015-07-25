@@ -30,7 +30,7 @@
 const glm::vec3 btPhysicsBody::getPosition() {
 	return btConvert(mActor->getWorldTransform().getOrigin());
 }
-const AngAxisF btPhysicsBody::getRotation() {
+const glm::quat btPhysicsBody::getRotation() {
 	return btConvert(mActor->getWorldTransform().getRotation());
 }
 
@@ -45,7 +45,7 @@ void btPhysicsBody::setPosition(const glm::vec3 &position) {
 	worldTrans.setOrigin(btConvert(position));
 	mActor->setWorldTransform(worldTrans);
 }
-void btPhysicsBody::setRotation(const AngAxisF &rotation) {
+void btPhysicsBody::setRotation(const glm::quat &rotation) {
 	btTransform worldTrans = mActor->getWorldTransform();
 	worldTrans.setRotation(btConvert(rotation));
 	mActor->setWorldTransform(worldTrans);

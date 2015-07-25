@@ -61,39 +61,6 @@ typedef Color<F32> ColorF;
 
 //More names stolen from TGE
 
-class AngAxisF {
-public:
-	glm::vec3 axis;
-	F32 angle;
-
-	AngAxisF(const glm::vec3 &axis, const F32 &angle) : axis(axis), angle(angle) {};
-	AngAxisF(const F32 &angle, const glm::vec3 &axis) : axis(axis), angle(angle) {};
-	AngAxisF(const glm::quat &quat);
-
-	operator glm::quat();
-	operator glm::quat() const;
-};
-
-inline AngAxisF::AngAxisF(const glm::quat &quat) {
-	angle = acosf(quat.w);
-	F32 half = sqrtf(quat.x * quat.x + quat.y * quat.y + quat.z * quat.z);
-	if (half != 0.0f) {
-		axis = glm::vec3(quat.x / half, quat.y / half, quat.z / half);
-	} else {
-		axis = glm::vec3(1.0f, 0.0f, 0.0f);
-	}
-}
-
-inline AngAxisF::operator glm::quat() {
-	F32 sin2 = sinf(angle / 2);
-	return glm::quat(cosf(angle / 2), axis.x * sin2, axis.y * sin2, axis.z * sin2);
-}
-
-inline AngAxisF::operator glm::quat() const {
-	F32 sin2 = sinf(angle / 2);
-	return glm::quat(cosf(angle / 2), axis.x * sin2, axis.y * sin2, axis.z * sin2);
-}
-
 class PlaneF {
 public:
 	F32 x;

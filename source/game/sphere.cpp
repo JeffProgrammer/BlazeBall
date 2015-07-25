@@ -145,7 +145,7 @@ const glm::vec3 Sphere::getPosition() {
 	return mActor->getPosition();
 }
 
-const AngAxisF Sphere::getRotation() {
+const glm::quat Sphere::getRotation() {
 	return mActor->getRotation();
 }
 

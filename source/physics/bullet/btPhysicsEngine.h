@@ -93,12 +93,12 @@ inline static const glm::vec3 btConvert(const btVector3 &point) {
 	return glm::vec3(point.x(), point.y(), point.z());
 }
 
-inline static const btQuaternion btConvert(const AngAxisF &point) {
-	return btQuaternion(btConvert(point.axis), point.angle);
+inline static const btQuaternion btConvert(const glm::quat &point) {
+	return btQuaternion(point.w, point.x, point.y, point.z);
 }
 
-inline static const AngAxisF btConvert(const btQuaternion &point) {
-	return AngAxisF(btConvert(point.getAxis()), point.getAngle());
+inline static const glm::quat btConvert(const btQuaternion &point) {
+	return glm::quat(point.w(), point.x(), point.y(), point.z());
 }
 
 #endif

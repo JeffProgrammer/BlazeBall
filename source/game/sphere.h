@@ -66,7 +66,7 @@ public:
 
 	void render(ColorF color);
 	const glm::vec3 getPosition();
-	const AngAxisF getRotation();
+	const glm::quat getRotation();
 
 	void setPosition(const glm::vec3 &pos);
 

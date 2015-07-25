@@ -39,10 +39,10 @@ public:
 	btPhysicsBody(btRigidBody *actor) : mActor(actor) {};
 
 	virtual const glm::vec3 getPosition();
-	virtual const AngAxisF getRotation();
+	virtual const glm::quat getRotation();
 	virtual void setMass(const F32 &mass);
 	virtual void setPosition(const glm::vec3 &position);
-	virtual void setRotation(const AngAxisF &rotation);
+	virtual void setRotation(const glm::quat &rotation);
     virtual void setVelocity(const glm::vec3 &velocity);
     virtual void setAngularVelocity(const glm::vec3 &velocity);
 
