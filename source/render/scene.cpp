@@ -26,7 +26,6 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "base/time.h"
 #include "render/scene.h"
 #include "game/gameInterior.h"
 #include <chrono>
@@ -319,8 +318,7 @@ void Scene::run() {
 	//Main loop
 	while (running) {
 		//Profiling
-		struct timeval startTime, endTime;
-		gettimeofday(&startTime, NULL);
+		auto start = std::chrono::high_resolution_clock::now();
 
 		//Input
 		while (window->pollEvents(event)) {
@@ -340,25 +338,25 @@ void Scene::run() {
 		window->swapBuffers();
 
 		//Count how long a frame took
-		gettimeofday(&endTime, NULL);
-		long long start = startTime.tv_usec + (startTime.tv_sec * 1000000ULL);
-		long long end = endTime.tv_usec + (endTime.tv_sec * 1000000ULL);
+		auto end = std::chrono::high_resolution_clock::now();
+
+		std::chrono::duration<F64, std::micro> elapsed = end - start;
 
 		//If our app is in the background, OS X just ignores all render calls and immediately pushes through.
 		//This is bad. This means that we get ~4000 "FPS" because no frames are actually drawn.
 		//This code here mitigates that by sleeping away the extra frames that OS X skips.
-		if (end - start < (1000000.0f / maxFPS)) {
-			std::this_thread::sleep_for(std::chrono::microseconds((U64)(1000000.0f / maxFPS) - (end - start)));
+		if (elapsed.count() < (1000000.0f / maxFPS)) {
+			std::this_thread::sleep_for(std::chrono::microseconds((U64)((1000000.0f / maxFPS) - elapsed.count())));
 		}
 
 		//Profiling
-		gettimeofday(&endTime, NULL);
-		end = endTime.tv_usec + (endTime.tv_sec * 1000000ULL);
+		end = std::chrono::high_resolution_clock::now();
+		elapsed = end - start;
 		if (printFPS) {
-			printf("%f FPS, %f mspf\n", (1000.f / ((double)(end - start) / 1000.0f)), ((double)(end - start) / 1000.0f));
+			printf("%f FPS, %f mspf\n", (1000.f / (elapsed.count() / 1000.0f)), (elapsed.count() / 1000.0f));
 		}
 
-		PhysicsEngine::getEngine()->simulate((end - start) / 1000000.0f);
+		PhysicsEngine::getEngine()->simulate(elapsed.count() / 1000000.0f);
 	}
 	
 	//Clean up (duh)
