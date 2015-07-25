@@ -341,22 +341,23 @@ void Scene::run() {
 		auto end = std::chrono::high_resolution_clock::now();
 
 		std::chrono::duration<F64, std::micro> elapsed = end - start;
+		F64 den = decltype(elapsed)::period::den;
 
 		//If our app is in the background, OS X just ignores all render calls and immediately pushes through.
 		//This is bad. This means that we get ~4000 "FPS" because no frames are actually drawn.
 		//This code here mitigates that by sleeping away the extra frames that OS X skips.
-		if (elapsed.count() < (1000000.0f / maxFPS)) {
-			std::this_thread::sleep_for(std::chrono::microseconds((U64)((1000000.0f / maxFPS) - elapsed.count())));
+		if (elapsed.count() < (den / maxFPS)) {
+			std::this_thread::sleep_for(std::chrono::microseconds((U64)((den / maxFPS) - elapsed.count())));
 		}
 
 		//Profiling
 		end = std::chrono::high_resolution_clock::now();
 		elapsed = end - start;
 		if (printFPS) {
-			printf("%f FPS, %f mspf\n", (1000.f / (elapsed.count() / 1000.0f)), (elapsed.count() / 1000.0f));
+			printf("%f FPS, %f mspf\n", (1.0 / (elapsed.count() / den)), (elapsed.count() / den * std::milli::den));
 		}
 
-		PhysicsEngine::getEngine()->simulate(elapsed.count() / 1000000.0f);
+		PhysicsEngine::getEngine()->simulate(elapsed.count() / den);
 	}
 	
 	//Clean up (duh)
