@@ -26,8 +26,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
+#include "base/time.h"
 #include "render/scene.h"
-#include <sys/time.h>
 #include "game/gameInterior.h"
 #include <chrono>
 #include <thread>
