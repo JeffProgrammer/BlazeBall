@@ -341,3 +341,15 @@ if (APPLE)
 	ADD_FRAMEWORK(Game ForceFeedback)
 
 endif()
+
+set (BUILD_DIR_FILES
+	assets/DefaultNormal.png
+	assets/DefaultSpec.png
+	assets/noise.jpg
+
+	source/shaders/interiorF.glsl
+	source/shaders/interiorV.glsl
+)
+
+install(TARGETS Game RUNTIME DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/bin")
+install(FILES ${BUILD_DIR_FILES} DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/bin")
