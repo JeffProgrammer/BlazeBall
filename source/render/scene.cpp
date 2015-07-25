@@ -45,10 +45,8 @@ void Scene::render() {
 
 	//Camera
 	viewMatrix = glm::mat4x4(1);
-	viewMatrix = glm::rotate(viewMatrix, pitch, glm::vec3(1, 0, 0));
-	viewMatrix = glm::rotate(viewMatrix, yaw, glm::vec3(0, 1, 0));
 	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
-	viewMatrix = glm::translate(viewMatrix, -cameraPosition);
+	viewMatrix *= cameraTransform;
 
 	//Model
 	modelMatrix = glm::mat4x4(1);
@@ -95,46 +93,13 @@ void Scene::render() {
 }
 
 void Scene::loop() {
-	//Basic movement
-	glm::mat4x4 delta = glm::mat4x4(1);
-
-	if (movement.pitchUp) pitch -= keyCameraSpeed;
-	if (movement.pitchDown) pitch += keyCameraSpeed;
-	if (movement.yawLeft) yaw -= keyCameraSpeed;
-	if (movement.yawRight) yaw += keyCameraSpeed;
-
-	pitch += movement.pitch * cameraSpeed;
-	yaw += movement.yaw * cameraSpeed;
+	sphere->updateCamera(movement);
+	sphere->updateMove(movement);
 
 	movement.pitch = 0;
 	movement.yaw = 0;
 
-	delta = glm::rotate(delta, -yaw, glm::vec3(0, 0, 1));
-
-	Point2F move = Point2F();
-	if (movement.forward) move.x --;
-	if (movement.backward) move.x ++;
-	if (movement.left) move.y --;
-	if (movement.right) move.y ++;
-
-	glm::vec3 torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
-	delta = glm::rotate(delta, -pitch, glm::vec3(1, 0, 0));
-
-	sphere->applyTorque(Point3F(torque.x, torque.y, torque.z) * 2.5);
-
-	if (sphere->getColliding()) {
-		Point3F normal = sphere->getCollisionNormal();
-		if (movement.jump && normal.dot(Point3F(0, 0, 1)) > 0.1) {
-			sphere->applyImpulse((normal + Point3F(0, 0, 1)) / 2.f * 7.5f, Point3F(0, 0, 0));
-			printf("Jump\n");
-		}
-	} else {
-		sphere->applyForce(Point3F(torque.y, -torque.x, torque.z) * 5.f, Point3F(0, 0, 0));
-	}
-
-	Point3F pos = sphere->getPosition();
-	cameraPosition = glm::vec3(pos.x, pos.y, pos.z);
-	cameraPosition += glm::vec3(glm::translate(delta, glm::vec3(0, -2.5, 0))[3]);
+	sphere->getCameraPosition(cameraTransform);
 
 	if (sphere->getPosition().z < interiors[0]->getInterior().boundingBox.getMin().x) {
 		sphere->setPosition(Point3F(0, 30, 60));
@@ -223,8 +188,8 @@ void Scene::performClick(S32 mouseX, S32 mouseY) {
 	//Eye coordinates -> modelview coordinates
 	glm::vec3 world = glm::vec3(glm::inverse(viewMatrix) * eye);
 
-	RayF ray(cameraPosition.x, cameraPosition.y, cameraPosition.z,
-			 world.x, world.y, world.z);
+//	RayF ray(cameraPosition.x, cameraPosition.y, cameraPosition.z,
+//			 world.x, world.y, world.z);
 
 //	for (U32 i = 0; i < difCount; i ++) {
 //		DIF *dif = difs[i];
@@ -327,7 +292,7 @@ bool Scene::init() {
 	captureMouse = true;
 
 	//	Point3F center = difs[0]->interior[0]->boundingBox.getCenter();
-	cameraPosition = glm::vec3(0, 0, 0);
+//	cameraPosition = glm::vec3(0, 0, 0);
 
 	return true;
 }

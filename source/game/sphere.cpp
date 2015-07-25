@@ -28,6 +28,7 @@
 #include "game/sphere.h"
 #include "base/math.h"
 #include "base/io.h"
+#include "render/scene.h"
 #include "physics/physicsSphere.h"
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
@@ -163,4 +164,64 @@ void Sphere::setVelocity(const Point3F &vel) {
 
 void Sphere::setAngularVelocity(const Point3F &vel) {
     mActor->setAngularVelocity(vel);
+}
+
+void Sphere::updateCamera(const Movement &movement) {
+	if (movement.pitchUp) cameraPitch -= Scene::keyCameraSpeed;
+	if (movement.pitchDown) cameraPitch += Scene::keyCameraSpeed;
+	if (movement.yawLeft) cameraYaw -= Scene::keyCameraSpeed;
+	if (movement.yawRight) cameraYaw += Scene::keyCameraSpeed;
+
+	cameraPitch += movement.pitch * Scene::cameraSpeed;
+	cameraYaw += movement.yaw * Scene::cameraSpeed;
+}
+
+void Sphere::updateMove(const Movement &movement) {
+	//Apply the camera yaw to a matrix so our rolling is based on the camera direction
+	glm::mat4x4 delta = glm::mat4x4(1);
+	delta = glm::rotate(delta, -cameraYaw, glm::vec3(0, 0, 1));
+
+	//Convert the movement into a vector
+	Point2F move = Point2F();
+	if (movement.forward) move.x --;
+	if (movement.backward) move.x ++;
+	if (movement.left) move.y --;
+	if (movement.right) move.y ++;
+
+	//Torque is based on the movement and yaw
+	glm::vec3 torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
+
+	//Multiplied by 2.5 (magic number alert)
+	applyTorque(Point3F(torque.x, torque.y, torque.z) * 2.5);
+
+	//If we are colliding with the ground, we have the chance to jump
+	if (getColliding()) {
+		//Make sure we're not trying to jump off a wall. Anything with a dot product > 0.1 is considered "not a wall"
+		Point3F normal = getCollisionNormal();
+		if (movement.jump && normal.dot(Point3F(0, 0, 1)) > 0.1) {
+			//Jump takes the average of the collision normal and the up vector to provide a mostly upwards
+			// jump but still taking the surface into account.
+			applyImpulse((normal + Point3F(0, 0, 1)) / 2.f * 7.5f, Point3F(0, 0, 0));
+		}
+	} else {
+		//If we're not touching the ground, apply slight air movement.
+		applyForce(Point3F(torque.y, -torque.x, torque.z) * 5.f, Point3F(0, 0, 0));
+	}
+}
+
+void Sphere::getCameraPosition(glm::mat4x4 &mat) {
+	//Reset the matrix
+	mat = glm::mat4x4(1);
+
+	//Offset from marble; this is rotated by pitch and yaw
+	mat = glm::translate(mat, glm::vec3(0, 2.5, 0));
+
+	//Rotate camera around the marble, also rotating the offset above
+	mat = glm::rotate(mat, cameraPitch, glm::vec3(1, 0, 0));
+	mat = glm::rotate(mat, cameraYaw, glm::vec3(0, 0, 1));
+
+	//Offset the camera by the negative position to bring us into the center.
+	// This is not affected by pitch/yaw
+	Point3F pos = getPosition();
+	mat = glm::translate(mat, glm::vec3(-pos.x, -pos.y, -pos.z));
 }

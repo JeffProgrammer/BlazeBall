@@ -38,6 +38,8 @@
 #include "base/types.h"
 #include "physics/physicsBody.h"
 #include "render/material.h"
+#include "game/movement.h"
+#include <glm/matrix.hpp>
 
 class Sphere {
 protected:
@@ -50,6 +52,9 @@ public:
 	Material *material;
 
 	GLuint renderBuffer;
+
+	F32 cameraYaw;
+	F32 cameraPitch;
 private:
 	void generate();
 	const static U32 segments = 36;
@@ -78,6 +83,10 @@ public:
     
     void setVelocity(const Point3F &vel);
     void setAngularVelocity(const Point3F &vel);
+
+	void updateCamera(const Movement &movement);
+	void updateMove(const Movement &movement);
+	void getCameraPosition(glm::mat4x4 &mat);
 };
 
 #endif

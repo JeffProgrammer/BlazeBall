@@ -70,7 +70,7 @@ protected:
 
 	F32 yaw;
 	F32 pitch;
-	glm::vec3 cameraPosition;
+	glm::mat4 cameraTransform;
 
 	GLuint mvpMatrixLocation;
 	GLuint modelMatrixLocation;
@@ -102,8 +102,9 @@ protected:
 
 	bool convertMode;
 
-	const float cameraSpeed = 0.3f;
-	const float keyCameraSpeed = 3.f;
+public:
+	constexpr static const float cameraSpeed = 0.3f;
+	constexpr static const float keyCameraSpeed = 3.f;
 
 	const ColorF lightColor      = ColorF(1.000000f, 1.000000f, 1.000000f, 1.400000f);
 	const Point3F lightDirection = Point3F(0.60f, 0.40f, 1.0f);
@@ -112,7 +113,7 @@ protected:
 	const Point3F sunPosition    = Point3F(100.0f, 75.0f, 100.0f);
 	const F32 sunPower           = 1000.0f;
 	const U32 specularExponent   = 7;
-public:
+
 	std::vector<GameInterior *>interiors;
 	Sphere *sphere;
 
