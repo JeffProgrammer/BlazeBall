@@ -28,6 +28,7 @@
 
 #include <fstream>
 #include "platformSDL/SDLWindow.h"
+#include "platformSDL/SDLTimer.h"
 #include "render/scene.h"
 #include "game/gameInterior.h"
 
@@ -66,6 +67,7 @@ int main(int argc, const char * argv[])
 	}
 	//Init SDL and go!
 	scene->window = new SDLWindow();
+	scene->mTimer = new SDLTimer();
 	scene->run();
 
 	return 0;

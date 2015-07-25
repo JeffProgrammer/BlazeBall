@@ -42,6 +42,7 @@
 #include "render/scene.h"
 #include "platform/window.h"
 #include "platform/event.h"
+#include "platform/timer.h"
 #include <vector>
 #include "game/movement.h"
 
@@ -63,9 +64,9 @@ protected:
 	void (*loopCallback)();
 
 	bool running;
-    bool printFPS = false;
+	bool printFPS = true;
 
-	F32 maxFPS = 60.0f;
+	//F32 maxFPS = 60.0f;
 
 	GLuint mvpMatrixLocation;
 	GLuint modelMatrixLocation;
@@ -112,6 +113,10 @@ public:
 	Sphere *sphere;
 
 	Window *window;
+	
+	Timer *mTimer;
+	
+	bool mShouldSleep;
 
 	static Scene *getSingleton() {
 		static Scene *singleton;

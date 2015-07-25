@@ -280,6 +280,12 @@ void Scene::handleEvent(Event *event) {
 				window->lockCursor(false);
 			}
 			break;
+		case Event::WindowFocus:
+			mShouldSleep = false;
+			break;
+		case Event::WindowBlur:
+			mShouldSleep = true;
+			break;
 		default:
 			break;
 	}
@@ -287,6 +293,7 @@ void Scene::handleEvent(Event *event) {
 
 bool Scene::init() {
 	running = true;
+	mShouldSleep = false;
 
 	if (!window->createContext()) {
 		return false;
@@ -303,6 +310,8 @@ bool Scene::init() {
 }
 
 void Scene::cleanup() {
+	delete mTimer;
+	
 	//Destroy the SDL
 	window->destroyContext();
 }
@@ -318,7 +327,10 @@ void Scene::run() {
 	//Main loop
 	while (running) {
 		//Profiling
-		auto start = std::chrono::high_resolution_clock::now();
+		mTimer->start();
+		
+		if (mShouldSleep)
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
 		//Input
 		while (window->pollEvents(event)) {
@@ -338,27 +350,15 @@ void Scene::run() {
 		window->swapBuffers();
 
 		//Count how long a frame took
-		auto end = std::chrono::high_resolution_clock::now();
-
-		std::chrono::duration<F64, std::nano> elapsed = end - start;
-		F64 den = decltype(elapsed)::period::den;
-
-		//If our app is in the background, OS X just ignores all render calls and immediately pushes through.
-		//This is bad. This means that we get ~4000 "FPS" because no frames are actually drawn.
-		//This code here mitigates that by sleeping away the extra frames that OS X skips.
-		if (elapsed.count() < (den / maxFPS)) {
-			std::chrono::duration<F64> frameTime(1.0 / maxFPS);
-			std::this_thread::sleep_for(frameTime - elapsed);
-		}
+		//auto end = std::chrono::high_resolution_clock::now();
+		mTimer->end();
 
 		//Profiling
-		end = std::chrono::high_resolution_clock::now();
-		elapsed = end - start;
 		if (printFPS) {
-			printf("%f FPS, %f mspf\n", (1.0 / (elapsed.count() / den)), (elapsed.count() / den * std::milli::den));
+			printf("%f FPS, %f mspf\n", 1.0 / (mTimer->getDelta() / 1000.0), mTimer->getDelta());
 		}
 
-		PhysicsEngine::getEngine()->simulate(elapsed.count() / den);
+		PhysicsEngine::getEngine()->simulate(mTimer->getDelta() / 1000.0);
 	}
 	
 	//Clean up (duh)
