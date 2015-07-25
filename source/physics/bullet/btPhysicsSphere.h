@@ -34,7 +34,7 @@
 class btPhysicsSphere : public btPhysicsBody, public PhysicsSphere {
 	F32 mRadius;
 public:
-	btPhysicsSphere(F32 mRadius);
+	btPhysicsSphere(const F32 &mRadius);
 
 	virtual bool getColliding();
 	virtual glm::vec3 getCollisionNormal();

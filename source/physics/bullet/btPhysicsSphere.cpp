@@ -34,7 +34,7 @@ extern std::vector<ShapeInfo> shapes;
 extern std::vector<BodyInfo> bodies;
 extern std::vector<BodyMovement> moves;
 
-btPhysicsSphere::btPhysicsSphere(F32 radius) : mRadius(radius) {
+btPhysicsSphere::btPhysicsSphere(const F32 &radius) : mRadius(radius) {
 	//Motion state and shape
 	btMotionState *state = new btDefaultMotionState();
 	btCollisionShape *shape = new btSphereShape(radius);
