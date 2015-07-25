@@ -105,27 +105,30 @@ void Scene::loop() {
 
 	delta = glm::rotate(delta, -yaw, glm::vec3(0, 0, 1));
 
-	float speed = movementSpeed;
-	if (mouseButtons[1])
-		speed *= 2.f;
-
 	Point2F move = Point2F();
-	if (movement[0]) move.x -= speed;
-	if (movement[1]) move.x += speed;
-	if (movement[2]) move.y -= speed;
-	if (movement[3]) move.y += speed;
+	if (movement[0]) move.x --;
+	if (movement[1]) move.x ++;
+	if (movement[2]) move.y --;
+	if (movement[3]) move.y ++;
+
+
+//	btApplyCentralForce(%obj.btBody, VectorScale(%forward, ($mvForwardAction - $mvBackwardAction) * %this.btControlLinear));
+//	btApplyCentralForce(%obj.btBody, VectorScale(%right, ($mvRightAction - $mvLeftAction) * %this.btControlLinear));
+//	btApplyCentralImpulse(%obj.btBody, VectorScale(%nor, %this.btControlJump - VectorDot(%vel, %nor)));
 
 	glm::vec3 torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
 	delta = glm::rotate(delta, -pitch, glm::vec3(1, 0, 0));
 
-	sphere->applyTorque(Point3F(torque.x, torque.y, torque.z) * 20);
+	sphere->applyTorque(Point3F(torque.x, torque.y, torque.z) * 2.5);
 
 	if (sphere->getColliding()) {
 		Point3F normal = sphere->getCollisionNormal();
-		if (movement[8] && normal.dot(Point3F(0, 0, 1)) > 0.1)
-			sphere->applyForce((normal + Point3F(0, 0, 1)) / 2.f, Point3F(0, 0, -1));
+		if (movement[8] && normal.dot(Point3F(0, 0, 1)) > 0.1) {
+			sphere->applyImpulse((normal + Point3F(0, 0, 1)) / 2.f * 7.5f, Point3F(0, 0, 0));
+			printf("Jump\n");
+		}
 	} else {
-		sphere->applyForce(Point3F(torque.y, -torque.x, torque.z) * 10.f, Point3F(0, 0, 0));
+		sphere->applyForce(Point3F(torque.y, -torque.x, torque.z) * 5.f, Point3F(0, 0, 0));
 	}
 
 	Point3F pos = sphere->getPosition();

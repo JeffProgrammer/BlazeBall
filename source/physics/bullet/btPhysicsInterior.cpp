@@ -109,10 +109,6 @@ void btPhysicsInterior::construct() {
     }
 
     btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(mesh, true, true);
-    btTriangleInfoMap *map = new btTriangleInfoMap();
-    
-    btGenerateInternalEdgeInfo(shape, map);
-    
     shape->setMargin(0.01f);
     
     btTransform transform;
@@ -122,8 +118,8 @@ void btPhysicsInterior::construct() {
     state->setWorldTransform(transform);
     
     mActor = new btRigidBody(0, state, shape);
-    mActor->setRestitution(1.0f);
-    mActor->setFriction(1.0f);
+    mActor->setRestitution(0.7f);
+    mActor->setFriction(1.1f);
     mActor->setCollisionFlags(mActor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
     
     ShapeInfo info;

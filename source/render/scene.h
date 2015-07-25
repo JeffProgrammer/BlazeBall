@@ -103,7 +103,6 @@ protected:
 
 	const float cameraSpeed = 0.3f;
 	const float keyCameraSpeed = 3.f;
-	const float movementSpeed = 0.2f;
 
 	const ColorF lightColor      = ColorF(1.000000f, 1.000000f, 1.000000f, 1.400000f);
 	const Point3F lightDirection = Point3F(0.60f, 0.40f, 1.0f);

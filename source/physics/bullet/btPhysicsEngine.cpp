@@ -144,7 +144,7 @@ void physicsWorldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
         // clear manifold cache so it has to regenerate every tick. I know this doesn't
         // help performance but we need this for detecting real time collisions multiple times
         // so that we can ignore them.
-        manifold->clearManifold();
+//        manifold->clearManifold();
     }
 }
 
