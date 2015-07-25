@@ -26,7 +26,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "bitmap/jpegsupport.h"
+#include "render/bitmap/jpegsupport.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <jpeglib.h>

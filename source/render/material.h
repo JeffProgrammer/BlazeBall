@@ -31,7 +31,7 @@
 
 #include <stdio.h>
 #include "base/types.h"
-#include "bitmap/texture.h"
+#include "render/bitmap/texture.h"
 #include "render/shader.h"
 
 #define DEFAULT_NORMAL_TEXTURE   "DefaultNormal.png"

@@ -233,12 +233,12 @@ set (DIFVIEWERGAME_SRC
 	source/base/types.h
 
 	# Bitmap folder
-	source/bitmap/jpegsupport.cpp
-	source/bitmap/jpegsupport.h
-	source/bitmap/mngsupport.cpp
-	source/bitmap/mngsupport.h
-	source/bitmap/texture.cpp
-	source/bitmap/texture.h
+	source/render/bitmap/jpegsupport.cpp
+	source/render/bitmap/jpegsupport.h
+	source/render/bitmap/mngsupport.cpp
+	source/render/bitmap/mngsupport.h
+	source/render/bitmap/texture.cpp
+	source/render/bitmap/texture.h
 
 	# Game folder
 	source/game/gameObject.cpp

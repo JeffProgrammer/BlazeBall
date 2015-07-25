@@ -28,7 +28,7 @@
 
 #include "game/gameInterior.h"
 #include "base/io.h"
-#include "bitmap/texture.h"
+#include "render/bitmap/texture.h"
 #include <string>
 #include <cfloat>
 

@@ -28,7 +28,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
-#include "bitmap/mngsupport.h"
+#include "render/bitmap/mngsupport.h"
 #include "base/types.h"
 #include <mng/libmng.h>
 

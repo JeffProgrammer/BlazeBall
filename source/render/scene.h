@@ -35,7 +35,7 @@
 #include "base/types.h"
 #include "base/io.h"
 #include <dif/objects/dif.h>
-#include "bitmap/texture.h"
+#include "render/bitmap/texture.h"
 #include "game/sphere.h"
 #include "physics/physicsEngine.h"
 #include "render/shader.h"

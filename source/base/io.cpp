@@ -31,8 +31,8 @@
 #include <string>
 #include <math.h>
 #include "base/io.h"
-#include "bitmap/mngsupport.h"
-#include "bitmap/jpegsupport.h"
+#include "render/bitmap/mngsupport.h"
+#include "render/bitmap/jpegsupport.h"
 
 bool IO::isfile(const std::string &file) {
 	FILE *stream = fopen(file.c_str(), "r");
