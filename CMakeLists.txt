@@ -253,7 +253,7 @@ set (DIFVIEWERGAME_SRC
 	source/physics/physicsBody.cpp
 	source/physics/physicsBody.h
 	source/physics/physicsEngine.cpp
-	source/physics/physicsengine.h
+	source/physics/physicsEngine.h
 	source/physics/physicsSphere.cpp
 	source/physics/physicsSphere.h
 	source/physics/bullet/btPhysicsBody.cpp
