@@ -140,7 +140,7 @@ set (MNG_SRC
 	thirdparty/mng/libmng.h
 )
 add_library(Mng STATIC ${MNG_SRC})
-target_link_libraries(Mng libJpeg)
+target_link_libraries(Mng Jpeg)
 set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
 
 #------------------------------------------------------------------------------
@@ -288,26 +288,26 @@ set (DIFVIEWERGAME_SRC
 
 set (DIFVIEWERGAME_LIBRARIES
 	# Bullet
-	${CMAKE_BINARY_DIR}/Bullet/src/BulletCollision/Debug/libBulletCollision.a
-	${CMAKE_BINARY_DIR}/Bullet/src/BulletDynamics/Debug/libBulletDynamics.a
-	${CMAKE_BINARY_DIR}/Bullet/src/BulletSoftBody/Debug/libBulletSoftBody.a
-	${CMAKE_BINARY_DIR}/Bullet/src/LinearMath/Debug/libLinearMath.a
+	BulletCollision
+	BulletDynamics
+	BulletSoftBody
+	LinearMath
 
 	# SDL2
-	${CMAKE_BINARY_DIR}/SDL2/Debug/libSDL2.a
+	SDL2
 
 	# GLEW
-	${CMAKE_BINARY_DIR}/Debug/libGLEW.a
+	GLEW
 
 	# JPEG
-	${CMAKE_BINARY_DIR}/Debug/libJpeg.a
+	Jpeg
 
 	# MNG
-	${CMAKE_BINARY_DIR}/Debug/libMng.a
+	Mng
 	z #Zlib
 
 	# DIF
-	${CMAKE_BINARY_DIR}/Debug/libDif.a
+	Dif
 )
 
 include_directories(include ${DIFVIEWERGAME_INCLUDEDIR})
