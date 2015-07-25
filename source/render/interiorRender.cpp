@@ -32,48 +32,37 @@
 #include "base/math.h"
 
 void GameInterior::init() {
-	Triangle **perMaterialTriangles = new Triangle*[materialName.size()];
-	
-	U32 *materialTriangles = new U32[materialName.size()];
-	renderInfo.numMaterialTriangles = new U32[materialName.size()];
-	
+	std::vector<std::vector<Triangle>> perMaterialTriangles(mInterior.materialName.size());
+	std::vector<U32> materialTriangles(mInterior.materialName.size());
+
 	U32 numTriangles = 0;
-	
-	for (U32 i = 0; i < materialName.size(); i ++) {
-		renderInfo.numMaterialTriangles[i] = 0;
-	}
-	
+	renderInfo.numMaterialTriangles = std::vector<U32>(mInterior.surface.size());
+
 	//Generate our triangle mesh for rendering
-	for (U32 i = 0; i < surface.size(); i ++) {
-		Surface surface = this->surface[i];
+	for (U32 i = 0; i < mInterior.surface.size(); i ++) {
+		DIF::Interior::Surface surface = mInterior.surface[i];
 		renderInfo.numMaterialTriangles[surface.textureIndex] += surface.windingCount - 2;
 		numTriangles += surface.windingCount - 2;
 	}
 	
 	//Load all the textures
-	for (U32 i = 0; i < materialName.size(); i ++) {
-		perMaterialTriangles[i] = new Triangle[renderInfo.numMaterialTriangles[i]];
-		materialTriangles[i] = 0;
-		
-		Material *mat = material[i];
+	for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
+		perMaterialTriangles[i] = std::vector<Triangle>(renderInfo.numMaterialTriangles[i]);
+
+		Material *mat = mMaterialList[i];
 		if (mat) {
 			mat->generate();
 		}
 	}
-	noise->generateBuffer();
+	mNoiseTexture->generateBuffer();
+
+	std::vector<Point3F> tangentMap(mInterior.normal.size());
+	std::vector<Point3F> bitangentMap(mInterior.normal.size());
 	
-	Point3F *tangentMap = new Point3F[normal.size()];
-	Point3F *bitangentMap = new Point3F[normal.size()];
-	
-	for (U32 i = 0; i < normal.size(); i ++) {
-		tangentMap[i] = Point3F();
-		bitangentMap[i] = Point3F();
-	}
-	
-	for (U32 i = 0; i < surface.size(); i ++) {
-		Surface surface = this->surface[i];
+	for (U32 i = 0; i < mInterior.surface.size(); i ++) {
+		DIF::Interior::Surface surface = mInterior.surface[i];
 		
-		Point3F normal = this->normal[plane[surface.planeIndex].normalIndex];
+		Point3F normal = mInterior.normal[mInterior.plane[surface.planeIndex].normalIndex];
 		if (surface.planeFlipped) {
 			normal *= -1;
 		}
@@ -85,16 +74,16 @@ void GameInterior::init() {
 			Point3F v0, v1, v2;
 			
 			if ((j - (surface.windingStart + 2)) % 2 == 0) {
-				v0 = point[index[j]];
-				v1 = point[index[j - 1]];
-				v2 = point[index[j - 2]];
+				v0 = mInterior.point[mInterior.index[j]];
+				v1 = mInterior.point[mInterior.index[j - 1]];
+				v2 = mInterior.point[mInterior.index[j - 2]];
 			} else {
-				v0 = point[index[j - 2]];
-				v1 = point[index[j - 1]];
-				v2 = point[index[j]];
+				v0 = mInterior.point[mInterior.index[j - 2]];
+				v1 = mInterior.point[mInterior.index[j - 1]];
+				v2 = mInterior.point[mInterior.index[j]];
 			}
 			
-			TexGenEq texGenEq = this->texGenEq[surface.texGenIndex];
+			DIF::Interior::TexGenEq texGenEq = mInterior.texGenEq[surface.texGenIndex];
 			
 			Point2F uv0 = Point2F(planeF_distance_to_point(texGenEq.planeX, v0), planeF_distance_to_point(texGenEq.planeY, v0));
 			Point2F uv1 = Point2F(planeF_distance_to_point(texGenEq.planeX, v1), planeF_distance_to_point(texGenEq.planeY, v1));
@@ -152,15 +141,13 @@ void GameInterior::init() {
 	
 	//Load all the textures
 	numTriangles = 0;
-	for (U32 i = 0; i < materialName.size(); i ++) {
+	for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
 		for (U32 j = 0; j < materialTriangles[i]; j ++) {
 			triangle[numTriangles] = perMaterialTriangles[i][j];
 			numTriangles ++;
 		}
-		delete [] perMaterialTriangles[i];
 	}
-	delete [] perMaterialTriangles;
-	
+
 	//Generate us a vertex buffer
 	glGenBuffers(1, &renderInfo.vertexBuffer);
 	
@@ -225,19 +212,19 @@ void GameInterior::render() {
 						  (void *)offsetof(Vertex, bitangent)); //Offset
 
 	U32 start = 0;
-	for (U32 i = 0; i < materialName.size(); i ++) {
+	for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
 		if (renderInfo.numMaterialTriangles[i] > 0) {
-			if (material[i]) {
-				material[i]->activate();
-				noise->activate();
+			if (mMaterialList[i]) {
+				mMaterialList[i]->activate();
+				mNoiseTexture->activate();
 			} else {
-				printf("Trying to render with invalid material %d: %s\n", i, materialName[i].c_str());
+				printf("Trying to render with invalid material %d: %s\n", i, mInterior.materialName[i].c_str());
 			}
 			glDrawArrays(GL_TRIANGLES, start * 3, renderInfo.numMaterialTriangles[i] * 3);
 			start += renderInfo.numMaterialTriangles[i];
-			if (material[i]) {
-				noise->deactivate();
-				material[i]->deactivate();
+			if (mMaterialList[i]) {
+				mNoiseTexture->deactivate();
+				mMaterialList[i]->deactivate();
 			}
 		}
 	}
