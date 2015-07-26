@@ -335,8 +335,6 @@ void Scene::run() {
 
 		//Hard work
 		loop();
-		if (loopCallback)
-			loopCallback();
 		render();
 		
 		// simulate the physics engine.
