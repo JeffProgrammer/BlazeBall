@@ -98,9 +98,6 @@ protected:
 	Movement movement;
 
 public:
-	constexpr static const float cameraSpeed = 0.3f;
-	constexpr static const float keyCameraSpeed = 3.f;
-
 	const glm::vec4 lightColor     = glm::vec4(1.000000f, 1.000000f, 1.000000f, 1.400000f);
 	const glm::vec3 lightDirection = glm::vec3(0.60f, 0.40f, 1.0f);
 	const glm::vec4 ambientColor   = glm::vec4(0.700000f, 0.700000f, 0.700000f, 1.000000f);
