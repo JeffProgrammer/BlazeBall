@@ -43,12 +43,14 @@ Sphere::Sphere(glm::vec3 origin, F32 radius) : radius(radius), renderBuffer(0), 
 }
 
 void Sphere::generate() {
-	step = (glm::pi<F32>() * 2.0f / segments);
+	F32 step = (glm::pi<F32>() * 2.0f / segments);
+
 	S32 segments2 = segments / 2;
 	S32 slices2 = slices / 2;
 
-	const S32 size = segments * slices * 2;
-	Vertex points[size];
+	S32 size = segments * slices * 2;
+	Vertex *points = new Vertex[size];
+
 	U32 point = 0;
 
 	for (S32 y = -slices2; y < slices2; y ++) {
@@ -91,7 +93,7 @@ void Sphere::generate() {
 	//Generate a buffer
 	glGenBuffers(1, &renderBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, renderBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * point, points, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * point, &points[0], GL_STATIC_DRAW);
 }
 
 void Sphere::render() {
@@ -164,13 +166,13 @@ void Sphere::setAngularVelocity(const glm::vec3 &vel) {
 }
 
 void Sphere::updateCamera(const Movement &movement) {
-	if (movement.pitchUp) cameraPitch -= Scene::keyCameraSpeed;
-	if (movement.pitchDown) cameraPitch += Scene::keyCameraSpeed;
-	if (movement.yawLeft) cameraYaw -= Scene::keyCameraSpeed;
-	if (movement.yawRight) cameraYaw += Scene::keyCameraSpeed;
+	if (movement.pitchUp) cameraPitch -= keyCameraSpeed;
+	if (movement.pitchDown) cameraPitch += keyCameraSpeed;
+	if (movement.yawLeft) cameraYaw -= keyCameraSpeed;
+	if (movement.yawRight) cameraYaw += keyCameraSpeed;
 
-	cameraPitch += movement.pitch * Scene::cameraSpeed;
-	cameraYaw += movement.yaw * Scene::cameraSpeed;
+	cameraPitch += movement.pitch * cameraSpeed;
+	cameraYaw += movement.yaw * cameraSpeed;
 }
 
 void Sphere::updateMove(const Movement &movement) {

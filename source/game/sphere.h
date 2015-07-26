@@ -58,9 +58,12 @@ public:
 	F32 cameraPitch;
 private:
 	void generate();
-	const static U32 segments = 36;
-	const static U32 slices = 18;
-	F32 step;
+
+	const U32 segments = 36;
+	const U32 slices = 18;
+
+	const F32 cameraSpeed = 0.3f;
+	const F32 keyCameraSpeed = 3.f;
 
 public:
 	Sphere(glm::vec3 origin, F32 radius);
