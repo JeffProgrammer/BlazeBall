@@ -109,6 +109,8 @@ public:
 	std::vector<GameInterior *>interiors;
 	Sphere *sphere;
 
+	GameObject *controlObject;
+
 	Window *window;
 	
 	Timer *mTimer;

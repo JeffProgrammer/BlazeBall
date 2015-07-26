@@ -43,7 +43,7 @@ void Scene::render() {
 
 	//Get the camera transform from the marble
 	glm::mat4 cameraTransform;
-	sphere->getCameraPosition(cameraTransform);
+	controlObject->getCameraPosition(cameraTransform);
 
 	//Camera
 	viewMatrix = glm::mat4x4(1);
@@ -95,8 +95,8 @@ void Scene::render() {
 }
 
 void Scene::loop() {
-	sphere->updateCamera(movement);
-	sphere->updateMove(movement);
+	controlObject->updateCamera(movement);
+	controlObject->updateMove(movement);
 
 	movement.pitch = 0;
 	movement.yaw = 0;
