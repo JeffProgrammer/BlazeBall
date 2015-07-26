@@ -43,17 +43,11 @@ Sphere::Sphere(glm::vec3 origin, F32 radius) : radius(radius), renderBuffer(0), 
 }
 
 void Sphere::generate() {
+	step = (glm::pi<F32>() * 2.0f / segments);
 	S32 segments2 = segments / 2;
 	S32 slices2 = slices / 2;
 
-	// TODO: USE VISUAL STUDIO 2015
-#ifdef _WIN32
-#define constexpr const
-#endif
-	constexpr S32 size = segments * slices * 2;
-#ifdef _WIN32
-#undef constexpr
-#endif
+	const S32 size = segments * slices * 2;
 	Vertex points[size];
 	U32 point = 0;
 
