@@ -62,8 +62,6 @@
 
 class Scene {
 protected:
-	void (*loopCallback)();
-
 	bool running;
 	bool printFPS = true;
 
@@ -127,10 +125,6 @@ public:
 			singleton = new Scene();
 		return singleton;
 	}
-	void setLoopCallback(void (*callback)()) {
-		loopCallback = callback;
-	}
-
 	void render();
 	void loop();
 	bool initGL();
