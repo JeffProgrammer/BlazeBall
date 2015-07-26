@@ -33,7 +33,7 @@
 #include <cfloat>
 
 GameInterior::GameInterior(DIF::Interior interior) : mInterior(interior) {
-	
+	renderInfo.generated = false;
 }
 
 void GameInterior::generateMaterials(std::string directory) {
