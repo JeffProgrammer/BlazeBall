@@ -33,13 +33,13 @@
 
 void Scene::render() {
 	//Light
-	glUniform3fv(lightDirectionLocation, 1, &lightDirection.x);
-	glUniform4fv(lightColorLocation, 1, &lightColor.r);
-	glUniform4fv(ambientColorLocation, 1, &ambientColor.r);
+	glUniform3fv(GLLocations.lightDirection, 1, &lightDirection.x);
+	glUniform4fv(GLLocations.lightColor, 1, &lightColor.r);
+	glUniform4fv(GLLocations.ambientColor, 1, &ambientColor.r);
 
-	glUniform3fv(sunPositionLocation, 1, &sunPosition.x);
-	glUniform1f(sunPowerLocation, sunPower);
-	glUniform1f(specularExponentLocation, specularExponent);
+	glUniform3fv(GLLocations.sunPosition, 1, &sunPosition.x);
+	glUniform1f(GLLocations.sunPower, sunPower);
+	glUniform1f(GLLocations.specularExponent, specularExponent);
 
 	//Get the camera transform from the marble
 	glm::mat4 cameraTransform;
@@ -58,10 +58,10 @@ void Scene::render() {
 	glm::mat3x3 mv3Mat = glm::mat3(viewMatrix * modelMatrix);
 
 	//Send to OpenGL
-	glUniformMatrix4fv(mvpMatrixLocation, 1, GL_FALSE, &mvpMat[0][0]);
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]);
-	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &viewMatrix[0][0]);
-	glUniformMatrix3fv(modelView3Location, 1, GL_FALSE, &mv3Mat[0][0]);
+	glUniformMatrix4fv(GLLocations.mvpMatrix, 1, GL_FALSE, &mvpMat[0][0]);
+	glUniformMatrix4fv(GLLocations.modelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
+	glUniformMatrix4fv(GLLocations.viewMatrix, 1, GL_FALSE, &viewMatrix[0][0]);
+	glUniformMatrix3fv(GLLocations.modelView3, 1, GL_FALSE, &mv3Mat[0][0]);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
@@ -87,9 +87,9 @@ void Scene::render() {
 	mvpMat = projectionMatrix * viewMatrix * modelMatrix;
 
 	//Send to OpenGL
-	glUniformMatrix4fv(mvpMatrixLocation, 1, GL_FALSE, &mvpMat[0][0]);
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]);
-	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &viewMatrix[0][0]);
+	glUniformMatrix4fv(GLLocations.mvpMatrix, 1, GL_FALSE, &mvpMat[0][0]);
+	glUniformMatrix4fv(GLLocations.modelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
+	glUniformMatrix4fv(GLLocations.viewMatrix, 1, GL_FALSE, &viewMatrix[0][0]);
 
 	sphere->render();
 }
@@ -134,18 +134,18 @@ bool Scene::initGL() {
 	shader->setUniformLocation("specularSampler", 2);
 	shader->setUniformLocation("noiseSampler", 3);
 
-	mvpMatrixLocation = shader->getUniformLocation("modelViewProjectionMat");
-	modelMatrixLocation = shader->getUniformLocation("modelMat");
-	viewMatrixLocation = shader->getUniformLocation("viewMat");
-	modelView3Location = shader->getUniformLocation("modelView3Mat");
+	GLLocations.mvpMatrix = shader->getUniformLocation("modelViewProjectionMat");
+	GLLocations.modelMatrix = shader->getUniformLocation("modelMat");
+	GLLocations.viewMatrix = shader->getUniformLocation("viewMat");
+	GLLocations.modelView3 = shader->getUniformLocation("modelView3Mat");
 
-	lightDirectionLocation = shader->getUniformLocation("lightDirection");
-	lightColorLocation = shader->getUniformLocation("lightColor");
-	ambientColorLocation = shader->getUniformLocation("ambientColor");
+	GLLocations.lightDirection = shader->getUniformLocation("lightDirection");
+	GLLocations.lightColor = shader->getUniformLocation("lightColor");
+	GLLocations.ambientColor = shader->getUniformLocation("ambientColor");
 
-	sunPositionLocation = shader->getUniformLocation("sunPosition");
-	sunPowerLocation = shader->getUniformLocation("sunPower");
-	specularExponentLocation = shader->getUniformLocation("specularExponent");
+	GLLocations.sunPosition = shader->getUniformLocation("sunPosition");
+	GLLocations.sunPower = shader->getUniformLocation("sunPower");
+	GLLocations.specularExponent = shader->getUniformLocation("specularExponent");
 
 	//Window size for viewport
 	glm::ivec2 screenSize = window->getWindowSize();
@@ -192,24 +192,6 @@ void Scene::performClick(S32 mouseX, S32 mouseY) {
 
 	//Eye coordinates -> modelview coordinates
 	glm::vec3 world = glm::vec3(glm::inverse(viewMatrix) * eye);
-
-//	RayF ray(cameraPosition.x, cameraPosition.y, cameraPosition.z,
-//			 world.x, world.y, world.z);
-
-//	for (U32 i = 0; i < difCount; i ++) {
-//		DIF *dif = difs[i];
-//		for (U32 j = 0; j < dif->numDetailLevels; j ++) {
-//			Interior *interior = dif->interior[j];
-//
-//			U32 surfaceNum = interior->rayCast(ray);
-//			if (surfaceNum != -1) {
-//				selection.hasSelection = true;
-//				selection.surfaceIndex = surfaceNum;
-//				selection.interior = interior;
-//				return;
-//			}
-//		}
-//	}
 
 	selection.hasSelection = false;
 }

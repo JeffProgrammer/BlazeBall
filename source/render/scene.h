@@ -69,18 +69,20 @@ protected:
 
 	//F32 maxFPS = 60.0f;
 
-	GLuint mvpMatrixLocation;
-	GLuint modelMatrixLocation;
-	GLuint viewMatrixLocation;
+	struct {
+		GLuint mvpMatrix;
+		GLuint modelMatrix;
+		GLuint viewMatrix;
 
-	GLuint modelView3Location;
+		GLuint modelView3;
 
-	GLuint lightDirectionLocation;
-	GLuint lightColorLocation;
-	GLuint ambientColorLocation;
-	GLuint sunPositionLocation;
-	GLuint sunPowerLocation;
-	GLuint specularExponentLocation;
+		GLuint lightDirection;
+		GLuint lightColor;
+		GLuint ambientColor;
+		GLuint sunPosition;
+		GLuint sunPower;
+		GLuint specularExponent;
+	} GLLocations;
 
 	glm::mat4x4 projectionMatrix, modelMatrix, viewMatrix;
 
