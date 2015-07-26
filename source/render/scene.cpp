@@ -233,6 +233,12 @@ void Scene::handleEvent(Event *event) {
 				case KeyEvent::KEY_LEFT:  movement.yawLeft   = true; break;
 				case KeyEvent::KEY_RIGHT: movement.yawRight  = true; break;
 				case KeyEvent::KEY_SPACE: movement.jump      = true; break;
+				case KeyEvent::KEY_C:
+					if (controlObject == camera)
+						controlObject = sphere;
+					else
+						controlObject = camera;
+					break;
 				default: break;
 			}
 			break;
