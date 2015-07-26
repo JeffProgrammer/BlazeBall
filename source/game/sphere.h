@@ -69,10 +69,10 @@ public:
 	Sphere(glm::vec3 origin, F32 radius);
 
 	void render();
-	const glm::vec3 getPosition();
+	virtual glm::vec3 getPosition();
 	const glm::quat getRotation();
 
-	void setPosition(const glm::vec3 &pos);
+	virtual void setPosition(const glm::vec3 &pos);
 
 	void setMaterial(Material *material) {
 		this->material = material;

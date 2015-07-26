@@ -38,6 +38,9 @@ protected:
 	glm::vec3 mOrigin;
 	
 public:
+	virtual glm::vec3 getPosition() { return mOrigin; }
+	virtual void setPosition(const  glm::vec3 &position) { mOrigin = position; }
+
 	virtual void updateCamera(const Movement &movement);
 	virtual void updateMove(const Movement &movement);
 	virtual void getCameraPosition(glm::mat4x4 &mat);
