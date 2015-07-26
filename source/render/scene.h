@@ -45,6 +45,7 @@
 #include "platform/timer.h"
 #include <vector>
 #include "game/movement.h"
+#include "game/camera.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -61,25 +62,25 @@
 
 class Scene {
 protected:
-	void (*loopCallback)();
-
 	bool running;
 	bool printFPS = true;
 
 	//F32 maxFPS = 60.0f;
 
-	GLuint mvpMatrixLocation;
-	GLuint modelMatrixLocation;
-	GLuint viewMatrixLocation;
+	struct {
+		GLuint mvpMatrix;
+		GLuint modelMatrix;
+		GLuint viewMatrix;
 
-	GLuint modelView3Location;
+		GLuint modelView3;
 
-	GLuint lightDirectionLocation;
-	GLuint lightColorLocation;
-	GLuint ambientColorLocation;
-	GLuint sunPositionLocation;
-	GLuint sunPowerLocation;
-	GLuint specularExponentLocation;
+		GLuint lightDirection;
+		GLuint lightColor;
+		GLuint ambientColor;
+		GLuint sunPosition;
+		GLuint sunPower;
+		GLuint specularExponent;
+	} GLLocations;
 
 	glm::mat4x4 projectionMatrix, modelMatrix, viewMatrix;
 
@@ -108,6 +109,9 @@ public:
 
 	std::vector<GameInterior *>interiors;
 	Sphere *sphere;
+	Camera *camera;
+
+	GameObject *controlObject;
 
 	Window *window;
 	
@@ -121,10 +125,6 @@ public:
 			singleton = new Scene();
 		return singleton;
 	}
-	void setLoopCallback(void (*callback)()) {
-		loopCallback = callback;
-	}
-
 	void render();
 	void loop();
 	bool initGL();

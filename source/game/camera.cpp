@@ -26,24 +26,47 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef gameObject_h
-#define gameObject_h
+#include "camera.h"
+#include <glm/gtc/matrix_transform.hpp>
 
-#include "base/types.h"
-#include "game/movement.h"
-#include <glm/matrix.hpp>
+void Camera::updateCamera(const Movement &movement) {
+	//Keyboard movement
+	if (movement.pitchUp)   pitch -= keyCameraSpeed;
+	if (movement.pitchDown) pitch += keyCameraSpeed;
+	if (movement.yawLeft)   yaw -= keyCameraSpeed;
+	if (movement.yawRight)  yaw += keyCameraSpeed;
 
-class GameObject {
-protected:
-	glm::vec3 mOrigin;
-	
-public:
-	virtual glm::vec3 getPosition() { return mOrigin; }
-	virtual void setPosition(const  glm::vec3 &position) { mOrigin = position; }
+	//Mouse movement
+	pitch += movement.pitch * cameraSpeed;
+	yaw   += movement.yaw   * cameraSpeed;
+}
 
-	virtual void updateCamera(const Movement &movement);
-	virtual void updateMove(const Movement &movement);
-	virtual void getCameraPosition(glm::mat4x4 &mat);
-};
+void Camera::updateMove(const Movement &movement) {
+	glm::mat4x4 delta = glm::mat4x4(1);
 
-#endif
+	//Invert these because we are a free cam
+	delta = glm::rotate(delta, -yaw, glm::vec3(0, 0, 1));
+	delta = glm::rotate(delta, -pitch, glm::vec3(1, 0, 0));
+
+	//Move based on movement keys
+	if (movement.forward)  delta = glm::translate(delta, glm::vec3(0, 1, 0));
+	if (movement.backward) delta = glm::translate(delta, glm::vec3(0, -1, 0));
+	if (movement.left)     delta = glm::translate(delta, glm::vec3(-1, 0, 0));
+	if (movement.right)    delta = glm::translate(delta, glm::vec3(1, 0, 0));
+
+	//Move the origin
+	mOrigin += (glm::vec3)delta[3];
+}
+
+void Camera::getCameraPosition(glm::mat4x4 &mat) {
+	//Reset the matrix
+	mat = glm::mat4x4(1);
+
+	//Rotate camera around the origin
+	mat = glm::rotate(mat, pitch, glm::vec3(1, 0, 0));
+	mat = glm::rotate(mat, yaw, glm::vec3(0, 0, 1));
+
+	//Offset the camera by the negative position to bring us into the center.
+	// This is not affected by pitch/yaw
+	mat = glm::translate(mat, -mOrigin);
+}

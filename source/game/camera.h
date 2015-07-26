@@ -26,21 +26,20 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef gameObject_h
-#define gameObject_h
+#ifndef camera_h
+#define camera_h
 
 #include "base/types.h"
-#include "game/movement.h"
-#include <glm/matrix.hpp>
+#include "game/gameObject.h"
 
-class GameObject {
-protected:
-	glm::vec3 mOrigin;
-	
+class Camera : public GameObject {
+	F32 yaw;
+	F32 pitch;
+
+	const F32 cameraSpeed = 0.3f;
+	const F32 keyCameraSpeed = 3.f;
+
 public:
-	virtual glm::vec3 getPosition() { return mOrigin; }
-	virtual void setPosition(const  glm::vec3 &position) { mOrigin = position; }
-
 	virtual void updateCamera(const Movement &movement);
 	virtual void updateMove(const Movement &movement);
 	virtual void getCameraPosition(glm::mat4x4 &mat);

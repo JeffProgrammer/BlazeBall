@@ -145,7 +145,7 @@ glm::vec3 Sphere::getCollisionNormal() {
 	return dynamic_cast<PhysicsSphere *>(mActor)->getCollisionNormal();
 }
 
-const glm::vec3 Sphere::getPosition() {
+glm::vec3 Sphere::getPosition() {
 	return mActor->getPosition();
 }
 
