@@ -241,6 +241,8 @@ set (DIFVIEWERGAME_SRC
 	source/render/bitmap/texture.h
 
 	# Game folder
+	source/game/camera.cpp
+	source/game/camera.h
 	source/game/gameObject.cpp
 	source/game/gameObject.h
 	source/game/gameInterior.cpp
