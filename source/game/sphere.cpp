@@ -46,7 +46,14 @@ void Sphere::generate() {
 	S32 segments2 = segments / 2;
 	S32 slices2 = slices / 2;
 
+	// TODO: USE VISUAL STUDIO 2015
+#ifdef _WIN32
+#define constexpr const
+#endif
 	constexpr S32 size = segments * slices * 2;
+#ifdef _WIN32
+#undef constexpr
+#endif
 	Vertex points[size];
 	U32 point = 0;
 

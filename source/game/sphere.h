@@ -60,7 +60,7 @@ private:
 	void generate();
 	const static U32 segments = 36;
 	const static U32 slices = 18;
-	static constexpr F32 step = (M_PI * 2.0f / segments);
+	static /*constexpr*/ F32 step = (M_PI * 2.0f / segments);
 
 public:
 	Sphere(glm::vec3 origin, F32 radius);

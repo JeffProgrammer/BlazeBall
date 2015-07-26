@@ -34,7 +34,6 @@
 #include <OpenGL/glu.h>
 #include <OpenGL/gl.h>
 #else
-#include <GL/GLU.h>
 #include <GL/glew.h>
 #endif
 

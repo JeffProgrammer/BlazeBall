@@ -71,17 +71,19 @@ GLuint Shader::loadShader(const std::string &path, const GLenum &type) {
 	glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
 	
 	//Get a log of the errors
-	GLchar log[infoLogLength];
+	GLchar *log = new GLchar[infoLogLength];
 	glGetShaderInfoLog(shaderId, infoLogLength, NULL, log);
 	
 	//Did we actually have an error? If so, terminate here
 	if (!result) {
 		printf("%s error: %s\n", path.c_str(), log);
+		delete[] log;
 
 		//Errored so we can't return an id
 		return 0;
 	}
 	
+	delete[] log;
 	return shaderId;
 }
 
@@ -123,12 +125,13 @@ GLuint Shader::loadProgram(const std::string &vertPath, const std::string &fragP
 	glGetProgramiv(progID, GL_INFO_LOG_LENGTH, &infoLogLength);
 	
 	//Get the log from the info
-	GLchar log[infoLogLength];
+	GLchar *log = new GLchar[infoLogLength];
 	glGetProgramInfoLog(progID, infoLogLength, NULL, log);
 	
 	//If we didn't create a shader successfully, let us know.
 	if (!result) {
 		printf("%s\n", log);
+		delete[] log;
 
 		//Clean up the shaders
 		glDeleteShader(vertId);
@@ -142,6 +145,7 @@ GLuint Shader::loadProgram(const std::string &vertPath, const std::string &fragP
 	glDeleteShader(vertId);
 	glDeleteShader(fragId);
 	
+	delete[] log;
 	return progID;
 }
 
