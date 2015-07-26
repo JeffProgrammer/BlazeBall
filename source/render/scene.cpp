@@ -157,6 +157,11 @@ bool Scene::initGL() {
 	glDepthFunc(GL_LESS);
 
 	sphere = new Sphere(glm::vec3(0, 0, 60), 0.2f);
+	camera = new Camera();
+	camera->setPosition(glm::vec3(0, 0, 50));
+
+	controlObject = camera;
+	
 //	sphere->setMaterial(difs[0]->interior[0]->material[4]);
 
 	GLenum err = glGetError();

@@ -45,6 +45,7 @@
 #include "platform/timer.h"
 #include <vector>
 #include "game/movement.h"
+#include "game/camera.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -108,6 +109,7 @@ public:
 
 	std::vector<GameInterior *>interiors;
 	Sphere *sphere;
+	Camera *camera;
 
 	GameObject *controlObject;
 
