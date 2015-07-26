@@ -32,6 +32,7 @@
 #include <type_traits>
 #include <map>
 #include <iostream>
+#include <functional>
 
 DIF_NAMESPACE
 
