@@ -52,25 +52,27 @@ void btPhysicsInterior::construct() {
     std::vector<BulletTriangle> triData;
     std::vector<std::pair<int, int> > adjacent;
     U32 index = 0;
+	
+	glm::vec3 point0;
+	glm::vec3 point1;
+	glm::vec3 point2;
 
-	DIF::Interior interior = mInterior->getInterior();
-
-    for (U32 i = 0; i < interior.surface.size(); i ++) {
-		DIF::Interior::Surface surface = interior.surface[i];
-        
-        for (U32 j = 0; j < surface.windingCount - 2; j ++) {
-			glm::vec3 point0;
-			glm::vec3 point1;
-			glm::vec3 point2;
-
+	const DIF::Interior &interior = mInterior->getInterior();
+	const U32 size = interior.surface.size();
+    for (U32 i = 0; i < size; i++) {
+		const DIF::Interior::Surface &surface = interior.surface[i];
+		const U32 count = surface.windingCount - 2;
+		U32 windingStart = surface.windingStart;
+		
+        for (U32 j = 0; j < count; j++) {
 			if (j % 2 == 0) {
-				point0 = interior.point[interior.index[j + surface.windingStart + 2]];
-				point1 = interior.point[interior.index[j + surface.windingStart + 1]];
-				point2 = interior.point[interior.index[j + surface.windingStart + 0]];
+				point0 = interior.point[interior.index[j + windingStart + 2]];
+				point1 = interior.point[interior.index[j + windingStart + 1]];
+				point2 = interior.point[interior.index[j + windingStart + 0]];
 			} else {
-				point0 = interior.point[interior.index[j + surface.windingStart + 0]];
-				point1 = interior.point[interior.index[j + surface.windingStart + 1]];
-				point2 = interior.point[interior.index[j + surface.windingStart + 2]];
+				point0 = interior.point[interior.index[j + windingStart + 0]];
+				point1 = interior.point[interior.index[j + windingStart + 1]];
+				point2 = interior.point[interior.index[j + windingStart + 2]];
 			}
 
             mesh->addTriangle(btConvert(point0), btConvert(point1), btConvert(point2));
@@ -79,7 +81,9 @@ void btPhysicsInterior::construct() {
             points.point0 = btConvert(point0);
             points.point1 = btConvert(point1);
             points.point2 = btConvert(point2);
-            for (int k = 0; k < triData.size(); k++) {
+			
+			const U32 triangleDataSize = triData.size();
+			for (U32 k = 0; k < triangleDataSize; k++) {
                 // Figure out if they're adjacent!
                 const BulletTriangle &others = triData[k];
 
