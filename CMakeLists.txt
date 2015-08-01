@@ -33,6 +33,42 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
 
 #------------------------------------------------------------------------------
+# Zlib
+#------------------------------------------------------------------------------
+
+set (ZLIB_SRC
+	thirdparty/zlib/adler32.c
+	thirdparty/zlib/compress.c
+	thirdparty/zlib/crc32.c
+	thirdparty/zlib/crc32.h
+	thirdparty/zlib/deflate.c
+	thirdparty/zlib/deflate.h
+	thirdparty/zlib/gzclose.c
+	thirdparty/zlib/gzguts.h
+	thirdparty/zlib/gzlib.c
+	thirdparty/zlib/gzread.c
+	thirdparty/zlib/gzwrite.c
+	thirdparty/zlib/infback.c
+	thirdparty/zlib/inffast.c
+	thirdparty/zlib/inffast.h
+	thirdparty/zlib/inffixed.h
+	thirdparty/zlib/inflate.c
+	thirdparty/zlib/inflate.h
+	thirdparty/zlib/inftrees.c
+	thirdparty/zlib/inftrees.h
+	thirdparty/zlib/trees.c
+	thirdparty/zlib/trees.h
+	thirdparty/zlib/uncompr.c
+	thirdparty/zlib/zconf.h
+	thirdparty/zlib/zlib.h
+	thirdparty/zlib/zutil.c
+	thirdparty/zlib/zutil.h
+)
+
+add_library(Zlib STATIC ${ZLIB_SRC})
+set_property (TARGET Zlib APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/zlib")
+
+#------------------------------------------------------------------------------
 # JPEG Library
 #------------------------------------------------------------------------------
 
@@ -139,9 +175,9 @@ set (MNG_SRC
 	thirdparty/mng/libmng_zlib.h
 	thirdparty/mng/libmng.h
 )
+
 add_library(Mng STATIC ${MNG_SRC})
-target_link_libraries(Mng Jpeg)
-set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
+target_link_libraries(Mng Jpeg Zlib)
 
 #------------------------------------------------------------------------------
 # GLEW Library
@@ -150,6 +186,10 @@ set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SO
 add_library(GLEW STATIC thirdparty/glew/src/glew.c)
 set_property(TARGET GLEW APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include")
 target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
+
+if (MSVC)
+	target_link_libraries(GLEW OpenGL32)
+endif()
 
 #------------------------------------------------------------------------------
 # DIF Library
@@ -214,10 +254,21 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/glm/
 	thirdparty/jpeg
 	thirdparty/mng
+	thirdparty/zlib
 	thirdparty/SDL2/include
 	thirdparty
 	dif/include
 )
+
+# Windows needs DirectX to compile SDL2
+# For now, use the legacy DXSDK_DIR
+# TODO: upgrade to Windows SDK
+if (MSVC)
+set (DIFVIEWERGAME_INCLUDEDIR
+	${DIFVIEWERGAME_INCLUDEDIR}
+	"$(DXSDK_DIR)/Include"
+)
+endif()
 
 # Main project source
 set (DIFVIEWERGAME_SRC
@@ -297,9 +348,6 @@ set (DIFVIEWERGAME_LIBRARIES
 	BulletSoftBody
 	LinearMath
 
-	# SDL2
-	SDL2
-
 	# GLEW
 	GLEW
 
@@ -308,11 +356,28 @@ set (DIFVIEWERGAME_LIBRARIES
 
 	# MNG
 	Mng
-	z #Zlib
 
 	# DIF
 	Dif
 )
+
+if (MSVC)
+set (DIFVIEWERGAME_LIBRARIES
+	${DIFVIEWERGAME_LIBRARIES}
+	SDL2-static
+	Zlib
+	
+	Kernel32
+	User32
+	OpenGL32
+)
+else()
+set (DIFVIEWERGAME_LIBRARIES
+	${DIFVIEWERGAME_LIBRARIES}
+	SDL2
+	z
+)
+endif()
 
 include_directories(include ${DIFVIEWERGAME_INCLUDEDIR})
 
@@ -335,7 +400,7 @@ source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
-
+target_compile_definitions(Game PUBLIC GLEW_STATIC)
 
 if (APPLE)
 	ADD_FRAMEWORK(Game Cocoa)

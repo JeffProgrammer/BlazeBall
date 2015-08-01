@@ -49,7 +49,7 @@ glm::vec2 point_project_plane(const glm::vec3 &point, const glm::vec3 &normal, c
 	ycross = ycross * (1.0f / ycross.length());
 
 	glm::vec3 distance = point - origin;
-	F32 hypotenuse = distance.length();
+	F32 hypotenuse = static_cast<F32>(distance.length());
 
 	if (hypotenuse == 0)
 		return glm::vec2(0, 0);
