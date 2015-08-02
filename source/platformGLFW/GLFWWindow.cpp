@@ -78,7 +78,7 @@ bool GLFWWindow::createContext() {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GLFW_CONFIG_LEGACY_MINOR_GL_VERSION);
 
 		mWindow = glfwCreateWindow(1280, 720, "DIF Viewer Game", NULL, NULL);
-		if (mWindow) {
+		if (mWindow == NULL) {
 			printf("Unable to load a valid OpenGL context. Please make sure your drivers are up to date.\n");
 			printf("OpenGL %d.%d is required.\n", GLFW_CONFIG_LEGACY_MAJOR_GL_VERSION, GLFW_CONFIG_LEGACY_MINOR_GL_VERSION);
 			return false;
