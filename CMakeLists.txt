@@ -335,14 +335,6 @@ set (DIFVIEWERGAME_SRC
 	source/platform/timer.h
 	source/platform/window.h
 
-	# PlatformSDL folder
-	source/platformSDL/SDLEvent.cpp
-	source/platformSDL/SDLEvent.h
-	source/platformSDL/SDLTimer.h
-	source/platformSDL/SDLWindow.cpp
-	source/platformSDL/SDLWindow.h
-	source/platformSDL/SDLConfig.h
-
 	# Render folder
 	source/render/InteriorRender.cpp
 	source/render/material.cpp
@@ -352,6 +344,34 @@ set (DIFVIEWERGAME_SRC
 	source/render/shader.cpp
 	source/render/shader.h
 )
+
+if (MSVC)
+# GLFW for windows (for now)
+set (DIFVIEWERGAME_SRC
+	${DIFVIEWERGAME_SRC}
+	
+	# PlatformGLFW folder
+	source/platformGLFW/GLFWEvent.cpp
+	source/platformGLFW/GLFWEvent.h
+	source/platformGLFW/GLFWTimer.h
+	source/platformGLFW/GLFWWindow.cpp
+	source/platformGLFW/GLFWWindow.h
+	source/platformGLFW/GLFWConfig.h
+)
+else()
+# SDL for unix (for now)
+set (DIFVIEWERGAME_SRC
+	${DIFVIEWERGAME_SRC}
+	
+	# PlatformSDL folder
+	source/platformSDL/SDLEvent.cpp
+	source/platformSDL/SDLEvent.h
+	source/platformSDL/SDLTimer.h
+	source/platformSDL/SDLWindow.cpp
+	source/platformSDL/SDLWindow.h
+	source/platformSDL/SDLConfig.h
+)
+endif()
 
 set (DIFVIEWERGAME_LIBRARIES
 	# Bullet
@@ -376,8 +396,7 @@ set (DIFVIEWERGAME_LIBRARIES
 if (MSVC)
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
-	SDL2-static
-	Zlib
+	GLFW
 	
 	Kernel32
 	User32
@@ -408,7 +427,13 @@ source_group("objects"               REGULAR_EXPRESSION objects/.*)
 source_group("game\\physics"         REGULAR_EXPRESSION physics/.*)
 source_group("game\\physics\\bullet" REGULAR_EXPRESSION bullet/.*)
 source_group("platform"              REGULAR_EXPRESSION platform/.*)
-source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
+
+# Windows uses GLFW (for now)
+if (MSVC)
+source_group("platformGLFW"          REGULAR_EXPRESSION platformGLFW/.*)
+else()
+source_group("platformSDL"           REGULAR_EXPRESSION platformSDL/.*)
+endif()
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
