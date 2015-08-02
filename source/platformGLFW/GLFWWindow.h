@@ -41,7 +41,20 @@ protected:
 
 	std::queue<Event*> mEventQueue;
 
+	bool mCursorLocked;
+
+	struct MousePos {
+		F64 x;
+		F64 y;
+	};
+	MousePos mLockedPos;
+
 public:
+	GLFWWindow() : mWindow(nullptr), mCursorLocked(false) {
+		mLockedPos.x = 0.0;
+		mLockedPos.y = 0.0;
+	}
+
 	virtual bool createContext();
 	virtual void destroyContext();
 	virtual void swapBuffers();
@@ -56,6 +69,8 @@ public:
 	inline void pushEvent(Event *event) {
 		mEventQueue.push(event);
 	}
+
+	void handleMouseMovement();
 };
 
 #endif

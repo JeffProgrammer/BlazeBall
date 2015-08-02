@@ -24,6 +24,30 @@
 // ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// SPECIAL NOTICE:
+// Mouse movement is under the MIT license by gametutorials.com:
+// http://www.gametutorials.com/tutorial/camera-part3-opengl-4/
+//
+// Copyright © 2014 GameTutorials
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files(the “Software”), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 //------------------------------------------------------------------------------
 
 #include "platformGLFW/GLFWWindow.h"
@@ -94,10 +118,33 @@ void GLFWWindow::swapBuffers() {
 }
 
 void GLFWWindow::lockCursor(const bool &locked) {
-	if (locked)
+	if (locked) {
+		if (mCursorLocked) {
+			printf("Cursor is already locked!");
+			return;
+		}
+
+		// store the mouse position so that we can use it whenever
+		// we restore it
+		glfwGetCursorPos(mWindow, &mLockedPos.x, &mLockedPos.y);
 		glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	else
+
+		// now, set its position to 0, as we are following the tutorial
+		// for mouse delta
+		glfwSetCursorPos(mWindow, 0.0, 0.0);
+	} else {
+		if (!mCursorLocked) {
+			printf("Cursor is already unlocked!");
+			return;
+		}
+
+		// restore mouse position before we locked the mouse
+		glfwSetCursorPos(mWindow, mLockedPos.x, mLockedPos.y);
 		glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+
+	// store locked status
+	mCursorLocked = locked;
 }
 
 glm::ivec2 GLFWWindow::getWindowSize() {
@@ -122,6 +169,11 @@ bool GLFWWindow::pollEvents(Event *&event) {
 			Event *quitEvent = new QuitEvent();
 			mEventQueue.push(quitEvent);
 		}
+
+		// check for mouse movement if we are in "game mode" which means the cursor
+		// is locked and we are playing.
+		if (mCursorLocked)
+			handleMouseMovement();
 	}
 
 	// If there are no events pushed into the queue, then no events had been
@@ -140,4 +192,8 @@ bool GLFWWindow::pollEvents(Event *&event) {
 		return false;
 
 	return true;
+}
+
+void GLFWWindow::handleMouseMovement() {
+
 }
