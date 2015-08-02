@@ -103,6 +103,7 @@ bool GLFWWindow::createContext() {
 	glfwSetWindowFocusCallback(mWindow, glfw_window_focus_callback);
 
 	//Lock cursor
+	// this will also initialize just like the tutorial says to do
 	lockCursor(true);
 
 	return true;
@@ -194,6 +195,27 @@ bool GLFWWindow::pollEvents(Event *&event) {
 	return true;
 }
 
+/// This is only called whenever the mouse is locked to grab mouse movement delta
+/// for the camera. Please note that the delta and position will be the same
+/// as we reset the position to 0,0 after getting the position.
 void GLFWWindow::handleMouseMovement() {
+	// grab delta. If the mouse position is 0,0, then it didn't move, 
+	// so we don't dispatch events.
+	MousePos pos;
+	glfwGetCursorPos(mWindow, &pos.x, &pos.y);
 
+	// there is movement, dispatch the event
+	if (pos.x != 0.0 || pos.y != 0.0) {
+		S32 x = static_cast<S32>(pos.x);
+		S32 y = static_cast<S32>(pos.y);
+
+		MouseMoveEvent *event = new MouseMoveEvent();
+		event->position = glm::ivec2(x, y);
+		event->delta = glm::ivec2(x, y);
+		mEventQueue.push(event);
+	}
+
+	// reset for next "frame" to track delta
+	// as per the tutorial's suggested route
+	glfwSetCursorPos(mWindow, 0.0, 0.0);
 }
