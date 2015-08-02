@@ -31,12 +31,15 @@
 #define GLFWWindow_h
 
 #include <stdio.h>
+#include <queue>
 #include "platform/window.h"
 #include "platformGLFW/GLFWConfig.h"
 
 class GLFWWindow : public Window {
 protected:
 	GLFWwindow *mWindow;
+
+	std::queue<Event*> mEventQueue;
 
 public:
 	virtual bool createContext();

@@ -100,7 +100,37 @@ glm::ivec2 GLFWWindow::getWindowSize() {
 }
 
 bool GLFWWindow::pollEvents(Event *&event) {
-	glfwPollEvents();
-	event = nullptr;
+	if (mEventQueue.empty()) {
+		// This will make glfw poll all events and call the desired callbacks.
+		//
+		// If there are no events, then this is the first time pollEvents is called
+		// because of this, we can make glfw get the events for us.
+		//
+		// To prevent polling from being called within the same "frame", see the
+		// section down where "A bit of a Hack:" is mentioned in this function.
+		glfwPollEvents();
+
+		// We always have to check if we should dispatch a quit event or not.
+		if (glfwWindowShouldClose(mWindow)) {
+			Event *quitEvent = new QuitEvent();
+			mEventQueue.push(quitEvent);
+		}
+	}
+
+	// If there are no events pushed into the queue, then no events had been
+	// polled this "frame".
+	if (mEventQueue.empty())
+		return false;
+
+	// Grab the event and pop it off of the front of the queue.
+	event = mEventQueue.front();
+	mEventQueue.pop();
+
+	// A bit of a Hack:
+	// If this is the last item we popped off, we are done here.
+	// This is to prevent re-entering the function and polling for events again.
+	if (mEventQueue.empty())
+		return false;
+
 	return true;
 }
