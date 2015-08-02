@@ -35,6 +35,8 @@
 
 void glfw_key_callback(GLFWwindow *window, S32 key, S32 scanCode, S32 action, S32 modifier);
 
+void glfw_window_focus_callback(GLFWwindow *window, S32 focused);
+
 KeyEvent::Key glfw_key_to_platform(S32 key);
 
 KeyEvent::Modifier glfw_key_modifier_to_platform(S32 modifier);

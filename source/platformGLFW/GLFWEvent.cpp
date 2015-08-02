@@ -46,6 +46,19 @@ void glfw_key_callback(GLFWwindow *window, S32 key, S32 scanCode, S32 action, S3
 	}
 }
 
+void glfw_window_focus_callback(GLFWwindow *window, S32 focused) {
+	// Get the window so we can get the queue to push events into.
+	GLFWWindow *theWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window));
+
+	if (focused) {
+		WindowFocusEvent *event = new WindowFocusEvent();
+		theWindow->pushEvent(event);
+	} else {
+		WindowBlurEvent *event = new WindowBlurEvent();
+		theWindow->pushEvent(event);
+	}
+}
+
 KeyEvent::Key glfw_key_to_platform(S32 key) {
 	switch (key) {
 		// letters

@@ -77,8 +77,11 @@ bool GLFWWindow::createContext() {
 
 	// this prevents key states being lost within the same poll "frame"
 	glfwSetInputMode(mWindow, GLFW_STICKY_KEYS, 1);
+	glfwSetInputMode(mWindow, GLFW_STICKY_MOUSE_BUTTONS, 1);
 
 	// set up various input and callbacks
+	glfwSetKeyCallback(mWindow, glfw_key_callback);
+	glfwSetWindowFocusCallback(mWindow, glfw_window_focus_callback);
 
 	//Lock cursor
 	lockCursor(true);
