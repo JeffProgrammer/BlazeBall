@@ -100,11 +100,7 @@ glm::ivec2 GLFWWindow::getWindowSize() {
 }
 
 bool GLFWWindow::pollEvents(Event *&event) {
-	//SDL_Event sdlevent;
-	//if (SDL_PollEvent(&sdlevent)) {
-		//event = SDLEvent::convert(sdlevent);
-		//return true;
-	//} else {
-		return false;
-	//}
+	glfwPollEvents();
+	event = nullptr;
+	return true;
 }
