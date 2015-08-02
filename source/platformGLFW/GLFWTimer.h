@@ -27,25 +27,39 @@
 //------------------------------------------------------------------------------
 
 
-#ifndef _PLATFORMGLFW_GLFWCONFIG_H_
-#define _PLATFORMGLFW_GLFWCONFIG_H_
+#ifndef GLFWTimer_h
+#define GLFWTimer_h
 
-#include <glfw/glfw3.h>
-#include <glfw/glfw3native.h>
+#include <stdio.h>
+#include "platform/timer.h"
+#include "platformGLFW/GLFWConfig.h"
 
-/// We are using GLFW
-#define USING_GLFW
+class GLFWTimer : public Timer {
+private:
+	/// Internal timer tracked.
+	F64 mStartTime;
+	
+	F64 mEndTime;
+public:
+	GLFWTimer() : mStartTime(0.0), mEndTime(0.0) {}
+	virtual ~GLFWTimer() {}
+	
+	/// Starts the timer and keeps track of the time.
+	/// Do not call getDelta() until end() is called.
+	inline virtual void start() {
+		mStartTime = glfwGetTime();
+	}
+	
+	/// Ends the timer.
+	inline virtual void end() {
+		mEndTime = glfwGetTime() - mStartTime;
+	}
+	
+	/// Gets the time delta between the start() and end() calls.
+	/// @return the delta between the timer calls.
+	inline virtual F64 getDelta() const {
+		return mEndTime / 1000.0;
+	}
+};
 
-/// The major opengl version required for the core profile
-#define GLFW_CONFIG_CORE_MAJOR_GL_VERSION 3
-
-/// The minor opengl version required for the core profile
-#define GLFW_CONFIG_CORE_MINOR_GL_VERSION 3
-
-/// The major opengl version required for the legacy profile (pre 3.0)
-#define GLFW_CONFIG_LEGACY_MAJOR_GL_VERSION 2
-
-/// The minor opengl version required for the legacy profile (pre 3.0)
-#define GLFW_CONFIG_LEGACY_MINOR_GL_VERSION 1
-
-#endif // _PLATFORMGLFW_GLFWCONFIG_H_
+#endif
