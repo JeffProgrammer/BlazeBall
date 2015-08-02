@@ -68,8 +68,17 @@ bool GLFWWindow::createContext() {
 		printf("Created a legacy OpenGL profile successfully.\n");
 	}
 
+	// store this instance as the user pointer for the window.
+	// this is used for the input queue.
+	glfwSetWindowUserPointer(mWindow, this);
+
 	//Use Vsync
 	glfwSwapInterval(1);
+
+	// this prevents key states being lost within the same poll "frame"
+	glfwSetInputMode(mWindow, GLFW_STICKY_KEYS, 1);
+
+	// set up various input and callbacks
 
 	//Lock cursor
 	lockCursor(true);

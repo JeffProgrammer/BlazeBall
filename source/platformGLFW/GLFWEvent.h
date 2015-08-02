@@ -26,36 +26,17 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-
-#ifndef GLFWWindow_h
-#define GLFWWindow_h
+#ifndef GLFWEvent_h
+#define GLFWEvent_h
 
 #include <stdio.h>
-#include <queue>
-#include "platform/window.h"
+#include "platform/event.h"
 #include "platformGLFW/GLFWConfig.h"
 
-class GLFWWindow : public Window {
-protected:
-	GLFWwindow *mWindow;
+void glfw_key_callback(GLFWwindow *window, S32 key, S32 scanCode, S32 action, S32 modifier);
 
-	std::queue<Event*> mEventQueue;
+KeyEvent::Key glfw_key_to_platform(S32 key);
 
-public:
-	virtual bool createContext();
-	virtual void destroyContext();
-	virtual void swapBuffers();
-	virtual void lockCursor(const bool &locked);
-
-	virtual glm::ivec2 getWindowSize();
-	virtual bool pollEvents(Event *&event);
-
-	/// Pushes an event onto the event queue.
-	/// called from various GLFW callbacks.
-	/// @param event The event to push onto the queue.
-	inline void pushEvent(Event *event) {
-		mEventQueue.push(event);
-	}
-};
+KeyEvent::Modifier glfw_key_modifier_to_platform(S32 modifier);
 
 #endif
