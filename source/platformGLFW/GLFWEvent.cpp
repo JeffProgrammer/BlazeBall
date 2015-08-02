@@ -29,6 +29,12 @@
 #include "platformGLFW/GLFWEvent.h"
 #include "platformGLFW/GLFWWindow.h"
 
+void glfw_error_callback(S32 error, const char *description) {
+	printf("GLFW: error level: %d\n", error);
+	printf("GLFW: error desc: %s\n", description);
+}
+
+
 void glfw_key_callback(GLFWwindow *window, S32 key, S32 scanCode, S32 action, S32 modifier) {
 	// Get the window so we can get the queue to push events into.
 	GLFWWindow *theWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window));

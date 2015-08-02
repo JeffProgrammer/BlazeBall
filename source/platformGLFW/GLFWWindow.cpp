@@ -29,11 +29,6 @@
 #include "platformGLFW/GLFWWindow.h"
 #include "platformGLFW/GLFWEvent.h"
 
-void glfw_error_callback(S32 error, const char *description) {
-	printf("GLFW: error level: %d\n", error);
-	printf("GLFW: error desc: %s\n", description);
-}
-
 bool GLFWWindow::createContext() {
 	//Init GLFW
 	glfwSetErrorCallback(glfw_error_callback);

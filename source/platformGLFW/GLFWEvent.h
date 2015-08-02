@@ -33,6 +33,8 @@
 #include "platform/event.h"
 #include "platformGLFW/GLFWConfig.h"
 
+void glfw_error_callback(S32 error, const char *description);
+
 void glfw_key_callback(GLFWwindow *window, S32 key, S32 scanCode, S32 action, S32 modifier);
 
 void glfw_window_focus_callback(GLFWwindow *window, S32 focused);
