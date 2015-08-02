@@ -27,12 +27,18 @@
 //------------------------------------------------------------------------------
 
 #include <fstream>
-#include "platformSDL/SDLWindow.h"
-#include "platformSDL/SDLTimer.h"
 #include "render/scene.h"
 #include "game/gameInterior.h"
 
 #include "physics/bullet/btPhysicsEngine.h"
+
+#ifdef _WIN32
+#include "platformGLFW/GLFWWindow.h"
+#include "platformGLFW/GLFWTimer.h"
+#else
+#include "platformSDL/SDLWindow.h"
+#include "platformSDL/SDLTimer.h"
+#endif
 
 
 int main(int argc, const char * argv[])
@@ -65,9 +71,15 @@ int main(int argc, const char * argv[])
 		//Clean up
 		file.close();
 	}
+
+#ifdef _WIN32
+	scene->window = new GLFWWindow();
+	scene->mTimer = new GLFWTimer();
+#else
 	//Init SDL and go!
 	scene->window = new SDLWindow();
 	scene->mTimer = new SDLTimer();
+#endif
 	scene->run();
 
 	return 0;

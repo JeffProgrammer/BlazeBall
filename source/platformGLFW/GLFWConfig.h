@@ -31,7 +31,6 @@
 #define _PLATFORMGLFW_GLFWCONFIG_H_
 
 #include <glfw/glfw3.h>
-#include <glfw/glfw3native.h>
 
 /// We are using GLFW
 #define USING_GLFW
