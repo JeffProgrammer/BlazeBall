@@ -267,18 +267,20 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/jpeg
 	thirdparty/mng
 	thirdparty/zlib
-	thirdparty/SDL2/include
 	thirdparty
 	dif/include
 )
 
-# Windows needs DirectX to compile SDL2
-# For now, use the legacy DXSDK_DIR
-# TODO: upgrade to Windows SDK
+# Windows uses GLFW (for now)
 if (MSVC)
 set (DIFVIEWERGAME_INCLUDEDIR
 	${DIFVIEWERGAME_INCLUDEDIR}
-	"$(DXSDK_DIR)/Include"
+	thirdparty/glfw/include
+)
+else()
+set (DIFVIEWERGAME_INCLUDEDIR
+	${DIFVIEWERGAME_INCLUDEDIR}
+	thirdparty/SDL2/include
 )
 endif()
 
