@@ -107,7 +107,7 @@ void GLFWWindow::lockCursor(const bool &locked) {
 
 glm::ivec2 GLFWWindow::getWindowSize() {
 	S32 screenWidth, screenHeight;
-	glfwGetWindowSize(mWindow, &screenWidth, &screenHeight);
+	glfwGetFramebufferSize(mWindow, &screenWidth, &screenHeight);
 	return glm::ivec2(screenWidth, screenHeight);
 }
 
