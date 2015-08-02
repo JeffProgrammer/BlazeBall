@@ -30,7 +30,19 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
 # SDL
 #------------------------------------------------------------------------------
 
+if (NOT MSVC)
+
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
+ 
+else()
+
+#------------------------------------------------------------------------------
+# GLFW
+#------------------------------------------------------------------------------
+
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw" GLFW)
+
+endif()
 
 #------------------------------------------------------------------------------
 # Zlib
