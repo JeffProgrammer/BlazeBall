@@ -33,12 +33,20 @@
 #include "game/movement.h"
 #include <glm/matrix.hpp>
 
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <GL/glew.h>
+#endif
+
 class GameObject {
 protected:
 	glm::vec3 mOrigin;
 	glm::quat mRotation;
 	
 public:
+	virtual void render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition, const GLuint &mvpMatrixPosition);
+	
 	virtual glm::vec3 getPosition() { return mOrigin; }
 	virtual void setPosition(const glm::vec3 &position) { mOrigin = position; }
 

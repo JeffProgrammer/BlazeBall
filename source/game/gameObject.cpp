@@ -39,3 +39,20 @@ void GameObject::getCameraPosition(glm::mat4x4 &mat) {
 	mat = glm::mat4(1);
 	mat = glm::translate(mat, glm::vec3(-mOrigin.x, -mOrigin.y, -mOrigin.z));
 }
+
+void GameObject::render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition, const GLuint &mvpMatrixPosition) {
+	glm::vec3 pos = getPosition();
+	glm::quat rot = getRotation();
+
+	//Model
+	glm::mat4x4 modelMatrix = glm::mat4x4(1);
+	modelMatrix = glm::translate(modelMatrix, glm::vec3(pos.x, pos.y, pos.z));
+	modelMatrix = glm::rotate(modelMatrix, glm::angle(rot), glm::axis(rot));
+
+	//Combined
+	glm::mat4x4 mvpMat = projectionMatrix * viewMatrix * modelMatrix;
+
+	//Send to OpenGL
+	glUniformMatrix4fv(mvpMatrixPosition, 1, GL_FALSE, &mvpMat[0][0]);
+	glUniformMatrix4fv(modelMatrixPosition, 1, GL_FALSE, &modelMatrix[0][0]);
+}
