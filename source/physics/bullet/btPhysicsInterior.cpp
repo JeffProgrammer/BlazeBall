@@ -46,13 +46,7 @@ btPhysicsInterior::btPhysicsInterior(GameInterior *interior) : btPhysicsBody(), 
 void btPhysicsInterior::construct() {
     //Create body
     btMotionState *state = new btDefaultMotionState();
-    
     btTriangleMesh *mesh = new btTriangleMesh;
-    
-    std::vector<BulletTriangle> triData;
-    std::vector<std::pair<int, int> > adjacent;
-    U32 index = 0;
-	
 	glm::vec3 point0;
 	glm::vec3 point1;
 	glm::vec3 point2;
@@ -75,42 +69,7 @@ void btPhysicsInterior::construct() {
 				point2 = interior.point[interior.index[j + windingStart + 2]];
 			}
 
-            mesh->addTriangle(btConvert(point0), btConvert(point1), btConvert(point2));
-            
-            BulletTriangle points;
-            points.point0 = btConvert(point0);
-            points.point1 = btConvert(point1);
-            points.point2 = btConvert(point2);
-			
-			const U32 triangleDataSize = triData.size();
-			for (U32 k = 0; k < triangleDataSize; k++) {
-                // Figure out if they're adjacent!
-                const BulletTriangle &others = triData[k];
-
-                // Count number of matched vertices
-                int matches = 0;
-                if (points.point0 == others.point0 || points.point0 == others.point1 || points.point0 == others.point2)
-                    matches++;
-                if (points.point1 == others.point0 || points.point1 == others.point1|| points.point1 == others.point2)
-                    matches++;
-                if (points.point2 == others.point0 || points.point2 == others.point1 || points.point2 == others.point2)
-                    matches++;
-                
-                // Calculate normals
-                btVector3 normal1 = (points.point1 - points.point0).cross(points.point2 - points.point0);
-                btVector3 normal2 = (others.point1 - others.point0).cross(others.point2 - others.point0);
-                normal1.safeNormalize();
-                normal2.safeNormalize();
-                btVector3 cross = normal1.cross(normal2);
-                
-                if (cross.length() < sin(ADJACENCY_NORMAL_THRESHOLD) && matches >= 1) {
-                    adjacent.push_back(std::make_pair(index, k));
-                    adjacent.push_back(std::make_pair(k, index));
-                }
-            }
-            
-            triData.push_back(points);
-            index ++;
+            mesh->addTriangle(btConvert(point0), btConvert(point1), btConvert(point2), true);
         }
     }
 
@@ -130,8 +89,6 @@ void btPhysicsInterior::construct() {
     
     ShapeInfo info;
     info.shape = shape;
-    info.triangleData = triData;
-    info.adjacent = adjacent;
     shapes.push_back(info);
     
     BodyInfo infoo;

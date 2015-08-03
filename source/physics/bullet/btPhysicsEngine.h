@@ -47,8 +47,6 @@ struct BulletTriangle {
 
 struct ShapeInfo {
     btCollisionShape *shape;
-    std::vector<BulletTriangle> triangleData;
-    std::vector<std::pair<int, int> > adjacent;
 };
 
 struct BodyInfo {
