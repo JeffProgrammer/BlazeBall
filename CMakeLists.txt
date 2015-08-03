@@ -136,6 +136,10 @@ if (APPLE)
 	set(JPEG_SRC ${JPEG_SRC}
 		thirdparty/jpeg/jmemnobs.c
 	)
+elseif (MSVC)	
+	set(JPEG_SRC ${JPEG_SRC}
+		thirdparty/jpeg/jmemansi.c
+	)	
 endif()
 
 add_library(Jpeg STATIC ${JPEG_SRC})
@@ -398,7 +402,7 @@ set (DIFVIEWERGAME_LIBRARIES
 if (MSVC)
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
-	GLFW
+	glfw
 	
 	Kernel32
 	User32
