@@ -68,9 +68,12 @@ bool GLFWWindow::createContext() {
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_DOUBLEBUFFER, 1);
 
+	bool usingCoreGL = true;
+
 	mWindow = glfwCreateWindow(1280, 720, "DIF Viewer Game", NULL, NULL);
 	if (mWindow == NULL) {
 		printf("A Core OpenGL profile has failed. Attempting to create a legacy profile.\n");
+		usingCoreGL = false;
 
 		// Fall back to legacy profile if the core opengl profile fails on this platform.
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
@@ -86,6 +89,21 @@ bool GLFWWindow::createContext() {
 
 		printf("Created a legacy OpenGL profile successfully.\n");
 	}
+
+	// make the context current.
+	glfwMakeContextCurrent(mWindow);
+
+#ifdef _WIN32
+	// Warning: glewExperimental makes all runtime GLEW_extension checks invalid.
+	// Have to write our own method to check if an extension exists at runtime.
+	if (usingCoreGL)
+		glewExperimental = true;
+	GLenum errorrrrrrrrrrrrrr = glewInit();
+	if (errorrrrrrrrrrrrrr) {
+		printf("%s", glewGetErrorString(errorrrrrrrrrrrrrr));
+		return false;
+	}
+#endif
 
 	// store this instance as the user pointer for the window.
 	// this is used for the input queue.

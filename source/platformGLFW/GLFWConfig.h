@@ -30,6 +30,7 @@
 #ifndef _PLATFORMGLFW_GLFWCONFIG_H_
 #define _PLATFORMGLFW_GLFWCONFIG_H_
 
+#include <GL/glew.h>
 #include <glfw/glfw3.h>
 
 /// We are using GLFW
