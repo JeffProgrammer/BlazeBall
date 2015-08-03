@@ -68,8 +68,6 @@ void Scene::render() {
 	for (auto object : objects) {
 		object->render(projectionMatrix, viewMatrix, GLLocations.modelMatrix, GLLocations.mvpMatrix);
 	}
-
-	sphere->render(projectionMatrix, viewMatrix, GLLocations.modelMatrix, GLLocations.mvpMatrix);
 }
 
 void Scene::loop() {
