@@ -57,7 +57,7 @@ bool SDLWindow::createContext() {
 		printf("A Core OpenGL profile has failed. Attempting to create a legacy profile.\n");
 
 		// Fall back to legacy profile if the core opengl profile fails on this platform.
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0x0000);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, SDL_CONFIG_LEGACY_MAJOR_GL_VERSION);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, SDL_CONFIG_LEGACY_MINOR_GL_VERSION);
 
