@@ -72,7 +72,7 @@ void Sphere::generate() {
 			glm::vec3 tangent0 = glm::normalize(glm::cross(point0, glm::vec3(0, 0, 1)));
 			glm::vec3 tangent1 = glm::normalize(glm::cross(point1, glm::vec3(0, 0, 1)));
 			glm::vec3 bitangent0 = glm::normalize(glm::cross(point0, tangent0));
-			glm::vec3 bitangent1 = glm::normalize(glm::cross(point0, tangent0));
+			glm::vec3 bitangent1 = glm::normalize(glm::cross(point1, tangent1));
 
 			points[point].point = point0;
 			points[point].uv = uv0;
