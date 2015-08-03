@@ -95,9 +95,9 @@ void Sphere::generate() {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * point, &points[0], GL_STATIC_DRAW);
 }
 
-void Sphere::render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition, const GLuint &mvpMatrixPosition) {
+void Sphere::render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition) {
 	//Set up matrices
-	GameObject::render(projectionMatrix, viewMatrix, modelMatrixPosition, mvpMatrixPosition);
+	GameObject::render(projectionMatrix, viewMatrix, modelMatrixPosition);
 
 	if (!renderBuffer)
 		generate();

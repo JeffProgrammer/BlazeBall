@@ -19,7 +19,7 @@ out vec3 light_tangent;
 out vec3 tangent_camera;
 out vec3 bitangent_camera;
 
-uniform mat4 modelViewProjectionMat;
+uniform mat4 projectionMat;
 uniform mat4 modelMat;
 uniform mat4 viewMat;
 
@@ -31,6 +31,8 @@ uniform vec3 sunPower;
 uniform float specularExponent;
 
 void main() {
+	mat4 modelViewProjectionMat = projectionMat * viewMat * modelMat;
+
 	//Worldspace position
 	vec4 v = vec4(vertexPosition_model, 1);
 	gl_Position = modelViewProjectionMat * v;

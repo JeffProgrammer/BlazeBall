@@ -68,7 +68,7 @@ protected:
 	//F32 maxFPS = 60.0f;
 
 	struct {
-		GLuint mvpMatrix;
+		GLuint projectionMatrix;
 		GLuint modelMatrix;
 		GLuint viewMatrix;
 

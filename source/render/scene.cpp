@@ -50,8 +50,8 @@ void Scene::render() {
 	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
 	viewMatrix *= cameraTransform;
 
-
 	//Send to OpenGL
+	glUniformMatrix4fv(GLLocations.projectionMatrix, 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(GLLocations.viewMatrix, 1, GL_FALSE, &viewMatrix[0][0]);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -63,7 +63,7 @@ void Scene::render() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	for (auto object : objects) {
-		object->render(projectionMatrix, viewMatrix, GLLocations.modelMatrix, GLLocations.mvpMatrix);
+		object->render(projectionMatrix, viewMatrix, GLLocations.modelMatrix);
 	}
 }
 
@@ -95,7 +95,7 @@ bool Scene::initGL() {
 	shader->setUniformLocation("specularSampler", 2);
 	shader->setUniformLocation("noiseSampler", 3);
 
-	GLLocations.mvpMatrix = shader->getUniformLocation("modelViewProjectionMat");
+	GLLocations.projectionMatrix = shader->getUniformLocation("projectionMat");
 	GLLocations.modelMatrix = shader->getUniformLocation("modelMat");
 	GLLocations.viewMatrix = shader->getUniformLocation("viewMat");
 

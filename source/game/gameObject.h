@@ -48,7 +48,7 @@ public:
 	GameObject() : mOrigin(glm::vec3(0)), mRotation(glm::quat()) {};
 	virtual ~GameObject() {};
 
-	virtual void render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition, const GLuint &mvpMatrixPosition);
+	virtual void render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition);
 	
 	virtual glm::vec3 getPosition() { return mOrigin; }
 	virtual void setPosition(const glm::vec3 &position) { mOrigin = position; }
