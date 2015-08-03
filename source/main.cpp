@@ -55,7 +55,7 @@ int main(int argc, const char * argv[])
 	for (U32 i = 1; i < argc; i ++) {
 		std::string directory = IO::getPath(argv[i]);
 
-		std::ifstream file(argv[i]);
+		std::ifstream file(argv[i], std::ios::binary);
 
 		//Read the .dif
 		DIF::DIF dif;
