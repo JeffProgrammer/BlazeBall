@@ -47,13 +47,9 @@ bool SDLWindow::createContext() {
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	// Grab bounds for placing the window in the center of the screen the best we can.
-	SDL_Rect bounds;
-	SDL_GetDisplayBounds(0, &bounds);
-
 	//Create the window
 	const U32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
-	if ((window = SDL_CreateWindow("DIF Viewer", (bounds.w - 1280) / 2, (bounds.h - 720) / 2, 1280, 720, flags)) == NULL)
+	if ((window = SDL_CreateWindow("DIF Viewer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, flags)) == NULL)
 		return false;
 
 	//Create context
