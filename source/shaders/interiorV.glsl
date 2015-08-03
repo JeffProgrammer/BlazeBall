@@ -22,7 +22,6 @@ out vec3 bitangent_camera;
 uniform mat4 modelViewProjectionMat;
 uniform mat4 modelMat;
 uniform mat4 viewMat;
-uniform mat3 modelView3Mat;
 
 uniform vec4 lightColor;
 uniform vec3 lightDirection;
@@ -50,6 +49,8 @@ void main() {
 	//Vector from vertex to light, but in cameraspace this time
 	vec3 lightPos_camera = (viewMat * vec4(sunPosition, 1)).xyz;
 	light_camera = lightPos_camera + direction_camera;
+
+	mat3 modelView3Mat = mat3(viewMat * modelMat);
 
 	//The normal, tangent, bitangent, in cameraspace
 	normal_camera = modelView3Mat * vertexNormal;

@@ -72,8 +72,6 @@ protected:
 		GLuint modelMatrix;
 		GLuint viewMatrix;
 
-		GLuint modelView3;
-
 		GLuint lightDirection;
 		GLuint lightColor;
 		GLuint ambientColor;
