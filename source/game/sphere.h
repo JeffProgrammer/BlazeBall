@@ -70,9 +70,10 @@ public:
 
 	void render();
 	virtual glm::vec3 getPosition();
-	const glm::quat getRotation();
+	virtual glm::quat getRotation();
 
 	virtual void setPosition(const glm::vec3 &pos);
+	virtual void setRotation(const glm::quat &rot);
 
 	void setMaterial(Material *material) {
 		this->material = material;

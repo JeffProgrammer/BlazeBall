@@ -148,12 +148,16 @@ glm::vec3 Sphere::getPosition() {
 	return mActor->getPosition();
 }
 
-const glm::quat Sphere::getRotation() {
+glm::quat Sphere::getRotation() {
 	return mActor->getRotation();
 }
 
 void Sphere::setPosition(const glm::vec3 &pos) {
 	mActor->setPosition(pos);
+}
+
+void Sphere::setRotation(const glm::quat &rot) {
+	mActor->setRotation(rot);
 }
 
 void Sphere::setVelocity(const glm::vec3 &vel) {

@@ -36,10 +36,14 @@
 class GameObject {
 protected:
 	glm::vec3 mOrigin;
+	glm::quat mRotation;
 	
 public:
 	virtual glm::vec3 getPosition() { return mOrigin; }
-	virtual void setPosition(const  glm::vec3 &position) { mOrigin = position; }
+	virtual void setPosition(const glm::vec3 &position) { mOrigin = position; }
+
+	virtual glm::quat getRotation() { return mRotation; }
+	virtual void setPosition(const glm::quat &rotation) { mRotation = rotation; }
 
 	virtual void updateCamera(const Movement &movement);
 	virtual void updateMove(const Movement &movement);
