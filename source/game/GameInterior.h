@@ -55,7 +55,7 @@ private:
 
 public:
 	GameInterior(DIF::Interior interior);
-	~GameInterior();
+	virtual ~GameInterior() {};
 	
 	void generateMaterials(std::string directory);
 	void generateMesh();

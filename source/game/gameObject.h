@@ -45,6 +45,9 @@ protected:
 	glm::quat mRotation;
 	
 public:
+	GameObject() : mOrigin(glm::vec3(0)), mRotation(glm::quat(0, 0, 0, 0)) {};
+	virtual ~GameObject() {};
+
 	virtual void render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition, const GLuint &mvpMatrixPosition);
 	
 	virtual glm::vec3 getPosition() { return mOrigin; }

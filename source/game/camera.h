@@ -40,6 +40,9 @@ class Camera : public GameObject {
 	const F32 keyCameraSpeed = 3.f;
 
 public:
+	Camera() : GameObject() {};
+	virtual ~Camera() {};
+
 	virtual void updateCamera(const Movement &movement);
 	virtual void updateMove(const Movement &movement);
 	virtual void getCameraPosition(glm::mat4x4 &mat);
