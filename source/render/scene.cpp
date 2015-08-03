@@ -50,16 +50,10 @@ void Scene::render() {
 	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
 	viewMatrix *= cameraTransform;
 
-	//Model
-	modelMatrix = glm::mat4x4(1);
-
 	//Combined
-	glm::mat4x4 mvpMat = projectionMatrix * viewMatrix * modelMatrix;
 	glm::mat3x3 mv3Mat = glm::mat3(viewMatrix * modelMatrix);
 
 	//Send to OpenGL
-	glUniformMatrix4fv(GLLocations.mvpMatrix, 1, GL_FALSE, &mvpMat[0][0]);
-	glUniformMatrix4fv(GLLocations.modelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
 	glUniformMatrix4fv(GLLocations.viewMatrix, 1, GL_FALSE, &viewMatrix[0][0]);
 	glUniformMatrix3fv(GLLocations.modelView3, 1, GL_FALSE, &mv3Mat[0][0]);
 
@@ -72,7 +66,7 @@ void Scene::render() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	for (auto interior : interiors) {
-		interior->render();
+		interior->render(projectionMatrix, viewMatrix, GLLocations.modelMatrix, GLLocations.mvpMatrix);
 	}
 
 	sphere->render(projectionMatrix, viewMatrix, GLLocations.modelMatrix, GLLocations.mvpMatrix);
