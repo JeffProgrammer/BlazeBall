@@ -65,6 +65,11 @@ Event *SDLEvent::convert(SDL_Event sdlevent) {
 		}
 		case Event::WindowFocus: return new WindowFocusEvent();
 		case Event::WindowBlur: return new WindowBlurEvent();
+		case Event::WindowResize: {
+			WindowResizeEvent *event = new WindowResizeEvent();
+			event->newSize = glm::ivec2(sdlevent.window.data1, sdlevent.window.data2);
+			return event;
+		}
 		default:
             return NULL;
 	}

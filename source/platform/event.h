@@ -42,7 +42,8 @@ public:
 		MouseDown,
 		MouseUp,
 		WindowFocus,
-		WindowBlur
+		WindowBlur,
+		WindowResize
 	};
 
 	Type type;
@@ -402,6 +403,12 @@ public:
 class WindowBlurEvent : public Event {
 public:
 	WindowBlurEvent() : Event(WindowBlur) {};
+};
+
+class WindowResizeEvent : public Event {
+public:
+	glm::ivec2 newSize;
+	WindowResizeEvent() : Event(WindowResize) {};
 };
 
 #endif

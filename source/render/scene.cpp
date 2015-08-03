@@ -79,6 +79,11 @@ void Scene::loop(const F64 &deltaMS) {
 	}
 }
 
+void Scene::updateWindowSize(const glm::ivec2 &size) {
+	GLfloat aspect = (GLfloat)size.x / (GLfloat)size.y;
+	projectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
+}
+
 bool Scene::initGL() {
 	GLuint vertexArrayID;
 	glGenVertexArrays(1, &vertexArrayID);
@@ -109,9 +114,7 @@ bool Scene::initGL() {
 
 	//Window size for viewport
 	glm::ivec2 screenSize = window->getWindowSize();
-
-	GLfloat aspect = (GLfloat)screenSize.x / (GLfloat)screenSize.y;
-	projectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
+	updateWindowSize(screenSize);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -230,6 +233,9 @@ void Scene::handleEvent(Event *event) {
 			break;
 		case Event::WindowBlur:
 			mShouldSleep = true;
+			break;
+		case Event::WindowResize:
+			updateWindowSize(static_cast<WindowResizeEvent *>(event)->newSize);
 			break;
 		default:
 			break;

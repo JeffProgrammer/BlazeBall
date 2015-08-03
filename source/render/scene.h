@@ -129,6 +129,9 @@ public:
 			singleton = new Scene();
 		return singleton;
 	}
+
+	void updateWindowSize(const glm::ivec2 &size);
+
 	void render();
 	void loop(const F64 &deltaMS);
 	bool initGL();
