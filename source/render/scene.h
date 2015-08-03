@@ -111,11 +111,9 @@ public:
 	Camera *camera;
 
 	std::vector<GameObject *>objects;
-
 	GameObject *controlObject;
 
 	Window *window;
-	
 	Timer *mTimer;
 	
 	bool mShouldSleep;
@@ -131,7 +129,7 @@ public:
 		return singleton;
 	}
 	void render();
-	void loop();
+	void loop(const F64 &deltaMS);
 	bool initGL();
 	bool init();
 	void cleanup();

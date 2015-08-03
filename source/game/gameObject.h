@@ -56,6 +56,8 @@ public:
 	virtual void updateCamera(const Movement &movement);
 	virtual void updateMove(const Movement &movement);
 	virtual void getCameraPosition(glm::mat4x4 &mat);
+
+	virtual void updateTick(const F64 &deltaMS);
 };
 
 #endif

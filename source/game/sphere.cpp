@@ -230,3 +230,12 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat) {
 	glm::vec3 pos = getPosition();
 	mat = glm::translate(mat, glm::vec3(-pos.x, -pos.y, -pos.z));
 }
+
+void Sphere::updateTick(const F64 &deltaMS) {
+	//Temporary OOB solution for now
+	if (getPosition().z < -10) {
+		setPosition(glm::vec3(0, 30, 60));
+		setVelocity(glm::vec3(0, 0, 0));
+		setAngularVelocity(glm::vec3(0, 0, 0));
+	}
+}

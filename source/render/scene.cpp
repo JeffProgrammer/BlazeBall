@@ -70,17 +70,15 @@ void Scene::render() {
 	}
 }
 
-void Scene::loop() {
+void Scene::loop(const F64 &deltaMS) {
 	controlObject->updateCamera(movement);
 	controlObject->updateMove(movement);
 
 	movement.pitch = 0;
 	movement.yaw = 0;
 
-	if (sphere->getPosition().z < -10) {
-		sphere->setPosition(glm::vec3(0, 30, 60));
-        sphere->setVelocity(glm::vec3(0, 0, 0));
-        sphere->setAngularVelocity(glm::vec3(0, 0, 0));
+	for (auto object : objects) {
+		object->updateTick(deltaMS);
 	}
 }
 
@@ -286,6 +284,8 @@ void Scene::run() {
 
 	Event *event;
 
+	F64 lastDelta = 0;
+
 	//Main loop
 	while (running) {
 		//Profiling
@@ -303,23 +303,25 @@ void Scene::run() {
 		}
 
 		//Hard work
-		loop();
+		loop(lastDelta);
 		render();
 		
 		// simulate the physics engine.
-		PhysicsEngine::getEngine()->simulate(mTimer->getDelta() / 1000.0);
+		PhysicsEngine::getEngine()->simulate(lastDelta / 1000.0);
 		
 		//Flip buffers
 		window->swapBuffers();
 
 		//Profiling
 		if (printFPS) {
-			printf("%f FPS, %f mspf\n", 1.0 / (mTimer->getDelta() / 1000.0), mTimer->getDelta());
+			printf("%f FPS, %f mspf\n", 1.0 / (lastDelta / 1000.0), lastDelta);
 		}
 		
 		//Count how long a frame took
 		// calculate delta of this elapsed frame.
 		mTimer->end();
+
+		lastDelta = mTimer->getDelta();
 	}
 	
 	//Clean up (duh)

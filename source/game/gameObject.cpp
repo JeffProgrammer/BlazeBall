@@ -56,3 +56,7 @@ void GameObject::render(const glm::mat4 &projectionMatrix, const glm::mat4 &view
 	glUniformMatrix4fv(mvpMatrixPosition, 1, GL_FALSE, &mvpMat[0][0]);
 	glUniformMatrix4fv(modelMatrixPosition, 1, GL_FALSE, &modelMatrix[0][0]);
 }
+
+void GameObject::updateTick(const F64 &deltaMS) {
+	
+}
