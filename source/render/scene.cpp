@@ -120,17 +120,6 @@ bool Scene::initGL() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	sphere = new Sphere(glm::vec3(0, 0, 60), 0.2f);
-	camera = new Camera();
-	camera->setPosition(glm::vec3(0, 0, 50));
-
-	addObject(sphere);
-	addObject(camera);
-
-	controlObject = camera;
-	
-//	sphere->setMaterial(difs[0]->interior[0]->material[4]);
-
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
 		fprintf(stderr, "Error in GL init: %d / %s", err, gluErrorString(err));
@@ -326,4 +315,23 @@ void Scene::run() {
 	
 	//Clean up (duh)
 	cleanup();
+}
+
+Scene::Scene() {
+	sphere = new Sphere(glm::vec3(0, 0, 60), 0.2f);
+	camera = new Camera();
+	camera->setPosition(glm::vec3(0, 0, 50));
+
+	addObject(sphere);
+	addObject(camera);
+
+	controlObject = camera;
+}
+
+Scene::~Scene() {
+	for (auto object : objects) {
+		delete object;
+	}
+	delete window;
+	delete mTimer;
 }

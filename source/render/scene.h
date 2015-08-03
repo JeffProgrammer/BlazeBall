@@ -122,6 +122,9 @@ public:
 		objects.push_back(object);
 	}
 
+	Scene();
+	~Scene();
+
 	static Scene *getSingleton() {
 		static Scene *singleton;
 		if (!singleton)
