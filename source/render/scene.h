@@ -107,9 +107,10 @@ public:
 	const F32 sunPower           = 1000.0f;
 	const U32 specularExponent   = 7;
 
-	std::vector<GameInterior *>interiors;
 	Sphere *sphere;
 	Camera *camera;
+
+	std::vector<GameObject *>objects;
 
 	GameObject *controlObject;
 
@@ -118,6 +119,10 @@ public:
 	Timer *mTimer;
 	
 	bool mShouldSleep;
+
+	void addObject(GameObject *object) {
+		objects.push_back(object);
+	}
 
 	static Scene *getSingleton() {
 		static Scene *singleton;

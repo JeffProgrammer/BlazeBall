@@ -65,8 +65,8 @@ void Scene::render() {
 	glEnable(GL_MULTISAMPLE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	for (auto interior : interiors) {
-		interior->render(projectionMatrix, viewMatrix, GLLocations.modelMatrix, GLLocations.mvpMatrix);
+	for (auto object : objects) {
+		object->render(projectionMatrix, viewMatrix, GLLocations.modelMatrix, GLLocations.mvpMatrix);
 	}
 
 	sphere->render(projectionMatrix, viewMatrix, GLLocations.modelMatrix, GLLocations.mvpMatrix);
@@ -79,7 +79,7 @@ void Scene::loop() {
 	movement.pitch = 0;
 	movement.yaw = 0;
 
-	if (sphere->getPosition().z < interiors[0]->getInterior().boundingBox.getMin().x) {
+	if (sphere->getPosition().z < -10) {
 		sphere->setPosition(glm::vec3(0, 30, 60));
         sphere->setVelocity(glm::vec3(0, 0, 0));
         sphere->setAngularVelocity(glm::vec3(0, 0, 0));
@@ -127,6 +127,9 @@ bool Scene::initGL() {
 	sphere = new Sphere(glm::vec3(0, 0, 60), 0.2f);
 	camera = new Camera();
 	camera->setPosition(glm::vec3(0, 0, 50));
+
+	addObject(sphere);
+	addObject(camera);
 
 	controlObject = camera;
 	
