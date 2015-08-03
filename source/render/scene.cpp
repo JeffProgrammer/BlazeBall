@@ -84,16 +84,6 @@ void Scene::loop() {
         sphere->setVelocity(glm::vec3(0, 0, 0));
         sphere->setAngularVelocity(glm::vec3(0, 0, 0));
 	}
-#if 0
-	move *= 3;
-	if (movement[8])
-		move *= 2;
-
-	delta = glm::rotate(delta, -pitch, glm::vec3(1, 0, 0));
-	delta = glm::translate(delta, glm::vec3(move.y, -move.x, 0));
-
-	cameraPosition += glm::vec3(delta[3]);
-#endif // 0
 }
 
 bool Scene::initGL() {
