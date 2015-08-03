@@ -75,23 +75,7 @@ void Scene::render() {
 		interior->render();
 	}
 
-	glm::vec3 pos = sphere->getPosition();
-	glm::quat rot = sphere->getRotation();
-
-	//Model
-	modelMatrix = glm::mat4x4(1);
-	modelMatrix = glm::translate(modelMatrix, glm::vec3(pos.x, pos.y, pos.z));
-	modelMatrix = glm::rotate(modelMatrix, glm::angle(rot), glm::axis(rot));
-
-	//Combined
-	mvpMat = projectionMatrix * viewMatrix * modelMatrix;
-
-	//Send to OpenGL
-	glUniformMatrix4fv(GLLocations.mvpMatrix, 1, GL_FALSE, &mvpMat[0][0]);
-	glUniformMatrix4fv(GLLocations.modelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
-	glUniformMatrix4fv(GLLocations.viewMatrix, 1, GL_FALSE, &viewMatrix[0][0]);
-
-	sphere->render();
+	sphere->render(projectionMatrix, viewMatrix, GLLocations.modelMatrix, GLLocations.mvpMatrix);
 }
 
 void Scene::loop() {
