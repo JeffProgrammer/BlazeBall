@@ -7,6 +7,8 @@ if (NOT MSVC)
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
+set(USE_GLFW_INSTEAD_OF_SDL 0)
+
 # Enable Static Linking the C++ ABI directly into the executables and libraries
 if (MSVC)
 	SET(CMAKE_REQUIRED_LINKER_FLAGS "/SAFESEH:NO")
@@ -32,7 +34,7 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
 # SDL
 #------------------------------------------------------------------------------
 
-if (NOT MSVC)
+if (USE_GLFW_INSTEAD_OF_SDL EQUAL 0)
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
  
@@ -277,8 +279,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	dif/include
 )
 
-# Windows uses GLFW (for now)
-if (MSVC)
+if (USE_GLFW_INSTEAD_OF_SDL EQUAL 1)
 set (DIFVIEWERGAME_INCLUDEDIR
 	${DIFVIEWERGAME_INCLUDEDIR}
 	thirdparty/glfw/include
@@ -353,8 +354,7 @@ set (DIFVIEWERGAME_SRC
 	source/render/shader.h
 )
 
-if (MSVC)
-# GLFW for windows (for now)
+if (USE_GLFW_INSTEAD_OF_SDL EQUAL 1)
 set (DIFVIEWERGAME_SRC
 	${DIFVIEWERGAME_SRC}
 	
@@ -367,7 +367,6 @@ set (DIFVIEWERGAME_SRC
 	source/platformGLFW/GLFWConfig.h
 )
 else()
-# SDL for unix (for now)
 set (DIFVIEWERGAME_SRC
 	${DIFVIEWERGAME_SRC}
 	
@@ -404,7 +403,8 @@ set (DIFVIEWERGAME_LIBRARIES
 if (MSVC)
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
-	glfw
+
+	Zlib
 	
 	Kernel32
 	User32
@@ -413,8 +413,22 @@ set (DIFVIEWERGAME_LIBRARIES
 else()
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
-	SDL2
+
 	z
+)
+endif()
+
+if (USE_GLFW_INSTEAD_OF_SDL EQUAL 1)
+set (DIFVIEWERGAME_LIBRARIES
+	${DIFVIEWERGAME_LIBRARIES}
+
+	glfw
+)
+else()
+set (DIFVIEWERGAME_LIBRARIES
+	${DIFVIEWERGAME_LIBRARIES}
+
+	SDL2
 )
 endif()
 
@@ -436,8 +450,7 @@ source_group("game\\physics"         REGULAR_EXPRESSION physics/.*)
 source_group("game\\physics\\bullet" REGULAR_EXPRESSION bullet/.*)
 source_group("platform"              REGULAR_EXPRESSION platform/.*)
 
-# Windows uses GLFW (for now)
-if (MSVC)
+if (USE_GLFW_INSTEAD_OF_SDL EQUAL 1)
 source_group("platformGLFW"          REGULAR_EXPRESSION platformGLFW/.*)
 else()
 source_group("platformSDL"           REGULAR_EXPRESSION platformSDL/.*)
