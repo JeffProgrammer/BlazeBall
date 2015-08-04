@@ -9,15 +9,6 @@ endif()
 
 set(USE_GLFW_INSTEAD_OF_SDL 0)
 
-# Enable Static Linking the C++ ABI directly into the executables and libraries
-if (MSVC)
-	SET(CMAKE_REQUIRED_LINKER_FLAGS "/SAFESEH:NO")
-	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-	set(CMAKE_CXX_FLAGS_RelWithDebInfo "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-	set(CMAKE_CXX_FLAGS_RelWithDebInfo "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-endif()
-
 # http://stackoverflow.com/a/25286420/214063
 macro(ADD_FRAMEWORK appname fwname)
 	# Since CMake 2.8.12, this is really easy.
@@ -428,7 +419,7 @@ else()
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
 
-	SDL2
+	SDL2-static
 )
 endif()
 
@@ -477,6 +468,15 @@ set (BUILD_DIR_FILES
 	source/shaders/interiorF.glsl
 	source/shaders/interiorV.glsl
 )
+
+# Enable Static Linking the C++ ABI directly into the executables and libraries
+if (MSVC)
+	SET(CMAKE_REQUIRED_LINKER_FLAGS "/SAFESEH:NO")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+	set(CMAKE_CXX_FLAGS_RelWithDebInfo "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+	set(CMAKE_CXX_FLAGS_RelWithDebInfo "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+endif()
 
 install(TARGETS Game RUNTIME DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 install(FILES ${BUILD_DIR_FILES} DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/bin")

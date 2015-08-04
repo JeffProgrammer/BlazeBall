@@ -31,6 +31,7 @@
 #define _PLATFORMSDL_SDLCONFIG_H_
 
 #include <SDL.h>
+#undef main
 
 /// We are using SDL
 #define USING_SDL
