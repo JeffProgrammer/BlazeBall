@@ -35,7 +35,7 @@
 #include "render/bitmap/jpegsupport.h"
 
 bool IO::isfile(const std::string &file) {
-	FILE *stream = fopen(file.c_str(), "r");
+	FILE *stream = fopen(file.c_str(), "rb");
 	if (stream) {
 		fclose(stream);
 		return true;
