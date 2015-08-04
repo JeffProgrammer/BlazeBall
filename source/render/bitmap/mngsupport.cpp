@@ -32,18 +32,13 @@
 #include "base/types.h"
 #include <mng/libmng.h>
 
-typedef enum {
-	BitmapFormatRGB8 = 3,
-	BitmapFormatRGBA8 = 4
-} BitmapFormat;
-
 typedef struct {
 	bool inited;
 	std::string file;
 	FILE *stream;
 	glm::ivec2 extent;
 	U8 **pixels;
-	BitmapFormat format;
+	Texture::BitmapFormat *format;
 } MNGInfo;
 
 static mng_handle gMNG = MNG_NULL;
@@ -100,7 +95,7 @@ mng_bool mng__processheader(mng_handle handle, mng_uint32 width, mng_uint32 heig
 		case MNG_COLORTYPE_GRAY:
 		case MNG_COLORTYPE_JPEGGRAY:
 			//No alpha
-			info->format = BitmapFormatRGB8;
+			*info->format = Texture::BitmapFormatRGB8;
 			mng_set_canvasstyle(handle, MNG_CANVAS_RGB8);
 			break;
 		case MNG_COLORTYPE_INDEXED:
@@ -108,17 +103,17 @@ mng_bool mng__processheader(mng_handle handle, mng_uint32 width, mng_uint32 heig
 		case MNG_COLORTYPE_JPEGCOLOR:
 			//May have alpha, not sure
 			if (alphaDepth >= 1) {
-				info->format = BitmapFormatRGBA8;
+				*info->format = Texture::BitmapFormatRGBA8;
 				mng_set_canvasstyle(handle, MNG_CANVAS_RGBA8);
 			} else {
-				info->format = BitmapFormatRGB8;
+				*info->format = Texture::BitmapFormatRGB8;
 				mng_set_canvasstyle(handle, MNG_CANVAS_RGB8);
 			}
 			break;
 		case MNG_COLORTYPE_RGBA:
 		case MNG_COLORTYPE_JPEGCOLORA:
 			//Always have alpha
-			info->format = BitmapFormatRGBA8;
+			*info->format = Texture::BitmapFormatRGBA8;
 			mng_set_canvasstyle(handle, MNG_CANVAS_RGBA8);
 			break;
 		default:
@@ -126,7 +121,7 @@ mng_bool mng__processheader(mng_handle handle, mng_uint32 width, mng_uint32 heig
 	}
 
 	//Allocate the image
-	*info->pixels = new U8[width * height * info->format];
+	*info->pixels = new U8[width * height * *info->format];
 
 	return MNG_TRUE;
 }
@@ -134,7 +129,7 @@ mng_bool mng__processheader(mng_handle handle, mng_uint32 width, mng_uint32 heig
 mng_ptr mng__getcanvasline(mng_handle handle, mng_uint32 line) {
 	MNGInfo *info = (MNGInfo *)mng_get_userdata(handle);
 
-	return *info->pixels + (line * gMNGInfo.extent.x * info->format);
+	return *info->pixels + (line * gMNGInfo.extent.x * *info->format);
 }
 
 mng_bool mng__refresh(mng_handle handle, mng_uint32 x, mng_uint32 y, mng_uint32 w, mng_uint32 h) {
@@ -149,7 +144,7 @@ mng_bool mng__settimer(mng_handle handle, mng_uint32 msecs) {
 	return MNG_TRUE;
 }
 
-bool mngReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims) {
+bool mngReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, Texture::BitmapFormat &format) {
 	if (!initMNG()) {
 		bitmap = NULL;
 		return false;
@@ -158,6 +153,7 @@ bool mngReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims) {
 	gMNGInfo.file = file;
 	gMNGInfo.pixels = &bitmap;
 	gMNGInfo.stream = fopen(file.c_str(), "rb");
+	gMNGInfo.format = &format;
 
 	if (mng_set_suspensionmode(gMNG, MNG_FALSE) != MNG_NOERROR) {
 		mng_reset(gMNG);

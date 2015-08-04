@@ -99,10 +99,10 @@ const std::string IO::getBase(const std::string &file, const char &seperator) {
 Texture *IO::loadTexture(const std::string &file) {
 	U8 *bitmap;
 	glm::ivec2 dims;
-
+	Texture::BitmapFormat format;
 	std::string extension = getExtension(file);
 
-	bool (*readFn)(const std::string &file, U8 *&bitmap, glm::ivec2 &dims);
+	bool (*readFn)(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, Texture::BitmapFormat &format);
 
 	//Try to read the image based on format
 	if (extension == "png" || extension == "jng")
@@ -114,8 +114,8 @@ Texture *IO::loadTexture(const std::string &file) {
 		readFn = mngReadImage;
 	}
 
-	if (readFn(file, bitmap, dims)) {
-		Texture *tex = new Texture(bitmap, dims);
+	if (readFn(file, bitmap, dims, format)) {
+		Texture *tex = new Texture(bitmap, dims, format);
 		delete [] bitmap;
 
 		return tex;

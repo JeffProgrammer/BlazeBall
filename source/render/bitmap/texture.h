@@ -39,19 +39,25 @@
 
 class Texture {
 public:
+	enum BitmapFormat {
+		BitmapFormatRGB8 = 3,
+		BitmapFormatRGBA8 = 4
+	};
+
 	bool generated;
 	GLuint buffer;
 	GLenum texNum;
 	glm::ivec2 extent;
 	U8 *pixels;
-
+	BitmapFormat format;
 
 	/**
 	 Creates and allocates a Texture from a pixel array and extent
 	 @arg pixels - A 4-component list of pixels in a RGBA list
 	 @arg extent - A glm::ivec2 with the image extent
+	 @arg format - The bitmap's format (Either RGB8 or RGBA8)
 	 */
-	Texture(U8 *pixels, const glm::ivec2 &extent);
+	Texture(U8 *pixels, const glm::ivec2 &extent, const BitmapFormat &format);
 
 	/**
 	 Releases a Texture, freeing both its store and its buffer
