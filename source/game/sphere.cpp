@@ -233,7 +233,7 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat) {
 
 void Sphere::updateTick(const F64 &deltaMS) {
 	//Temporary OOB solution for now
-	if (getPosition().z < -10) {
+	if (getPosition().z < -40) {
 		setPosition(glm::vec3(0, 30, 60));
 		setVelocity(glm::vec3(0, 0, 0));
 		setAngularVelocity(glm::vec3(0, 0, 0));
