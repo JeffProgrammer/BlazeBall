@@ -39,7 +39,7 @@ void Material::loadTextures(const std::string &path) {
 		return;
 
 	//Some basic fields for identifying the material
-	this->name = IO::getName(path, '/');
+	this->name = IO::getName(path);
 	this->path = path;
 
 	//Normal and specular maps are .normal.png and .spec.png
@@ -52,7 +52,7 @@ void Material::loadTextures(const std::string &path) {
 
 void Material::loadTextures(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) {
 	//Some basic fields for identifying the material in case we don't call the above method
-	this->name = IO::getName(diffusePath, '/');
+	this->name = IO::getName(diffusePath);
 	this->path = diffusePath;
 
 	//Diffuse texture- needs to be loaded or else we can't have a material.
