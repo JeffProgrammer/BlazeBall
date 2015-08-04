@@ -157,7 +157,7 @@ bool mngReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims) {
 
 	gMNGInfo.file = file;
 	gMNGInfo.pixels = &bitmap;
-	gMNGInfo.stream = fopen(file.c_str(), "r");
+	gMNGInfo.stream = fopen(file.c_str(), "rb");
 
 	if (mng_set_suspensionmode(gMNG, MNG_FALSE) != MNG_NOERROR) {
 		mng_reset(gMNG);

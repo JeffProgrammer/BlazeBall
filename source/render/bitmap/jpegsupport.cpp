@@ -35,7 +35,7 @@ bool jpegReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims) {
 	struct jpeg_decompress_struct dptr;
 	struct jpeg_error_mgr errmgr;
 
-	FILE *stream = fopen(file.c_str(), "r");
+	FILE *stream = fopen(file.c_str(), "rb");
 
 	dptr.err = jpeg_std_error(&errmgr);
 
