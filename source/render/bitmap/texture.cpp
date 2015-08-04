@@ -43,7 +43,7 @@
 
 #define TEXTURE_MAX_SIZE 1024
 
-Texture::Texture(U8 *pixels, const glm::ivec2 &extent) {
+Texture::Texture(U8 *pixels, const glm::ivec2 &extent, const BitmapFormat &format) {
 	if (extent.x > TEXTURE_MAX_SIZE || extent.y > TEXTURE_MAX_SIZE) {
 		printf("Texture too large! (%d, %d) > (%d, %d). Bug HiGuy to make textures larger.", extent.x, extent.y, TEXTURE_MAX_SIZE, TEXTURE_MAX_SIZE);
 		return;
@@ -54,8 +54,8 @@ Texture::Texture(U8 *pixels, const glm::ivec2 &extent) {
 	generated = false;
 
 	//Load pixels into pixels (assume RGBA)
-	this->pixels = new U8[extent.x * extent.y * 4];
-	memcpy(this->pixels, pixels, sizeof(U8) * extent.x * extent.y * 4);
+	this->pixels = new U8[extent.x * extent.y * format];
+	memcpy(this->pixels, pixels, sizeof(U8) * extent.x * extent.y * format);
 }
 
 void Texture::generateBuffer() {
@@ -76,7 +76,8 @@ void Texture::generateBuffer() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	//Actually create the texture
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, extent.x, extent.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	GLenum glformat = (format == BitmapFormatRGB8 ? GL_RGB : GL_RGBA);
+	glTexImage2D(GL_TEXTURE_2D, 0, glformat, extent.x, extent.y, 0, glformat, GL_UNSIGNED_BYTE, pixels);
 
 	// When MAGnifying the image (no bigger mipmap available), use LINEAR filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
