@@ -32,13 +32,13 @@
 
 #include "physics/bullet/btPhysicsEngine.h"
 
-#ifdef _WIN32
-#include "platformGLFW/GLFWWindow.h"
-#include "platformGLFW/GLFWTimer.h"
-#else
+//#ifdef _WIN32
+//#include "platformGLFW/GLFWWindow.h"
+//#include "platformGLFW/GLFWTimer.h"
+//#else
 #include "platformSDL/SDLWindow.h"
 #include "platformSDL/SDLTimer.h"
-#endif
+//#endif
 
 
 int main(int argc, const char * argv[])
@@ -72,14 +72,14 @@ int main(int argc, const char * argv[])
 		file.close();
 	}
 
-#ifdef _WIN32
-	scene->window = new GLFWWindow();
-	scene->mTimer = new GLFWTimer();
-#else
+//#ifdef _WIN32
+	//scene->window = new GLFWWindow();
+	//scene->mTimer = new GLFWTimer();
+//#else
 	//Init SDL and go!
 	scene->window = new SDLWindow();
 	scene->mTimer = new SDLTimer();
-#endif
+//#endif
 	scene->run();
 
 	return 0;
