@@ -33,6 +33,10 @@
 #include <SDL.h>
 #undef main
 
+#ifdef _WIN32
+#include <GL/glew.h>
+#endif
+
 /// We are using SDL
 #define USING_SDL
 

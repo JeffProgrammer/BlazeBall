@@ -70,9 +70,17 @@ bool SDLWindow::createContext() {
 		printf("Created a legacy OpenGL profile successfully.\n");
 	}
 
-	//Use Vsync
-	if (SDL_GL_SetSwapInterval(1) < 0)
+#ifdef _WIN32
+	glewExperimental = true;
+	GLenum error = glewInit();
+	if (error != GLEW_OK) {
+		fprintf(stderr, "GLEW failed to init. Reason: %d\n", error);
 		return false;
+	}
+#endif
+
+	//Use Vsync
+	SDL_GL_SetSwapInterval(1);
 
 	//Lock cursor
 	lockCursor(true);
