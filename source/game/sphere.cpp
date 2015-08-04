@@ -35,7 +35,7 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Sphere::Sphere(glm::vec3 origin, F32 radius) : radius(radius), renderBuffer(0), maxAngVel(1000.0f), material(nullptr) {
+Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), maxAngVel(1000.0f), material(nullptr), renderBuffer(0) {
 	mActor = PhysicsEngine::getEngine()->createSphere(radius);
 	mActor->setPosition(origin);
 	mActor->setMass(1.0f);
@@ -73,7 +73,7 @@ void Sphere::generate() {
 			glm::vec3 tangent0 = glm::normalize(glm::cross(point0, glm::vec3(0, 0, 1)));
 			glm::vec3 tangent1 = glm::normalize(glm::cross(point1, glm::vec3(0, 0, 1)));
 			glm::vec3 bitangent0 = glm::normalize(glm::cross(point0, tangent0));
-			glm::vec3 bitangent1 = glm::normalize(glm::cross(point0, tangent0));
+			glm::vec3 bitangent1 = glm::normalize(glm::cross(point1, tangent1));
 
 			points[point].point = point0;
 			points[point].uv = uv0;
@@ -96,7 +96,10 @@ void Sphere::generate() {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * point, &points[0], GL_STATIC_DRAW);
 }
 
-void Sphere::render() {
+void Sphere::render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition) {
+	//Set up matrices
+	GameObject::render(projectionMatrix, viewMatrix, modelMatrixPosition);
+
 	if (!renderBuffer)
 		generate();
 
@@ -149,12 +152,16 @@ glm::vec3 Sphere::getPosition() {
 	return mActor->getPosition();
 }
 
-const glm::quat Sphere::getRotation() {
+glm::quat Sphere::getRotation() {
 	return mActor->getRotation();
 }
 
 void Sphere::setPosition(const glm::vec3 &pos) {
 	mActor->setPosition(pos);
+}
+
+void Sphere::setRotation(const glm::quat &rot) {
+	mActor->setRotation(rot);
 }
 
 void Sphere::setVelocity(const glm::vec3 &vel) {
@@ -223,4 +230,13 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat) {
 	// This is not affected by pitch/yaw
 	glm::vec3 pos = getPosition();
 	mat = glm::translate(mat, glm::vec3(-pos.x, -pos.y, -pos.z));
+}
+
+void Sphere::updateTick(const F64 &deltaMS) {
+	//Temporary OOB solution for now
+	if (getPosition().z < -10) {
+		setPosition(glm::vec3(0, 30, 60));
+		setVelocity(glm::vec3(0, 0, 0));
+		setAngularVelocity(glm::vec3(0, 0, 0));
+	}
 }

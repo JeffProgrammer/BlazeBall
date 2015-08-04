@@ -50,18 +50,9 @@ void Scene::render() {
 	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
 	viewMatrix *= cameraTransform;
 
-	//Model
-	modelMatrix = glm::mat4x4(1);
-
-	//Combined
-	glm::mat4x4 mvpMat = projectionMatrix * viewMatrix * modelMatrix;
-	glm::mat3x3 mv3Mat = glm::mat3(viewMatrix * modelMatrix);
-
 	//Send to OpenGL
-	glUniformMatrix4fv(GLLocations.mvpMatrix, 1, GL_FALSE, &mvpMat[0][0]);
-	glUniformMatrix4fv(GLLocations.modelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
+	glUniformMatrix4fv(GLLocations.projectionMatrix, 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(GLLocations.viewMatrix, 1, GL_FALSE, &viewMatrix[0][0]);
-	glUniformMatrix3fv(GLLocations.modelView3, 1, GL_FALSE, &mv3Mat[0][0]);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
@@ -71,51 +62,26 @@ void Scene::render() {
 	glEnable(GL_MULTISAMPLE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	for (auto interior : interiors) {
-		interior->render();
+	for (auto object : objects) {
+		object->render(projectionMatrix, viewMatrix, GLLocations.modelMatrix);
 	}
-
-	glm::vec3 pos = sphere->getPosition();
-	glm::quat rot = sphere->getRotation();
-
-	//Model
-	modelMatrix = glm::mat4x4(1);
-	modelMatrix = glm::translate(modelMatrix, glm::vec3(pos.x, pos.y, pos.z));
-	modelMatrix = glm::rotate(modelMatrix, glm::angle(rot), glm::axis(rot));
-
-	//Combined
-	mvpMat = projectionMatrix * viewMatrix * modelMatrix;
-
-	//Send to OpenGL
-	glUniformMatrix4fv(GLLocations.mvpMatrix, 1, GL_FALSE, &mvpMat[0][0]);
-	glUniformMatrix4fv(GLLocations.modelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
-	glUniformMatrix4fv(GLLocations.viewMatrix, 1, GL_FALSE, &viewMatrix[0][0]);
-
-	sphere->render();
 }
 
-void Scene::loop() {
+void Scene::loop(const F64 &deltaMS) {
 	controlObject->updateCamera(movement);
 	controlObject->updateMove(movement);
 
 	movement.pitch = 0;
 	movement.yaw = 0;
 
-	if (sphere->getPosition().z < interiors[0]->getInterior().boundingBox.getMin().x) {
-		sphere->setPosition(glm::vec3(0, 30, 60));
-        sphere->setVelocity(glm::vec3(0, 0, 0));
-        sphere->setAngularVelocity(glm::vec3(0, 0, 0));
+	for (auto object : objects) {
+		object->updateTick(deltaMS);
 	}
-#if 0
-	move *= 3;
-	if (movement[8])
-		move *= 2;
+}
 
-	delta = glm::rotate(delta, -pitch, glm::vec3(1, 0, 0));
-	delta = glm::translate(delta, glm::vec3(move.y, -move.x, 0));
-
-	cameraPosition += glm::vec3(delta[3]);
-#endif // 0
+void Scene::updateWindowSize(const glm::ivec2 &size) {
+	GLfloat aspect = (GLfloat)size.x / (GLfloat)size.y;
+	projectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
 }
 
 bool Scene::initGL() {
@@ -134,10 +100,9 @@ bool Scene::initGL() {
 	shader->setUniformLocation("specularSampler", 2);
 	shader->setUniformLocation("noiseSampler", 3);
 
-	GLLocations.mvpMatrix = shader->getUniformLocation("modelViewProjectionMat");
+	GLLocations.projectionMatrix = shader->getUniformLocation("projectionMat");
 	GLLocations.modelMatrix = shader->getUniformLocation("modelMat");
 	GLLocations.viewMatrix = shader->getUniformLocation("viewMat");
-	GLLocations.modelView3 = shader->getUniformLocation("modelView3Mat");
 
 	GLLocations.lightDirection = shader->getUniformLocation("lightDirection");
 	GLLocations.lightColor = shader->getUniformLocation("lightColor");
@@ -149,20 +114,10 @@ bool Scene::initGL() {
 
 	//Window size for viewport
 	glm::ivec2 screenSize = window->getWindowSize();
-
-	GLfloat aspect = (GLfloat)screenSize.x / (GLfloat)screenSize.y;
-	projectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
+	updateWindowSize(screenSize);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-
-	sphere = new Sphere(glm::vec3(0, 0, 60), 0.2f);
-	camera = new Camera();
-	camera->setPosition(glm::vec3(0, 0, 50));
-
-	controlObject = camera;
-	
-//	sphere->setMaterial(difs[0]->interior[0]->material[4]);
 
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
@@ -282,6 +237,9 @@ void Scene::handleEvent(Event *event) {
 		case Event::WindowBlur:
 			mShouldSleep = true;
 			break;
+		case Event::WindowResize:
+			updateWindowSize(static_cast<WindowResizeEvent *>(event)->newSize);
+			break;
 		default:
 			break;
 	}
@@ -320,6 +278,8 @@ void Scene::run() {
 
 	Event *event;
 
+	F64 lastDelta = 0;
+
 	//Main loop
 	while (running) {
 		//Profiling
@@ -337,25 +297,46 @@ void Scene::run() {
 		}
 
 		//Hard work
-		loop();
+		loop(lastDelta);
 		render();
 		
 		// simulate the physics engine.
-		PhysicsEngine::getEngine()->simulate(mTimer->getDelta() / 1000.0);
+		PhysicsEngine::getEngine()->simulate(lastDelta / 1000.0);
 		
 		//Flip buffers
 		window->swapBuffers();
 
 		//Profiling
 		if (printFPS) {
-			printf("%f FPS, %f mspf\n", 1.0 / (mTimer->getDelta() / 1000.0), mTimer->getDelta());
+			printf("%f FPS, %f mspf\n", 1.0 / (lastDelta / 1000.0), lastDelta);
 		}
 		
 		//Count how long a frame took
 		// calculate delta of this elapsed frame.
 		mTimer->end();
+
+		lastDelta = mTimer->getDelta();
 	}
 	
 	//Clean up (duh)
 	cleanup();
+}
+
+Scene::Scene() {
+	sphere = new Sphere(glm::vec3(0, 0, 60), 0.2f);
+	camera = new Camera();
+	camera->setPosition(glm::vec3(0, 0, 50));
+
+	addObject(sphere);
+	addObject(camera);
+
+	controlObject = camera;
+}
+
+Scene::~Scene() {
+	for (auto object : objects) {
+		delete object;
+	}
+	delete window;
+	delete mTimer;
 }

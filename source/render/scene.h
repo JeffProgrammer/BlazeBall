@@ -67,11 +67,9 @@ protected:
 	//F32 maxFPS = 60.0f;
 
 	struct {
-		GLuint mvpMatrix;
+		GLuint projectionMatrix;
 		GLuint modelMatrix;
 		GLuint viewMatrix;
-
-		GLuint modelView3;
 
 		GLuint lightDirection;
 		GLuint lightColor;
@@ -106,17 +104,23 @@ public:
 	const F32 sunPower           = 1000.0f;
 	const U32 specularExponent   = 7;
 
-	std::vector<GameInterior *>interiors;
 	Sphere *sphere;
 	Camera *camera;
 
+	std::vector<GameObject *>objects;
 	GameObject *controlObject;
 
 	Window *window;
-	
 	Timer *mTimer;
 	
 	bool mShouldSleep;
+
+	void addObject(GameObject *object) {
+		objects.push_back(object);
+	}
+
+	Scene();
+	~Scene();
 
 	static Scene *getSingleton() {
 		static Scene *singleton;
@@ -124,8 +128,11 @@ public:
 			singleton = new Scene();
 		return singleton;
 	}
+
+	void updateWindowSize(const glm::ivec2 &size);
+
 	void render();
-	void loop();
+	void loop(const F64 &deltaMS);
 	bool initGL();
 	bool init();
 	void cleanup();

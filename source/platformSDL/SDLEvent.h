@@ -49,6 +49,7 @@ namespace SDLEvent {
 				switch (event.window.event) {
 					case SDL_WINDOWEVENT_FOCUS_LOST:   return Event::WindowBlur;
 					case SDL_WINDOWEVENT_FOCUS_GAINED: return Event::WindowFocus;
+					case SDL_WINDOWEVENT_RESIZED:      return Event::WindowResize;
 				}
 			default: return Event::None;
 		}

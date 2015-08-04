@@ -47,13 +47,9 @@ bool SDLWindow::createContext() {
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	// Grab bounds for placing the window in the center of the screen the best we can.
-	SDL_Rect bounds;
-	SDL_GetDisplayBounds(0, &bounds);
-
 	//Create the window
 	const U32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
-	if ((window = SDL_CreateWindow("DIF Viewer", (bounds.w - 1280) / 2, (bounds.h - 720) / 2, 1280, 720, flags)) == NULL)
+	if ((window = SDL_CreateWindow("DIF Viewer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, flags)) == NULL)
 		return false;
 
 	//Create context
@@ -61,7 +57,7 @@ bool SDLWindow::createContext() {
 		printf("A Core OpenGL profile has failed. Attempting to create a legacy profile.\n");
 
 		// Fall back to legacy profile if the core opengl profile fails on this platform.
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0x0000);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, SDL_CONFIG_LEGACY_MAJOR_GL_VERSION);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, SDL_CONFIG_LEGACY_MINOR_GL_VERSION);
 

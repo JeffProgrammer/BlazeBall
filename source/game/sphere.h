@@ -67,12 +67,14 @@ private:
 
 public:
 	Sphere(glm::vec3 origin, F32 radius);
+	virtual ~Sphere() {};
 
-	void render();
+	virtual void render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition);
 	virtual glm::vec3 getPosition();
-	const glm::quat getRotation();
+	virtual glm::quat getRotation();
 
 	virtual void setPosition(const glm::vec3 &pos);
+	virtual void setRotation(const glm::quat &rot);
 
 	void setMaterial(Material *material) {
 		this->material = material;
@@ -91,6 +93,8 @@ public:
 	virtual void updateCamera(const Movement &movement);
 	virtual void updateMove(const Movement &movement);
 	virtual void getCameraPosition(glm::mat4x4 &mat);
+
+	virtual void updateTick(const F64 &deltaMS);
 };
 
 #endif

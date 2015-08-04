@@ -32,7 +32,7 @@
 #include <string>
 #include <cfloat>
 
-GameInterior::GameInterior(DIF::Interior interior) : mInterior(interior) {
+GameInterior::GameInterior(DIF::Interior interior) : GameObject(), mInterior(interior) {
 	renderInfo.generated = false;
 }
 

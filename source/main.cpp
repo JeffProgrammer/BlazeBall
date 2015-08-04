@@ -64,7 +64,7 @@ int main(int argc, const char * argv[])
 				GameInterior *interior = new GameInterior(dinterior);
 				interior->generateMaterials(directory);
 				interior->generateMesh();
-				scene->interiors.push_back(interior);
+				scene->addObject(interior);
 			}
 		}
 

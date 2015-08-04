@@ -55,7 +55,7 @@ private:
 
 public:
 	GameInterior(DIF::Interior interior);
-	~GameInterior();
+	virtual ~GameInterior() {};
 	
 	void generateMaterials(std::string directory);
 	void generateMesh();
@@ -65,7 +65,7 @@ public:
 	DIF::Interior getInterior() {return mInterior;}
 
 	void init();
-	void render();
+	virtual void render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition);
 };
 
 #endif

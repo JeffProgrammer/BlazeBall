@@ -26,6 +26,7 @@ subject to the following restrictions:
 ///Performance of btTriangleMesh and btTriangleIndexVertexArray used in a btBvhTriangleMeshShape is the same.
 class btTriangleMesh : public btTriangleIndexVertexArray
 {
+public:
 	btAlignedObjectArray<btVector3>	m_4componentVertices;
 	btAlignedObjectArray<btScalar>	m_3componentVertices;
 
