@@ -234,4 +234,11 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 				manifold->getContactPoint(i).m_normalWorldOnB = normal;
 		}
 	}
+
+	for (int i = 0; i < manifold->getNumContacts(); i ++) {
+		//Friction is relative to the slope of the incline
+		F32 friction = (1.0f + manifold->getContactPoint(i).m_normalWorldOnB.dot(btVector3(0, 0, 1))) / 2.0f;
+		manifold->getContactPoint(i).m_combinedFriction *= friction;
+		manifold->getContactPoint(i).m_combinedRollingFriction *= friction;
+	}
 }
