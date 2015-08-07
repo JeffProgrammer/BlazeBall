@@ -63,7 +63,7 @@
 class Scene {
 protected:
 	bool running;
-	bool printFPS = true;
+	bool printFPS = false;
 
 	//F32 maxFPS = 60.0f;
 
