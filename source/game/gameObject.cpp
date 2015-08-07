@@ -29,10 +29,10 @@
 #include "gameObject.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-void GameObject::updateCamera(const Movement &movement) {
+void GameObject::updateCamera(const Movement &movement, const F64 &deltaMS) {
 	//Nothing
 }
-void GameObject::updateMove(const Movement &movement) {
+void GameObject::updateMove(const Movement &movement, const F64 &deltaMS) {
 	//Nothing
 }
 void GameObject::getCameraPosition(glm::mat4x4 &mat) {

@@ -171,7 +171,7 @@ void Sphere::setAngularVelocity(const glm::vec3 &vel) {
     mActor->setAngularVelocity(vel);
 }
 
-void Sphere::updateCamera(const Movement &movement) {
+void Sphere::updateCamera(const Movement &movement, const F64 &deltaMS) {
 	if (movement.pitchUp) cameraPitch -= keyCameraSpeed;
 	if (movement.pitchDown) cameraPitch += keyCameraSpeed;
 	if (movement.yawLeft) cameraYaw -= keyCameraSpeed;
@@ -181,7 +181,7 @@ void Sphere::updateCamera(const Movement &movement) {
 	cameraYaw += movement.yaw * cameraSpeed;
 }
 
-void Sphere::updateMove(const Movement &movement) {
+void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	//Apply the camera yaw to a matrix so our rolling is based on the camera direction
 	glm::mat4x4 delta = glm::mat4x4(1);
 	delta = glm::rotate(delta, -cameraYaw, glm::vec3(0, 0, 1));
@@ -193,11 +193,13 @@ void Sphere::updateMove(const Movement &movement) {
 	if (movement.left) move.y --;
 	if (movement.right) move.y ++;
 
+	F32 timeMod = (deltaMS / 16.f);
+
 	//Torque is based on the movement and yaw
 	glm::vec3 torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
 
 	//Multiplied by 2.5 (magic number alert)
-	applyTorque(glm::vec3(torque.x, torque.y, torque.z) * 2.5f);
+	applyTorque(glm::vec3(torque.x, torque.y, torque.z) * 2.5f * timeMod);
 
 	//If we are colliding with the ground, we have the chance to jump
 	if (getColliding()) {
@@ -210,7 +212,7 @@ void Sphere::updateMove(const Movement &movement) {
 		}
 	} else {
 		//If we're not touching the ground, apply slight air movement.
-		applyForce(glm::vec3(torque.y, -torque.x, torque.z) * 5.f, glm::vec3(0, 0, 0));
+		applyForce(glm::vec3(torque.y, -torque.x, torque.z) * 5.f * timeMod, glm::vec3(0, 0, 0));
 	}
 }
 

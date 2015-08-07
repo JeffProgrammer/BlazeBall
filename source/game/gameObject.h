@@ -56,8 +56,8 @@ public:
 	virtual glm::quat getRotation() { return mRotation; }
 	virtual void setPosition(const glm::quat &rotation) { mRotation = rotation; }
 
-	virtual void updateCamera(const Movement &movement);
-	virtual void updateMove(const Movement &movement);
+	virtual void updateCamera(const Movement &movement, const F64 &deltaMS);
+	virtual void updateMove(const Movement &movement, const F64 &deltaMS);
 	virtual void getCameraPosition(glm::mat4x4 &mat);
 
 	virtual void updateTick(const F64 &deltaMS);

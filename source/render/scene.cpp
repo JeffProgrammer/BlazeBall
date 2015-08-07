@@ -30,6 +30,7 @@
 #include "game/gameInterior.h"
 #include <chrono>
 #include <thread>
+#include <algorithm>
 
 void Scene::render() {
 	//Light
@@ -68,8 +69,8 @@ void Scene::render() {
 }
 
 void Scene::loop(const F64 &deltaMS) {
-	controlObject->updateCamera(movement);
-	controlObject->updateMove(movement);
+	controlObject->updateCamera(movement, deltaMS);
+	controlObject->updateMove(movement, deltaMS);
 
 	movement.pitch = 0;
 	movement.yaw = 0;
@@ -80,7 +81,7 @@ void Scene::loop(const F64 &deltaMS) {
 	}
 
 	for (auto object : objects) {
-		object->updateTick(deltaMS);
+		object->updateTick(fmodf(deltaMS, 16.f));
 	}
 }
 
@@ -289,8 +290,10 @@ void Scene::run() {
 		//Profiling
 		mTimer->start();
 		
-		if (mShouldSleep)
-			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		if (mShouldSleep) {
+			U32 sleepTime = std::max((F64)0.f, 200.f - lastDelta);
+			std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+		}
 
 		//Input
 		while (window->pollEvents(event)) {
