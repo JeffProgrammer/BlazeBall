@@ -68,3 +68,6 @@ void btPhysicsBody::setVelocity(const glm::vec3 &velocity) {
 void btPhysicsBody::setAngularVelocity(const glm::vec3 &velocity) {
     mActor->setAngularVelocity(btConvert(velocity));
 }
+
+void btPhysicsBody::modifyContact(btPersistentManifold *const &manifold, btCollisionObject const *other, U32 otherIndex) {
+}

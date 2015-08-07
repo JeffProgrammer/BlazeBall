@@ -31,6 +31,48 @@
 
 #include <glm/ext.hpp>
 
+/// BEHOLD, THE MAGIC NUMBER
+#define ADJACENCY_NORMAL_THRESHOLD 0.01f
+
+//Super crazy inheritence hacking to let us get at the private members of btTriangleMesh
+class btAccessibleTriangleMesh : public btTriangleMesh {
+public:
+	static btVector3 getVector(btTriangleMesh *mesh, const U32 &index) {
+		//Easy now
+		return mesh->m_4componentVertices[mesh->m_32bitIndices[index]];
+	}
+	static BulletTriangle getTriangle(btTriangleMesh *mesh, const U32 &index) {
+		BulletTriangle tri;
+		tri.point0 = getVector(mesh, 0 + index * 3);
+		tri.point1 = getVector(mesh, 1 + index * 3);
+		tri.point2 = getVector(mesh, 2 + index * 3);
+		return tri;
+	}
+	static bool areTrianglesAdjacent(const BulletTriangle &tri1, const BulletTriangle &tri2) {
+		// Count number of matched vertices
+		int matches = 0;
+		if (tri1.point0 == tri2.point0 || tri1.point0 == tri2.point1 || tri1.point0 == tri2.point2)
+			matches++;
+		if (tri1.point1 == tri2.point0 || tri1.point1 == tri2.point1|| tri1.point1 == tri2.point2)
+			matches++;
+		if (tri1.point2 == tri2.point0 || tri1.point2 == tri2.point1 || tri1.point2 == tri2.point2)
+			matches++;
+
+		// Calculate normals
+		btVector3 normal1 = (tri1.point1 - tri1.point0).cross(tri1.point2 - tri1.point0);
+		btVector3 normal2 = (tri2.point1 - tri2.point0).cross(tri2.point2 - tri2.point0);
+		normal1.safeNormalize();
+		normal2.safeNormalize();
+		btVector3 cross = normal1.cross(normal2);
+
+		btScalar len = cross.length();
+		if (len < ADJACENCY_NORMAL_THRESHOLD && matches >= 1) {
+			return true;
+		}
+		return false;
+	}
+};
+
 extern std::vector<ShapeInfo> shapes;
 extern std::vector<BodyInfo> bodies;
 extern std::vector<BodyMovement> moves;
@@ -121,5 +163,75 @@ glm::vec3 btPhysicsSphere::getCollisionNormal() {
 	}
 
 	return best;
+}
 
+void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const btCollisionObject *other, U32 otherIndex) {
+	const btBvhTriangleMeshShape *trimesh = dynamic_cast<const btBvhTriangleMeshShape *>(other->getCollisionShape());
+
+	if (trimesh == NULL)
+		return;
+
+	int ind = -1;
+	for (int i = 0; i < bodies.size(); i++) {
+		if (bodies[i].body == other) {
+			ind = i;
+			break;
+		}
+	}
+	if (ind < 0)
+		return;
+
+	BodyInfo bodyInfo = bodies[ind];
+
+	btTriangleMesh *mesh_int = (btTriangleMesh*)trimesh->getMeshInterface();
+
+	std::vector<int> triangleIndices;
+	bool removed = false;
+
+	int count = manifold->getNumContacts();
+	for (int i = 0; i < count; i++) {
+		int index;
+		if (otherIndex == 0)
+			index = manifold->getContactPoint(i).m_index0;
+		else
+			index = manifold->getContactPoint(i).m_index1;
+
+		for (int j = 0; j < triangleIndices.size(); j++) {
+			BulletTriangle tri1 = btAccessibleTriangleMesh::getTriangle(mesh_int, triangleIndices[j]);
+			BulletTriangle tri2 = btAccessibleTriangleMesh::getTriangle(mesh_int, index);
+
+			if (index == triangleIndices[j] || btAccessibleTriangleMesh::areTrianglesAdjacent(tri1, tri2)) {
+				if (manifold->getContactPoint(i).getDistance() < manifold->getContactPoint(j).getDistance())
+					manifold->removeContactPoint(j);
+				else
+					manifold->removeContactPoint(i);
+				//printf("Point removed\n");
+				removed = true;
+				break;
+			}
+		}
+		triangleIndices.push_back(index);
+	}
+
+	if (removed) {
+		for (int i = 0; i < manifold->getNumContacts(); i++) {
+			int index;
+			if (otherIndex == 0)
+				index = manifold->getContactPoint(i).m_index0;
+			else
+				index = manifold->getContactPoint(i).m_index1;
+			const BulletTriangle &points = btAccessibleTriangleMesh::getTriangle(mesh_int, index);
+
+			btVector3 normal = (points.point1 - points.point0).cross(points.point2 - points.point0);
+			normal.safeNormalize();
+
+			btQuaternion rot = bodyInfo.body->getWorldTransform().getRotation();
+			normal = normal.rotate(rot.getAxis(), rot.getAngle());
+
+			if (otherIndex == 0)
+				manifold->getContactPoint(i).m_normalWorldOnB = -normal;
+			else
+				manifold->getContactPoint(i).m_normalWorldOnB = normal;
+		}
+	}
 }
