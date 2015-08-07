@@ -74,6 +74,11 @@ void Scene::loop(const F64 &deltaMS) {
 	movement.pitch = 0;
 	movement.yaw = 0;
 
+	if (movement.fire) {
+		Sphere *extra = new Sphere(glm::vec3(0, 0, 0), 0.5f);
+		addObject(extra);
+	}
+
 	for (auto object : objects) {
 		object->updateTick(deltaMS);
 	}
@@ -176,6 +181,7 @@ void Scene::handleEvent(Event *event) {
 					else
 						controlObject = camera;
 					break;
+				case KeyEvent::KEY_Q: movement.fire = true; break;
 				default: break;
 			}
 			break;
@@ -190,6 +196,7 @@ void Scene::handleEvent(Event *event) {
 				case KeyEvent::KEY_LEFT:  movement.yawLeft   = false; break;
 				case KeyEvent::KEY_RIGHT: movement.yawRight  = false; break;
 				case KeyEvent::KEY_SPACE: movement.jump      = false; break;
+				case KeyEvent::KEY_Q:     movement.fire      = false; break;
 				default: break;
 			}
 			break;
