@@ -315,7 +315,9 @@ void Scene::run() {
 
 		//Profiling
 		if (printFPS) {
-			printf("%f FPS, %f mspf\n", 1.0 / (lastDelta / 1000.0), lastDelta);
+			F32 fps = static_cast<F32>(1.0 / (lastDelta / 1000.0));
+			std::string title = "FPS: " + std::to_string(fps) + " mspf: " + std::to_string(lastDelta);
+			window->setWindowTitle(title.c_str());
 		}
 		
 		//Count how long a frame took
