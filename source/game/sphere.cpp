@@ -200,12 +200,19 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 
 	move *= modifier;
 	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getLinearVelocity())[3]);
+	glm::vec3 angRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getAngularVelocity())[3]);
 
 	if (move.x + linRel.x > 15.f) {
 		move.x = glm::max(0.f, 15.f - linRel.x);
 	}
 	if (move.y + linRel.y > 15.f) {
 		move.y = glm::max(0.f, 15.f - linRel.y);
+	}
+	if (move.x + angRel.x > 75.f) {
+		move.x = glm::max(0.f, 75.f - angRel.x);
+	}
+	if (move.y + angRel.y > 75.f) {
+		move.y = glm::max(0.f, 75.f - angRel.y);
 	}
 
 //	printf("%f %f\n", glm::length(mActor->getAngularVelocity()), glm::length(mActor->getLinearVelocity()));
