@@ -126,6 +126,7 @@ public:
 		return singleton;
 	}
 
+	void loadShaderUniforms();
 	void updateWindowSize(const glm::ivec2 &size);
 
 	void render();
