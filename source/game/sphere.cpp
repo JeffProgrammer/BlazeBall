@@ -187,19 +187,32 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	delta = glm::rotate(delta, -cameraYaw, glm::vec3(0, 0, 1));
 
 	//Convert the movement into a vector
-	glm::vec2 move = glm::vec2();
-	if (movement.forward) move.x --;
-	if (movement.backward) move.x ++;
-	if (movement.left) move.y --;
-	if (movement.right) move.y ++;
+	glm::vec3 move = glm::vec3();
+	if (movement.forward) move.y ++;
+	if (movement.backward) move.y --;
+	if (movement.left) move.x --;
+	if (movement.right) move.x ++;
 
 	F32 timeMod = (deltaMS / 16.f);
 
-	//Torque is based on the movement and yaw
-	glm::vec3 torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
-
 	//Multiplied by 2.5 (magic number alert)
-	applyTorque(glm::vec3(torque.x, torque.y, torque.z) * 2.5f * timeMod);
+	F32 modifier = 2.5f * timeMod;
+
+	move *= modifier;
+	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getLinearVelocity())[3]);
+
+	if (move.x + linRel.x > 15.f) {
+		move.x = glm::max(0.f, 15.f - linRel.x);
+	}
+	if (move.y + linRel.y > 15.f) {
+		move.y = glm::max(0.f, 15.f - linRel.y);
+	}
+
+//	printf("%f %f\n", glm::length(mActor->getAngularVelocity()), glm::length(mActor->getLinearVelocity()));
+
+	//Torque is based on the movement and yaw
+	glm::vec3 torque = glm::vec3(glm::translate(delta, move)[3]);
+	applyForce(torque, glm::vec3(0, 0, 1));
 
 	//If we are colliding with the ground, we have the chance to jump
 	if (getColliding()) {
@@ -210,9 +223,11 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 			// jump but still taking the surface into account.
 			applyImpulse((normal + glm::vec3(0, 0, 1)) / 2.f * 7.5f, glm::vec3(0, 0, 0));
 		}
+//		printf("Colliding\n");
 	} else {
 		//If we're not touching the ground, apply slight air movement.
-		applyForce(glm::vec3(torque.y, -torque.x, torque.z) * 5.f * timeMod, glm::vec3(0, 0, 0));
+//		applyForce(torque, glm::vec3(0, 0, 0));
+//		printf("Not colliding\n");
 	}
 }
 
@@ -236,7 +251,7 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat) {
 void Sphere::updateTick(const F64 &deltaMS) {
 	//Temporary OOB solution for now
 	if (getPosition().z < -40) {
-		setPosition(glm::vec3(0, 30, 60));
+		setPosition(glm::vec3(0, 0, 60));
 		setVelocity(glm::vec3(0, 0, 0));
 		setAngularVelocity(glm::vec3(0, 0, 0));
 	}
