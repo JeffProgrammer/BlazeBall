@@ -34,12 +34,10 @@
 
 void Scene::render() {
 	//Light
-	glUniform3fv(GLLocations.lightDirection, 1, &lightDirection.x);
 	glUniform4fv(GLLocations.lightColor, 1, &lightColor.r);
 	glUniform4fv(GLLocations.ambientColor, 1, &ambientColor.r);
 
 	glUniform3fv(GLLocations.sunPosition, 1, &sunPosition.x);
-	glUniform1f(GLLocations.sunPower, sunPower);
 	glUniform1f(GLLocations.specularExponent, specularExponent);
 
 	//Get the camera transform from the marble
@@ -110,12 +108,10 @@ bool Scene::initGL() {
 	GLLocations.modelMatrix = shader->getUniformLocation("modelMat");
 	GLLocations.viewMatrix = shader->getUniformLocation("viewMat");
 
-	GLLocations.lightDirection = shader->getUniformLocation("lightDirection");
 	GLLocations.lightColor = shader->getUniformLocation("lightColor");
 	GLLocations.ambientColor = shader->getUniformLocation("ambientColor");
 
 	GLLocations.sunPosition = shader->getUniformLocation("sunPosition");
-	GLLocations.sunPower = shader->getUniformLocation("sunPower");
 	GLLocations.specularExponent = shader->getUniformLocation("specularExponent");
 
 	//Window size for viewport
