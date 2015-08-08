@@ -239,7 +239,7 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 
 	//The interior with which we collided
 	btPhysicsInterior *inter = static_cast<btPhysicsInterior *>(other->getUserPointer());
-	DIF::Interior dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
+	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
 
 	for (int i = 0; i < manifold->getNumContacts(); i ++) {
 		//Get the collision index

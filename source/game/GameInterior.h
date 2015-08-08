@@ -62,7 +62,7 @@ public:
 	void exportObj(FILE *file);
 	U32 rayCast(RayF ray);
 
-	DIF::Interior getInterior() {return mInterior;}
+	const DIF::Interior &getInterior() {return mInterior;}
 
 	void init();
 	virtual void render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition);
