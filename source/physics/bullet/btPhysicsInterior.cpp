@@ -53,6 +53,8 @@ void btPhysicsInterior::construct() {
 
 	const DIF::Interior &interior = mInterior->getInterior();
 	const U32 size = interior.surface.size();
+
+	U32 triIndex = 0;
     for (U32 i = 0; i < size; i++) {
 		const DIF::Interior::Surface &surface = interior.surface[i];
 		const U32 count = surface.windingCount - 2;
@@ -70,6 +72,7 @@ void btPhysicsInterior::construct() {
 			}
 
             mesh->addTriangle(btConvert(point0), btConvert(point1), btConvert(point2), true);
+			mTriangleLookup[triIndex ++] = i;
         }
     }
 
