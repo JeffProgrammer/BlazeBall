@@ -28,6 +28,8 @@
 
 #include "physics/bullet/btPhysicsEngine.h"
 #include "physics/bullet/btPhysicsSphere.h"
+#include "physics/bullet/btPhysicsInterior.h"
+#include "game/gameInterior.h"
 
 #include <glm/ext.hpp>
 
@@ -235,9 +237,35 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 		}
 	}
 
+	//The interior with which we collided
+	btPhysicsInterior *inter = static_cast<btPhysicsInterior *>(other->getUserPointer());
+	DIF::Interior dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
+
 	for (int i = 0; i < manifold->getNumContacts(); i ++) {
+		//Get the collision index
+		U32 index;
+		if (otherIndex == 0)
+			index = manifold->getContactPoint(i).m_index0;
+		else
+			index = manifold->getContactPoint(i).m_index1;
+
+		//Which surface was it?
+		U32 surfaceNum = inter->getSurfaceIndexFromTriangleIndex(index);
+		DIF::Interior::Surface surface = dint.surface[surfaceNum];
+
+		//Texture names have properties
+		std::string surfName = dint.materialName[surface.textureIndex];
+
 		//Friction is relative to the slope of the incline
 		F32 friction = (1.0f + manifold->getContactPoint(i).m_normalWorldOnB.dot(btVector3(0, 0, 1))) / 2.0f;
+
+		//Frictions
+		if (surfName == "friction_low" || surfName == "friction_low_shadow") {
+			friction *= 0.01f;
+		} else if (surfName == "friction_high" || surfName == "friction_high_shadow") {
+			friction *= 2.5f;
+		}
+
 		manifold->getContactPoint(i).m_combinedFriction *= friction;
 		manifold->getContactPoint(i).m_combinedRollingFriction *= friction;
 	}
