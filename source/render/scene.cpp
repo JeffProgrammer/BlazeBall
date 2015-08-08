@@ -32,16 +32,20 @@
 #include <thread>
 #include <algorithm>
 
-void Scene::render() {
+void Scene::loadShaderUniforms() {
 	//Light
-	glUniform3fv(GLLocations.lightDirection, 1, &lightDirection.x);
 	glUniform4fv(GLLocations.lightColor, 1, &lightColor.r);
 	glUniform4fv(GLLocations.ambientColor, 1, &ambientColor.r);
 
+	//Sun
 	glUniform3fv(GLLocations.sunPosition, 1, &sunPosition.x);
-	glUniform1f(GLLocations.sunPower, sunPower);
 	glUniform1f(GLLocations.specularExponent, specularExponent);
 
+	//Projection matrix
+	glUniformMatrix4fv(GLLocations.projectionMatrix, 1, GL_FALSE, &projectionMatrix[0][0]);
+}
+
+void Scene::render() {
 	//Get the camera transform from the marble
 	glm::mat4 cameraTransform;
 	controlObject->getCameraPosition(cameraTransform);
@@ -52,7 +56,6 @@ void Scene::render() {
 	viewMatrix *= cameraTransform;
 
 	//Send to OpenGL
-	glUniformMatrix4fv(GLLocations.projectionMatrix, 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(GLLocations.viewMatrix, 1, GL_FALSE, &viewMatrix[0][0]);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -110,17 +113,17 @@ bool Scene::initGL() {
 	GLLocations.modelMatrix = shader->getUniformLocation("modelMat");
 	GLLocations.viewMatrix = shader->getUniformLocation("viewMat");
 
-	GLLocations.lightDirection = shader->getUniformLocation("lightDirection");
 	GLLocations.lightColor = shader->getUniformLocation("lightColor");
 	GLLocations.ambientColor = shader->getUniformLocation("ambientColor");
 
 	GLLocations.sunPosition = shader->getUniformLocation("sunPosition");
-	GLLocations.sunPower = shader->getUniformLocation("sunPower");
 	GLLocations.specularExponent = shader->getUniformLocation("specularExponent");
 
 	//Window size for viewport
 	glm::ivec2 screenSize = window->getWindowSize();
 	updateWindowSize(screenSize);
+
+	loadShaderUniforms();
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
