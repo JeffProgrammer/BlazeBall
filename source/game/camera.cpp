@@ -29,7 +29,7 @@
 #include "camera.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-void Camera::updateCamera(const Movement &movement) {
+void Camera::updateCamera(const Movement &movement, const F64 &deltaMS) {
 	//Keyboard movement
 	if (movement.pitchUp)   pitch -= keyCameraSpeed;
 	if (movement.pitchDown) pitch += keyCameraSpeed;
@@ -37,11 +37,11 @@ void Camera::updateCamera(const Movement &movement) {
 	if (movement.yawRight)  yaw += keyCameraSpeed;
 
 	//Mouse movement
-	pitch += movement.pitch * cameraSpeed;
-	yaw   += movement.yaw   * cameraSpeed;
+	pitch += movement.pitch * cameraSpeed * (deltaMS / 16.f);
+	yaw   += movement.yaw   * cameraSpeed * (deltaMS / 16.f);
 }
 
-void Camera::updateMove(const Movement &movement) {
+void Camera::updateMove(const Movement &movement, const F64 &deltaMS) {
 	glm::mat4x4 delta = glm::mat4x4(1);
 
 	//Invert these because we are a free cam
@@ -55,7 +55,7 @@ void Camera::updateMove(const Movement &movement) {
 	if (movement.right)    delta = glm::translate(delta, glm::vec3(1, 0, 0));
 
 	//Move the origin
-	mOrigin += (glm::vec3)delta[3];
+	mOrigin += glm::vec3(delta[3]) * F32(deltaMS / 16.f);
 }
 
 void Camera::getCameraPosition(glm::mat4x4 &mat) {
