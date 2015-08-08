@@ -44,6 +44,7 @@ public:
 	virtual void destroyContext();
 	virtual void swapBuffers();
 	virtual void lockCursor(const bool &locked);
+	virtual void setWindowTitle(const char *title);
 
 	virtual glm::ivec2 getWindowSize();
 	virtual bool pollEvents(Event *&event);
