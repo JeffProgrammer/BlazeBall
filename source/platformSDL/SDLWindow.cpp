@@ -92,6 +92,10 @@ void SDLWindow::lockCursor(const bool &locked) {
 	SDL_SetRelativeMouseMode((SDL_bool)locked);
 }
 
+void SDLWindow::setWindowTitle(const char *title) {
+	SDL_SetWindowTitle(window, title);
+}
+
 glm::ivec2 SDLWindow::getWindowSize() {
 	S32 screenWidth, screenHeight;
 	SDL_GetWindowSize(window, &screenWidth, &screenHeight);
