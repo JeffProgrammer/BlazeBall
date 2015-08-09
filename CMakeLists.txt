@@ -284,6 +284,8 @@ set (DIFVIEWERGAME_SRC
 	source/render/InteriorRender.cpp
 	source/render/material.cpp
 	source/render/material.h
+	source/render/materialManager.cpp
+	source/render/materialManager.h
 	source/render/scene.cpp
 	source/render/scene.h
 	source/render/shader.cpp
