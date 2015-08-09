@@ -30,6 +30,7 @@
 #define material_h
 
 #include <stdio.h>
+#include <unordered_map>
 #include "base/types.h"
 #include "render/bitmap/texture.h"
 #include "render/shader.h"
@@ -39,7 +40,7 @@
 
 struct ShaderInfo;
 class Material {
-	std::map<GLuint, Texture *> textures;
+	std::unordered_map<GLuint, Texture *> textures;
 	ShaderInfo *shaderInfo;
 
 	std::string name;
@@ -82,7 +83,7 @@ public:
 	 * @param normalPath The path for the material's normal texture.
 	 * @param specularPath The path for the material's specular texture.
 	 */
-	Material(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) : shaderInfo(NULL) {
+	Material(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) : shaderInfo(nullptr) {
 		loadTextures(diffusePath, normalPath, specularPath);
 	}
 	
@@ -96,7 +97,7 @@ public:
 	 * @param index The OpenGL texture index
 	 * @return The currently assigned texture at that index
 	 */
-	Texture *getTexture(const GLuint &index) const {
+	Texture *getTexture(const GLuint &index) {
 		return this->textures[index];
 	}
 	
@@ -114,6 +115,14 @@ public:
 	 */
 	std::string getPath() const {
 		return this->path;
+	}
+	
+	/**
+	 * Gets the material's name
+	 * @return The material's name
+	 */
+	std::string getName() const {
+		return this->name;
 	}
 
 	/**
