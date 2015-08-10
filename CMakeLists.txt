@@ -250,6 +250,10 @@ set (DIFVIEWERGAME_SRC
 	source/game/movement.h
 	source/game/sphere.cpp
 	source/game/sphere.h
+	
+	# Graphics folder
+	source/graphics/vertexBufferObject.cpp
+	source/graphics/vertexBufferObject.h
 
 	# Physics folder
 	source/physics/physicsBody.cpp
@@ -334,6 +338,7 @@ source_group("game\\physics"         REGULAR_EXPRESSION physics/.*)
 source_group("game\\physics\\bullet" REGULAR_EXPRESSION bullet/.*)
 source_group("platform"              REGULAR_EXPRESSION platform/.*)
 source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
+source_group("graphics"              REGULAR_EXPRESSION graphics/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
