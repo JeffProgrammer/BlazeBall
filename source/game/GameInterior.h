@@ -65,7 +65,8 @@ public:
 	const DIF::Interior &getInterior() {return mInterior;}
 
 	void init();
-	virtual void render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition);
+	virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix);
+	virtual void render();
 };
 
 #endif

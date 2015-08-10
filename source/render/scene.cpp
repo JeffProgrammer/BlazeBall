@@ -67,7 +67,10 @@ void Scene::render() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	for (auto object : objects) {
-		object->render(projectionMatrix, viewMatrix, GLLocations.modelMatrix);
+		glm::mat4 modelMatrix(1);
+		object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
+		glUniformMatrix4fv(GLLocations.modelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
+		object->render();
 	}
 }
 
