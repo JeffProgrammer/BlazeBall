@@ -144,10 +144,6 @@ void GameInterior::init() {
 	renderInfo.generated = true;
 }
 
-void GameInterior::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix) {
-	GameObject::loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
-}
-
 void GameInterior::render() {
 	if (!renderInfo.generated)
 		init();
