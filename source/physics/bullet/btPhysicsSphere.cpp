@@ -99,7 +99,7 @@ btPhysicsSphere::btPhysicsSphere(const F32 &radius) : mRadius(radius) {
 	btRigidBody::btRigidBodyConstructionInfo info(1, state, shape, fallInertia);
 	info.m_restitution = 0.5f;
 	info.m_friction = 1.1f;
-	info.m_rollingFriction = 0.4f;
+	info.m_rollingFriction = 1.1f;
 
 	//Create the actor and add it to the scene
 	mActor = new btRigidBody(info);
@@ -107,7 +107,7 @@ btPhysicsSphere::btPhysicsSphere(const F32 &radius) : mRadius(radius) {
 	mActor->setCcdMotionThreshold(1e-3);
 	mActor->setCcdSweptSphereRadius(radius / 10.0f);
 	mActor->setAnisotropicFriction(shape->getAnisotropicRollingFrictionDirection(), btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION);
-    
+
     ShapeInfo infooo;
     infooo.shape = shape;
     shapes.push_back(infooo);
@@ -124,12 +124,15 @@ bool btPhysicsSphere::getColliding() {
 	btDiscreteDynamicsWorld *world = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld();
 	U32 manifolds = world->getDispatcher()->getNumManifolds();
 
+	printf("%d manifolds\n", manifolds);
+
 	for (U32 i = 0; i < manifolds; i ++) {
 		btPersistentManifold *manifold = world->getDispatcher()->getManifoldByIndexInternal(i);
 		btCollisionObject *obj1 = (btCollisionObject *)manifold->getBody0();
 		btCollisionObject *obj2 = (btCollisionObject *)manifold->getBody1();
 
 		if (obj1 == mActor || obj2 == mActor) {
+			printf("We're in it, %d contacts\n", manifold->getNumContacts());
 			if (manifold->getNumContacts() > 0)
 				return true;
 		}

@@ -86,10 +86,10 @@ void btPhysicsInterior::construct() {
     state->setWorldTransform(transform);
     
     mActor = new btRigidBody(0, state, shape);
-    mActor->setRestitution(0.7f);
-    mActor->setFriction(1.1f);
+    mActor->setRestitution(1.f);
+    mActor->setFriction(1.f);
     mActor->setCollisionFlags(mActor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
-    
+
     ShapeInfo info;
     info.shape = shape;
     shapes.push_back(info);
