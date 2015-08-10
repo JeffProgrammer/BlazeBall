@@ -197,6 +197,12 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 
 	move *= modifier;
 
+	//Crappy damping
+	if (glm::length(move) == 0 && getColliding()) {
+		F32 damping = 1.f - (0.075f * (deltaMS / 16.f));
+		mActor->setAngularVelocity(mActor->getAngularVelocity() * damping);
+	}
+
 	//Linear velocity relative to camera yaw (for capping)
 	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getLinearVelocity())[3]);
 	glm::vec3 torque = move;
