@@ -66,6 +66,9 @@ public:
 
 	void init();
 	virtual void render();
+
+	virtual glm::vec3 getScale();
+	virtual void setScale(const glm::vec3 &scale);
 };
 
 #endif

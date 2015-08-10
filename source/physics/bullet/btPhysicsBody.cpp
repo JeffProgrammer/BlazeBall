@@ -41,6 +41,9 @@ const glm::vec3 btPhysicsBody::getPosition() {
 const glm::quat btPhysicsBody::getRotation() {
 	return btConvert(mActor->getWorldTransform().getRotation());
 }
+const glm::vec3 btPhysicsBody::getScale() {
+	return btConvert(mActor->getCollisionShape()->getLocalScaling());
+}
 const glm::vec3 btPhysicsBody::getLinearVelocity() {
 	return btConvert(mActor->getLinearVelocity());
 }
@@ -63,6 +66,9 @@ void btPhysicsBody::setRotation(const glm::quat &rotation) {
 	btTransform worldTrans = mActor->getWorldTransform();
 	worldTrans.setRotation(btConvert(rotation));
 	mActor->setWorldTransform(worldTrans);
+}
+void btPhysicsBody::setScale(const glm::vec3 &scale) {
+	mActor->getCollisionShape()->setLocalScaling(btConvert(scale));
 }
 
 void btPhysicsBody::applyTorque(const glm::vec3 &torque) {
