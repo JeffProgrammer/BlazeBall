@@ -199,17 +199,20 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 
 	//Linear velocity relative to camera yaw (for capping)
 	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getLinearVelocity())[3]);
+	glm::vec3 torque = move;
 
 	//Don't let us go faster than 15 u/s in any direction.
-	if (move.x + linRel.x >  15.f) move.x = glm::max(0.f,  15.f - linRel.x);
-	if (move.y + linRel.y >  15.f) move.y = glm::max(0.f,  15.f - linRel.y);
+	if (torque.x + linRel.x >  15.f) torque.x = glm::max(0.f,  15.f - linRel.x);
+	if (torque.y + linRel.y >  15.f) torque.y = glm::max(0.f,  15.f - linRel.y);
 	//Same for backwards
-	if (move.x + linRel.x < -15.f) move.x = glm::min(0.f, -15.f - linRel.x);
-	if (move.y + linRel.y < -15.f) move.y = glm::min(0.f, -15.f - linRel.y);
+	if (torque.x + linRel.x < -15.f) torque.x = glm::min(0.f, -15.f - linRel.x);
+	if (torque.y + linRel.y < -15.f) torque.y = glm::min(0.f, -15.f - linRel.y);
+
+//	printf("%f %f", linRel.x, linRel.y);
 
 	//Torque is based on the movement and yaw
-	glm::vec3 torque = glm::vec3(glm::translate(delta, move)[3]);
-	applyForce(torque, glm::vec3(0, 0, 1));
+	glm::vec3 torqueRel = glm::vec3(glm::translate(delta, torque)[3]);
+	applyForce(torqueRel, glm::vec3(0, 0, 1));
 
 	//If we are colliding with the ground, we have the chance to jump
 	if (getColliding()) {
@@ -220,11 +223,13 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 			// jump but still taking the surface into account.
 			applyImpulse((normal + glm::vec3(0, 0, 1)) / 2.f * 7.5f, glm::vec3(0, 0, 0));
 		}
-//		printf("Colliding\n");
+		printf("Colliding\n");
 	} else {
+		glm::vec3 moveRel = glm::vec3(glm::translate(delta, move)[3]);
+
 		//If we're not touching the ground, apply slight air movement.
-//		applyForce(torque, glm::vec3(0, 0, 0));
-//		printf("Not colliding\n");
+		applyForce(moveRel * 2.5f, glm::vec3(0, 0, 0));
+		printf("Not colliding\n");
 	}
 }
 
