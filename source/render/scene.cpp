@@ -290,6 +290,8 @@ void Scene::run() {
 	Event *event;
 
 	F64 lastDelta = 0;
+	
+	F64 counter = 0;
 
 	//Main loop
 	while (running) {
@@ -321,9 +323,14 @@ void Scene::run() {
 
 		//Profiling
 		if (printFPS) {
-			F32 fps = static_cast<F32>(1.0 / (lastDelta / 1000.0));
-			std::string title = "FPS: " + std::to_string(fps) + " mspf: " + std::to_string(lastDelta);
-			window->setWindowTitle(title.c_str());
+			counter += lastDelta;
+			if (counter >= 1000.0) {
+				F32 fps = static_cast<F32>(1.0 / (lastDelta / 1000.0));
+				std::string title = "FPS: " + std::to_string(fps) + " mspf: " + std::to_string(lastDelta);
+				window->setWindowTitle(title.c_str());
+				
+				counter = 0.0;
+			}
 		}
 		
 		//Count how long a frame took
