@@ -39,6 +39,8 @@ public:
 	virtual void swapBuffers() = 0;
 	virtual void lockCursor(const bool &locked) = 0;
 	virtual void setWindowTitle(const char *title) = 0;
+	virtual void setVerticalSync(bool vsync) = 0;
+	virtual void toggleVsync() = 0;
 
 	virtual glm::ivec2 getWindowSize() = 0;
 	virtual bool pollEvents(Event *&event) = 0;

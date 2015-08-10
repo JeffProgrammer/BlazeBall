@@ -188,6 +188,7 @@ void Scene::handleEvent(Event *event) {
 					else
 						controlObject = camera;
 					break;
+				case KeyEvent::KEY_V: window->toggleVsync(); break;
 				case KeyEvent::KEY_Q: movement.fire = true; break;
 				default: break;
 			}
