@@ -196,23 +196,31 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	F32 modifier = 2.5f * timeMod;
 
 	move *= modifier;
+
+	//Linear and angular velocities relative to camera yaw (for capping)
 	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getLinearVelocity())[3]);
 	glm::vec3 angRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getAngularVelocity())[3]);
 
-	if (move.x + linRel.x > 15.f) {
-		move.x = glm::max(0.f, 15.f - linRel.x);
-	}
-	if (move.y + linRel.y > 15.f) {
-		move.y = glm::max(0.f, 15.f - linRel.y);
-	}
-	if (move.x + angRel.x > 75.f) {
-		move.x = glm::max(0.f, 75.f - angRel.x);
-	}
-	if (move.y + angRel.y > 75.f) {
-		move.y = glm::max(0.f, 75.f - angRel.y);
-	}
+	//Convert angular to a form relative to move
+	angRel = glm::vec3(angRel.y, -angRel.x, 0);
 
-//	printf("%f %f\n", glm::length(mActor->getAngularVelocity()), glm::length(mActor->getLinearVelocity()));
+	printf("%f %f | %f %f\n", linRel.x, linRel.y, angRel.x, angRel.y);
+	printf("%f %f > ", move.x, move.y);
+
+	//Don't let us go faster than 15 u/s in any direction.
+	if (move.x + linRel.x >  15.f) move.x = glm::max(0.f,  15.f - linRel.x);
+	if (move.y + linRel.y >  15.f) move.y = glm::max(0.f,  15.f - linRel.y);
+	//Same for backwards
+	if (move.x + linRel.x < -15.f) move.x = glm::min(0.f, -15.f - linRel.x);
+	if (move.y + linRel.y < -15.f) move.y = glm::min(0.f, -15.f - linRel.y);
+
+	//Don't let us spin faster than 75 u/s
+	if (move.x + angRel.x >  75.f) move.x = glm::max(0.f,  75.f - angRel.x);
+	if (move.y + angRel.y >  75.f) move.y = glm::max(0.f,  75.f - angRel.y);
+	if (move.x + angRel.x < -75.f) move.x = glm::min(0.f, -75.f - angRel.x);
+	if (move.y + angRel.y < -75.f) move.y = glm::min(0.f, -75.f - angRel.y);
+
+	printf("%f %f\n", move.x, move.y);
 
 	//Torque is based on the movement and yaw
 	glm::vec3 torque = glm::vec3(glm::translate(delta, move)[3]);
