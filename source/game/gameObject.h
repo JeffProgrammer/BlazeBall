@@ -43,18 +43,23 @@ class GameObject {
 protected:
 	glm::vec3 mOrigin;
 	glm::quat mRotation;
+	glm::vec3 mScale;
 	
 public:
-	GameObject() : mOrigin(glm::vec3(0)), mRotation(glm::quat()) {};
+	GameObject() : mOrigin(glm::vec3(0)), mRotation(glm::quat()), mScale(glm::vec3(1)) {};
 	virtual ~GameObject() {};
 
-	virtual void render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition);
+	virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix);
+	virtual void render();
 	
 	virtual glm::vec3 getPosition() { return mOrigin; }
 	virtual void setPosition(const glm::vec3 &position) { mOrigin = position; }
 
 	virtual glm::quat getRotation() { return mRotation; }
 	virtual void setPosition(const glm::quat &rotation) { mRotation = rotation; }
+
+	virtual glm::vec3 getScale() { return mScale; }
+	virtual void setScale(const glm::vec3 &scale) { mScale = scale; }
 
 	virtual void updateCamera(const Movement &movement, const F64 &deltaMS);
 	virtual void updateMove(const Movement &movement, const F64 &deltaMS);

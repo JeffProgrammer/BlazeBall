@@ -69,7 +69,7 @@ public:
 	Sphere(glm::vec3 origin, F32 radius);
 	virtual ~Sphere() {};
 
-	virtual void render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition);
+	virtual void render();
 	virtual glm::vec3 getPosition();
 	virtual glm::quat getRotation();
 

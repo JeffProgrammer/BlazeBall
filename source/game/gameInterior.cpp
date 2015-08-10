@@ -28,6 +28,7 @@
 
 #include "game/gameInterior.h"
 #include "base/io.h"
+#include "physics/physicsBody.h"
 #include "render/bitmap/texture.h"
 #include <string>
 #include <cfloat>
@@ -146,3 +147,10 @@ U32 GameInterior::rayCast(RayF ray) {
 	return closest;
 }
 
+
+glm::vec3 GameInterior::getScale() {
+	return mActor->getScale();
+}
+void GameInterior::setScale(const glm::vec3 &scale) {
+	mActor->setScale(scale);
+}

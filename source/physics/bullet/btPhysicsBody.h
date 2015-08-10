@@ -42,12 +42,14 @@ public:
 	virtual const F32 getMass();
 	virtual const glm::vec3 getPosition();
 	virtual const glm::quat getRotation();
+	virtual const glm::vec3 getScale();
 	virtual const glm::vec3 getLinearVelocity();
 	virtual const glm::vec3 getAngularVelocity();
 
 	virtual void setMass(const F32 &mass);
 	virtual void setPosition(const glm::vec3 &position);
 	virtual void setRotation(const glm::quat &rotation);
+	virtual void setScale(const glm::vec3 &scale);
     virtual void setVelocity(const glm::vec3 &velocity);
     virtual void setAngularVelocity(const glm::vec3 &velocity);
 

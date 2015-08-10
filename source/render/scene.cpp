@@ -67,7 +67,10 @@ void Scene::render() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	for (auto object : objects) {
-		object->render(projectionMatrix, viewMatrix, GLLocations.modelMatrix);
+		glm::mat4 modelMatrix(1);
+		object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
+		glUniformMatrix4fv(GLLocations.modelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
+		object->render();
 	}
 }
 
@@ -185,6 +188,7 @@ void Scene::handleEvent(Event *event) {
 					else
 						controlObject = camera;
 					break;
+				case KeyEvent::KEY_V: window->toggleVsync(); break;
 				case KeyEvent::KEY_Q: movement.fire = true; break;
 				default: break;
 			}
@@ -287,6 +291,8 @@ void Scene::run() {
 	Event *event;
 
 	F64 lastDelta = 0;
+	
+	F64 counter = 0;
 
 	//Main loop
 	while (running) {
@@ -318,9 +324,14 @@ void Scene::run() {
 
 		//Profiling
 		if (printFPS) {
-			F32 fps = static_cast<F32>(1.0 / (lastDelta / 1000.0));
-			std::string title = "FPS: " + std::to_string(fps) + " mspf: " + std::to_string(lastDelta);
-			window->setWindowTitle(title.c_str());
+			counter += lastDelta;
+			if (counter >= 1000.0) {
+				F32 fps = static_cast<F32>(1.0 / (lastDelta / 1000.0));
+				std::string title = "FPS: " + std::to_string(fps) + " mspf: " + std::to_string(lastDelta);
+				window->setWindowTitle(title.c_str());
+				
+				counter = 0.0;
+			}
 		}
 		
 		//Count how long a frame took

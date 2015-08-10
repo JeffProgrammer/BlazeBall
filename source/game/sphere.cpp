@@ -95,10 +95,7 @@ void Sphere::generate() {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * point, &points[0], GL_STATIC_DRAW);
 }
 
-void Sphere::render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition) {
-	//Set up matrices
-	GameObject::render(projectionMatrix, viewMatrix, modelMatrixPosition);
-
+void Sphere::render() {
 	if (!renderBuffer)
 		generate();
 
@@ -199,27 +196,29 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	F32 modifier = 2.5f * timeMod;
 
 	move *= modifier;
+
+	//Crappy damping
+	if (glm::length(move) == 0 && getColliding()) {
+		F32 damping = 1.f - (0.075f * (deltaMS / 16.f));
+		mActor->setAngularVelocity(mActor->getAngularVelocity() * damping);
+	}
+
+	//Linear velocity relative to camera yaw (for capping)
 	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getLinearVelocity())[3]);
-	glm::vec3 angRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getAngularVelocity())[3]);
+	glm::vec3 torque = move;
 
-	if (move.x + linRel.x > 15.f) {
-		move.x = glm::max(0.f, 15.f - linRel.x);
-	}
-	if (move.y + linRel.y > 15.f) {
-		move.y = glm::max(0.f, 15.f - linRel.y);
-	}
-	if (move.x + angRel.x > 75.f) {
-		move.x = glm::max(0.f, 75.f - angRel.x);
-	}
-	if (move.y + angRel.y > 75.f) {
-		move.y = glm::max(0.f, 75.f - angRel.y);
-	}
+	//Don't let us go faster than 15 u/s in any direction.
+	if (torque.x + linRel.x >  15.f) torque.x = glm::max(0.f,  15.f - linRel.x);
+	if (torque.y + linRel.y >  15.f) torque.y = glm::max(0.f,  15.f - linRel.y);
+	//Same for backwards
+	if (torque.x + linRel.x < -15.f) torque.x = glm::min(0.f, -15.f - linRel.x);
+	if (torque.y + linRel.y < -15.f) torque.y = glm::min(0.f, -15.f - linRel.y);
 
-//	printf("%f %f\n", glm::length(mActor->getAngularVelocity()), glm::length(mActor->getLinearVelocity()));
+//	printf("%f %f", linRel.x, linRel.y);
 
 	//Torque is based on the movement and yaw
-	glm::vec3 torque = glm::vec3(glm::translate(delta, move)[3]);
-	applyForce(torque, glm::vec3(0, 0, 1));
+	glm::vec3 torqueRel = glm::vec3(glm::translate(delta, torque)[3]);
+	applyForce(torqueRel, glm::vec3(0, 0, 1));
 
 	//If we are colliding with the ground, we have the chance to jump
 	if (getColliding()) {
@@ -230,11 +229,13 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 			// jump but still taking the surface into account.
 			applyImpulse((normal + glm::vec3(0, 0, 1)) / 2.f * 7.5f, glm::vec3(0, 0, 0));
 		}
-//		printf("Colliding\n");
+		printf("Colliding\n");
 	} else {
+		glm::vec3 moveRel = glm::vec3(glm::translate(delta, move)[3]);
+
 		//If we're not touching the ground, apply slight air movement.
-//		applyForce(torque, glm::vec3(0, 0, 0));
-//		printf("Not colliding\n");
+		applyForce(moveRel * 2.5f, glm::vec3(0, 0, 0));
+		printf("Not colliding\n");
 	}
 }
 

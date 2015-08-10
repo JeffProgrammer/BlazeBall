@@ -71,9 +71,8 @@ bool SDLWindow::createContext() {
 	}
 
 	//Use Vsync
-	if (SDL_GL_SetSwapInterval(1) < 0)
-		return false;
-
+	setVerticalSync(true);
+	
 	//Lock cursor
 	lockCursor(true);
 
@@ -94,6 +93,15 @@ void SDLWindow::lockCursor(const bool &locked) {
 
 void SDLWindow::setWindowTitle(const char *title) {
 	SDL_SetWindowTitle(window, title);
+}
+
+void SDLWindow::setVerticalSync(bool vsync) {
+	mVsync = vsync;
+	SDL_GL_SetSwapInterval(vsync ? 1 : 0);
+}
+
+void SDLWindow::toggleVsync() {
+	setVerticalSync(!mVsync);
 }
 
 glm::ivec2 SDLWindow::getWindowSize() {

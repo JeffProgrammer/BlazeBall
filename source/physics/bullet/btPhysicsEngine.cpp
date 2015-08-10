@@ -41,18 +41,6 @@ std::vector<ShapeInfo> shapes;
 std::vector<BodyInfo> bodies;
 std::vector<BodyMovement> moves;
 
-bool contactAdded(btManifoldPoint& cp,
-				  const btCollisionObjectWrapper* colObj0Wrap,
-				  int partId0,
-				  int index0,
-				  const btCollisionObjectWrapper* colObj1Wrap,
-				  int partId1,
-				  int index1) {
-
-	//btAdjustInternalEdgeContacts(cp,colObj1Wrap,colObj0Wrap, partId1,index1);
-	return true;
-}
-
 // This is where the FUN begins.
 // dear god I hope I can multithread this shit.
 void contactStarted(btPersistentManifold* const &manifold) {
@@ -66,18 +54,18 @@ void contactStarted(btPersistentManifold* const &manifold) {
 }
 
 void physicsWorldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
-    btDispatcher *dispatcher = world->getDispatcher();
+    //btDispatcher *dispatcher = world->getDispatcher();
     
-    S32 numManifolds = dispatcher->getNumManifolds();
-    for (S32 i = 0; i < numManifolds; i++) {
-        btPersistentManifold *manifold = dispatcher->getManifoldByIndexInternal(i);
+    //S32 numManifolds = dispatcher->getNumManifolds();
+    //for (S32 i = 0; i < numManifolds; i++) {
+        //btPersistentManifold *manifold = dispatcher->getManifoldByIndexInternal(i);
         // This is a callback ya know, we can do physics script callbacks in here.
         
         // clear manifold cache so it has to regenerate every tick. I know this doesn't
         // help performance but we need this for detecting real time collisions multiple times
         // so that we can ignore them.
 //        manifold->clearManifold();
-    }
+    //}
 }
 
 btPhysicsEngine::btPhysicsEngine() : PhysicsEngine() {
@@ -93,9 +81,8 @@ void btPhysicsEngine::init() {
 	world = new btDiscreteDynamicsWorld(dispatcher, interface, solver, configuration);
 	world->setGravity(btVector3(0, 0, -20.0f));
 
-	//gContactAddedCallback = contactAdded;
     gContactStartedCallback = contactStarted;
-    world->setInternalTickCallback(physicsWorldTickCallback);
+    //world->setInternalTickCallback(physicsWorldTickCallback);
 	running = true;
 }
 
