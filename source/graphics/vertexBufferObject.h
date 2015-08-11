@@ -25,3 +25,49 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
+
+#ifndef _GRAPHICS_VERTEXBUFFEROBJECT_H_
+#define _GRAPHICS_VERTEXBUFFEROBJECT_H_
+
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/gl3.h>
+#include "base/types.h"
+
+enum BufferType {
+	NONE,
+	STATIC,
+	STREAM
+};
+
+namespace GLUtil {
+	inline GLenum convertBufferType(BufferType type) {
+		switch (type) {
+			case STATIC: return GL_STATIC_DRAW;
+			case STREAM: return GL_STREAM_DRAW;
+		}
+		return GL_ZERO;
+	}
+}
+
+class VertexBufferObject {
+public:
+	VertexBufferObject();
+	
+	~VertexBufferObject();
+	
+	void submit(const Triangle *triangles, const U32 numTriangles);
+	
+	void bind();
+	
+	static inline void unbind() {
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+	
+	void setBufferType(BufferType type);
+	
+private:
+	GLuint mVBO;
+	BufferType mBufferType;
+};
+
+#endif // _GRAPHICS_VERTEXBUFFEROBJECT_H_

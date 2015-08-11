@@ -25,3 +25,38 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
+
+#include "graphics/vertexBufferObject.h"
+
+VertexBufferObject::VertexBufferObject() {
+	mVBO = 0;
+	mBufferType = BufferType::NONE;
+}
+
+VertexBufferObject::~VertexBufferObject() {
+	if (glIsBuffer(mVBO))
+		glDeleteBuffers(1, &mVBO);
+}
+
+void VertexBufferObject::submit(const Triangle *triangles, const U32 numTriangles) {
+	glGenBuffers(1, &mVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+	
+	GLenum bufferType = GLUtil::convertBufferType(mBufferType);
+	// TODO: assert fatal here if bufferType is GL_NONE
+	
+	// upload to the gpu
+	glBufferData(GL_ARRAY_BUFFER, numTriangles, &triangles, bufferType);
+	
+	// finished uploading data to the GL
+	unbind();
+}
+
+void VertexBufferObject::bind() {
+	// TODO: asset fatal here if mVBO is 0
+	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+}
+
+void VertexBufferObject::setBufferType(BufferType type) {
+	mBufferType = type;
+}
