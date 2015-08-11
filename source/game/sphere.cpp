@@ -35,11 +35,20 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), maxAngVel(1000.0f), material(nullptr), renderBuffer(0) {
+Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), maxAngVel(1000.0f), material(nullptr), mVBO(nullptr) {
 	mActor = PhysicsEngine::getEngine()->createSphere(radius);
 	mActor->setPosition(origin);
 	mActor->setMass(1.0f);
 	PhysicsEngine::getEngine()->addBody(mActor);
+	
+	mVBO = new VertexBufferObject();
+	mVBO->setBufferType(BufferType::STATIC);
+	
+	firstDraw = false;
+}
+
+Sphere::~Sphere() {
+	delete mVBO;
 }
 
 void Sphere::generate() {
@@ -90,14 +99,14 @@ void Sphere::generate() {
 	}
 
 	//Generate a buffer
-	glGenBuffers(1, &renderBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, renderBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * point, &points[0], GL_STATIC_DRAW);
+	mVBO->submit(&points[0], point);
 }
 
 void Sphere::render() {
-	if (!renderBuffer)
+	if (!firstDraw) {
 		generate();
+		firstDraw = true;
+	}
 
 	if (material) {
 		material->activate();
@@ -107,13 +116,14 @@ void Sphere::render() {
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
 	glEnableVertexAttribArray(4);
-	glBindBuffer(GL_ARRAY_BUFFER, renderBuffer);
+	mVBO->bind();
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, point));
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, uv));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, tangent));
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, bitangent));
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
+	mVBO->unbind();
 	glDisableVertexAttribArray(4);
 	glDisableVertexAttribArray(3);
 	glDisableVertexAttribArray(2);

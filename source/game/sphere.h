@@ -40,6 +40,7 @@
 #include "base/types.h"
 #include "physics/physicsBody.h"
 #include "render/material.h"
+#include "graphics/vertexBufferObject.h"
 #include "game/movement.h"
 #include <glm/matrix.hpp>
 
@@ -52,7 +53,8 @@ public:
 	F32 maxAngVel;
 	Material *material;
 
-	GLuint renderBuffer;
+	VertexBufferObject *mVBO;
+	bool firstDraw;
 
 	F32 cameraYaw;
 	F32 cameraPitch;
@@ -67,7 +69,7 @@ private:
 
 public:
 	Sphere(glm::vec3 origin, F32 radius);
-	virtual ~Sphere() {};
+	virtual ~Sphere();
 
 	virtual void render();
 	virtual glm::vec3 getPosition();

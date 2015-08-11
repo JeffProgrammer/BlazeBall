@@ -38,7 +38,13 @@ VertexBufferObject::~VertexBufferObject() {
 	glDeleteBuffers(1, &mVBO);
 }
 
-void VertexBufferObject::submit(const Triangle *triangles, const U32 numTriangles) {
+void VertexBufferObject::bind() {
+	assert(mVBO != 0);
+	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+}
+
+
+void VertexBufferObject::submit(const Triangle *data, const U32 count) {
 	glGenBuffers(1, &mVBO);
 	
 	// bind this buffer
@@ -48,15 +54,26 @@ void VertexBufferObject::submit(const Triangle *triangles, const U32 numTriangle
 	assert(bufferType != GL_ZERO);
 	
 	// upload to the gpu
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * numTriangles, triangles, bufferType);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * count, data, bufferType);
 	
 	// finished uploading data to the GL
 	unbind();
 }
 
-void VertexBufferObject::bind() {
-	assert(mVBO != 0);
-	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+void VertexBufferObject::submit(const Vertex *data, const U32 count) {
+	glGenBuffers(1, &mVBO);
+	
+	// bind this buffer
+	bind();
+	
+	GLenum bufferType = GLUtil::convertBufferType(mBufferType);
+	assert(bufferType != GL_ZERO);
+	
+	// upload to the gpu
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * count, data, bufferType);
+	
+	// finished uploading data to the GL
+	unbind();
 }
 
 void VertexBufferObject::setBufferType(BufferType type) {

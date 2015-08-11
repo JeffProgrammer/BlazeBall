@@ -55,11 +55,12 @@ public:
 	
 	~VertexBufferObject();
 	
-	void submit(const Triangle *triangles, const U32 numTriangles);
+	void submit(const Triangle *data, const U32 count);
+	void submit(const Vertex *data, const U32 count);
 	
 	void bind();
 	
-	static inline void unbind() {
+	void unbind() {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	

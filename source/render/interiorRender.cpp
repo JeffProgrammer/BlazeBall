@@ -207,7 +207,7 @@ void GameInterior::render() {
 		}
 	}
 
-	VertexBufferObject::unbind();
+	mVbo->unbind();
 	
 	//Disable arrays
 	glDisableVertexAttribArray(4);
