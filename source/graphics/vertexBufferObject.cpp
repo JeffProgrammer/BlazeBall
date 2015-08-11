@@ -40,13 +40,15 @@ VertexBufferObject::~VertexBufferObject() {
 
 void VertexBufferObject::submit(const Triangle *triangles, const U32 numTriangles) {
 	glGenBuffers(1, &mVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+	
+	// bind this buffer
+	bind();
 	
 	GLenum bufferType = GLUtil::convertBufferType(mBufferType);
 	assert(bufferType != GL_ZERO);
 	
 	// upload to the gpu
-	glBufferData(GL_ARRAY_BUFFER, numTriangles, &triangles, bufferType);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * numTriangles, triangles, bufferType);
 	
 	// finished uploading data to the GL
 	unbind();

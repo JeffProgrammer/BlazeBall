@@ -35,6 +35,12 @@
 
 GameInterior::GameInterior(DIF::Interior interior) : GameObject(), mInterior(interior) {
 	renderInfo.generated = false;
+	mVbo = new VertexBufferObject();
+	mVbo->setBufferType(BufferType::STATIC);
+}
+
+GameInterior::~GameInterior() {
+	delete mVbo;
 }
 
 void GameInterior::generateMaterials(std::string directory) {

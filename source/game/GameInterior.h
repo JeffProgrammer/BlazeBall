@@ -34,6 +34,7 @@
 #include "physics/physicsEngine.h"
 #include "game/gameObject.h"
 #include "base/ray.h"
+#include "graphics/vertexBufferObject.h"
 
 #include <dif/objects/interior.h>
 #include <vector>
@@ -47,15 +48,16 @@ private:
 	PhysicsBody *mActor;
 	
 	struct RenderInfo {
-		GLuint vertexBuffer;
 		std::vector<U32> numMaterialTriangles;
 		bool generated;
 	};
 	RenderInfo renderInfo;
+	
+	VertexBufferObject *mVbo;
 
 public:
 	GameInterior(DIF::Interior interior);
-	virtual ~GameInterior() {};
+	virtual ~GameInterior();
 	
 	void generateMaterials(std::string directory);
 	void generateMesh();
