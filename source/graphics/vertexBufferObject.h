@@ -44,8 +44,8 @@ namespace GLUtil {
 		switch (type) {
 			case STATIC: return GL_STATIC_DRAW;
 			case STREAM: return GL_STREAM_DRAW;
+			default: return GL_ZERO;
 		}
-		return GL_ZERO;
 	}
 }
 
