@@ -217,6 +217,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/SDL2/include
 	thirdparty
 	dif/include
+	thirdparty/v8/include
 )
 
 # Main project source
@@ -294,6 +295,10 @@ set (DIFVIEWERGAME_SRC
 	source/render/scene.h
 	source/render/shader.cpp
 	source/render/shader.h
+
+	# Scripting folder
+	source/scripting/scriptEngine.cpp
+	source/scripting/scriptEngine.h
 )
 
 set (DIFVIEWERGAME_LIBRARIES
@@ -318,6 +323,14 @@ set (DIFVIEWERGAME_LIBRARIES
 
 	# DIF
 	Dif
+
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libicudata.a
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libicui18n.a
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libicuuc.a
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_base.a
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_libbase.a
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_libplatform.a
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_snapshot.a
 )
 
 include_directories(include ${DIFVIEWERGAME_INCLUDEDIR})
@@ -339,6 +352,7 @@ source_group("game\\physics\\bullet" REGULAR_EXPRESSION bullet/.*)
 source_group("platform"              REGULAR_EXPRESSION platform/.*)
 source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
 source_group("graphics"              REGULAR_EXPRESSION graphics/.*)
+source_group("scripting"             REGULAR_EXPRESSION scripting/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
