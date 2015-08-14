@@ -35,30 +35,29 @@
 
 #include "physics/bullet/btPhysicsEngine.h"
 
-int main(int argc, const char * argv[])
-{
-	ScriptingEngine *scripting = new ScriptingEngine();
+int main(int argc, char *argv[]) {
+	//Create us a new scene
+	Scene *scene = Scene::getSingleton();
 
+	//Create the scripting engine
+	ScriptingEngine *scripting = new ScriptingEngine();
+	scene->mEngine = scripting;
+
+	//Load up the scope and context of the scripting system
 	SCRIPT_CREATE_SCOPE(scripting->isolate);
 	scripting->createContext();
 	SCRIPT_CREATE_CONTEXT(scripting->context);
 
+	//Load the physics engine
 	PhysicsEngine::setEngine(new btPhysicsEngine());
-	Scene *scene = Scene::getSingleton();
 
-	//Init SDL and go!
+	//Init SDL
 	scene->window = new SDLWindow();
 	scene->mTimer = new SDLTimer();
-	scene->mEngine = scripting;
 
 	scripting->runScriptFile("main.js");
 
-	//Lame way of creating an array of arguments.
-	//TODO: Use v8 objects
-	scripting->runScript("args = [];");
-	for (U32 i = 0; i < argc; i ++) {
-		scripting->runScript(std::string("args.push(\"") + argv[i] + "\");");
-	}
+	v8::V8::SetFlagsFromCommandLine(&argc, argv, false);
 	scripting->runScript("parseArgs(args);");
 
 	//Start it up
