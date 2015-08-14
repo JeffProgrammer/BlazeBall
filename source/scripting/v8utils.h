@@ -59,6 +59,20 @@ namespace V8Utils {
 		return *value ? *value : "<string conversion failed>";
 	}
 
+	template<>
+	inline std::string v8convert(const v8::Local<v8::String> &value) {
+		char *buffer = new char[value->Length() + 1];
+		value->WriteUtf8(buffer);
+		std::string ret(buffer);
+		delete [] buffer;
+		return ret;
+	}
+
+	template<>
+	inline const char *v8convert(const v8::Local<v8::String> &value) {
+		return v8convert<v8::Local<v8::String>, std::string>(value).c_str();
+	}
+
 	//Convert a c string into a v8 string
 	template<>
 	inline v8::Local<v8::String> v8convert(v8::Isolate *isolate, const char *value) {
@@ -67,7 +81,7 @@ namespace V8Utils {
 
 	template<>
 	inline std::string v8convert(const v8::String::Utf8Value &value) {
-		return std::string(v8convert<const v8::String::Utf8Value &, const char *>(value));
+		return std::string(v8convert<v8StrValue, const char *>(value));
 	}
 
 	template<>
@@ -75,26 +89,31 @@ namespace V8Utils {
 		return v8::String::NewFromUtf8(isolate, value.c_str());
 	}
 
+	template<>
+	inline v8::Local<v8::String> v8convert(v8::Isolate *isolate, std::string value) {
+		return v8::String::NewFromUtf8(isolate, value.c_str());
+	}
+
 	inline void ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch) {
 		v8::HandleScope handle_scope(isolate);
-		v8::String::Utf8Value exception(try_catch->Exception());
-		const char* exception_string = v8convert<v8::String::Utf8Value, const char *>(exception);
+		v8::Local<v8::String> exception = try_catch->Exception()->ToString(isolate);
+		std::string exception_string = v8convert<v8::Local<v8::String>, std::string>(exception);
 		v8::Local<v8::Message> message = try_catch->Message();
 		if (message.IsEmpty()) {
 			// V8 didn't provide any extra information about this error; just
 			// print the exception.
-			fprintf(stderr, "%s\n", exception_string);
+			fprintf(stderr, "%s\n", exception_string.c_str());
 		} else {
 			// Print (filename):(line number): (message).
-			v8::String::Utf8Value filename(message->GetScriptOrigin().ResourceName());
+			v8::Local<v8::String> filename = message->GetScriptOrigin().ResourceName()->ToString(isolate);
 			v8::Local<v8::Context> context(isolate->GetCurrentContext());
-			const char* filename_string = v8convert<v8::String::Utf8Value, const char *>(filename);
+			std::string filename_string = v8convert<v8::Local<v8::String>, std::string>(filename);
 			int linenum = message->GetLineNumber(context).FromJust();
-			fprintf(stderr, "%s:%i: %s\n", filename_string, linenum, exception_string);
+			fprintf(stderr, "%s:%i: %s\n", filename_string.c_str(), linenum, exception_string.c_str());
 			// Print line of source code.
-			v8::String::Utf8Value sourceline(message->GetSourceLine(context).ToLocalChecked());
-			const char* sourceline_string = v8convert<v8::String::Utf8Value, const char *>(sourceline);
-			fprintf(stderr, "%s\n", sourceline_string);
+			v8::Local<v8::String> sourceline = message->GetSourceLine(context).ToLocalChecked()->ToString(isolate);
+			std::string sourceline_string = v8convert<v8::Local<v8::String>, std::string>(sourceline);
+			fprintf(stderr, "%s\n", sourceline_string.c_str());
 			// Print wavy underline (GetUnderline is deprecated).
 			int start = message->GetStartColumn(context).FromJust();
 			for (int i = 0; i < start; i++) {
@@ -105,10 +124,10 @@ namespace V8Utils {
 				fprintf(stderr, "^");
 			}
 			fprintf(stderr, "\n");
-			v8::String::Utf8Value stack_trace(try_catch->StackTrace(context).ToLocalChecked());
-			if (stack_trace.length() > 0) {
-				const char* stack_trace_string = v8convert<v8::String::Utf8Value, const char *>(stack_trace);
-				fprintf(stderr, "%s\n", stack_trace_string);
+			v8::Local<v8::String> stack_trace = try_catch->StackTrace(context).ToLocalChecked()->ToString(isolate);
+			if (stack_trace->Length() > 0) {
+				std::string stack_trace_string = v8convert<v8::Local<v8::String>, std::string>(stack_trace);
+				fprintf(stderr, "%s\n", stack_trace_string.c_str());
 			}
 		}
 	}

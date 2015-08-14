@@ -299,6 +299,8 @@ set (DIFVIEWERGAME_SRC
 	# Scripting folder
 	source/scripting/scriptEngine.cpp
 	source/scripting/scriptEngine.h
+	source/scripting/v8utils.cpp
+	source/scripting/v8utils.h
 )
 
 set (DIFVIEWERGAME_LIBRARIES
@@ -331,6 +333,7 @@ set (DIFVIEWERGAME_LIBRARIES
 	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_libbase.a
 	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_libplatform.a
 	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_snapshot.a
+	/usr/lib/libstdc++.6.dylib
 )
 
 include_directories(include ${DIFVIEWERGAME_INCLUDEDIR})

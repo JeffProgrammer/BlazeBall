@@ -30,16 +30,21 @@
 #define scriptEngine_h
 
 #include <base/types.h>
+#include "v8utils.h"
 
-struct V8State;
+using namespace v8;
+
 class ScriptingEngine {
 protected:
-	V8State *mState;
+	Isolate *isolate;
+	Global<ObjectTemplate> global;
+	Global<Context> context;
+
 public:
 	ScriptingEngine();
 	~ScriptingEngine();
 
-	bool runScript(const std::string &script, std::string &output);
+	bool runScript(const std::string &, std::string &);
 
 	void initContext();
 	void destroyContext();

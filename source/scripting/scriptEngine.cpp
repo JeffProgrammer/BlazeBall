@@ -27,101 +27,74 @@
 //------------------------------------------------------------------------------
 
 #include "scriptEngine.h"
-#include "v8utils.h"
-
-using namespace v8;
-
-struct V8State {
-	V8State() {
-		mInitialized = false;
-	}
-
-	bool mInitialized;
-	Platform *mPlatform;
-	Isolate *mGlobalIsolate;
-	Local<ObjectTemplate> mGlobalObject;
-	Local<Context> mGlobalContext;
-	Context::Scope *mGlobalScope;
-
-	bool getInitialized() { return mInitialized; }
-	Isolate *getIsolate() { return mGlobalIsolate; }
-	const Local<ObjectTemplate> &getGlobal() { return mGlobalObject; }
-	const Local<Context> &getContext() { return mGlobalContext; }
-	Context::Scope *getScope() { return mGlobalScope; }
-};
-
 ScriptingEngine::ScriptingEngine() {
-	mState = new V8State;
 }
 ScriptingEngine::~ScriptingEngine() {
-	delete mState;
-}
-
-bool ScriptingEngine::runScript(const std::string &script, std::string &output) {
-	if (!mState->getInitialized()) {
-		initContext();
-	}
-
-	// Create a string containing the JavaScript source code.
-	Local<String> source = V8Utils::v8convert<std::string, Local<String>>(mState->getIsolate(), script);
-
-	// Compile the source code.
-	Local<Script> compiled;
-	TryCatch try_catch(mState->getIsolate());
-
-	if (!Script::Compile(mState->getContext(), source).ToLocal(&compiled)) {
-		V8Utils::ReportException(mState->getIsolate(), &try_catch);
-		return false;
-	} else {
-		// Run the script to get the result.
-		Local<Value> result;
-		if (!compiled->Run(mState->getContext()).ToLocal(&result)) {
-			V8Utils::ReportException(mState->getIsolate(), &try_catch);
-			return false;
-		} else {
-			// Convert the result to an UTF8 string and print it.
-			String::Utf8Value utf8(result);
-			output = V8Utils::v8convert<V8Utils::v8StrValue, std::string>(utf8);
-			return true;
-		}
-	}
 }
 
 void ScriptingEngine::initContext() {
 	// Initialize V8.
 	V8::InitializeICU();
-	mState->mPlatform = platform::CreateDefaultPlatform();
-	V8::InitializePlatform(mState->mPlatform);
+	Platform *platform = platform::CreateDefaultPlatform();
+	V8::InitializePlatform(platform);
 	V8::Initialize();
-
-	mState->mInitialized = true;
 
 	// Create a new Isolate and make it the current one.
 	ArrayBufferAllocator allocator;
 	Isolate::CreateParams create_params;
 	create_params.array_buffer_allocator = &allocator;
-	mState->mGlobalIsolate = Isolate::New(create_params);
-	Isolate::Scope isolate_scope(mState->getIsolate());
+	isolate = Isolate::New(create_params);
+
+	Isolate::Scope isolate_scope(isolate);
 
 	// Create a stack-allocated handle scope.
-	HandleScope handle_scope(mState->getIsolate());
+	HandleScope handle_scope(isolate);
 
-	mState->mGlobalObject = ObjectTemplate::New(mState->getIsolate());
+	//This needs to be in two separate things so it can be copied into global
+	Local<ObjectTemplate> olocal = ObjectTemplate::New(isolate);
+	global = Global<ObjectTemplate>(isolate, olocal);
+
 	//TODO: add functions
 
-	// Create a new context.
-	mState->mGlobalContext = Context::New(mState->getIsolate(), NULL, mState->getGlobal());
+	//Two lines, same as above
+	Local<Context> clocal = Context::New(isolate, NULL, global.Get(isolate));
+	context = Global<Context>(isolate, clocal);
+}
+
+bool ScriptingEngine::runScript(const std::string &script, std::string &output) {
+	// Create a stack-allocated handle scope.
+	HandleScope handle_scope(isolate);
 
 	// Enter the context for compiling and running the hello world script.
-	mState->mGlobalScope = new Context::Scope(mState->getContext());
-}
-void ScriptingEngine::destroyContext() {
-	delete mState->mGlobalScope;
+	Context::Scope global_scope(context.Get(isolate));
 
-	// Dispose the isolate and tear down V8.
-	mState->mGlobalIsolate->Dispose();
+	Local<String> source = V8Utils::v8convert<std::string, Local<String>>(isolate, script);
+
+	// Compile the source code.
+	Local<Script> compiled;
+	TryCatch try_catch(isolate);
+
+	if (!Script::Compile(context.Get(isolate), source).ToLocal(&compiled)) {
+		V8Utils::ReportException(isolate, &try_catch);
+		return false;
+	} else {
+		// Run the script to get the result.
+		Local<Value> result;
+		if (!compiled->Run(context.Get(isolate)).ToLocal(&result)) {
+			V8Utils::ReportException(isolate, &try_catch);
+			return false;
+		} else {
+			// Convert the result to an UTF8 string and print it.
+			Local<String> utf8 = result->ToString(isolate);
+			output = V8Utils::v8convert<Local<String>, std::string>(utf8);
+			return true;
+		}
+	}
+	return false;
+}
+
+void ScriptingEngine::destroyContext() {
 	V8::Dispose();
 	V8::ShutdownPlatform();
-	delete mState->mPlatform;
 }
 

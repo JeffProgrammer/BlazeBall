@@ -31,9 +31,9 @@
 #include "platformSDL/SDLTimer.h"
 #include "render/scene.h"
 #include "game/gameInterior.h"
+#include "scripting/scriptEngine.h"
 
 #include "physics/bullet/btPhysicsEngine.h"
-
 
 int main(int argc, const char * argv[])
 {
@@ -42,6 +42,9 @@ int main(int argc, const char * argv[])
 		printf("Usage: %s <files ...>\n", argv[0]);
 		return 1;
 	}
+
+	ScriptingEngine *scripting = new ScriptingEngine();
+	scripting->initContext();
 
 	PhysicsEngine::setEngine(new btPhysicsEngine());
 	Scene *scene = Scene::getSingleton();
@@ -69,6 +72,8 @@ int main(int argc, const char * argv[])
 	scene->window = new SDLWindow();
 	scene->mTimer = new SDLTimer();
 	scene->run();
+
+	scripting->destroyContext();
 
 	return 0;
 }
