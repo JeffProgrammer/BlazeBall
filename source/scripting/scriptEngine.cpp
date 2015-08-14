@@ -33,13 +33,19 @@ ScriptingEngine::ScriptingEngine() {
 	Platform *platform = platform::CreateDefaultPlatform();
 	V8::InitializePlatform(platform);
 	V8::Initialize();
+
+	// Create a new Isolate and make it the current one.
+	ArrayBufferAllocator *allocator = new ArrayBufferAllocator;
+	Isolate::CreateParams create_params;
+	create_params.array_buffer_allocator = allocator;
+	isolate = Isolate::New(create_params);
 }
 ScriptingEngine::~ScriptingEngine() {
 	V8::Dispose();
 	V8::ShutdownPlatform();
 }
 
-Local<Context> ScriptingEngine::createContext(Isolate *isolate) {
+void ScriptingEngine::createContext() {
 	//This needs to be in two separate things so it can be copied into global
 	Local<ObjectTemplate> otemp = ObjectTemplate::New(isolate);
 
@@ -55,15 +61,15 @@ Local<Context> ScriptingEngine::createContext(Isolate *isolate) {
 	}
 
 	//Two lines, same as above
-	return Context::New(isolate, NULL, otemp);
+	context =  Context::New(isolate, NULL, otemp);
 }
 
-bool ScriptingEngine::runScript(Isolate *isolate, Local<Context> context,const std::string &script) {
+bool ScriptingEngine::runScript(const std::string &script) {
 	std::string temp; //So we can satisfy the method below; ignored
-	return runScript(isolate, context, script, temp);
+	return runScript(script, temp);
 }
 
-bool ScriptingEngine::runScript(Isolate *isolate, Local<Context> context,const std::string &script, std::string &output) {
+bool ScriptingEngine::runScript(const std::string &script, std::string &output) {
 	Local<String> source = V8Utils::v8convert<std::string, Local<String>>(isolate, script);
 
 	// Compile the source code.

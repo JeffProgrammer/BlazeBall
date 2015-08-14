@@ -37,15 +37,17 @@ using namespace v8;
 class ScriptingEngine {
 protected:
 	std::map<std::string, void(*)(const FunctionCallbackInfo<Value> &)> functions;
-
 public:
+	Isolate *isolate;
+	Local<Context> context;
+
 	ScriptingEngine();
 	~ScriptingEngine();
 
-	bool runScript(Isolate *isolate, Local<Context> context, const std::string &);
-	bool runScript(Isolate *isolate, Local<Context> context, const std::string &, std::string &);
+	bool runScript(const std::string &);
+	bool runScript(const std::string &, std::string &);
 	void addFunction(const std::string &name, void(*callback)(const FunctionCallbackInfo<Value> &));
-	Local<Context> createContext(Isolate *isolate);
+	void createContext();
 };
 
 #endif
