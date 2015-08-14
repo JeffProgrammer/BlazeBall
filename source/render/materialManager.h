@@ -26,77 +26,45 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef sphere_h
-#define sphere_h
+#ifndef _RENDER_MATERIALMANAGER_H_
+#define _RENDER_MATERIALMANAGER_H_
 
 #include <stdio.h>
 #include <vector>
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/glew.h>
-#endif
-#include "gameObject.h"
 #include "base/types.h"
-#include "physics/physicsBody.h"
+#include "bitmap/texture.h"
+#include "graphics/shader.h"
 #include "render/material.h"
-#include "graphics/vertexBufferObject.h"
-#include "game/movement.h"
-#include <glm/matrix.hpp>
 
-class Sphere : public GameObject {
-protected:
-	std::vector<glm::vec3> geometry;
-public:
-	PhysicsBody *mActor;
-	F32 radius;
-	F32 maxAngVel;
-	Material *material;
+struct ShaderInfo;
 
-	VertexBufferObject *mVBO;
-	bool firstDraw;
+#define MATERIALMGR MaterialManager::getSingleton()
 
-	F32 cameraYaw;
-	F32 cameraPitch;
+class MaterialManager {
 private:
-	void generate();
 
-	const U32 segments = 36;
-	const U32 slices = 18;
-
-	const F32 cameraSpeed = 0.3f;
-	const F32 keyCameraSpeed = 3.f;
-
+	std::vector<Material*> mMaterialList;
+	
 public:
-	Sphere(glm::vec3 origin, F32 radius);
-	virtual ~Sphere();
-
-	virtual void render();
-	virtual glm::vec3 getPosition();
-	virtual glm::quat getRotation();
-
-	virtual void setPosition(const glm::vec3 &pos);
-	virtual void setRotation(const glm::quat &rot);
-
-	void setMaterial(Material *material) {
-		this->material = material;
+	static MaterialManager *getSingleton() {
+		static MaterialManager *manager = nullptr;
+		if (manager == nullptr)
+			manager = new MaterialManager();
+		return manager;
 	}
-
-	void applyTorque(const glm::vec3 &torque);
-	void applyImpulse(const glm::vec3 &force, const glm::vec3 &origin);
-	void applyForce(const glm::vec3 &force, const glm::vec3 &origin);
-
-	bool getColliding();
-	glm::vec3 getCollisionNormal();
-    
-    void setVelocity(const glm::vec3 &vel);
-    void setAngularVelocity(const glm::vec3 &vel);
-
-	virtual void updateCamera(const Movement &movement, const F64 &deltaMS);
-	virtual void updateMove(const Movement &movement, const F64 &deltaMS);
-	virtual void getCameraPosition(glm::mat4x4 &mat);
-
-	virtual void updateTick(const F64 &deltaMS);
+	
+	MaterialManager();
+	~MaterialManager();
+	
+	Material *getMaterial(const std::string &name) const;
+	
+	bool isNull(const Material *material) const;
+	
+	void addMaterial(Material *material);
+	
+	void removeMaterial(Material *material);
+	
+	S32 indexof(Material *material) const;
 };
 
-#endif
+#endif // _RENDER_MATERIALMANAGER_H_

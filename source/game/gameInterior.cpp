@@ -28,12 +28,19 @@
 
 #include "game/gameInterior.h"
 #include "base/io.h"
+#include "physics/physicsBody.h"
 #include "render/bitmap/texture.h"
 #include <string>
 #include <cfloat>
 
 GameInterior::GameInterior(DIF::Interior interior) : GameObject(), mInterior(interior) {
 	renderInfo.generated = false;
+	mVbo = new VertexBufferObject();
+	mVbo->setBufferType(BufferType::STATIC);
+}
+
+GameInterior::~GameInterior() {
+	delete mVbo;
 }
 
 void GameInterior::generateMaterials(std::string directory) {
@@ -146,3 +153,10 @@ U32 GameInterior::rayCast(RayF ray) {
 	return closest;
 }
 
+
+glm::vec3 GameInterior::getScale() {
+	return mActor->getScale();
+}
+void GameInterior::setScale(const glm::vec3 &scale) {
+	mActor->setScale(scale);
+}

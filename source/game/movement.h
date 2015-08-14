@@ -45,6 +45,8 @@ struct Movement {
 	bool pitchDown;
 	bool yawLeft;
 	bool yawRight;
+
+	bool fire;
 };
 
 #endif

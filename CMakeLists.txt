@@ -3,11 +3,16 @@ include (CheckIncludeFiles)
 project (DifViewerGame C CXX)
 
 # Force C++11 standard on compilers
-if (NOT MSVC)
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-endif()
 
-set(USE_GLFW_INSTEAD_OF_SDL 0)
+# Enable Static Linking the C++ ABI directly into the executables and libraries
+if (MSVC)
+	SET(CMAKE_REQUIRED_LINKER_FLAGS "/SAFESEH:NO")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+	set(CMAKE_CXX_FLAGS_RelWithDebInfo "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+	set(CMAKE_CXX_FLAGS_RelWithDebInfo "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+endif()
 
 # http://stackoverflow.com/a/25286420/214063
 macro(ADD_FRAMEWORK appname fwname)
@@ -25,55 +30,7 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
 # SDL
 #------------------------------------------------------------------------------
 
-if (USE_GLFW_INSTEAD_OF_SDL EQUAL 0)
-
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
- 
-else()
-
-#------------------------------------------------------------------------------
-# GLFW
-#------------------------------------------------------------------------------
-
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw" GLFW)
-
-endif()
-
-#------------------------------------------------------------------------------
-# Zlib
-#------------------------------------------------------------------------------
-
-set (ZLIB_SRC
-	thirdparty/zlib/adler32.c
-	thirdparty/zlib/compress.c
-	thirdparty/zlib/crc32.c
-	thirdparty/zlib/crc32.h
-	thirdparty/zlib/deflate.c
-	thirdparty/zlib/deflate.h
-	thirdparty/zlib/gzclose.c
-	thirdparty/zlib/gzguts.h
-	thirdparty/zlib/gzlib.c
-	thirdparty/zlib/gzread.c
-	thirdparty/zlib/gzwrite.c
-	thirdparty/zlib/infback.c
-	thirdparty/zlib/inffast.c
-	thirdparty/zlib/inffast.h
-	thirdparty/zlib/inffixed.h
-	thirdparty/zlib/inflate.c
-	thirdparty/zlib/inflate.h
-	thirdparty/zlib/inftrees.c
-	thirdparty/zlib/inftrees.h
-	thirdparty/zlib/trees.c
-	thirdparty/zlib/trees.h
-	thirdparty/zlib/uncompr.c
-	thirdparty/zlib/zconf.h
-	thirdparty/zlib/zlib.h
-	thirdparty/zlib/zutil.c
-	thirdparty/zlib/zutil.h
-)
-
-add_library(Zlib STATIC ${ZLIB_SRC})
-set_property (TARGET Zlib APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/zlib")
 
 #------------------------------------------------------------------------------
 # JPEG Library
@@ -131,10 +88,6 @@ if (APPLE)
 	set(JPEG_SRC ${JPEG_SRC}
 		thirdparty/jpeg/jmemnobs.c
 	)
-elseif (MSVC)	
-	set(JPEG_SRC ${JPEG_SRC}
-		thirdparty/jpeg/jmemansi.c
-	)	
 endif()
 
 add_library(Jpeg STATIC ${JPEG_SRC})
@@ -186,9 +139,9 @@ set (MNG_SRC
 	thirdparty/mng/libmng_zlib.h
 	thirdparty/mng/libmng.h
 )
-
 add_library(Mng STATIC ${MNG_SRC})
-target_link_libraries(Mng Jpeg Zlib)
+target_link_libraries(Mng Jpeg)
+set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
 
 #------------------------------------------------------------------------------
 # GLEW Library
@@ -197,10 +150,6 @@ target_link_libraries(Mng Jpeg Zlib)
 add_library(GLEW STATIC thirdparty/glew/src/glew.c)
 set_property(TARGET GLEW APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include")
 target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
-
-if (MSVC)
-	target_link_libraries(GLEW OpenGL32)
-endif()
 
 #------------------------------------------------------------------------------
 # DIF Library
@@ -265,22 +214,10 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/glm/
 	thirdparty/jpeg
 	thirdparty/mng
-	thirdparty/zlib
+	thirdparty/SDL2/include
 	thirdparty
 	dif/include
 )
-
-if (USE_GLFW_INSTEAD_OF_SDL EQUAL 1)
-set (DIFVIEWERGAME_INCLUDEDIR
-	${DIFVIEWERGAME_INCLUDEDIR}
-	thirdparty/glfw/include
-)
-else()
-set (DIFVIEWERGAME_INCLUDEDIR
-	${DIFVIEWERGAME_INCLUDEDIR}
-	thirdparty/SDL2/include
-)
-endif()
 
 # Main project source
 set (DIFVIEWERGAME_SRC
@@ -313,6 +250,14 @@ set (DIFVIEWERGAME_SRC
 	source/game/movement.h
 	source/game/sphere.cpp
 	source/game/sphere.h
+	
+	# Graphics folder
+	source/graphics/gfxTypes.h
+	source/graphics/shader.cpp
+	source/graphics/shader.h
+	source/graphics/vertexBufferObject.cpp
+	source/graphics/vertexBufferObject.h
+	source/graphics/gl/glUtils.h
 
 	# Physics folder
 	source/physics/physicsBody.cpp
@@ -335,32 +280,6 @@ set (DIFVIEWERGAME_SRC
 	source/platform/timer.h
 	source/platform/window.h
 
-	# Render folder
-	source/render/InteriorRender.cpp
-	source/render/material.cpp
-	source/render/material.h
-	source/render/scene.cpp
-	source/render/scene.h
-	source/render/shader.cpp
-	source/render/shader.h
-)
-
-if (USE_GLFW_INSTEAD_OF_SDL EQUAL 1)
-set (DIFVIEWERGAME_SRC
-	${DIFVIEWERGAME_SRC}
-	
-	# PlatformGLFW folder
-	source/platformGLFW/GLFWEvent.cpp
-	source/platformGLFW/GLFWEvent.h
-	source/platformGLFW/GLFWTimer.h
-	source/platformGLFW/GLFWWindow.cpp
-	source/platformGLFW/GLFWWindow.h
-	source/platformGLFW/GLFWConfig.h
-)
-else()
-set (DIFVIEWERGAME_SRC
-	${DIFVIEWERGAME_SRC}
-	
 	# PlatformSDL folder
 	source/platformSDL/SDLEvent.cpp
 	source/platformSDL/SDLEvent.h
@@ -368,8 +287,16 @@ set (DIFVIEWERGAME_SRC
 	source/platformSDL/SDLWindow.cpp
 	source/platformSDL/SDLWindow.h
 	source/platformSDL/SDLConfig.h
+
+	# Render folder
+	source/render/InteriorRender.cpp
+	source/render/material.cpp
+	source/render/material.h
+	source/render/materialManager.cpp
+	source/render/materialManager.h
+	source/render/scene.cpp
+	source/render/scene.h
 )
-endif()
 
 set (DIFVIEWERGAME_LIBRARIES
 	# Bullet
@@ -377,6 +304,9 @@ set (DIFVIEWERGAME_LIBRARIES
 	BulletDynamics
 	BulletSoftBody
 	LinearMath
+
+	# SDL2
+	SDL2
 
 	# GLEW
 	GLEW
@@ -386,42 +316,11 @@ set (DIFVIEWERGAME_LIBRARIES
 
 	# MNG
 	Mng
+	z #Zlib
 
 	# DIF
 	Dif
 )
-
-if (MSVC)
-set (DIFVIEWERGAME_LIBRARIES
-	${DIFVIEWERGAME_LIBRARIES}
-
-	Zlib
-	
-	Kernel32
-	User32
-	OpenGL32
-)
-else()
-set (DIFVIEWERGAME_LIBRARIES
-	${DIFVIEWERGAME_LIBRARIES}
-
-	z
-)
-endif()
-
-if (USE_GLFW_INSTEAD_OF_SDL EQUAL 1)
-set (DIFVIEWERGAME_LIBRARIES
-	${DIFVIEWERGAME_LIBRARIES}
-
-	glfw
-)
-else()
-set (DIFVIEWERGAME_LIBRARIES
-	${DIFVIEWERGAME_LIBRARIES}
-
-	SDL2-static
-)
-endif()
 
 include_directories(include ${DIFVIEWERGAME_INCLUDEDIR})
 
@@ -440,16 +339,13 @@ source_group("objects"               REGULAR_EXPRESSION objects/.*)
 source_group("game\\physics"         REGULAR_EXPRESSION physics/.*)
 source_group("game\\physics\\bullet" REGULAR_EXPRESSION bullet/.*)
 source_group("platform"              REGULAR_EXPRESSION platform/.*)
-
-if (USE_GLFW_INSTEAD_OF_SDL EQUAL 1)
-source_group("platformGLFW"          REGULAR_EXPRESSION platformGLFW/.*)
-else()
-source_group("platformSDL"           REGULAR_EXPRESSION platformSDL/.*)
-endif()
+source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
+source_group("graphics"              REGULAR_EXPRESSION graphics/.*)
+source_group("graphics\\gl"          REGULAR_EXPRESSION gl/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
-target_compile_definitions(Game PUBLIC GLEW_STATIC)
+
 
 if (APPLE)
 	ADD_FRAMEWORK(Game Cocoa)
@@ -468,15 +364,6 @@ set (BUILD_DIR_FILES
 	source/shaders/interiorF.glsl
 	source/shaders/interiorV.glsl
 )
-
-# Enable Static Linking the C++ ABI directly into the executables and libraries
-if (MSVC)
-	SET(CMAKE_REQUIRED_LINKER_FLAGS "/SAFESEH:NO")
-	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-	set(CMAKE_CXX_FLAGS_RelWithDebInfo "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-	set(CMAKE_CXX_FLAGS_RelWithDebInfo "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-endif()
 
 install(TARGETS Game RUNTIME DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 install(FILES ${BUILD_DIR_FILES} DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/bin")

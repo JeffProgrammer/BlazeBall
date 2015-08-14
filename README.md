@@ -1,7 +1,7 @@
 DifViewerGame
 =============
 
-A small marble game project based upon DifViewer.
+A small marble game project based upon DifViewer / DIF. Supports rendering DIFs and rudimentary marble movement and physics.
 
 Building
 -------------------
@@ -12,9 +12,21 @@ files to another directory, such as `build/`.
 Running
 -------------------
 
-The executable is run as `DifViewerGame <dif file> [dif file 2, ...]`. Files can be
-in any compatible DIF format (supported versions 0 (MB), 0 (TGE), 0 (TGEA), 1, 2, 3,
-4, 10, 14, and possibly those in the middle).
+Make the "install" target from the CMakeFile and run the `Game` executable in `bin/`.  
+The executable is run as `Game <dif file> [dif file 2, ...]`. Files can be in any compatible DIF format.
+
+Supported DIF File Formats:
+-------------------
+* 0 (MB)
+* 0 (TGE)
+* 0 (TGEA)
+* 1 (MBU)
+* 2 (MBU)
+* 3 (MBU)
+* 4 (MBU)
+* 10 (T3D)
+* 14 (T3D / MBM)
+* Possibly those in the middle, unknown and untested.
 
 Requirements
 -------------------
@@ -22,8 +34,13 @@ Requirements
 C++11 support  
 OpenGL 3.3+
 
+Acknowledgements
+-------------------
+
+Credits to Whirligig231 for his sphere-trimesh edge adjacency solver.
+
 License
--------
+-------------------
 
 ```
 Copyright (c) 2014-2015, Glenn Smith

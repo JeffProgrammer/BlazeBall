@@ -24,10 +24,8 @@ uniform mat4 modelMat;
 uniform mat4 viewMat;
 
 uniform vec4 lightColor;
-uniform vec3 lightDirection;
 uniform vec4 ambientColor;
 uniform vec3 sunPosition;
-uniform vec3 sunPower;
 uniform float specularExponent;
 
 void main() {

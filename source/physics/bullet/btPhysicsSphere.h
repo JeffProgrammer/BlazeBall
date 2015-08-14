@@ -39,6 +39,8 @@ public:
 
 	virtual bool getColliding();
 	virtual glm::vec3 getCollisionNormal();
+
+	virtual void modifyContact(btPersistentManifold *const &manifold, const btCollisionObject *other, U32 otherIndex);
 };
 
 #endif /* btPhysicsSphere_h */

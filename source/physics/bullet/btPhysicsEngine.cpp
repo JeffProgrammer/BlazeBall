@@ -37,162 +37,35 @@
 #include <algorithm>
 #include <vector>
 
-/// BEHOLD, THE MAGIC NUMBER
-#define ADJACENCY_NORMAL_THRESHOLD 0.01f
-
-//Super crazy inheritence hacking to let us get at the private members of btTriangleMesh
-class btAccessibleTriangleMesh : public btTriangleMesh {
-public:
-	static btVector3 getVector(btTriangleMesh *mesh, const U32 &index) {
-		//Easy now
-		return mesh->m_4componentVertices[mesh->m_32bitIndices[index]];
-	}
-	static BulletTriangle getTriangle(btTriangleMesh *mesh, const U32 &index) {
-		BulletTriangle tri;
-		tri.point0 = getVector(mesh, 0 + index * 3);
-		tri.point1 = getVector(mesh, 1 + index * 3);
-		tri.point2 = getVector(mesh, 2 + index * 3);
-		return tri;
-	}
-	static bool areTrianglesAdjacent(const BulletTriangle &tri1, const BulletTriangle &tri2) {
-		// Count number of matched vertices
-		int matches = 0;
-		if (tri1.point0 == tri2.point0 || tri1.point0 == tri2.point1 || tri1.point0 == tri2.point2)
-			matches++;
-		if (tri1.point1 == tri2.point0 || tri1.point1 == tri2.point1|| tri1.point1 == tri2.point2)
-			matches++;
-		if (tri1.point2 == tri2.point0 || tri1.point2 == tri2.point1 || tri1.point2 == tri2.point2)
-			matches++;
-
-		// Calculate normals
-		btVector3 normal1 = (tri1.point1 - tri1.point0).cross(tri1.point2 - tri1.point0);
-		btVector3 normal2 = (tri2.point1 - tri2.point0).cross(tri2.point2 - tri2.point0);
-		normal1.safeNormalize();
-		normal2.safeNormalize();
-		btVector3 cross = normal1.cross(normal2);
-
-		if (cross.length() < sin(ADJACENCY_NORMAL_THRESHOLD) && matches >= 1) {
-			return true;
-		}
-		return false;
-	}
-};
-
 std::vector<ShapeInfo> shapes;
 std::vector<BodyInfo> bodies;
 std::vector<BodyMovement> moves;
 
-bool contactAdded(btManifoldPoint& cp,
-				  const btCollisionObjectWrapper* colObj0Wrap,
-				  int partId0,
-				  int index0,
-				  const btCollisionObjectWrapper* colObj1Wrap,
-				  int partId1,
-				  int index1) {
-
-	//btAdjustInternalEdgeContacts(cp,colObj1Wrap,colObj0Wrap, partId1,index1);
-	return true;
-}
-
 // This is where the FUN begins.
 // dear god I hope I can multithread this shit.
 void contactStarted(btPersistentManifold* const &manifold) {
-    btBvhTriangleMeshShape *trimesh0 = dynamic_cast<btBvhTriangleMeshShape*>(const_cast<btCollisionShape*>(manifold->getBody0()->getCollisionShape()));
-    btBvhTriangleMeshShape *trimesh1 = dynamic_cast<btBvhTriangleMeshShape*>(const_cast<btCollisionShape*>(manifold->getBody1()->getCollisionShape()));
-    btBvhTriangleMeshShape *trimesh;
-    const btCollisionObject *body, *otherBody;
-    
-    if (trimesh0 != NULL) {
-        trimesh = trimesh0;
-        body = manifold->getBody0();
-        otherBody = manifold->getBody1();
-    }
-    else if (trimesh1 != NULL) {
-        trimesh = trimesh1;
-        body = manifold->getBody1();
-        otherBody = manifold->getBody0();
-    }
-    else
-        return;
-    
-    int ind = -1;
-    for (int i = 0; i < bodies.size(); i++) {
-        if (bodies[i].body == body) {
-            ind = i;
-            break;
-        }
-    }
-    if (ind < 0)
-        return;
-    
-    BodyInfo bodyInfo = bodies[ind];
-    
-    btTriangleMesh *mesh_int = (btTriangleMesh*)trimesh->getMeshInterface();
+    btPhysicsBody *body0 = static_cast<btPhysicsBody *>(manifold->getBody0()->getUserPointer());
+    btPhysicsBody *body1 = static_cast<btPhysicsBody *>(manifold->getBody1()->getUserPointer());
 
-    std::vector<int> triangleIndices;
-    bool removed = false;
-    
-    int count = manifold->getNumContacts();
-    for (int i = 0; i < count; i++) {
-        int index;
-        if (trimesh0 != NULL)
-            index = manifold->getContactPoint(i).m_index0;
-        else
-            index = manifold->getContactPoint(i).m_index1;
-
-        for (int j = 0; j < triangleIndices.size(); j++) {
-			BulletTriangle tri1 = btAccessibleTriangleMesh::getTriangle(mesh_int, triangleIndices[j]);
-			BulletTriangle tri2 = btAccessibleTriangleMesh::getTriangle(mesh_int, index);
-
-            if (index == triangleIndices[j] || btAccessibleTriangleMesh::areTrianglesAdjacent(tri1, tri2)) {
-                if (manifold->getContactPoint(i).getDistance() < manifold->getContactPoint(j).getDistance())
-                    manifold->removeContactPoint(j);
-                else
-                    manifold->removeContactPoint(i);
-                //printf("Point removed\n");
-                removed = true;
-                break;
-            }
-        }
-        triangleIndices.push_back(index);
-    }
-    
-    if (removed) {
-        for (int i = 0; i < manifold->getNumContacts(); i++) {
-            int index;
-            if (trimesh0 != NULL)
-                index = manifold->getContactPoint(i).m_index0;
-            else
-                index = manifold->getContactPoint(i).m_index1;
-			const BulletTriangle &points = btAccessibleTriangleMesh::getTriangle(mesh_int, index);
-
-            btVector3 normal = (points.point1 - points.point0).cross(points.point2 - points.point0);
-            normal.safeNormalize();
-            
-            btQuaternion rot = bodyInfo.body->getWorldTransform().getRotation();
-            normal = normal.rotate(rot.getAxis(), rot.getAngle());
-            
-            if (trimesh0 != NULL)
-                manifold->getContactPoint(i).m_normalWorldOnB = -normal;
-            else
-                manifold->getContactPoint(i).m_normalWorldOnB = normal;
-        }
-    }
+	if (body0)
+		body0->modifyContact(manifold, manifold->getBody1(), 1);
+	if (body1)
+		body1->modifyContact(manifold, manifold->getBody0(), 0);
 }
 
 void physicsWorldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
-    btDispatcher *dispatcher = world->getDispatcher();
+    //btDispatcher *dispatcher = world->getDispatcher();
     
-    S32 numManifolds = dispatcher->getNumManifolds();
-    for (S32 i = 0; i < numManifolds; i++) {
-        btPersistentManifold *manifold = dispatcher->getManifoldByIndexInternal(i);
+    //S32 numManifolds = dispatcher->getNumManifolds();
+    //for (S32 i = 0; i < numManifolds; i++) {
+        //btPersistentManifold *manifold = dispatcher->getManifoldByIndexInternal(i);
         // This is a callback ya know, we can do physics script callbacks in here.
         
         // clear manifold cache so it has to regenerate every tick. I know this doesn't
         // help performance but we need this for detecting real time collisions multiple times
         // so that we can ignore them.
 //        manifold->clearManifold();
-    }
+    //}
 }
 
 btPhysicsEngine::btPhysicsEngine() : PhysicsEngine() {
@@ -208,9 +81,8 @@ void btPhysicsEngine::init() {
 	world = new btDiscreteDynamicsWorld(dispatcher, interface, solver, configuration);
 	world->setGravity(btVector3(0, 0, -20.0f));
 
-	//gContactAddedCallback = contactAdded;
     gContactStartedCallback = contactStarted;
-    world->setInternalTickCallback(physicsWorldTickCallback);
+    //world->setInternalTickCallback(physicsWorldTickCallback);
 	running = true;
 }
 
@@ -229,6 +101,7 @@ void btPhysicsEngine::addBody(PhysicsBody *body) {
 	btPhysicsBody *physBody = static_cast<btPhysicsBody *>(body);
 
 	btRigidBody *rigid = physBody->getActor();
+	rigid->setUserPointer(body);
 
 	rigid->setCollisionFlags(rigid->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 	world->addRigidBody(rigid);

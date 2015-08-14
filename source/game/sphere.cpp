@@ -35,11 +35,20 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), maxAngVel(1000.0f), material(nullptr), renderBuffer(0) {
+Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), maxAngVel(1000.0f), material(nullptr), mVBO(nullptr) {
 	mActor = PhysicsEngine::getEngine()->createSphere(radius);
 	mActor->setPosition(origin);
 	mActor->setMass(1.0f);
 	PhysicsEngine::getEngine()->addBody(mActor);
+	
+	mVBO = new VertexBufferObject();
+	mVBO->setBufferType(BufferType::STATIC);
+	
+	firstDraw = false;
+}
+
+Sphere::~Sphere() {
+	delete mVBO;
 }
 
 void Sphere::generate() {
@@ -91,17 +100,14 @@ void Sphere::generate() {
 	}
 
 	//Generate a buffer
-	glGenBuffers(1, &renderBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, renderBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * point, &points[0], GL_STATIC_DRAW);
+	mVBO->submit(&points[0], point);
 }
 
-void Sphere::render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition) {
-	//Set up matrices
-	GameObject::render(projectionMatrix, viewMatrix, modelMatrixPosition);
-
-	if (!renderBuffer)
+void Sphere::render() {
+	if (!firstDraw) {
 		generate();
+		firstDraw = true;
+	}
 
 	if (material) {
 		material->activate();
@@ -111,13 +117,14 @@ void Sphere::render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatr
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
 	glEnableVertexAttribArray(4);
-	glBindBuffer(GL_ARRAY_BUFFER, renderBuffer);
+	mVBO->bind();
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, point));
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, uv));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, tangent));
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, bitangent));
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
+	mVBO->unbind();
 	glDisableVertexAttribArray(4);
 	glDisableVertexAttribArray(3);
 	glDisableVertexAttribArray(2);
@@ -172,7 +179,7 @@ void Sphere::setAngularVelocity(const glm::vec3 &vel) {
     mActor->setAngularVelocity(vel);
 }
 
-void Sphere::updateCamera(const Movement &movement) {
+void Sphere::updateCamera(const Movement &movement, const F64 &deltaMS) {
 	if (movement.pitchUp) cameraPitch -= keyCameraSpeed;
 	if (movement.pitchDown) cameraPitch += keyCameraSpeed;
 	if (movement.yawLeft) cameraYaw -= keyCameraSpeed;
@@ -182,23 +189,47 @@ void Sphere::updateCamera(const Movement &movement) {
 	cameraYaw += movement.yaw * cameraSpeed;
 }
 
-void Sphere::updateMove(const Movement &movement) {
+void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	//Apply the camera yaw to a matrix so our rolling is based on the camera direction
 	glm::mat4x4 delta = glm::mat4x4(1);
 	delta = glm::rotate(delta, -cameraYaw, glm::vec3(0, 0, 1));
 
 	//Convert the movement into a vector
-	glm::vec2 move = glm::vec2();
-	if (movement.forward) move.x --;
-	if (movement.backward) move.x ++;
-	if (movement.left) move.y --;
-	if (movement.right) move.y ++;
+	glm::vec3 move = glm::vec3();
+	if (movement.forward) move.y ++;
+	if (movement.backward) move.y --;
+	if (movement.left) move.x --;
+	if (movement.right) move.x ++;
 
-	//Torque is based on the movement and yaw
-	glm::vec3 torque = glm::vec3(glm::translate(delta, glm::vec3(move.x, move.y, 0))[3]);
+	F32 timeMod = (deltaMS / 16.f);
 
 	//Multiplied by 2.5 (magic number alert)
-	applyTorque(glm::vec3(torque.x, torque.y, torque.z) * 2.5f);
+	F32 modifier = 2.5f * timeMod;
+
+	move *= modifier;
+
+	//Crappy damping
+	if (glm::length(move) == 0 && getColliding()) {
+		F32 damping = 1.f - (0.075f * (deltaMS / 16.f));
+		mActor->setAngularVelocity(mActor->getAngularVelocity() * damping);
+	}
+
+	//Linear velocity relative to camera yaw (for capping)
+	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getLinearVelocity())[3]);
+	glm::vec3 torque = move;
+
+	//Don't let us go faster than 15 u/s in any direction.
+	if (torque.x + linRel.x >  15.f) torque.x = glm::max(0.f,  15.f - linRel.x);
+	if (torque.y + linRel.y >  15.f) torque.y = glm::max(0.f,  15.f - linRel.y);
+	//Same for backwards
+	if (torque.x + linRel.x < -15.f) torque.x = glm::min(0.f, -15.f - linRel.x);
+	if (torque.y + linRel.y < -15.f) torque.y = glm::min(0.f, -15.f - linRel.y);
+
+//	printf("%f %f", linRel.x, linRel.y);
+
+	//Torque is based on the movement and yaw
+	glm::vec3 torqueRel = glm::vec3(glm::translate(delta, torque)[3]);
+	applyForce(torqueRel, glm::vec3(0, 0, 1));
 
 	//If we are colliding with the ground, we have the chance to jump
 	if (getColliding()) {
@@ -209,9 +240,13 @@ void Sphere::updateMove(const Movement &movement) {
 			// jump but still taking the surface into account.
 			applyImpulse((normal + glm::vec3(0, 0, 1)) / 2.f * 7.5f, glm::vec3(0, 0, 0));
 		}
+		printf("Colliding\n");
 	} else {
+		glm::vec3 moveRel = glm::vec3(glm::translate(delta, move)[3]);
+
 		//If we're not touching the ground, apply slight air movement.
-		applyForce(glm::vec3(torque.y, -torque.x, torque.z) * 5.f, glm::vec3(0, 0, 0));
+		applyForce(moveRel * 2.5f, glm::vec3(0, 0, 0));
+		printf("Not colliding\n");
 	}
 }
 
@@ -235,7 +270,7 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat) {
 void Sphere::updateTick(const F64 &deltaMS) {
 	//Temporary OOB solution for now
 	if (getPosition().z < -40) {
-		setPosition(glm::vec3(0, 30, 60));
+		setPosition(glm::vec3(0, 0, 60));
 		setVelocity(glm::vec3(0, 0, 0));
 		setAngularVelocity(glm::vec3(0, 0, 0));
 	}

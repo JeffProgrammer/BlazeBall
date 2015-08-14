@@ -33,7 +33,11 @@
 
 class btPhysicsInterior : public btPhysicsBody {
 	GameInterior *mInterior;
+	std::map<U32, U32> mTriangleLookup;
 public:
+	GameInterior *getInterior() { return mInterior; }
+
+	U32 getSurfaceIndexFromTriangleIndex(const U32 &triangleIndex) { return mTriangleLookup[triangleIndex]; }
 	btPhysicsInterior(GameInterior *interior);
 	void construct();
 };

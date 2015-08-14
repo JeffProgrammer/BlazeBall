@@ -38,12 +38,18 @@ class SDLWindow : public Window {
 protected:
 	SDL_Window *window;
 	SDL_GLContext context;
-
+	bool mVsync;
+	
 public:
+	SDLWindow() : window(nullptr), mVsync(false) { }
+	
 	virtual bool createContext();
 	virtual void destroyContext();
 	virtual void swapBuffers();
 	virtual void lockCursor(const bool &locked);
+	virtual void setWindowTitle(const char *title);
+	virtual void setVerticalSync(bool vsync);
+	virtual void toggleVsync();
 
 	virtual glm::ivec2 getWindowSize();
 	virtual bool pollEvents(Event *&event);

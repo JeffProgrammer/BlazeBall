@@ -38,7 +38,7 @@
 #include "render/bitmap/texture.h"
 #include "game/sphere.h"
 #include "physics/physicsEngine.h"
-#include "render/shader.h"
+#include "graphics/shader.h"
 #include "render/scene.h"
 #include "platform/window.h"
 #include "platform/event.h"
@@ -71,11 +71,9 @@ protected:
 		GLuint modelMatrix;
 		GLuint viewMatrix;
 
-		GLuint lightDirection;
 		GLuint lightColor;
 		GLuint ambientColor;
 		GLuint sunPosition;
-		GLuint sunPower;
 		GLuint specularExponent;
 	} GLLocations;
 
@@ -97,11 +95,9 @@ protected:
 
 public:
 	const glm::vec4 lightColor     = glm::vec4(1.000000f, 1.000000f, 1.000000f, 1.400000f);
-	const glm::vec3 lightDirection = glm::vec3(0.60f, 0.40f, 1.0f);
 	const glm::vec4 ambientColor   = glm::vec4(0.700000f, 0.700000f, 0.700000f, 1.000000f);
 
 	const glm::vec3 sunPosition    = glm::vec3(100.0f, 75.0f, 100.0f);
-	const F32 sunPower           = 1000.0f;
 	const U32 specularExponent   = 7;
 
 	Sphere *sphere;
@@ -129,6 +125,7 @@ public:
 		return singleton;
 	}
 
+	void loadShaderUniforms();
 	void updateWindowSize(const glm::ivec2 &size);
 
 	void render();

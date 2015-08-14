@@ -132,21 +132,13 @@ void GameInterior::init() {
 		}
 	}
 
-	//Generate us a vertex buffer
-	glGenBuffers(1, &renderInfo.vertexBuffer);
-	
-	//Use the vertex buffer
-	glBindBuffer(GL_ARRAY_BUFFER, renderInfo.vertexBuffer);
-	
 	//Upload the buffer data to OpenGL
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * numTriangles, &triangle[0], GL_STATIC_DRAW);
+	mVbo->submit(&triangle[0], numTriangles);
 	
 	renderInfo.generated = true;
 }
 
-void GameInterior::render(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const GLuint &modelMatrixPosition) {
-	GameObject::render(projectionMatrix, viewMatrix, modelMatrixPosition);
-
+void GameInterior::render() {
 	if (!renderInfo.generated)
 		init();
 	
@@ -155,7 +147,7 @@ void GameInterior::render(const glm::mat4 &projectionMatrix, const glm::mat4 &vi
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
 	glEnableVertexAttribArray(4);
-	glBindBuffer(GL_ARRAY_BUFFER, renderInfo.vertexBuffer);
+	mVbo->bind();
 
 	//0th array - vertices
 	glVertexAttribPointer(0, //Attribute 0
@@ -215,6 +207,8 @@ void GameInterior::render(const glm::mat4 &projectionMatrix, const glm::mat4 &vi
 		}
 	}
 
+	mVbo->unbind();
+	
 	//Disable arrays
 	glDisableVertexAttribArray(4);
 	glDisableVertexAttribArray(3);

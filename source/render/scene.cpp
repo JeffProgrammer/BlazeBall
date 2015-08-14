@@ -30,17 +30,22 @@
 #include "game/gameInterior.h"
 #include <chrono>
 #include <thread>
+#include <algorithm>
 
-void Scene::render() {
+void Scene::loadShaderUniforms() {
 	//Light
-	glUniform3fv(GLLocations.lightDirection, 1, &lightDirection.x);
 	glUniform4fv(GLLocations.lightColor, 1, &lightColor.r);
 	glUniform4fv(GLLocations.ambientColor, 1, &ambientColor.r);
 
+	//Sun
 	glUniform3fv(GLLocations.sunPosition, 1, &sunPosition.x);
-	glUniform1f(GLLocations.sunPower, sunPower);
 	glUniform1f(GLLocations.specularExponent, specularExponent);
 
+	//Projection matrix
+	glUniformMatrix4fv(GLLocations.projectionMatrix, 1, GL_FALSE, &projectionMatrix[0][0]);
+}
+
+void Scene::render() {
 	//Get the camera transform from the marble
 	glm::mat4 cameraTransform;
 	controlObject->getCameraPosition(cameraTransform);
@@ -51,7 +56,6 @@ void Scene::render() {
 	viewMatrix *= cameraTransform;
 
 	//Send to OpenGL
-	glUniformMatrix4fv(GLLocations.projectionMatrix, 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(GLLocations.viewMatrix, 1, GL_FALSE, &viewMatrix[0][0]);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -63,19 +67,27 @@ void Scene::render() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	for (auto object : objects) {
-		object->render(projectionMatrix, viewMatrix, GLLocations.modelMatrix);
+		glm::mat4 modelMatrix(1);
+		object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
+		glUniformMatrix4fv(GLLocations.modelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
+		object->render();
 	}
 }
 
 void Scene::loop(const F64 &deltaMS) {
-	controlObject->updateCamera(movement);
-	controlObject->updateMove(movement);
+	controlObject->updateCamera(movement, deltaMS);
+	controlObject->updateMove(movement, deltaMS);
 
 	movement.pitch = 0;
 	movement.yaw = 0;
 
+	if (movement.fire) {
+		Sphere *extra = new Sphere(glm::vec3(0, 0, 0), 0.5f);
+		addObject(extra);
+	}
+
 	for (auto object : objects) {
-		object->updateTick(deltaMS);
+		object->updateTick(fmodf(deltaMS, 16.f));
 	}
 }
 
@@ -104,17 +116,17 @@ bool Scene::initGL() {
 	GLLocations.modelMatrix = shader->getUniformLocation("modelMat");
 	GLLocations.viewMatrix = shader->getUniformLocation("viewMat");
 
-	GLLocations.lightDirection = shader->getUniformLocation("lightDirection");
 	GLLocations.lightColor = shader->getUniformLocation("lightColor");
 	GLLocations.ambientColor = shader->getUniformLocation("ambientColor");
 
 	GLLocations.sunPosition = shader->getUniformLocation("sunPosition");
-	GLLocations.sunPower = shader->getUniformLocation("sunPower");
 	GLLocations.specularExponent = shader->getUniformLocation("specularExponent");
 
 	//Window size for viewport
 	glm::ivec2 screenSize = window->getWindowSize();
 	updateWindowSize(screenSize);
+
+	loadShaderUniforms();
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -179,6 +191,8 @@ void Scene::handleEvent(Event *event) {
 					else
 						controlObject = camera;
 					break;
+				case KeyEvent::KEY_V: window->toggleVsync(); break;
+				case KeyEvent::KEY_Q: movement.fire = true; break;
 				default: break;
 			}
 			break;
@@ -193,6 +207,7 @@ void Scene::handleEvent(Event *event) {
 				case KeyEvent::KEY_LEFT:  movement.yawLeft   = false; break;
 				case KeyEvent::KEY_RIGHT: movement.yawRight  = false; break;
 				case KeyEvent::KEY_SPACE: movement.jump      = false; break;
+				case KeyEvent::KEY_Q:     movement.fire      = false; break;
 				default: break;
 			}
 			break;
@@ -279,14 +294,18 @@ void Scene::run() {
 	Event *event;
 
 	F64 lastDelta = 0;
+	
+	F64 counter = 0;
 
 	//Main loop
 	while (running) {
 		//Profiling
 		mTimer->start();
 		
-		if (mShouldSleep)
-			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		if (mShouldSleep) {
+			U32 sleepTime = std::max((F64)0.f, 200.f - lastDelta);
+			std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+		}
 
 		//Input
 		while (window->pollEvents(event)) {
@@ -308,7 +327,14 @@ void Scene::run() {
 
 		//Profiling
 		if (printFPS) {
-			printf("%f FPS, %f mspf\n", 1.0 / (lastDelta / 1000.0), lastDelta);
+			counter += lastDelta;
+			if (counter >= 1000.0) {
+				F32 fps = static_cast<F32>(1.0 / (lastDelta / 1000.0));
+				std::string title = "FPS: " + std::to_string(fps) + " mspf: " + std::to_string(lastDelta);
+				window->setWindowTitle(title.c_str());
+				
+				counter = 0.0;
+			}
 		}
 		
 		//Count how long a frame took
