@@ -46,6 +46,7 @@
 #include <vector>
 #include "game/movement.h"
 #include "game/camera.h"
+#include "scripting/scriptEngine.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -109,6 +110,7 @@ public:
 
 	Window *window;
 	Timer *mTimer;
+	ScriptingEngine *mEngine;
 	
 	bool mShouldSleep;
 

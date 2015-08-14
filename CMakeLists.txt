@@ -303,6 +303,7 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/interiorV.glsl
 
 	# Scripting folder
+	source/scripting/basicScriptFunctions.cpp
 	source/scripting/scriptEngine.cpp
 	source/scripting/scriptEngine.h
 	source/scripting/v8utils.cpp

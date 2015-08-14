@@ -90,6 +90,8 @@ void Scene::loop(const F64 &deltaMS) {
 	for (auto object : objects) {
 		object->updateTick(fmodf(deltaMS, 16.f));
 	}
+
+	mEngine->runScript("onFrameAdvance(" + std::to_string(deltaMS) + ");");
 }
 
 void Scene::updateWindowSize(const glm::ivec2 &size) {

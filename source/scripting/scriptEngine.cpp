@@ -134,8 +134,3 @@ bool ScriptingEngine::runScriptFile(const std::string &path, std::string &output
 void ScriptingEngine::addFunction(const std::string &name, void(*callback)(const FunctionCallbackInfo<Value> &)) {
 	functions[name] = callback;
 }
-
-
-SCRIPT_FUNCTION(quit) {
-	exit(0);
-}

@@ -26,60 +26,18 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include <fstream>
-#include "platformSDL/SDLWindow.h"
-#include "platformSDL/SDLTimer.h"
-#include "render/scene.h"
-#include "game/gameInterior.h"
-#include "scripting/scriptEngine.h"
+#include "scriptEngine.h"
 
-#include "physics/bullet/btPhysicsEngine.h"
+SCRIPT_FUNCTION(quit) {
+	//Quit the game, duh
+	exit(0);
+}
 
-int main(int argc, const char * argv[])
-{
-	//Usage prompt
-	if (argc < 2) {
-		printf("Usage: %s <files ...>\n", argv[0]);
-		return 1;
+SCRIPT_FUNCTION(print) {
+	//Print all the args from the method in order
+	for (U32 i = 0; i < args.Length(); i ++) {
+		printf("%s", V8Utils::v8convert<Local<String>, std::string>(args[i]->ToString()).c_str());
 	}
-
-	ScriptingEngine *scripting = new ScriptingEngine();
-
-	SCRIPT_CREATE_SCOPE(scripting->isolate);
-	scripting->createContext();
-	SCRIPT_CREATE_CONTEXT(scripting->context);
-
-	PhysicsEngine::setEngine(new btPhysicsEngine());
-	Scene *scene = Scene::getSingleton();
-
-	for (U32 i = 1; i < argc; i ++) {
-		std::string directory = IO::getPath(argv[i]);
-
-		std::ifstream file(argv[i]);
-
-		//Read the .dif
-		DIF::DIF dif;
-		if (dif.read(file)) {
-			for (auto dinterior : dif.interior) {
-				GameInterior *interior = new GameInterior(dinterior);
-				interior->generateMaterials(directory);
-				interior->generateMesh();
-				scene->addObject(interior);
-			}
-		}
-
-		//Clean up
-		file.close();
-	}
-
-	//Init SDL and go!
-	scene->window = new SDLWindow();
-	scene->mTimer = new SDLTimer();
-	scene->mEngine = scripting;
-
-	scripting->runScriptFile("main.js");
-
-	scene->run();
-
-	return 0;
+	//Newline at the end
+	printf("\n");
 }
