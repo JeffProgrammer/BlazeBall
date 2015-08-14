@@ -37,12 +37,6 @@
 
 int main(int argc, const char * argv[])
 {
-	//Usage prompt
-	if (argc < 2) {
-		printf("Usage: %s <files ...>\n", argv[0]);
-		return 1;
-	}
-
 	ScriptingEngine *scripting = new ScriptingEngine();
 
 	SCRIPT_CREATE_SCOPE(scripting->isolate);
@@ -52,32 +46,20 @@ int main(int argc, const char * argv[])
 	PhysicsEngine::setEngine(new btPhysicsEngine());
 	Scene *scene = Scene::getSingleton();
 
-	for (U32 i = 1; i < argc; i ++) {
-		std::string directory = IO::getPath(argv[i]);
-
-		std::ifstream file(argv[i]);
-
-		//Read the .dif
-		DIF::DIF dif;
-		if (dif.read(file)) {
-			for (auto dinterior : dif.interior) {
-				GameInterior *interior = new GameInterior(dinterior);
-				interior->generateMaterials(directory);
-				interior->generateMesh();
-				scene->addObject(interior);
-			}
-		}
-
-		//Clean up
-		file.close();
-	}
-
 	//Init SDL and go!
 	scene->window = new SDLWindow();
 	scene->mTimer = new SDLTimer();
 	scene->mEngine = scripting;
 
 	scripting->runScriptFile("main.js");
+
+	//Lame way of creating an array of arguments.
+	//TODO: Use v8 objects
+	scripting->runScript("args = [];");
+	for (U32 i = 0; i < argc; i ++) {
+		scripting->runScript(std::string("args.push(\"") + argv[i] + "\");");
+	}
+	scripting->runScript("parseArgs(args);");
 
 	scene->run();
 
