@@ -40,10 +40,10 @@ protected:
 
 	template<typename T>
 	inline void concat_array(std::vector<Local<Value>> &array, T first) {
-		array.push_back(V8Utils::v8convert<std::string, Local<String>>(std::to_string(first)));
+		array.push_back(V8Utils::v8convert<std::string, Local<String>>(isolate, std::to_string(first)));
 	}
 	inline void concat_array(std::vector<Local<Value>> &array, const char *first) {
-		array.push_back(V8Utils::v8convert<std::string, Local<String>>(std::string(first)));
+		array.push_back(V8Utils::v8convert<const char *, Local<String>>(isolate, first));
 	}
 	template<typename T>
 	inline void concat_array(std::vector<Local<Value>> &array, Local<T> first) {

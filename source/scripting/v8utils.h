@@ -44,8 +44,6 @@ public:
 };
 
 namespace V8Utils {
-	typedef v8::String::Utf8Value v8StrValue;
-
 	template <typename from, typename to>
 	inline to v8convert(const from &value);
 
@@ -81,7 +79,7 @@ namespace V8Utils {
 
 	template<>
 	inline std::string v8convert(const v8::String::Utf8Value &value) {
-		return std::string(v8convert<v8StrValue, const char *>(value));
+		return std::string(*value);
 	}
 
 	template<typename T1, typename T2>
