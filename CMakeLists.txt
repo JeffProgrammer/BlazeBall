@@ -254,6 +254,8 @@ set (DIFVIEWERGAME_SRC
 	# Graphics folder
 	source/graphics/vertexBufferObject.cpp
 	source/graphics/vertexBufferObject.h
+	source/graphics/shader.cpp
+	source/graphics/shader.h
 
 	# Physics folder
 	source/physics/physicsBody.cpp
@@ -292,8 +294,6 @@ set (DIFVIEWERGAME_SRC
 	source/render/materialManager.h
 	source/render/scene.cpp
 	source/render/scene.h
-	source/render/shader.cpp
-	source/render/shader.h
 )
 
 set (DIFVIEWERGAME_LIBRARIES

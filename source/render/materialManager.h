@@ -33,7 +33,7 @@
 #include <vector>
 #include "base/types.h"
 #include "bitmap/texture.h"
-#include "render/shader.h"
+#include "graphics/shader.h"
 #include "render/material.h"
 
 struct ShaderInfo;
