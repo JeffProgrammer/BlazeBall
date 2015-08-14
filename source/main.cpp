@@ -57,8 +57,8 @@ int main(int argc, const char *argv[]) {
 
 	scripting->runScriptFile("main.js");
 
-
-//	scripting->runScript("parseArgs(args);");
+	v8::Local<v8::Array> args = V8Utils::createStringArray(scripting->isolate, argc, argv);
+	std::string out = V8Utils::v8convert<Local<String>, std::string>(scripting->call("parseArgs", args)->ToString(scripting->isolate));
 
 	//Start it up
 	//TODO: Use v8 method calls
