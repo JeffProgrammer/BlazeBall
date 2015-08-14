@@ -39,14 +39,18 @@ protected:
 	std::map<std::string, void(*)(const FunctionCallbackInfo<Value> &)> functions;
 
 	template<typename T>
-	inline void concat_array(std::vector<std::string> &array, T first) {
-		array.push_back(std::to_string(first));
+	inline void concat_array(std::vector<Local<Value>> &array, T first) {
+		array.push_back(V8Utils::v8convert<std::string, Local<String>>(std::to_string(first)));
 	}
-	inline void concat_array(std::vector<std::string> &array, const char *first) {
-		array.push_back(std::string(first));
+	inline void concat_array(std::vector<Local<Value>> &array, const char *first) {
+		array.push_back(V8Utils::v8convert<std::string, Local<String>>(std::string(first)));
+	}
+	template<typename T>
+	inline void concat_array(std::vector<Local<Value>> &array, Local<T> first) {
+		array.push_back(first);
 	}
 	template<typename T, typename... Args>
-	inline void concat_array(std::vector<std::string> &array, T first, Args... args) {
+	inline void concat_array(std::vector<Local<Value>> &array, T first, Args... args) {
 		concat_array(array, first);
 		concat_array(array, args...);
 	}
@@ -64,15 +68,16 @@ public:
 	bool runScriptFile(const std::string &path, std::string &output);
 
 	Local<String> call(const std::string &function);
-	Local<String> call(const std::string &function, const std::vector<std::string> &args);
+	Local<String> call(const std::string &function, std::vector<Local<Value>> &args);
+	Local<String> callArray(const std::string &function, Local<Array> array);
 	Local<String> callValues(const std::string &function, U32 count, Local<Value> *values);
 	template<typename... Args>
-	inline Local<String> call(const std::string &function, Args... args) {
+	inline Local<Value> call(const std::string &function, Args... args) {
 		v8::EscapableHandleScope scope(isolate);
-		std::vector<std::string> array;
+		std::vector<Local<Value>> array;
 		concat_array(array, args...);
 
-		return scope.Escape(call(function, array));
+		return scope.Escape(callValues(function, array.size(), &array[0]));
 	}
 
 	void addFunction(const std::string &name, void(*callback)(const FunctionCallbackInfo<Value> &));
