@@ -47,7 +47,6 @@ void GameInterior::generateMaterials(std::string directory) {
 	//Allocate all textures for the interior
 	if (mInterior.materialName.size()) {
 		for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
-			printf("Generating materials for texture %s\n", mInterior.materialName[i].c_str());
 			std::string materialName = IO::getName(mInterior.materialName[i]);
 			std::string diffuseFile = Texture::find(directory + '/' + materialName);
 

@@ -167,7 +167,6 @@ std::string Texture::find(const std::string &fullName) {
 		std::string finalName;
 		if (checkTexture(testName, baseName, finalName)) {
 			//Let us know
-			printf("%s found best: %s\n", fullName.c_str(), finalName.c_str());
 			return finalName;
 		}
 	}
