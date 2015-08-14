@@ -131,6 +131,51 @@ bool ScriptingEngine::runScriptFile(const std::string &path, std::string &output
 	return runScript(str, output);
 }
 
+Local<String> ScriptingEngine::call(const std::string &function) {
+	v8::EscapableHandleScope scope(isolate);
+	Local<Value> values[] = {};
+	return scope.Escape(callValues(function, 0, values));
+}
+
+Local<String> ScriptingEngine::call(const std::string &function, const std::vector<std::string> &args) {
+	v8::EscapableHandleScope scope(isolate);
+
+	Local<Value> *values = new Local<Value>[args.size()];
+	for (U32 i = 0; i < args.size(); i ++) {
+		values[i] = V8Utils::v8convert<std::string, Local<String>>(isolate, args[i]);
+
+		printf("%s\n", V8Utils::v8convert<Local<String>, std::string>(values[i]->ToString(isolate)).c_str());
+	}
+
+	return scope.Escape(callValues(function, args.size(), values));
+}
+
+Local<String> ScriptingEngine::callValues(const std::string &function, U32 count, Local<Value> *values) {
+	v8::EscapableHandleScope scope(isolate);
+
+	Local<Context> func_context = Local<Context>::New(isolate, context);
+	Context::Scope context_scope(func_context);
+
+	Local<Value> func;
+	if (!func_context->Global()->Get(func_context, V8Utils::v8convert<std::string, Local<String>>(isolate, function)).ToLocal(&func) || !func->IsFunction()) {
+		return scope.Escape(V8Utils::v8convert<const char *, Local<String>>(isolate, ""));
+	}
+
+	Local<Function> actual_func = func.As<Function>();
+
+	MaybeLocal<Value> value = actual_func->Call(func_context, func_context->Global(), count, values);
+	if (value.IsEmpty()) {
+		return scope.Escape(V8Utils::v8convert<const char *, Local<String>>(isolate, ""));
+	}
+
+	Local<Value> outValue;
+	if (!value.ToLocal(&outValue)) {
+		return scope.Escape(V8Utils::v8convert<const char *, Local<String>>(isolate, ""));
+	}
+
+	return scope.Escape(outValue->ToString());
+}
+
 void ScriptingEngine::addFunction(const std::string &name, void(*callback)(const FunctionCallbackInfo<Value> &)) {
 	functions[name] = callback;
 }

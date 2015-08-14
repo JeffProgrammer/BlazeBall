@@ -37,6 +37,19 @@ using namespace v8;
 class ScriptingEngine {
 protected:
 	std::map<std::string, void(*)(const FunctionCallbackInfo<Value> &)> functions;
+
+	template<typename T>
+	inline void concat_array(std::vector<std::string> &array, T first) {
+		array.push_back(std::to_string(first));
+	}
+	inline void concat_array(std::vector<std::string> &array, const char *first) {
+		array.push_back(std::string(first));
+	}
+	template<typename T, typename... Args>
+	inline void concat_array(std::vector<std::string> &array, T first, Args... args) {
+		concat_array(array, first);
+		concat_array(array, args...);
+	}
 public:
 	Isolate *isolate;
 	Local<Context> context;
@@ -46,11 +59,23 @@ public:
 
 	bool runScript(const std::string &script);
 	bool runScript(const std::string &script, std::string &output);
-	void addFunction(const std::string &name, void(*callback)(const FunctionCallbackInfo<Value> &));
 
 	bool runScriptFile(const std::string &path);
 	bool runScriptFile(const std::string &path, std::string &output);
 
+	Local<String> call(const std::string &function);
+	Local<String> call(const std::string &function, const std::vector<std::string> &args);
+	Local<String> callValues(const std::string &function, U32 count, Local<Value> *values);
+	template<typename... Args>
+	inline Local<String> call(const std::string &function, Args... args) {
+		v8::EscapableHandleScope scope(isolate);
+		std::vector<std::string> array;
+		concat_array(array, args...);
+
+		return scope.Escape(call(function, array));
+	}
+
+	void addFunction(const std::string &name, void(*callback)(const FunctionCallbackInfo<Value> &));
 	void createContext();
 };
 
