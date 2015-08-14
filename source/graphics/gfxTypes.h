@@ -26,33 +26,13 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef _GRAPHICS_VERTEXBUFFEROBJECT_H_
-#define _GRAPHICS_VERTEXBUFFEROBJECT_H_
+#ifndef _GRAPHICS_GFXTYPES_H_
+#define _GRAPHICS_GFXTYPES_H_
 
-#include <OpenGL/OpenGL.h>
-#include <OpenGL/gl3.h>
-#include "base/types.h"
-#include "graphics/gfxTypes.h"
-#include "graphics/gl/glUtils.h"
-
-class VertexBufferObject {
-public:
-	VertexBufferObject();
-	
-	~VertexBufferObject();
-	
-	void bind();
-	
-	void unbind();
-	
-	void submit(const Triangle *data, const U32 count);
-	void submit(const Vertex *data, const U32 count);
-	
-	void setBufferType(BufferType type);
-	
-private:
-	GLuint mVBO;
-	BufferType mBufferType;
+enum BufferType {
+	NONE,
+	STATIC,
+	STREAM
 };
 
-#endif // _GRAPHICS_VERTEXBUFFEROBJECT_H_
+#endif // _GRAPHICS_GFXTYPES_H_
