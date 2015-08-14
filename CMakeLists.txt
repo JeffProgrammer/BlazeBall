@@ -340,9 +340,6 @@ set (DIFVIEWERGAME_SRC
 	source/render/material.h
 	source/render/scene.cpp
 	source/render/scene.h
-	source/render/shader.cpp
-	source/render/shader.h
-)
 )
 
 set (DIFVIEWERGAME_LIBRARIES
