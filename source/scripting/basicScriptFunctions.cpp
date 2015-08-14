@@ -36,6 +36,7 @@ SCRIPT_FUNCTION(quit) {
 SCRIPT_FUNCTION(print) {
 	//Print all the args from the method in order
 	for (U32 i = 0; i < args.Length(); i ++) {
+		v8::HandleScope scope(args.GetIsolate());
 		printf("%s", V8Utils::v8convert<Local<String>, std::string>(args[i]->ToString()).c_str());
 	}
 	//Newline at the end
