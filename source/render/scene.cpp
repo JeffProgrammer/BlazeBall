@@ -76,8 +76,10 @@ void Scene::render() {
 }
 
 void Scene::loop(const F64 &deltaMS) {
-	controlObject->updateCamera(movement, deltaMS);
-	controlObject->updateMove(movement, deltaMS);
+	if (controlObject) {
+		controlObject->updateCamera(movement, deltaMS);
+		controlObject->updateMove(movement, deltaMS);
+	}
 
 	movement.pitch = 0;
 	movement.yaw = 0;
@@ -392,13 +394,25 @@ SCRIPT_FUNCTION(createInterior) {
 	Scene::getSingleton()->createInterior(path);
 }
 
-Scene::Scene() {
+void Scene::createCamera(const glm::vec3 &position) {
 	camera = new Camera();
-	camera->setPosition(glm::vec3(0, 0, 50));
+	camera->setPosition(position);
 
 	addObject(camera);
 
 	controlObject = camera;
+}
+
+SCRIPT_FUNCTION(createCamera) {
+	glm::vec3 position;
+	position.x = args[0]->ToNumber()->Value();
+	position.y = args[1]->ToNumber()->Value();
+	position.z = args[2]->ToNumber()->Value();
+
+	Scene::getSingleton()->createCamera(position);
+}
+
+Scene::Scene() {
 }
 
 Scene::~Scene() {

@@ -140,6 +140,7 @@ public:
 	void performClick(S32 mouseX, S32 mouseY);
 	void handleEvent(Event *event);
 
+	void createCamera(const glm::vec3 &position);
 	void createPlayer(const glm::vec3 &position, F32 radius);
 	void createInterior(const std::string &path);
 };
