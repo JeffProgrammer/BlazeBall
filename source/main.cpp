@@ -30,9 +30,7 @@
 #include "platformSDL/SDLWindow.h"
 #include "platformSDL/SDLTimer.h"
 #include "render/scene.h"
-#include "game/gameInterior.h"
 #include "scripting/scriptEngine.h"
-
 #include "physics/bullet/btPhysicsEngine.h"
 
 int main(int argc, const char *argv[]) {
