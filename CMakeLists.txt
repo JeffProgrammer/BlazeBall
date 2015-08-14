@@ -296,11 +296,18 @@ set (DIFVIEWERGAME_SRC
 	source/render/shader.cpp
 	source/render/shader.h
 
+	# Shaders folder
+	source/shaders/interiorF.glsl
+	source/shaders/interiorV.glsl
+
 	# Scripting folder
 	source/scripting/scriptEngine.cpp
 	source/scripting/scriptEngine.h
 	source/scripting/v8utils.cpp
 	source/scripting/v8utils.h
+
+	# Scripts folder
+	source/scripts/main.js
 )
 
 set (DIFVIEWERGAME_LIBRARIES
@@ -356,6 +363,8 @@ source_group("platform"              REGULAR_EXPRESSION platform/.*)
 source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
 source_group("graphics"              REGULAR_EXPRESSION graphics/.*)
 source_group("scripting"             REGULAR_EXPRESSION scripting/.*)
+source_group("assets\\shaders"       REGULAR_EXPRESSION shaders/.*)
+source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
