@@ -388,5 +388,14 @@ set (BUILD_DIR_FILES
 	source/shaders/interiorV.glsl
 )
 
-install(TARGETS Game RUNTIME DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/bin")
-install(FILES ${BUILD_DIR_FILES} DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/bin")
+add_custom_command(TARGET Game PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:Game>)
+
+add_custom_command(TARGET Game PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_SOURCE_DIR}/source/shaders $<TARGET_FILE_DIR:Game>)
+
+add_custom_command(TARGET Game PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_SOURCE_DIR}/source/scripts $<TARGET_FILE_DIR:Game>)
