@@ -56,4 +56,26 @@ public:
 #define SCRIPT_CREATE_CONTEXT(context) \
 	Context::Scope global_scope(context);
 
+class ScriptFunctionConstructor {
+public:
+	std::string mName;
+	void (*mFunction)(const FunctionCallbackInfo<Value> &);
+
+	ScriptFunctionConstructor *next;
+	static ScriptFunctionConstructor *last;
+
+	ScriptFunctionConstructor(std::string name, void (*function)(const FunctionCallbackInfo<Value> &)) {
+		next = last;
+		last = this;
+
+		mName = name;
+		mFunction = function;
+	}
+};
+
+#define SCRIPT_FUNCTION(name) \
+void sf##name(const FunctionCallbackInfo<Value> &args); \
+ScriptFunctionConstructor sfc##name(#name, sf##name); \
+void sf##name(const FunctionCallbackInfo<Value> &args)
+
 #endif

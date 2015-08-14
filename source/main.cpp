@@ -45,12 +45,6 @@ int main(int argc, const char * argv[])
 
 	ScriptingEngine *scripting = new ScriptingEngine();
 
-	//Add all possible functions here
-	scripting->addFunction("quit", [](const FunctionCallbackInfo<Value> &)->void{
-		printf("Success face\n");
-		exit(0);
-	});
-
 	SCRIPT_CREATE_SCOPE(scripting->isolate);
 	scripting->createContext();
 	SCRIPT_CREATE_CONTEXT(scripting->context);

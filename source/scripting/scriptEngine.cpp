@@ -27,6 +27,9 @@
 //------------------------------------------------------------------------------
 
 #include "scriptEngine.h"
+
+ScriptFunctionConstructor *ScriptFunctionConstructor::last = nullptr;
+
 ScriptingEngine::ScriptingEngine() {
 	// Initialize V8.
 	V8::InitializeICU();
@@ -49,7 +52,7 @@ void ScriptingEngine::createContext() {
 	//This needs to be in two separate things so it can be copied into global
 	Local<ObjectTemplate> otemp = ObjectTemplate::New(isolate);
 
-	//TODO: add functions
+	//Add functions which were stored in a list
 	for (auto pair : functions) {
 		auto name = pair.first;
 		auto callback = pair.second;
@@ -60,8 +63,19 @@ void ScriptingEngine::createContext() {
 		otemp->Set(lname, lfunc);
 	}
 
+	//Also add functions created with the function constructors
+	for (ScriptFunctionConstructor *start = ScriptFunctionConstructor::last; start; start = start->next) {
+		auto name = start->mName;
+		auto callback = start->mFunction;
+
+		Local<String> lname = V8Utils::v8convert<std::string, Local<String>>(isolate, name);
+		Local<FunctionTemplate> lfunc = FunctionTemplate::New(isolate, callback);
+
+		otemp->Set(lname, lfunc);
+	}
+
 	//Two lines, same as above
-	context =  Context::New(isolate, NULL, otemp);
+	context = Context::New(isolate, NULL, otemp);
 }
 
 bool ScriptingEngine::runScript(const std::string &script) {
@@ -99,3 +113,7 @@ void ScriptingEngine::addFunction(const std::string &name, void(*callback)(const
 	functions[name] = callback;
 }
 
+
+SCRIPT_FUNCTION(quit) {
+	exit(0);
+}
