@@ -27,6 +27,7 @@
 //------------------------------------------------------------------------------
 
 #include "scriptEngine.h"
+#include "base/io.h"
 
 ScriptFunctionConstructor *ScriptFunctionConstructor::last = nullptr;
 
@@ -107,6 +108,27 @@ bool ScriptingEngine::runScript(const std::string &script, std::string &output) 
 		}
 	}
 	return false;
+}
+
+bool ScriptingEngine::runScriptFile(const std::string &path) {
+	std::string output;
+	return runScriptFile(path, output);
+}
+
+bool ScriptingEngine::runScriptFile(const std::string &path, std::string &output) {
+	//Get the contents of the file
+
+	U32 length;
+	U8 *conts = IO::readFile(path, length);
+	if (conts == NULL) {
+		output = "Error: File \"" + path + "\" not found";
+		return false;
+	}
+
+	std::string str(reinterpret_cast<const char *>(conts));
+	delete [] conts;
+
+	return runScript(str, output);
 }
 
 void ScriptingEngine::addFunction(const std::string &name, void(*callback)(const FunctionCallbackInfo<Value> &)) {

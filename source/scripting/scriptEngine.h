@@ -44,9 +44,13 @@ public:
 	ScriptingEngine();
 	~ScriptingEngine();
 
-	bool runScript(const std::string &);
-	bool runScript(const std::string &, std::string &);
+	bool runScript(const std::string &script);
+	bool runScript(const std::string &script, std::string &output);
 	void addFunction(const std::string &name, void(*callback)(const FunctionCallbackInfo<Value> &));
+
+	bool runScriptFile(const std::string &path);
+	bool runScriptFile(const std::string &path, std::string &output);
+
 	void createContext();
 };
 
