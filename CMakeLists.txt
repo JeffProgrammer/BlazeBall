@@ -253,8 +253,12 @@ set (DIFVIEWERGAME_SRC
 	source/game/sphere.h
 	
 	# Graphics folder
+	source/graphics/gfxTypes.h
+	source/graphics/shader.cpp
+	source/graphics/shader.h
 	source/graphics/vertexBufferObject.cpp
 	source/graphics/vertexBufferObject.h
+	source/graphics/gl/glUtils.h
 
 	# Physics folder
 	source/physics/physicsBody.cpp
@@ -293,8 +297,6 @@ set (DIFVIEWERGAME_SRC
 	source/render/materialManager.h
 	source/render/scene.cpp
 	source/render/scene.h
-	source/render/shader.cpp
-	source/render/shader.h
 
 	# Shaders folder
 	source/shaders/interiorF.glsl
@@ -362,6 +364,7 @@ source_group("game\\physics\\bullet" REGULAR_EXPRESSION bullet/.*)
 source_group("platform"              REGULAR_EXPRESSION platform/.*)
 source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
 source_group("graphics"              REGULAR_EXPRESSION graphics/.*)
+source_group("graphics\\gl"          REGULAR_EXPRESSION gl/.*)
 source_group("scripting"             REGULAR_EXPRESSION scripting/.*)
 source_group("assets\\shaders"       REGULAR_EXPRESSION shaders/.*)
 source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)

@@ -32,22 +32,8 @@
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/gl3.h>
 #include "base/types.h"
-
-enum BufferType {
-	NONE,
-	STATIC,
-	STREAM
-};
-
-namespace GLUtil {
-	inline GLenum convertBufferType(BufferType type) {
-		switch (type) {
-			case STATIC: return GL_STATIC_DRAW;
-			case STREAM: return GL_STREAM_DRAW;
-			default: return GL_ZERO;
-		}
-	}
-}
+#include "graphics/gfxTypes.h"
+#include "graphics/gl/glUtils.h"
 
 class VertexBufferObject {
 public:
@@ -55,13 +41,12 @@ public:
 	
 	~VertexBufferObject();
 	
-	void submit(const Triangle *triangles, const U32 numTriangles);
-	
 	void bind();
 	
-	static inline void unbind() {
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
+	void unbind();
+	
+	void submit(const Triangle *data, const U32 count);
+	void submit(const Vertex *data, const U32 count);
 	
 	void setBufferType(BufferType type);
 	

@@ -38,7 +38,7 @@
 #include "render/bitmap/texture.h"
 #include "game/sphere.h"
 #include "physics/physicsEngine.h"
-#include "render/shader.h"
+#include "graphics/shader.h"
 #include "render/scene.h"
 #include "platform/window.h"
 #include "platform/event.h"
