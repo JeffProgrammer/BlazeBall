@@ -49,8 +49,6 @@ int main(int argc, const char * argv[])
 	scripting->createContext();
 	SCRIPT_CREATE_CONTEXT(scripting->context);
 
-	scripting->runScriptFile("main.js");
-
 	PhysicsEngine::setEngine(new btPhysicsEngine());
 	Scene *scene = Scene::getSingleton();
 
@@ -73,9 +71,13 @@ int main(int argc, const char * argv[])
 		//Clean up
 		file.close();
 	}
+
 	//Init SDL and go!
 	scene->window = new SDLWindow();
 	scene->mTimer = new SDLTimer();
+
+	scripting->runScriptFile("main.js");
+
 	scene->run();
 
 	return 0;
