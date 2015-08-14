@@ -39,15 +39,7 @@ enum BufferType {
 	STREAM
 };
 
-namespace GLUtil {
-	inline GLenum convertBufferType(BufferType type) {
-		switch (type) {
-			case STATIC: return GL_STATIC_DRAW;
-			case STREAM: return GL_STREAM_DRAW;
-			default: return GL_ZERO;
-		}
-	}
-}
+#include "graphics/gl/glUtils.h"
 
 class VertexBufferObject {
 public:

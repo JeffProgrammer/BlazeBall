@@ -26,59 +26,17 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "graphics/vertexBufferObject.h"
+#ifndef _GRAPHICS_GL_GLUTILS_H_
+#define _GRAPHICS_GL_GLUTILS_H_
 
-VertexBufferObject::VertexBufferObject() {
-	mVBO = 0;
-	mBufferType = BufferType::NONE;
+namespace GLUtils {
+	inline GLenum convertBufferType(BufferType type) {
+		switch (type) {
+			case STATIC: return GL_STATIC_DRAW;
+			case STREAM: return GL_STREAM_DRAW;
+			default: return GL_ZERO;
+		}
+	}
 }
 
-VertexBufferObject::~VertexBufferObject() {
-	assert(glIsBuffer(mVBO) == false);
-	glDeleteBuffers(1, &mVBO);
-}
-
-void VertexBufferObject::bind() {
-	assert(mVBO != 0);
-	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-}
-
-void VertexBufferObject::unbind() {
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void VertexBufferObject::submit(const Triangle *data, const U32 count) {
-	glGenBuffers(1, &mVBO);
-	
-	// bind this buffer
-	bind();
-	
-	GLenum bufferType = GLUtils::convertBufferType(mBufferType);
-	assert(bufferType != GL_ZERO);
-	
-	// upload to the gpu
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * count, data, bufferType);
-	
-	// finished uploading data to the GL
-	unbind();
-}
-
-void VertexBufferObject::submit(const Vertex *data, const U32 count) {
-	glGenBuffers(1, &mVBO);
-	
-	// bind this buffer
-	bind();
-	
-	GLenum bufferType = GLUtils::convertBufferType(mBufferType);
-	assert(bufferType != GL_ZERO);
-	
-	// upload to the gpu
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * count, data, bufferType);
-	
-	// finished uploading data to the GL
-	unbind();
-}
-
-void VertexBufferObject::setBufferType(BufferType type) {
-	mBufferType = type;
-}
+#endif // _GRAPHICS_GL_GLUTILS_H_
