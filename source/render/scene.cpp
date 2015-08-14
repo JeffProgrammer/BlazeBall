@@ -367,6 +367,31 @@ SCRIPT_FUNCTION(createPlayer) {
 	Scene::getSingleton()->createPlayer(position, radius);
 }
 
+void Scene::createInterior(const std::string &path) {
+	std::string directory = IO::getPath(path);
+
+	std::ifstream file(path);
+
+	//Read the .dif
+	DIF::DIF dif;
+	if (dif.read(file)) {
+		for (auto dinterior : dif.interior) {
+			GameInterior *interior = new GameInterior(dinterior);
+			interior->generateMaterials(directory);
+			interior->generateMesh();
+			addObject(interior);
+		}
+	}
+
+	//Clean up
+	file.close();
+}
+
+SCRIPT_FUNCTION(createInterior) {
+	std::string path = V8Utils::v8convert<Local<String>, std::string>(args[0]->ToString());
+	Scene::getSingleton()->createInterior(path);
+}
+
 Scene::Scene() {
 	camera = new Camera();
 	camera->setPosition(glm::vec3(0, 0, 50));
