@@ -27,6 +27,7 @@
 //------------------------------------------------------------------------------
 
 #include "scriptEngine.h"
+#include "render/scene.h"
 
 SCRIPT_FUNCTION(quit) {
 	//Quit the game, duh
@@ -41,4 +42,16 @@ SCRIPT_FUNCTION(print) {
 	}
 	//Newline at the end
 	printf("\n");
+}
+
+SCRIPT_FUNCTION(require) {
+	//Execute another script file and return its values
+	std::string path = V8Utils::v8convert<Local<String>, std::string>(args[0]->ToString());
+
+	std::string result;
+	if (Scene::getSingleton()->mEngine->runScriptFile(path, result)) {
+		args.GetReturnValue().Set(V8Utils::v8convert<std::string, Local<String>>(Scene::getSingleton()->mEngine->isolate, result));
+	} else {
+		args.GetReturnValue().SetEmptyString();
+	}
 }

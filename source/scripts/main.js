@@ -28,3 +28,5 @@ function printThings(list) {
 		print(list[i]);
 	}
 }
+
+require("./test.js");
