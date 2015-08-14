@@ -50,4 +50,10 @@ public:
 	void createContext();
 };
 
+#define SCRIPT_CREATE_SCOPE(isolate) \
+	Isolate::Scope isolate_scope(isolate); \
+	HandleScope handle_scope(isolate);
+#define SCRIPT_CREATE_CONTEXT(context) \
+	Context::Scope global_scope(context);
+
 #endif

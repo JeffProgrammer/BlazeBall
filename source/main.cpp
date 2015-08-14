@@ -45,20 +45,15 @@ int main(int argc, const char * argv[])
 
 	ScriptingEngine *scripting = new ScriptingEngine();
 
+	//Add all possible functions here
 	scripting->addFunction("quit", [](const FunctionCallbackInfo<Value> &)->void{
 		printf("Success face\n");
 		exit(0);
 	});
 
-	Isolate::Scope isolate_scope(scripting->isolate);
-
-	// Create a stack-allocated handle scope.
-	HandleScope handle_scope(scripting->isolate);
-
+	SCRIPT_CREATE_SCOPE(scripting->isolate);
 	scripting->createContext();
-
-	// Enter the context for compiling and running the hello world script.
-	Context::Scope global_scope(scripting->context);
+	SCRIPT_CREATE_CONTEXT(scripting->context);
 
 	std::string out;
 	if (scripting->runScript("quit();", out)) {
