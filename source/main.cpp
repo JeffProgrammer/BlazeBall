@@ -55,16 +55,15 @@ int main(int argc, const char *argv[]) {
 	scene->window = new SDLWindow();
 	scene->mTimer = new SDLTimer();
 
+	//Load up the main script file which has all the starting stuff
 	scripting->runScriptFile("main.js");
 
-	scripting->call("printThings", V8Utils::createArray(scripting->isolate, "yes", "this", "has", 5, "things"));
-
+	//Load up the arguments and let javascript parse them
 	v8::Local<v8::Array> args = V8Utils::createStringArray(scripting->isolate, argc, argv);
 	std::string out = V8Utils::v8convert<Local<String>, std::string>(scripting->call("parseArgs", args)->ToString(scripting->isolate));
 
 	//Start it up
-	//TODO: Use v8 method calls
-	scripting->runScript("onStart();");
+	scripting->call("onStart");
 
 	//Let our scene go!
 	scene->run();
