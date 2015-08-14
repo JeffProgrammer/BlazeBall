@@ -49,12 +49,7 @@ int main(int argc, const char * argv[])
 	scripting->createContext();
 	SCRIPT_CREATE_CONTEXT(scripting->context);
 
-	std::string out;
-	if (scripting->runScript("quit();", out)) {
-		printf("This should never be shown: %s\n", out.c_str());
-	}
-
-	return 1;
+	scripting->runScriptFile("main.js");
 
 	PhysicsEngine::setEngine(new btPhysicsEngine());
 	Scene *scene = Scene::getSingleton();
