@@ -9,8 +9,11 @@ function parseArgs(args) {
 		exit(1);
 	}
 
-	for (var i = 1; i < args.length; i ++) {
-		createInterior(args[i]);
+	print(args.length, " Args:");
+
+	for (var i = 0; i < args.length; i ++) {
+		print("Arg: \"", args[i], "\"");
+		//createInterior(args[i]);
 	}
 }
 

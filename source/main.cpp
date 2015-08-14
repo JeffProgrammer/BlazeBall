@@ -35,7 +35,7 @@
 
 #include "physics/bullet/btPhysicsEngine.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, const char *argv[]) {
 	//Create us a new scene
 	Scene *scene = Scene::getSingleton();
 
@@ -57,8 +57,8 @@ int main(int argc, char *argv[]) {
 
 	scripting->runScriptFile("main.js");
 
-	v8::V8::SetFlagsFromCommandLine(&argc, argv, false);
-	scripting->runScript("parseArgs(args);");
+
+//	scripting->runScript("parseArgs(args);");
 
 	//Start it up
 	//TODO: Use v8 method calls
