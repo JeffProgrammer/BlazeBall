@@ -137,6 +137,7 @@ public:
 	void run();
 	void performClick(S32 mouseX, S32 mouseY);
 	void handleEvent(Event *event);
+	void createPlayer(const glm::vec3 &position, F32 radius);
 };
 
 #endif

@@ -27,6 +27,7 @@
 //------------------------------------------------------------------------------
 
 #include "render/scene.h"
+#include "scripting/scriptEngine.h"
 #include "game/gameInterior.h"
 #include <chrono>
 #include <thread>
@@ -345,12 +346,29 @@ void Scene::run() {
 	cleanup();
 }
 
+void Scene::createPlayer(const glm::vec3 &position, F32 radius) {
+	sphere = new Sphere(position, radius);
+	addObject(sphere);
+
+	controlObject = sphere;
+}
+
+SCRIPT_FUNCTION(createPlayer) {
+	glm::vec3 position;
+	F32 radius;
+
+	position.x = args[0]->ToNumber()->Value();
+	position.y = args[1]->ToNumber()->Value();
+	position.z = args[2]->ToNumber()->Value();
+	radius     = args[3]->ToNumber()->Value();
+
+	Scene::getSingleton()->createPlayer(position, radius);
+}
+
 Scene::Scene() {
-	sphere = new Sphere(glm::vec3(0, 0, 60), 0.2f);
 	camera = new Camera();
 	camera->setPosition(glm::vec3(0, 0, 50));
 
-	addObject(sphere);
 	addObject(camera);
 
 	controlObject = camera;
