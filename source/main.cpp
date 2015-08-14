@@ -44,7 +44,32 @@ int main(int argc, const char * argv[])
 	}
 
 	ScriptingEngine *scripting = new ScriptingEngine();
-	scripting->initContext();
+
+	// Create a new Isolate and make it the current one.
+	ArrayBufferAllocator allocator;
+	Isolate::CreateParams create_params;
+	create_params.array_buffer_allocator = &allocator;
+	Isolate *isolate = Isolate::New(create_params);
+
+	scripting->addFunction("quit", [](const FunctionCallbackInfo<Value> &)->void{
+		exit(0);
+	});
+
+	Isolate::Scope isolate_scope(isolate);
+
+	// Create a stack-allocated handle scope.
+	HandleScope handle_scope(isolate);
+
+	Local<Context> context = scripting->createContext(isolate);
+	// Enter the context for compiling and running the hello world script.
+	Context::Scope global_scope(context);
+
+	std::string out;
+	if (scripting->runScript(isolate, context, "quit();", out)) {
+		printf("What: %s\n", out.c_str());
+	}
+
+	return 0;
 
 	PhysicsEngine::setEngine(new btPhysicsEngine());
 	Scene *scene = Scene::getSingleton();
@@ -72,8 +97,6 @@ int main(int argc, const char * argv[])
 	scene->window = new SDLWindow();
 	scene->mTimer = new SDLTimer();
 	scene->run();
-
-	scripting->destroyContext();
 
 	return 0;
 }

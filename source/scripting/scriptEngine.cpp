@@ -28,59 +28,55 @@
 
 #include "scriptEngine.h"
 ScriptingEngine::ScriptingEngine() {
-}
-ScriptingEngine::~ScriptingEngine() {
-}
-
-void ScriptingEngine::initContext() {
 	// Initialize V8.
 	V8::InitializeICU();
 	Platform *platform = platform::CreateDefaultPlatform();
 	V8::InitializePlatform(platform);
 	V8::Initialize();
-
-	// Create a new Isolate and make it the current one.
-	ArrayBufferAllocator allocator;
-	Isolate::CreateParams create_params;
-	create_params.array_buffer_allocator = &allocator;
-	isolate = Isolate::New(create_params);
-
-	Isolate::Scope isolate_scope(isolate);
-
-	// Create a stack-allocated handle scope.
-	HandleScope handle_scope(isolate);
-
-	//This needs to be in two separate things so it can be copied into global
-	Local<ObjectTemplate> olocal = ObjectTemplate::New(isolate);
-	global = Global<ObjectTemplate>(isolate, olocal);
-
-	//TODO: add functions
-
-	//Two lines, same as above
-	Local<Context> clocal = Context::New(isolate, NULL, global.Get(isolate));
-	context = Global<Context>(isolate, clocal);
+}
+ScriptingEngine::~ScriptingEngine() {
+	V8::Dispose();
+	V8::ShutdownPlatform();
 }
 
-bool ScriptingEngine::runScript(const std::string &script, std::string &output) {
-	// Create a stack-allocated handle scope.
-	HandleScope handle_scope(isolate);
+Local<Context> ScriptingEngine::createContext(Isolate *isolate) {
+	//This needs to be in two separate things so it can be copied into global
+	Local<ObjectTemplate> otemp = ObjectTemplate::New(isolate);
 
-	// Enter the context for compiling and running the hello world script.
-	Context::Scope global_scope(context.Get(isolate));
+	//TODO: add functions
+	for (auto pair : functions) {
+		auto name = pair.first;
+		auto callback = pair.second;
 
+		Local<String> lname = V8Utils::v8convert<std::string, Local<String>>(isolate, name);
+		Local<FunctionTemplate> lfunc = FunctionTemplate::New(isolate, callback);
+
+		otemp->Set(lname, lfunc);
+	}
+
+	//Two lines, same as above
+	return Context::New(isolate, NULL, otemp);
+}
+
+bool ScriptingEngine::runScript(Isolate *isolate, Local<Context> context,const std::string &script) {
+	std::string temp; //So we can satisfy the method below; ignored
+	return runScript(isolate, context, script, temp);
+}
+
+bool ScriptingEngine::runScript(Isolate *isolate, Local<Context> context,const std::string &script, std::string &output) {
 	Local<String> source = V8Utils::v8convert<std::string, Local<String>>(isolate, script);
 
 	// Compile the source code.
 	Local<Script> compiled;
 	TryCatch try_catch(isolate);
 
-	if (!Script::Compile(context.Get(isolate), source).ToLocal(&compiled)) {
+	if (!Script::Compile(context, source).ToLocal(&compiled)) {
 		V8Utils::ReportException(isolate, &try_catch);
 		return false;
 	} else {
 		// Run the script to get the result.
 		Local<Value> result;
-		if (!compiled->Run(context.Get(isolate)).ToLocal(&result)) {
+		if (!compiled->Run(context).ToLocal(&result)) {
 			V8Utils::ReportException(isolate, &try_catch);
 			return false;
 		} else {
@@ -93,8 +89,7 @@ bool ScriptingEngine::runScript(const std::string &script, std::string &output) 
 	return false;
 }
 
-void ScriptingEngine::destroyContext() {
-	V8::Dispose();
-	V8::ShutdownPlatform();
+void ScriptingEngine::addFunction(const std::string &name, void(*callback)(const FunctionCallbackInfo<Value> &)) {
+	functions[name] = callback;
 }
 

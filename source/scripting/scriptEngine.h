@@ -36,18 +36,16 @@ using namespace v8;
 
 class ScriptingEngine {
 protected:
-	Isolate *isolate;
-	Global<ObjectTemplate> global;
-	Global<Context> context;
+	std::map<std::string, void(*)(const FunctionCallbackInfo<Value> &)> functions;
 
 public:
 	ScriptingEngine();
 	~ScriptingEngine();
 
-	bool runScript(const std::string &, std::string &);
-
-	void initContext();
-	void destroyContext();
+	bool runScript(Isolate *isolate, Local<Context> context, const std::string &);
+	bool runScript(Isolate *isolate, Local<Context> context, const std::string &, std::string &);
+	void addFunction(const std::string &name, void(*callback)(const FunctionCallbackInfo<Value> &));
+	Local<Context> createContext(Isolate *isolate);
 };
 
 #endif

@@ -85,6 +85,12 @@ namespace V8Utils {
 	}
 
 	template<>
+	inline v8::Local<v8::String> v8convert(const std::string &value) {
+		//Use the isolate version, dumbass
+		assert(false);
+	}
+
+	template<>
 	inline v8::Local<v8::String> v8convert(v8::Isolate *isolate, const std::string &value) {
 		return v8::String::NewFromUtf8(isolate, value.c_str());
 	}
