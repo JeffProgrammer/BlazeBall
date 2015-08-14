@@ -57,6 +57,8 @@ int main(int argc, const char *argv[]) {
 
 	scripting->runScriptFile("main.js");
 
+	scripting->call("printThings", V8Utils::createArray(scripting->isolate, "yes", "this", "has", 5, "things"));
+
 	v8::Local<v8::Array> args = V8Utils::createStringArray(scripting->isolate, argc, argv);
 	std::string out = V8Utils::v8convert<Local<String>, std::string>(scripting->call("parseArgs", args)->ToString(scripting->isolate));
 

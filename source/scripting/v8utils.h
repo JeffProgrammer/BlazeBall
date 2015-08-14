@@ -84,8 +84,8 @@ namespace V8Utils {
 		return std::string(v8convert<v8StrValue, const char *>(value));
 	}
 
-	template<>
-	inline v8::Local<v8::String> v8convert(const std::string &value) {
+	template<typename T1, typename T2>
+	inline v8::Local<T1> v8convert(T2 value) {
 		//Use the isolate version, dumbass
 		assert(false);
 	}
@@ -98,6 +98,35 @@ namespace V8Utils {
 	template<>
 	inline v8::Local<v8::String> v8convert(v8::Isolate *isolate, std::string value) {
 		return v8::String::NewFromUtf8(isolate, value.c_str());
+	}
+
+	template<>
+	inline v8::Local<v8::String> v8convert(v8::Isolate *isolate, v8::Local<v8::Number> value) {
+		return value->ToString(isolate);
+	}
+	template<>
+	inline v8::Local<v8::String> v8convert(v8::Isolate *isolate, v8::Local<v8::Integer> value) {
+		return value->ToString(isolate);
+	}
+
+	template<>
+	inline v8::Local<v8::String> v8convert(v8::Isolate *isolate, S32 value) {
+		return v8convert<v8::Local<v8::Integer>, v8::Local<v8::String>>(isolate, v8::Integer::New(isolate, value));
+	}
+
+	template<>
+	inline v8::Local<v8::String> v8convert(v8::Isolate *isolate, U32 value) {
+		return v8convert<v8::Local<v8::Integer>, v8::Local<v8::String>>(isolate, v8::Integer::New(isolate, value));
+	}
+
+	template<>
+	inline v8::Local<v8::String> v8convert(v8::Isolate *isolate, F32 value) {
+		return v8convert<v8::Local<v8::Number>, v8::Local<v8::String>>(isolate, v8::Number::New(isolate, value));
+	}
+
+	template<>
+	inline v8::Local<v8::String> v8convert(v8::Isolate *isolate, v8::Local<v8::Value> value) {
+		return value->ToString(isolate);
 	}
 
 	inline void ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch) {
@@ -150,6 +179,38 @@ namespace V8Utils {
 		return scope.Escape(array);
 	}
 
+	template<typename T>
+	inline v8::Local<v8::Array> createArray(v8::Isolate *isolate, const std::vector<T> &objects) {
+		v8::EscapableHandleScope scope(isolate);
+
+		v8::Local<v8::Array> array = v8::Array::New(isolate);
+		for (U32 i = 0; i < objects.size(); i ++) {
+			v8::Local<v8::String> str = V8Utils::v8convert<T, v8::Local<v8::String>>(isolate, objects[i]);
+			array->Set(i, str);
+		}
+
+		return scope.Escape(array);
+	}
+
+	template<typename T>
+	inline void concat_array(v8::Isolate *isolate, std::vector<v8::Local<v8::Value>> &array, T first) {
+		array.push_back(v8convert<T, v8::Local<v8::String>>(isolate, first));
+	}
+	template<typename T, typename... Args>
+	inline void concat_array(v8::Isolate *isolate, std::vector<v8::Local<v8::Value>> &array, T first, Args... args) {
+		concat_array(isolate, array, first);
+		concat_array(isolate, array, args...);
+	}
+	template<typename... Args>
+	inline v8::Local<v8::Array> createArray(v8::Isolate *isolate, Args... args) {
+		v8::EscapableHandleScope scope(isolate);
+
+		std::vector<v8::Local<v8::Value>> array;
+		concat_array(isolate, array, args...);
+
+		return scope.Escape(createArray(isolate, array));
+
+	}
 };
 
 #endif

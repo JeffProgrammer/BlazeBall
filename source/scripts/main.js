@@ -9,11 +9,8 @@ function parseArgs(args) {
 		exit(1);
 	}
 
-	print(args.length, " Args:");
-
 	for (var i = 0; i < args.length; i ++) {
-		print("Arg: \"", args[i], "\"");
-		//createInterior(args[i]);
+		createInterior(args[i]);
 	}
 }
 
@@ -22,4 +19,12 @@ function onStart() {
 	createCamera(0, 0, 30);
 	//Create us a player at (0, 0, 60) radius 0.2
 	createPlayer(0, 0, 60, 0.2);
+}
+
+function printThings(list) {
+	print("Count: ", list.length);
+
+	for (var i = 0; i < list.length; i ++) {
+		print(list[i]);
+	}
 }
