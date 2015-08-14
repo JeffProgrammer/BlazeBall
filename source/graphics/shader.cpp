@@ -26,7 +26,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "render/shader.h"
+#include "graphics/shader.h"
 #include "base/io.h"
 
 #ifdef _WIN32

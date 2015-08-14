@@ -39,17 +39,17 @@ F32 planeF_distance_to_point(const PlaneF &plane, const glm::vec3 &point) {
 }
 
 glm::vec2 point_project_plane(const glm::vec3 &point, const glm::vec3 &normal, const glm::vec3 &origin) {
-	if (glm::cross(normal, glm::vec3(0, 0, 1)).length() == 0) {
+	if (glm::length(glm::cross(normal, glm::vec3(0, 0, 1))) == 0) {
 		return glm::vec2(point.x, point.y);
 	}
 	glm::vec3 xcross = glm::cross(normal, glm::vec3(0, 0, 1));
 	glm::vec3 ycross = glm::cross(normal, xcross);
 
-	xcross = xcross * (1.0f / xcross.length());
-	ycross = ycross * (1.0f / ycross.length());
+	xcross = xcross * (1.0f / glm::length(xcross));
+	ycross = ycross * (1.0f / glm::length(ycross));
 
 	glm::vec3 distance = point - origin;
-	F32 hypotenuse = static_cast<F32>(distance.length());
+	F32 hypotenuse = glm::length(distance);
 
 	if (hypotenuse == 0)
 		return glm::vec2(0, 0);

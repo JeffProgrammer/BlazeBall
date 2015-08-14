@@ -26,77 +26,50 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef sphere_h
-#define sphere_h
+#include "render/materialManager.h"
 
-#include <stdio.h>
-#include <vector>
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/glew.h>
-#endif
-#include "gameObject.h"
-#include "base/types.h"
-#include "physics/physicsBody.h"
-#include "render/material.h"
-#include "graphics/vertexBufferObject.h"
-#include "game/movement.h"
-#include <glm/matrix.hpp>
+MaterialManager::MaterialManager() {
+	
+}
 
-class Sphere : public GameObject {
-protected:
-	std::vector<glm::vec3> geometry;
-public:
-	PhysicsBody *mActor;
-	F32 radius;
-	F32 maxAngVel;
-	Material *material;
+MaterialManager::~MaterialManager() {
+	// destroy materials
+	for (auto material : mMaterialList)
+		delete material;
+}
 
-	VertexBufferObject *mVBO;
-	bool firstDraw;
-
-	F32 cameraYaw;
-	F32 cameraPitch;
-private:
-	void generate();
-
-	const U32 segments = 36;
-	const U32 slices = 18;
-
-	const F32 cameraSpeed = 0.3f;
-	const F32 keyCameraSpeed = 3.f;
-
-public:
-	Sphere(glm::vec3 origin, F32 radius);
-	virtual ~Sphere();
-
-	virtual void render();
-	virtual glm::vec3 getPosition();
-	virtual glm::quat getRotation();
-
-	virtual void setPosition(const glm::vec3 &pos);
-	virtual void setRotation(const glm::quat &rot);
-
-	void setMaterial(Material *material) {
-		this->material = material;
+Material* MaterialManager::getMaterial(const std::string &name) const {
+	// find material with the name provided
+	for (auto material : mMaterialList) {
+		if (material->getName() == name)
+			return material;
 	}
+	return nullptr;
+}
 
-	void applyTorque(const glm::vec3 &torque);
-	void applyImpulse(const glm::vec3 &force, const glm::vec3 &origin);
-	void applyForce(const glm::vec3 &force, const glm::vec3 &origin);
+bool MaterialManager::isNull(const Material *material) const {
+	return std::find(mMaterialList.begin(), mMaterialList.end(), material) == mMaterialList.end();
+}
 
-	bool getColliding();
-	glm::vec3 getCollisionNormal();
-    
-    void setVelocity(const glm::vec3 &vel);
-    void setAngularVelocity(const glm::vec3 &vel);
+void MaterialManager::addMaterial(Material *material) {
+	mMaterialList.push_back(material);
+}
 
-	virtual void updateCamera(const Movement &movement, const F64 &deltaMS);
-	virtual void updateMove(const Movement &movement, const F64 &deltaMS);
-	virtual void getCameraPosition(glm::mat4x4 &mat);
+void MaterialManager::removeMaterial(Material *material) {
+	// get the index of the material
+	S32 indexOf = indexof(material);
+	if (indexOf != -1) {
+		delete mMaterialList[indexOf];
+		mMaterialList.erase(mMaterialList.begin() + indexOf);
+	}
+}
 
-	virtual void updateTick(const F64 &deltaMS);
-};
-
-#endif
+S32 MaterialManager::indexof(Material *material) const {
+	S32 index = 0;
+	for (auto mat : mMaterialList) {
+		if (mat == material)
+			return index;
+		index++;
+	}
+	return -1;
+}

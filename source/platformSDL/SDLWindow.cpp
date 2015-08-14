@@ -70,18 +70,9 @@ bool SDLWindow::createContext() {
 		printf("Created a legacy OpenGL profile successfully.\n");
 	}
 
-#ifdef _WIN32
-	glewExperimental = true;
-	GLenum error = glewInit();
-	if (error != GLEW_OK) {
-		fprintf(stderr, "GLEW failed to init. Reason: %d\n", error);
-		return false;
-	}
-#endif
-
 	//Use Vsync
-	SDL_GL_SetSwapInterval(1);
-
+	setVerticalSync(true);
+	
 	//Lock cursor
 	lockCursor(true);
 
@@ -98,6 +89,19 @@ void SDLWindow::swapBuffers() {
 
 void SDLWindow::lockCursor(const bool &locked) {
 	SDL_SetRelativeMouseMode((SDL_bool)locked);
+}
+
+void SDLWindow::setWindowTitle(const char *title) {
+	SDL_SetWindowTitle(window, title);
+}
+
+void SDLWindow::setVerticalSync(bool vsync) {
+	mVsync = vsync;
+	SDL_GL_SetSwapInterval(vsync ? 1 : 0);
+}
+
+void SDLWindow::toggleVsync() {
+	setVerticalSync(!mVsync);
 }
 
 glm::ivec2 SDLWindow::getWindowSize() {

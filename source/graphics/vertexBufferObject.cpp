@@ -26,77 +26,59 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef sphere_h
-#define sphere_h
-
-#include <stdio.h>
-#include <vector>
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/glew.h>
-#endif
-#include "gameObject.h"
-#include "base/types.h"
-#include "physics/physicsBody.h"
-#include "render/material.h"
 #include "graphics/vertexBufferObject.h"
-#include "game/movement.h"
-#include <glm/matrix.hpp>
 
-class Sphere : public GameObject {
-protected:
-	std::vector<glm::vec3> geometry;
-public:
-	PhysicsBody *mActor;
-	F32 radius;
-	F32 maxAngVel;
-	Material *material;
+VertexBufferObject::VertexBufferObject() {
+	mVBO = 0;
+	mBufferType = BufferType::NONE;
+}
 
-	VertexBufferObject *mVBO;
-	bool firstDraw;
+VertexBufferObject::~VertexBufferObject() {
+	assert(glIsBuffer(mVBO) == false);
+	glDeleteBuffers(1, &mVBO);
+}
 
-	F32 cameraYaw;
-	F32 cameraPitch;
-private:
-	void generate();
+void VertexBufferObject::bind() {
+	assert(mVBO != 0);
+	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+}
 
-	const U32 segments = 36;
-	const U32 slices = 18;
+void VertexBufferObject::unbind() {
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
 
-	const F32 cameraSpeed = 0.3f;
-	const F32 keyCameraSpeed = 3.f;
+void VertexBufferObject::submit(const Triangle *data, const U32 count) {
+	glGenBuffers(1, &mVBO);
+	
+	// bind this buffer
+	bind();
+	
+	GLenum bufferType = GLUtils::convertBufferType(mBufferType);
+	assert(bufferType != GL_ZERO);
+	
+	// upload to the gpu
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * count, data, bufferType);
+	
+	// finished uploading data to the GL
+	unbind();
+}
 
-public:
-	Sphere(glm::vec3 origin, F32 radius);
-	virtual ~Sphere();
+void VertexBufferObject::submit(const Vertex *data, const U32 count) {
+	glGenBuffers(1, &mVBO);
+	
+	// bind this buffer
+	bind();
+	
+	GLenum bufferType = GLUtils::convertBufferType(mBufferType);
+	assert(bufferType != GL_ZERO);
+	
+	// upload to the gpu
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * count, data, bufferType);
+	
+	// finished uploading data to the GL
+	unbind();
+}
 
-	virtual void render();
-	virtual glm::vec3 getPosition();
-	virtual glm::quat getRotation();
-
-	virtual void setPosition(const glm::vec3 &pos);
-	virtual void setRotation(const glm::quat &rot);
-
-	void setMaterial(Material *material) {
-		this->material = material;
-	}
-
-	void applyTorque(const glm::vec3 &torque);
-	void applyImpulse(const glm::vec3 &force, const glm::vec3 &origin);
-	void applyForce(const glm::vec3 &force, const glm::vec3 &origin);
-
-	bool getColliding();
-	glm::vec3 getCollisionNormal();
-    
-    void setVelocity(const glm::vec3 &vel);
-    void setAngularVelocity(const glm::vec3 &vel);
-
-	virtual void updateCamera(const Movement &movement, const F64 &deltaMS);
-	virtual void updateMove(const Movement &movement, const F64 &deltaMS);
-	virtual void getCameraPosition(glm::mat4x4 &mat);
-
-	virtual void updateTick(const F64 &deltaMS);
-};
-
-#endif
+void VertexBufferObject::setBufferType(BufferType type) {
+	mBufferType = type;
+}

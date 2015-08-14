@@ -28,11 +28,27 @@
 
 #include "physics/bullet/btPhysicsBody.h"
 
+const F32 btPhysicsBody::getMass() {
+	//Edge case: static objects have a mass of 0
+	if (mActor->getInvMass() == 0)
+		return 0;
+	//1 / Inverse mass because logic
+	return 1.0f / mActor->getInvMass();
+}
 const glm::vec3 btPhysicsBody::getPosition() {
 	return btConvert(mActor->getWorldTransform().getOrigin());
 }
 const glm::quat btPhysicsBody::getRotation() {
 	return btConvert(mActor->getWorldTransform().getRotation());
+}
+const glm::vec3 btPhysicsBody::getScale() {
+	return btConvert(mActor->getCollisionShape()->getLocalScaling());
+}
+const glm::vec3 btPhysicsBody::getLinearVelocity() {
+	return btConvert(mActor->getLinearVelocity());
+}
+const glm::vec3 btPhysicsBody::getAngularVelocity() {
+	return btConvert(mActor->getAngularVelocity());
 }
 
 void btPhysicsBody::setMass(const F32 &mass) {
@@ -51,6 +67,9 @@ void btPhysicsBody::setRotation(const glm::quat &rotation) {
 	worldTrans.setRotation(btConvert(rotation));
 	mActor->setWorldTransform(worldTrans);
 }
+void btPhysicsBody::setScale(const glm::vec3 &scale) {
+	mActor->getCollisionShape()->setLocalScaling(btConvert(scale));
+}
 
 void btPhysicsBody::applyTorque(const glm::vec3 &torque) {
 	mActor->applyTorque(btConvert(torque));
@@ -67,4 +86,7 @@ void btPhysicsBody::setVelocity(const glm::vec3 &velocity) {
 }
 void btPhysicsBody::setAngularVelocity(const glm::vec3 &velocity) {
     mActor->setAngularVelocity(btConvert(velocity));
+}
+
+void btPhysicsBody::modifyContact(btPersistentManifold *const &manifold, btCollisionObject const *other, U32 otherIndex) {
 }

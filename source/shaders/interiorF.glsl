@@ -21,10 +21,8 @@ uniform sampler2D specularSampler;
 uniform sampler2D noiseSampler;
 
 uniform vec4 lightColor;
-uniform vec3 lightDirection;
 uniform vec4 ambientColor;
 uniform vec3 sunPosition;
-uniform vec3 sunPower;
 uniform float specularExponent;
 
 void main() {

@@ -30,16 +30,17 @@
 #define material_h
 
 #include <stdio.h>
+#include <unordered_map>
 #include "base/types.h"
 #include "render/bitmap/texture.h"
-#include "render/shader.h"
+#include "graphics/shader.h"
 
 #define DEFAULT_NORMAL_TEXTURE   "DefaultNormal.png"
 #define DEFAULT_SPECULAR_TEXTURE "DefaultSpec.png"
 
 struct ShaderInfo;
 class Material {
-	std::map<GLuint, Texture *> textures;
+	std::unordered_map<GLuint, Texture *> textures;
 	ShaderInfo *shaderInfo;
 
 	std::string name;
@@ -72,18 +73,20 @@ public:
 	 * specular and normal map paths from the diffuse texture.
 	 * @param path The path for the material's diffuse texture.
 	 */
-	Material(const std::string &path) : shaderInfo(NULL) {
+	Material(const std::string &path) : shaderInfo(nullptr) {
 		loadTextures(path);
 	}
+	
 	/**
 	 * Construct a material from a diffuse, normal, and specular texture path.
 	 * @param diffusePath The path for the material's diffuse texture.
 	 * @param normalPath The path for the material's normal texture.
 	 * @param specularPath The path for the material's specular texture.
 	 */
-	Material(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) : shaderInfo(NULL) {
+	Material(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) : shaderInfo(nullptr) {
 		loadTextures(diffusePath, normalPath, specularPath);
 	}
+	
 	/**
 	 * Destroy the material, releasing its textures
 	 */
@@ -97,19 +100,29 @@ public:
 	Texture *getTexture(const GLuint &index) {
 		return this->textures[index];
 	}
+	
 	/**
 	 * Get the material's shader info
 	 * @return The material's shader info
 	 */
-	ShaderInfo *getShaderInfo() {
+	ShaderInfo *getShaderInfo() const {
 		return this->shaderInfo;
 	}
+	
 	/**
 	 * Get the material's texture path (by default the diffuse texture)
 	 * @return The material's texture path
 	 */
-	std::string getPath() {
+	std::string getPath() const {
 		return this->path;
+	}
+	
+	/**
+	 * Gets the material's name
+	 * @return The material's name
+	 */
+	std::string getName() const {
+		return this->name;
 	}
 
 	/**
@@ -118,6 +131,7 @@ public:
 	 * @param index The desired index for that texture
 	 */
 	void setTexture(Texture *texture, const GLuint &index);
+	
 	/**
 	 * Set the material's shader info
 	 * @param shaderInfo the new shader info for the material
@@ -130,6 +144,7 @@ public:
 	 * Activate the texture, and its shader if one is defined.
 	 */
 	void activate();
+	
 	/**
 	 * Deactivate the texture, and its shader if one is defined.
 	 */

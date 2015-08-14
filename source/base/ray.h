@@ -148,7 +148,7 @@ T Ray<T>::distance(const TriangleF &triangle) const {
 		c1 = ap.z;
 		c2 = ap.y;
 	}
-	else if (glm::cross(ab, ac).length() == 0.0f) {
+	else if (glm::length(glm::cross(ab, ac)) == 0.0f) {
 		return -1.0f;
 	}
 	else {

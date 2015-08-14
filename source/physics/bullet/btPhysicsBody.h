@@ -39,17 +39,25 @@ public:
 	btPhysicsBody() : mActor(NULL) {};
 	btPhysicsBody(btRigidBody *actor) : mActor(actor) {};
 
+	virtual const F32 getMass();
 	virtual const glm::vec3 getPosition();
 	virtual const glm::quat getRotation();
+	virtual const glm::vec3 getScale();
+	virtual const glm::vec3 getLinearVelocity();
+	virtual const glm::vec3 getAngularVelocity();
+
 	virtual void setMass(const F32 &mass);
 	virtual void setPosition(const glm::vec3 &position);
 	virtual void setRotation(const glm::quat &rotation);
+	virtual void setScale(const glm::vec3 &scale);
     virtual void setVelocity(const glm::vec3 &velocity);
     virtual void setAngularVelocity(const glm::vec3 &velocity);
 
 	virtual void applyTorque(const glm::vec3 &torque);
 	virtual void applyImpulse(const glm::vec3 &impulse, const glm::vec3 &origin);
 	virtual void applyForce(const glm::vec3 &force, const glm::vec3 &origin);
+
+	virtual void modifyContact(btPersistentManifold *const &manifold, const btCollisionObject *other, U32 otherIndex);
 
 	btRigidBody *getActor() {
 		return mActor;
