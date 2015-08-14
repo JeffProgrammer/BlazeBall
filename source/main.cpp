@@ -61,6 +61,11 @@ int main(int argc, const char * argv[])
 	}
 	scripting->runScript("parseArgs(args);");
 
+	//Start it up
+	//TODO: Use v8 method calls
+	scripting->runScript("onStart();");
+
+	//Let our scene go!
 	scene->run();
 
 	return 0;
