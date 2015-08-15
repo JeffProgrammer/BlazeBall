@@ -49,7 +49,7 @@ bool SDLWindow::createContext() {
 
 	//Create the window
 	const U32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;// | SDL_WINDOW_ALLOW_HIGHDPI;
-	if ((window = SDL_CreateWindow("DIF Viewer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, flags)) == NULL)
+	if ((window = SDL_CreateWindow("DIF Viewer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 768, flags)) == NULL)
 		return false;
 
 	//Create context
@@ -86,11 +86,6 @@ bool SDLWindow::createContext() {
 	printf("     Vendor: %s\n", glGetString(GL_VENDOR));
 	printf("   Renderer: %s\n", glGetString(GL_RENDERER));
 	printf("    Shading: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-
-	if (GLEW_VERSION_2_0) {
-		bool pq = 1;
-		fprintf(stderr, "PLS 3.0\n");
-	}
 
 	//Use Vsync
 	setVerticalSync(true);
