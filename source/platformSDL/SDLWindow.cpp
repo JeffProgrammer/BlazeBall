@@ -70,6 +70,8 @@ bool SDLWindow::createContext() {
 		printf("Created a legacy OpenGL profile successfully.\n");
 	}
 
+	SDL_GL_MakeCurrent(window, context);
+
 #ifdef _WIN32
 	glewExperimental = true;
 	GLenum error = glewInit();
@@ -78,8 +80,6 @@ bool SDLWindow::createContext() {
 		return false;
 	}
 #endif
-
-	SDL_GL_MakeCurrent(window, context);
 
 	printf("OpenGL Info\n");
 	printf("    Version: %s\n", glGetString(GL_VERSION));
