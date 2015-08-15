@@ -31,7 +31,7 @@
 
 bool SDLWindow::createContext() {
 	//Init SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		fprintf(stderr, "SDL Error: %s", SDL_GetError());
 		return false;
 	}
@@ -43,12 +43,12 @@ bool SDLWindow::createContext() {
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
 	// set various other window hints
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 4);
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 4);
+	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	//Create the window
-	const U32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
+	const U32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;// | SDL_WINDOW_ALLOW_HIGHDPI;
 	if ((window = SDL_CreateWindow("DIF Viewer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, flags)) == NULL)
 		return false;
 
@@ -68,6 +68,28 @@ bool SDLWindow::createContext() {
 		}
 
 		printf("Created a legacy OpenGL profile successfully.\n");
+	}
+
+#ifdef _WIN32
+	glewExperimental = true;
+	GLenum error = glewInit();
+	if (error != GLEW_OK) {
+		fprintf(stderr, "GLEW failed to init. Error: %d\n", error);
+		return false;
+	}
+#endif
+
+	SDL_GL_MakeCurrent(window, context);
+
+	printf("OpenGL Info\n");
+	printf("    Version: %s\n", glGetString(GL_VERSION));
+	printf("     Vendor: %s\n", glGetString(GL_VENDOR));
+	printf("   Renderer: %s\n", glGetString(GL_RENDERER));
+	printf("    Shading: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+	if (GLEW_VERSION_2_0) {
+		bool pq = 1;
+		fprintf(stderr, "PLS 3.0\n");
 	}
 
 	//Use Vsync

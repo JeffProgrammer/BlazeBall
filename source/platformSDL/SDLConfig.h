@@ -30,12 +30,12 @@
 #ifndef _PLATFORMSDL_SDLCONFIG_H_
 #define _PLATFORMSDL_SDLCONFIG_H_
 
-#include <SDL.h>
-#undef main
-
 #ifdef _WIN32
 #include <GL/glew.h>
 #endif
+
+#include <SDL.h>
+#undef main
 
 /// We are using SDL
 #define USING_SDL
