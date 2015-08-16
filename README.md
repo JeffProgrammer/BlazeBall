@@ -34,6 +34,9 @@ Requirements
 C++11 support  
 OpenGL 3.3+
 
+Windows 7+
+Mac OSX 10.9+
+
 Acknowledgements
 -------------------
 
