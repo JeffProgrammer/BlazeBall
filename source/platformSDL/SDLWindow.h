@@ -42,6 +42,7 @@ protected:
 	
 public:
 	SDLWindow() : window(nullptr), mVsync(false) { }
+	virtual ~SDLWindow() {};
 	
 	virtual bool createContext();
 	virtual void destroyContext();

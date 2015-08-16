@@ -34,6 +34,8 @@
 
 class Window {
 public:
+	virtual ~Window() {};
+
 	virtual bool createContext() = 0;
 	virtual void destroyContext() = 0;
 	virtual void swapBuffers() = 0;

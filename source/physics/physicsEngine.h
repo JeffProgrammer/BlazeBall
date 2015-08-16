@@ -49,7 +49,7 @@ public:
 	virtual PhysicsBody *createInterior(GameInterior *interior) = 0;
 	virtual PhysicsBody *createSphere(const F32 &radius) = 0;
 
-	void setRunning(const bool &running) { this->running = running; }
+	void setRunning(const bool &running) { this->running = running; }
 	bool getRunning() { return running; }
 
 	static void setEngine(PhysicsEngine *engine);
