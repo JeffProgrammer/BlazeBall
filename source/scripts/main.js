@@ -32,3 +32,9 @@ function printThings(list) {
 }
 
 require("./test.js");
+
+var c = newCon();
+c.setThing(1);
+c.log("Test Here!");
+c.setThing(3);
+c.log("Test 2");

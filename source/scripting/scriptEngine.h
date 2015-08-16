@@ -58,6 +58,8 @@ public:
 	Isolate *isolate;
 	Local<Context> context;
 
+	static Local<ObjectTemplate> consoleTemp;
+
 	ScriptingEngine();
 	~ScriptingEngine();
 

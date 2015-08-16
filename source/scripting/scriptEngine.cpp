@@ -30,6 +30,27 @@
 #include "base/io.h"
 
 ScriptFunctionConstructor *ScriptFunctionConstructor::last = nullptr;
+Local<ObjectTemplate> ScriptingEngine::consoleTemp = Local<ObjectTemplate>();
+
+#define OBJECT_METHOD(classname, name) \
+static void name(const FunctionCallbackInfo<Value> &args) { \
+Local<External> wrap = args.Holder()->GetInternalField(0).As<External>(); \
+void *ptr = wrap->Value(); \
+classname *object = static_cast<classname *>(ptr); \
+
+#define OBJECT_METHOD_END() }
+
+class Console {
+	U32 thing;
+public:
+	OBJECT_METHOD(Console, log) {
+		printf("Con %d %s\n", object->thing, V8Utils::v8convert<Local<String>, std::string>(args[0]->ToString(args.GetIsolate())).c_str());
+	} OBJECT_METHOD_END();
+
+	OBJECT_METHOD(Console, setThing) {
+		object->thing = args[0]->ToInt32(args.GetIsolate())->Value();
+	} OBJECT_METHOD_END();
+};
 
 ScriptingEngine::ScriptingEngine() {
 	// Initialize V8.
@@ -74,6 +95,13 @@ void ScriptingEngine::createContext() {
 
 		otemp->Set(lname, lfunc);
 	}
+
+	consoleTemp = ObjectTemplate::New(isolate);
+	consoleTemp->SetInternalFieldCount(2);
+	consoleTemp->Set(V8Utils::v8convert<std::string, Local<String>>(isolate, "log"), FunctionTemplate::New(isolate, &Console::log));
+	consoleTemp->Set(V8Utils::v8convert<std::string, Local<String>>(isolate, "setThing"), FunctionTemplate::New(isolate, &Console::setThing));
+
+	otemp->Set(V8Utils::v8convert<std::string, Local<String>>(isolate, "console"), consoleTemp);
 
 	//Two lines, same as above
 	context = Context::New(isolate, NULL, otemp);
@@ -170,4 +198,14 @@ Local<String> ScriptingEngine::callValues(const std::string &function, U32 count
 
 void ScriptingEngine::addFunction(const std::string &name, void(*callback)(const FunctionCallbackInfo<Value> &)) {
 	functions[name] = callback;
+}
+
+SCRIPT_FUNCTION(newCon) {
+	Console *con = new Console;
+	Local<ObjectTemplate> consoleTemp = ScriptingEngine::consoleTemp;
+
+	Local<Object> ccon = consoleTemp->NewInstance();
+	ccon->SetInternalField(0, External::New(args.GetIsolate(), con));
+
+	args.GetReturnValue().Set(ccon);
 }
