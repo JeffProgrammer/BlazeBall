@@ -1,3 +1,5 @@
+"use strict";
+
 function onFrameAdvance(delta) {
 	//print("Time advance: ", delta);
 }
