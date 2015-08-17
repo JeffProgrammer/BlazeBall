@@ -304,8 +304,7 @@ void Scene::run() {
 		mTimer->start();
 		
 		if (mShouldSleep) {
-			U32 sleepTime = std::max((F64)0.f, 200.f - lastDelta);
-			//std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		}
 
 		//Input
