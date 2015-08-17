@@ -133,8 +133,18 @@ public:
 			virtual bool write(std::ostream &stream) const;
 		};
 
+		Surface() : windingStart(0), windingCount(0),
+						planeIndex(0), planeFlipped(0),
+						textureIndex(0), texGenIndex(0),
+						surfaceFlags(0), fanMask(0),
+						lightCount(0), lightStateInfoStart(0), 
+						mapOffsetX(0), mapOffsetY(0),
+						mapSizeX(0), mapSizeY(0) {
+
+		}
+
 		U32 windingStart;
-		U8 windingCount;
+		U32 windingCount;
 		U16 planeIndex;
 		U8 planeFlipped;
 		U16 textureIndex;
@@ -144,10 +154,10 @@ public:
 		LightMap lightMap;
 		U16 lightCount;
 		U32 lightStateInfoStart;
-		U8 mapOffsetX;
-		U8 mapOffsetY;
-		U8 mapSizeX;
-		U8 mapSizeY;
+		U32 mapOffsetX;
+		U32 mapOffsetY;
+		U32 mapSizeX;
+		U32 mapSizeY;
 
 		bool read(std::istream &stream, U32 interiorFileVersion, bool isTGEInterior, U32 indexSize, U32 planeSize, U32 materialSize, U32 texGenEqSize);
 		virtual bool write(std::ostream &stream) const;

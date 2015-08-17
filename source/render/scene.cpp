@@ -323,7 +323,7 @@ void Scene::run() {
 		render();
 		
 		// simulate the physics engine.
-		PhysicsEngine::getEngine()->simulate(static_cast<F32>(lastDelta / 1000.0));
+		PhysicsEngine::getEngine()->simulate(static_cast<F32>(lastDelta));
 		
 		//Flip buffers
 		window->swapBuffers();
