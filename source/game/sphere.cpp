@@ -45,6 +45,9 @@ Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), max
 	mVBO->setBufferType(BufferType::STATIC);
 	
 	firstDraw = false;
+
+	cameraYaw = 0.0f;
+	cameraPitch = 0.0f;
 }
 
 Sphere::~Sphere() {

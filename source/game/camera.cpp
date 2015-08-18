@@ -29,6 +29,11 @@
 #include "camera.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+Camera::Camera() {
+	pitch = 0.0f;
+	yaw = 0.0f;
+}
+
 void Camera::updateCamera(const Movement &movement, const F64 &deltaMS) {
 	//Keyboard movement
 	if (movement.pitchUp)   pitch -= keyCameraSpeed;

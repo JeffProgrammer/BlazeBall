@@ -40,7 +40,7 @@ class Camera : public GameObject {
 	const F32 keyCameraSpeed = 3.f;
 
 public:
-	Camera() : GameObject() {};
+	Camera();
 	virtual ~Camera() {};
 
 	virtual void updateCamera(const Movement &movement, const F64 &deltaMS);

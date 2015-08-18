@@ -40,7 +40,7 @@ class PhysicsEngine {
 
 	bool running;
 public:
-	PhysicsEngine() {}
+	PhysicsEngine() : running(false) {}
 
 	virtual void init() = 0;
 	virtual void simulate(const F32 &delta) = 0;

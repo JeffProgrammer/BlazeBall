@@ -70,6 +70,8 @@ void physicsWorldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
 
 btPhysicsEngine::btPhysicsEngine() : PhysicsEngine() {
 	init();
+
+	//extraTime = 0.0f;
 }
 
 void btPhysicsEngine::init() {

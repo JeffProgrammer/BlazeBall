@@ -90,6 +90,8 @@ public:
 	F32 y;
 	F32 z;
 
+	QuatF() : w(0.0f), x(0.0f), y(0.0f), z(0.0f) {}
+
 	virtual bool read(std::istream &stream);
 	virtual bool write(std::ostream &stream) const;
 };
@@ -100,6 +102,8 @@ public:
 	F32 y;
 	F32 z;
 	F32 d;
+
+	PlaneF() : x(0.0f), y(0.0f), z(0.0f), d(0.0f) {}
 
 	virtual bool read(std::istream &stream);
 	virtual bool write(std::ostream &stream) const;
@@ -113,6 +117,8 @@ public:
 	F32 maxX;
 	F32 maxY;
 	F32 maxZ;
+
+	BoxF() : minX(0.0f), minY(0.0f), minZ(0.0f), maxX(0.0f), maxY(0.0f), maxZ(0.0f) {}
 
 	inline Point3F getMin() const {
 		return Point3F(minX, minY, minZ);
@@ -135,6 +141,8 @@ public:
 	F32 z;
 	F32 radius;
 
+	SphereF() : x(0.0f), y(0.0f), z(0.0f), radius(0.0f) {}
+
 	virtual bool read(std::istream &stream);
 	virtual bool write(std::ostream &stream) const;
 };
@@ -143,6 +151,8 @@ class PNG : public Readable, public Writable {
 public:
 	U32 size;
 	U8 *data;
+
+	PNG() : size(0), data(nullptr) {}
 
 	virtual bool read(std::istream &stream);
 	virtual bool write(std::ostream &stream) const;
@@ -155,6 +165,8 @@ public:
 class MatrixF : public Readable, public Writable {
 public:
 	F32 m[16];
+
+	MatrixF() {}
 
 	virtual bool read(std::istream &stream);
 	virtual bool write(std::ostream &stream) const;
