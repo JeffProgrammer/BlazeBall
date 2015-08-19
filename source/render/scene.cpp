@@ -31,6 +31,7 @@
 #include <chrono>
 #include <thread>
 #include <algorithm>
+#include <ctime>
 
 void Scene::loadShaderUniforms() {
 	//Light
@@ -315,14 +316,14 @@ void Scene::run() {
 			}
 		}
 
-		printf("delta is: %f\n", lastDelta);
+		//printf("delta is: %f\n", lastDelta);
 
 		//Hard work
 		loop(lastDelta);
 		render();
 		
 		// simulate the physics engine.
-		PhysicsEngine::getEngine()->simulate(static_cast<F32>(lastDelta));
+		PhysicsEngine::getEngine()->simulate(lastDelta);
 		
 		//Flip buffers
 		window->swapBuffers();

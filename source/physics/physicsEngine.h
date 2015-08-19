@@ -43,7 +43,7 @@ public:
 	PhysicsEngine() : running(false) {}
 
 	virtual void init() = 0;
-	virtual void simulate(const F32 &delta) = 0;
+	virtual void simulate(const F64 &delta) = 0;
 	virtual void addBody(PhysicsBody *body) = 0;
 
 	virtual PhysicsBody *createInterior(GameInterior *interior) = 0;

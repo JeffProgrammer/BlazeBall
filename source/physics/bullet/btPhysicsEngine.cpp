@@ -71,7 +71,7 @@ void physicsWorldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
 btPhysicsEngine::btPhysicsEngine() : PhysicsEngine() {
 	init();
 
-	//extraTime = 0.0f;
+	extraTime = 0.0f;
 }
 
 void btPhysicsEngine::init() {
@@ -88,9 +88,9 @@ void btPhysicsEngine::init() {
 	running = true;
 }
 
-void btPhysicsEngine::simulate(const F32 &delta) {
+void btPhysicsEngine::simulate(const F64 &delta) {
 	if (running) {
-		extraTime += delta;
+		extraTime += delta / 1000.0;
 		for ( ; extraTime > PHYSICS_TICK; extraTime -= PHYSICS_TICK) {
 			world->stepSimulation(PHYSICS_TICK, 10);
 		}
