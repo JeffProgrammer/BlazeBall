@@ -243,13 +243,13 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 			// jump but still taking the surface into account.
 			applyImpulse((normal + glm::vec3(0, 0, 1)) / 2.f * 7.5f, glm::vec3(0, 0, 0));
 		}
-		printf("Colliding\n");
+		//printf("Colliding\n");
 	} else {
 		glm::vec3 moveRel = glm::vec3(glm::translate(delta, move)[3]);
 
 		//If we're not touching the ground, apply slight air movement.
 		applyForce(moveRel * 2.5f, glm::vec3(0, 0, 0));
-		printf("Not colliding\n");
+		//printf("Not colliding\n");
 	}
 }
 

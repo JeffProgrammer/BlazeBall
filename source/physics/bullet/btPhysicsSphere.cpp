@@ -124,7 +124,7 @@ bool btPhysicsSphere::getColliding() {
 	btDiscreteDynamicsWorld *world = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld();
 	U32 manifolds = world->getDispatcher()->getNumManifolds();
 
-	printf("%d manifolds\n", manifolds);
+	//printf("%d manifolds\n", manifolds);
 
 	for (U32 i = 0; i < manifolds; i ++) {
 		btPersistentManifold *manifold = world->getDispatcher()->getManifoldByIndexInternal(i);
@@ -132,7 +132,7 @@ bool btPhysicsSphere::getColliding() {
 		btCollisionObject *obj2 = (btCollisionObject *)manifold->getBody1();
 
 		if (obj1 == mActor || obj2 == mActor) {
-			printf("We're in it, %d contacts\n", manifold->getNumContacts());
+			//printf("We're in it, %d contacts\n", manifold->getNumContacts());
 			if (manifold->getNumContacts() > 0)
 				return true;
 		}
