@@ -308,6 +308,7 @@ set (DIFVIEWERGAME_SRC
 	source/scripting/scriptEngine.h
 	source/scripting/v8utils.cpp
 	source/scripting/v8utils.h
+	source/scripting/objectWrap.h
 
 	# Scripts folder
 	source/scripts/main.js

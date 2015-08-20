@@ -33,6 +33,8 @@
 #include "include/libplatform/libplatform.h"
 #include "include/v8.h"
 
+#include "objectWrap.h"
+
 class ArrayBufferAllocator : public v8::ArrayBuffer::Allocator {
 public:
 	inline virtual void* Allocate(size_t length) {
