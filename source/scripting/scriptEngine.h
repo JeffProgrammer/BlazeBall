@@ -58,8 +58,6 @@ public:
 	Isolate *isolate;
 	Local<Context> context;
 
-	static Local<ObjectTemplate> consoleTemp;
-
 	ScriptingEngine();
 	~ScriptingEngine();
 
@@ -86,6 +84,8 @@ public:
 	void createContext();
 };
 
+typedef void(*v8callback)(const FunctionCallbackInfo<Value> &);
+
 #define SCRIPT_CREATE_SCOPE(isolate) \
 	Isolate::Scope isolate_scope(isolate); \
 	HandleScope handle_scope(isolate);
@@ -95,12 +95,12 @@ public:
 class ScriptFunctionConstructor {
 public:
 	std::string mName;
-	void (*mFunction)(const FunctionCallbackInfo<Value> &);
+	v8callback mFunction;
 
 	ScriptFunctionConstructor *next;
 	static ScriptFunctionConstructor *last;
 
-	ScriptFunctionConstructor(std::string name, void (*function)(const FunctionCallbackInfo<Value> &)) {
+	ScriptFunctionConstructor(const std::string &name, v8callback function) {
 		next = last;
 		last = this;
 
@@ -113,5 +113,58 @@ public:
 void sf##name(const FunctionCallbackInfo<Value> &args); \
 ScriptFunctionConstructor sfc##name(#name, sf##name); \
 void sf##name(const FunctionCallbackInfo<Value> &args)
+
+class ScriptClassConstructor {
+public:
+	std::string mName;
+	v8callback mConstructor;
+	std::vector<std::pair<std::string, v8callback> > mMethods;
+
+	ScriptClassConstructor *next;
+	static ScriptClassConstructor *last;
+
+	ScriptClassConstructor(const std::string &name, v8callback constructor) {
+		next = last;
+		last = this;
+
+		mName = name;
+		mConstructor = constructor;
+	}
+
+	void addMethod(const std::string &name, v8callback callback) {
+		mMethods.push_back(std::make_pair(name, callback));
+	}
+
+	class MethodConstructor {
+	public:
+		MethodConstructor(const std::string &name, v8callback function, ScriptClassConstructor *parent) {
+			parent->addMethod(name, function);
+		}
+	};
+};
+
+#define OBJECT_CONSTRUCTOR(name) \
+	static void construct(const FunctionCallbackInfo<Value> &args) { \
+		HandleScope scope(args.GetIsolate()); \
+		\
+		name *object = new name(args); \
+		\
+		object->Wrap(args.This()); \
+		args.GetReturnValue().Set(args.This()); \
+	} \
+	static ScriptClassConstructor *__scc; \
+	name(const v8::FunctionCallbackInfo<v8::Value> &args)
+
+#define IMPLEMENT_OBJECT(name) \
+	ScriptClassConstructor *name::__scc = new ScriptClassConstructor(#name, name::construct);
+
+#define OBJECT_METHOD(classname, name) \
+	void __m##classname##name(classname *object, Isolate *isolate, const FunctionCallbackInfo<Value> &args); \
+	static void __mc##classname##name(const FunctionCallbackInfo<Value> &args) { \
+		classname *object = ObjectWrap::Unwrap<classname>(args.This()); \
+		__m##classname##name(object, args.GetIsolate(), args); \
+	} \
+	ScriptClassConstructor::MethodConstructor mc##classname##name(#name, __mc##classname##name, classname::__scc); \
+	void __m##classname##name(classname *object, Isolate *isolate, const FunctionCallbackInfo<Value> &args)
 
 #endif

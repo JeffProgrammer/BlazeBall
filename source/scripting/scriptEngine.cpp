@@ -30,27 +30,26 @@
 #include "base/io.h"
 
 ScriptFunctionConstructor *ScriptFunctionConstructor::last = nullptr;
-Local<ObjectTemplate> ScriptingEngine::consoleTemp = Local<ObjectTemplate>();
+ScriptClassConstructor *ScriptClassConstructor::last = nullptr;
 
-#define OBJECT_METHOD(classname, name) \
-static void name(const FunctionCallbackInfo<Value> &args) { \
-Local<External> wrap = args.Holder()->GetInternalField(0).As<External>(); \
-void *ptr = wrap->Value(); \
-classname *object = static_cast<classname *>(ptr); \
-
-#define OBJECT_METHOD_END() }
-
-class Console {
-	U32 thing;
+class Test : public ObjectWrap {
 public:
-	OBJECT_METHOD(Console, log) {
-		printf("Con %d %s\n", object->thing, V8Utils::v8convert<Local<String>, std::string>(args[0]->ToString(args.GetIsolate())).c_str());
-	} OBJECT_METHOD_END();
+	U32 thing;
 
-	OBJECT_METHOD(Console, setThing) {
-		object->thing = args[0]->ToInt32(args.GetIsolate())->Value();
-	} OBJECT_METHOD_END();
+	OBJECT_CONSTRUCTOR(Test) {
+		thing = args[0]->ToUint32()->Value();
+	}
 };
+
+IMPLEMENT_OBJECT(Test);
+
+OBJECT_METHOD(Test, getThing) {
+	args.GetReturnValue().Set(Integer::New(isolate, object->thing));
+}
+
+OBJECT_METHOD(Test, setThing) {
+	object->thing = args[0]->ToInt32()->Value();
+}
 
 ScriptingEngine::ScriptingEngine() {
 	// Initialize V8.
@@ -96,12 +95,22 @@ void ScriptingEngine::createContext() {
 		otemp->Set(lname, lfunc);
 	}
 
-	consoleTemp = ObjectTemplate::New(isolate);
-	consoleTemp->SetInternalFieldCount(2);
-	consoleTemp->Set(V8Utils::v8convert<std::string, Local<String>>(isolate, "log"), FunctionTemplate::New(isolate, &Console::log));
-	consoleTemp->Set(V8Utils::v8convert<std::string, Local<String>>(isolate, "setThing"), FunctionTemplate::New(isolate, &Console::setThing));
+	for (ScriptClassConstructor *start = ScriptClassConstructor::last; start; start = start->next) {
+		Local<FunctionTemplate> testTemp = FunctionTemplate::New(isolate, start->mConstructor);
 
-	otemp->Set(V8Utils::v8convert<std::string, Local<String>>(isolate, "console"), consoleTemp);
+		//Create the class
+		testTemp->SetClassName(String::NewFromUtf8(isolate, start->mName.c_str()));
+		//Need one field for the wrapped object
+		testTemp->InstanceTemplate()->SetInternalFieldCount(1);
+
+		//Add all the methods for the class
+		for (auto it : start->mMethods) {
+			testTemp->PrototypeTemplate()->Set(String::NewFromUtf8(isolate, it.first.c_str()), FunctionTemplate::New(isolate, it.second));
+		}
+
+		//Add to global scope
+		otemp->Set(String::NewFromUtf8(isolate, start->mName.c_str()), testTemp);
+	}
 
 	//Two lines, same as above
 	context = Context::New(isolate, NULL, otemp);
@@ -198,14 +207,4 @@ Local<String> ScriptingEngine::callValues(const std::string &function, U32 count
 
 void ScriptingEngine::addFunction(const std::string &name, void(*callback)(const FunctionCallbackInfo<Value> &)) {
 	functions[name] = callback;
-}
-
-SCRIPT_FUNCTION(newCon) {
-	Console *con = new Console;
-	Local<ObjectTemplate> consoleTemp = ScriptingEngine::consoleTemp;
-
-	Local<Object> ccon = consoleTemp->NewInstance();
-	ccon->SetInternalField(0, External::New(args.GetIsolate(), con));
-
-	args.GetReturnValue().Set(ccon);
 }
