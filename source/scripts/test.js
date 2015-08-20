@@ -1,7 +1,8 @@
-var a = new GameObject();
+var scene = getScene();
 
-a.setPosition(new vec3(2, 4, 5));
-a.setRotation(new quat(1, 0, 0, 2));
-a.setScale(new vec3(1, 1, 1));
+for (var i = 0; i < 100; i ++) {
+	var test = new Sphere();
+	test.setPosition(new vec3(i, 0, 20));
+	scene.addObject(test);
+}
 
-print(a);
