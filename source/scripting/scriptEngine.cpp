@@ -192,3 +192,8 @@ Local<String> ScriptingEngine::callValues(const std::string &function, U32 count
 void ScriptingEngine::addFunction(const std::string &name, void(*callback)(const FunctionCallbackInfo<Value> &)) {
 	functions[name] = callback;
 }
+
+Local<Object> ScriptingEngine::instantiateClass(Isolate *isolate, const std::string &name) {
+	EscapableHandleScope scope(isolate);
+	return scope.Escape(objectConstructors[name].Get(isolate)->InstanceTemplate()->NewInstance());
+}

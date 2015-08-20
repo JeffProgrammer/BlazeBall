@@ -84,6 +84,8 @@ public:
 
 	void addFunction(const std::string &name, void(*callback)(const FunctionCallbackInfo<Value> &));
 	void createContext();
+
+	static Local<Object> instantiateClass(Isolate *isolate, const std::string &name);
 };
 
 typedef void(*v8callback)(const FunctionCallbackInfo<Value> &);

@@ -82,8 +82,7 @@ namespace glm {
 
 		ext_vec3 *v3 = new ext_vec3;
 		v3->mHandle = new glm::vec3(glm::cross(*object, *object2));
-		Local<FunctionTemplate> templ = ScriptingEngine::objectConstructors["vec3"].Get(isolate);
-		Local<Object> retobj = templ->InstanceTemplate()->NewInstance();
+		Local<Object> retobj = ScriptingEngine::instantiateClass(isolate, "vec3");
 		v3->Wrap(retobj);
 
 		args.GetReturnValue().Set(retobj);
