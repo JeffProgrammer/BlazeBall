@@ -40,7 +40,7 @@
 #include <GL/glew.h>
 #endif
 
-class GameObject : ObjectWrap {
+class GameObject : public ObjectWrap {
 protected:
 	glm::vec3 mOrigin;
 	glm::quat mRotation;
@@ -69,7 +69,18 @@ public:
 	virtual void updateTick(const F64 &deltaMS);
 
 	OBJECT_CONSTRUCTOR(GameObject, ()) {
-		
+		//TODO make glm::vec3 in the constructor
+		glm::vec3 pos = object->getPosition();
+		EXTERN_OBJECT(glm::vec3, origin) = &pos;
+		args.This()->Set(String::NewFromUtf8(isolate, "origin"), origin);
+
+		glm::quat rot = object->getRotation();
+		EXTERN_OBJECT(glm::quat, rotation) = &rot;
+		args.This()->Set(String::NewFromUtf8(isolate, "rotation"), rotation);
+
+		glm::vec3 scl = object->getScale();
+		EXTERN_OBJECT(glm::vec3, scale) = &scl;
+		args.This()->Set(String::NewFromUtf8(isolate, "scale"), scale);
 	}
 };
 

@@ -61,3 +61,21 @@ void GameObject::render() {
 void GameObject::updateTick(const F64 &deltaMS) {
 	
 }
+
+OBJECT_METHOD(GameObject, getPosition) {
+	glm::vec3 pos = object->getPosition();
+	EXTERN_OBJECT(glm::vec3, position) = &pos;
+	args.GetReturnValue().Set(position);
+}
+
+OBJECT_METHOD(GameObject, getRotation) {
+	glm::quat rot = object->getRotation();
+	EXTERN_OBJECT(glm::quat, rotation) = &rot;
+	args.GetReturnValue().Set(rotation);
+}
+
+OBJECT_METHOD(GameObject, getScale) {
+	glm::vec3 scl = object->getScale();
+	EXTERN_OBJECT(glm::vec3, scale) = &scl;
+	args.GetReturnValue().Set(scale);
+}
