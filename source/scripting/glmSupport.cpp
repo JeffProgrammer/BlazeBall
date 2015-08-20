@@ -104,4 +104,58 @@ namespace glm {
 		EXTERN_OBJECT(vec3, retobj) = new glm::vec3(*object - *object2);
 		args.GetReturnValue().Set(retobj);
 	}
+
+
+	EXTERN_OBJECT_CONSTRUCTOR(quat, (0, glm::vec3(0))) {
+		switch (args.Length()) {
+			case 1: {
+				auto value = args[0]->ToNumber()->Value();
+				object->w = value;
+				object->x = value;
+				object->y = value;
+				object->z = value;
+				break;
+			}
+			case 4: {
+				object->w = args[0]->ToNumber()->Value();
+				object->x = args[1]->ToNumber()->Value();
+				object->y = args[2]->ToNumber()->Value();
+				object->z = args[3]->ToNumber()->Value();
+				break;
+			}
+		}
+	}
+	EXTERN_OBJECT_METHOD(quat, getW) {
+		args.GetReturnValue().Set(Number::New(isolate, object->w));
+	}
+	EXTERN_OBJECT_METHOD(quat, getX) {
+		args.GetReturnValue().Set(Number::New(isolate, object->x));
+	}
+	EXTERN_OBJECT_METHOD(quat, getY) {
+		args.GetReturnValue().Set(Number::New(isolate, object->y));
+	}
+	EXTERN_OBJECT_METHOD(quat, getZ) {
+		args.GetReturnValue().Set(Number::New(isolate, object->z));
+	}
+	EXTERN_OBJECT_METHOD(quat, setW) {
+		object->w = args[0]->ToNumber()->Value();
+	}
+	EXTERN_OBJECT_METHOD(quat, setX) {
+		object->x = args[0]->ToNumber()->Value();
+	}
+	EXTERN_OBJECT_METHOD(quat, setY) {
+		object->y = args[0]->ToNumber()->Value();
+	}
+	EXTERN_OBJECT_METHOD(quat, setZ) {
+		object->z = args[0]->ToNumber()->Value();
+	}
+	EXTERN_OBJECT_METHOD(quat, set) {
+		object->w = args[0]->ToNumber()->Value();
+		object->x = args[1]->ToNumber()->Value();
+		object->y = args[2]->ToNumber()->Value();
+		object->z = args[3]->ToNumber()->Value();
+	}
+	EXTERN_OBJECT_METHOD(quat, length) {
+		args.GetReturnValue().Set(glm::length(*object));
+	}
 }
