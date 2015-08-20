@@ -191,10 +191,14 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 	btTriangleMesh *mesh_int = (btTriangleMesh*)trimesh->getMeshInterface();
 
 	std::vector<int> triangleIndices;
-	bool removed = false;
-	std::vector<std::pair<int, int>> removing;
+
+	// This vector keeps track of the indices that we have to remove from the manifold.
+	// we can not remove in the loop because calling manifold->removeContactPoint actually
+	// reduces the size of the manifold contact point cache. Doing this can cause an array
+	// index overflow (which is how I discovered this bug) and will then throw the btAssert.
+	std::vector<S32> removing;
+
 	int count = manifold->getNumContacts();
-	int simulatedCount = 0;
 	for (int i = 0; i < count; i++) {
 		int index;
 		if (otherIndex == 0)
@@ -207,42 +211,31 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 			BulletTriangle tri2 = btAccessibleTriangleMesh::getTriangle(mesh_int, index);
 
 			if (index == triangleIndices[j] || btAccessibleTriangleMesh::areTrianglesAdjacent(tri1, tri2)) {
-				if (manifold->getContactPoint(i).getDistance() < manifold->getContactPoint(j).getDistance()) {
-					std::pair<int, int> x;
-					x.first = count - simulatedCount;
-					x.second = j - simulatedCount;
-					removing.push_back(x);
-
-					//manifold->removeContactPoint(j);
-					simulatedCount++;
-				} else {
-					std::pair<int, int> x;
-					x.first = count - simulatedCount;
-					x.second = i - simulatedCount;
-					removing.push_back(x);
-
-					//manifold->removeContactPoint(i);]
-					simulatedCount++;
-				}
-				//printf("Point removed\n");
-				removed = true;
+				// For the removal index, we must subtract from the size so that we get the proper index.
+				// the size subtraction simulates removing points from the manifold array cache.
+				S32 toRemove;
+				if (manifold->getContactPoint(i).getDistance() < manifold->getContactPoint(j).getDistance())
+					toRemove = j - removing.size();
+				else
+					toRemove = i - removing.size();
+				removing.push_back(toRemove);
 				break;
 			}
 		}
 		triangleIndices.push_back(index);
 	}
 
-	if (removing.size() > 1) {
-		bool x = 1;
-	}
-
+	// Finally, we can now remove points from the manifold.
 	for (S32 i = static_cast<S32>(removing.size()) - 1; i > -1; i--) {
-		if (removing[i].second < 0)
-			continue; // it's safe to continue, it will already be gone
-		manifold->removeContactPoint(removing[i].second);
+		// because we subtract removing.size() from the index, sometimes
+		// the same point can be removed. If the same point is hit, it 
+		// ends up being a negative index, so we can just safely ignore it.
+		if (removing[i] < 0)
+			continue;
+		manifold->removeContactPoint(removing[i]);
 	}
 
-	if (removed) {
+	if (removing.size() > 0) {
 		for (int i = 0; i < manifold->getNumContacts(); i++) {
 			int index;
 			if (otherIndex == 0)
