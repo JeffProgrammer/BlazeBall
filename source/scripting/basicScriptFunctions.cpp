@@ -78,4 +78,19 @@ namespace glm {
 	EXTERN_OBJECT_METHOD(vec3, getX) {
 		args.GetReturnValue().Set(Number::New(isolate, object->x));
 	}
+	EXTERN_OBJECT_METHOD(vec3, getY) {
+		args.GetReturnValue().Set(Number::New(isolate, object->y));
+	}
+	EXTERN_OBJECT_METHOD(vec3, getZ) {
+		args.GetReturnValue().Set(Number::New(isolate, object->z));
+	}
+	EXTERN_OBJECT_METHOD(vec3, setX) {
+		object->x = args[0]->ToNumber()->Value();
+	}
+	EXTERN_OBJECT_METHOD(vec3, setY) {
+		object->x = args[1]->ToNumber()->Value();
+	}
+	EXTERN_OBJECT_METHOD(vec3, setZ) {
+		object->x = args[2]->ToNumber()->Value();
+	}
 }
