@@ -29,6 +29,8 @@
 #include "gameObject.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+IMPLEMENT_OBJECT(GameObject);
+
 void GameObject::updateCamera(const Movement &movement, const F64 &deltaMS) {
 	//Nothing
 }

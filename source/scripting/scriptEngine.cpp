@@ -36,8 +36,8 @@ class Test : public ObjectWrap {
 public:
 	U32 thing;
 
-	OBJECT_CONSTRUCTOR(Test) {
-		thing = args[0]->ToUint32()->Value();
+	OBJECT_CONSTRUCTOR(Test, ()) {
+		object->thing = args[0]->ToUint32()->Value();
 	}
 };
 

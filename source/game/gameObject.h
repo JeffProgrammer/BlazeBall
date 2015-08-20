@@ -32,6 +32,7 @@
 #include "base/types.h"
 #include "game/movement.h"
 #include <glm/matrix.hpp>
+#include "scripting/scriptEngine.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -39,7 +40,7 @@
 #include <GL/glew.h>
 #endif
 
-class GameObject {
+class GameObject : ObjectWrap {
 protected:
 	glm::vec3 mOrigin;
 	glm::quat mRotation;
@@ -66,6 +67,10 @@ public:
 	virtual void getCameraPosition(glm::mat4x4 &mat);
 
 	virtual void updateTick(const F64 &deltaMS);
+
+	OBJECT_CONSTRUCTOR(GameObject, ()) {
+		
+	}
 };
 
 #endif

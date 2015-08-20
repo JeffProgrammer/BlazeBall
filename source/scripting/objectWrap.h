@@ -71,7 +71,6 @@ class ObjectWrap {
   }
 
 
- protected:
   inline void Wrap(v8::Handle<v8::Object> handle) {
     assert(persistent().IsEmpty());
     assert(handle->InternalFieldCount() > 0);
@@ -81,6 +80,7 @@ class ObjectWrap {
   }
 
 
+protected:
   inline void MakeWeak(void) {
     persistent().SetWeak(this, WeakCallback);
     persistent().MarkIndependent();
