@@ -150,6 +150,10 @@ public:
 #define OBJECT_CONSTRUCTOR(name, constructor) \
 	static void __oc##name(const FunctionCallbackInfo<Value> &args) { \
 		HandleScope scope(args.GetIsolate()); \
+		if (args.This()->InternalFieldCount() == 0) { \
+			args.GetReturnValue().SetUndefined(); \
+			return; \
+		} \
 		\
 		name *object = new name constructor; \
 		__occ##name(object, args); \
@@ -184,6 +188,10 @@ public:
 	static void __occ##name(name *object, const v8::FunctionCallbackInfo<v8::Value> &args); \
 	static void __oc##name(const FunctionCallbackInfo<Value> &args) { \
 		HandleScope scope(args.GetIsolate()); \
+		if (args.This()->InternalFieldCount() == 0) { \
+			args.GetReturnValue().SetUndefined(); \
+			return; \
+		} \
 		\
 		ext_##name *object = new ext_##name (); \
 		object->mHandle = new name constructor; \
