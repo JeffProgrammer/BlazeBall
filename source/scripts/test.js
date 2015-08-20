@@ -1,8 +1,9 @@
 var scene = getScene();
 
-for (var i = 0; i < 100; i ++) {
-	var test = new Sphere();
-	test.setPosition(new vec3(i, 0, 20));
-	scene.addObject(test);
+for (var x = 0; x < 10; x ++) {
+	for (var y = 0; y < 10; y ++) {
+		var test = new Sphere(new vec3(x, y, 20), ((x + y) % 7) / 9);
+		scene.addObject(test);
+	}
 }
 
