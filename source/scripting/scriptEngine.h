@@ -204,4 +204,16 @@ public:
 	ScriptClassConstructor::MethodConstructor mc##classname##name(#name, __mc##classname##name, __scc##classname); \
 	void __m##classname##name(classname *object, Isolate *isolate, const FunctionCallbackInfo<Value> &args)
 
+#define OBJECT(classname, name) \
+	Local<Object> name = ScriptingEngine::instantiateClass(isolate, #classname); \
+	c_##name->Wrap(name); \
+	classname *c_##name
+
+#define EXTERN_OBJECT(classname, name) \
+	ext_##classname *c_##name = new ext_##classname; \
+	Local<Object> name = ScriptingEngine::instantiateClass(isolate, #classname); \
+	c_##name->Wrap(name); \
+	c_##name->mHandle
+
+
 #endif

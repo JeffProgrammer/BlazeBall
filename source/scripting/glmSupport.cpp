@@ -80,10 +80,7 @@ namespace glm {
 	EXTERN_OBJECT_METHOD(vec3, cross) {
 		glm::vec3 *object2 = ObjectWrap::Unwrap<ext_vec3>(args[0]->ToObject())->mHandle;
 
-		ext_vec3 *v3 = new ext_vec3;
-		v3->mHandle = new glm::vec3(glm::cross(*object, *object2));
-		Local<Object> retobj = ScriptingEngine::instantiateClass(isolate, "vec3");
-		v3->Wrap(retobj);
+		EXTERN_OBJECT(vec3, retobj) = new glm::vec3(glm::cross(*object, *object2));
 
 		args.GetReturnValue().Set(retobj);
 	}
