@@ -253,7 +253,7 @@ static void __oc(const FunctionCallbackInfo<Value> &args);
 
 #define OBJECT(classname, name) \
 	Local<Object> name = ScriptingEngine::instantiateClass(isolate, #classname); \
-	c_##name->Wrap(name); \
+	name->Wrap(name); \
 	classname *c_##name
 
 #define EXTERN_OBJECT(classname, name) \

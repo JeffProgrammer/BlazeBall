@@ -61,7 +61,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/vec3.hpp>
 
-class Scene {
+class Scene : public ObjectWrap {
 protected:
 	bool running;
 	bool printFPS = true;
@@ -143,6 +143,10 @@ public:
 	void createCamera(const glm::vec3 &position);
 	void createPlayer(const glm::vec3 &position, F32 radius);
 	void createInterior(const std::string &path);
+
+	OBJECT_CONSTRUCTOR(Scene, ()) {
+		
+	}
 };
 
 #endif

@@ -33,6 +33,8 @@
 #include <thread>
 #include <algorithm>
 
+IMPLEMENT_OBJECT(Scene);
+
 void Scene::loadShaderUniforms() {
 	//Light
 	glUniform4fv(GLLocations.lightColor, 1, &lightColor.r);
@@ -421,4 +423,18 @@ Scene::~Scene() {
 	}
 	delete window;
 	delete mTimer;
+}
+
+OBJECT_METHOD(Scene, addObject) {
+	GameObject *obj = UNWRAP(GameObject, args[0]);
+	object->addObject(obj);
+}
+
+SCRIPT_FUNCTION(getScene) {
+	Isolate *isolate = args.GetIsolate();
+	Local<Object> object = ScriptingEngine::instantiateClass(isolate, "Scene"); \
+	Scene *scene = Scene::getSingleton();
+	scene->Wrap(object);
+
+	args.GetReturnValue().Set(object);
 }
