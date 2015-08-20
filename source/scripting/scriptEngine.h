@@ -156,13 +156,13 @@ public:
 		} \
 		\
 		name *object = new name constructor; \
-		__occ##name(object, args); \
+		__occ##name(object, args.GetIsolate(), args); \
 		\
 		object->Wrap(args.This()); \
 		args.GetReturnValue().Set(args.This()); \
 	} \
 	static ScriptClassConstructor *__scc##name; \
-	static void __occ##name(name *object, const v8::FunctionCallbackInfo<v8::Value> &args)
+	static void __occ##name(name *object, Isolate *isolate, const v8::FunctionCallbackInfo<v8::Value> &args)
 
 #define IMPLEMENT_OBJECT(name) \
 	ScriptClassConstructor *name::__scc##name = new ScriptClassConstructor(#name, __oc##name)
@@ -176,16 +176,18 @@ public:
 	ScriptClassConstructor::MethodConstructor mc##classname##name(#name, __mc##classname##name, classname::__scc##classname); \
 	void __m##classname##name(classname *object, Isolate *isolate, const FunctionCallbackInfo<Value> &args)
 
+template <typename T>
+class ExternObject : public ObjectWrap {
+public:
+	T *mHandle;
+
+	inline ~ExternObject() {
+		delete mHandle;
+	}
+};
+
 #define EXTERN_OBJECT_CONSTRUCTOR(name, constructor) \
-	class ext_##name : public ObjectWrap { \
-	public: \
-		name *mHandle; \
-	protected: \
-		inline ~ext_##name () { \
-			delete mHandle; \
-		} \
-	}; \
-	static void __occ##name(name *object, const v8::FunctionCallbackInfo<v8::Value> &args); \
+	static void __occ##name(name *object, Isolate *isolate, const v8::FunctionCallbackInfo<v8::Value> &args); \
 	static void __oc##name(const FunctionCallbackInfo<Value> &args) { \
 		HandleScope scope(args.GetIsolate()); \
 		if (args.This()->InternalFieldCount() == 0) { \
@@ -193,20 +195,20 @@ public:
 			return; \
 		} \
 		\
-		ext_##name *object = new ext_##name (); \
+		ExternObject<name> *object = new ExternObject<name> (); \
 		object->mHandle = new name constructor; \
-		__occ##name(object->mHandle, args); \
+		__occ##name(object->mHandle, args.GetIsolate(), args); \
 		\
 		object->Wrap(args.This()); \
 		args.GetReturnValue().Set(args.This()); \
 	} \
 	static ScriptClassConstructor *__scc##name = new ScriptClassConstructor(#name, __oc##name); \
-	static void __occ##name(name *object, const v8::FunctionCallbackInfo<v8::Value> &args) \
+	static void __occ##name(name *object, Isolate *isolate, const v8::FunctionCallbackInfo<v8::Value> &args) \
 
 #define EXTERN_OBJECT_METHOD(classname, name) \
 	void __m##classname##name(classname *object, Isolate *isolate, const FunctionCallbackInfo<Value> &args); \
 	static void __mc##classname##name(const FunctionCallbackInfo<Value> &args) { \
-		ext_##classname *object = ObjectWrap::Unwrap<ext_##classname>(args.This()); \
+		ExternObject<classname> *object = ObjectWrap::Unwrap<ExternObject<classname>>(args.This()); \
 		__m##classname##name(object->mHandle, args.GetIsolate(), args); \
 	} \
 	ScriptClassConstructor::MethodConstructor mc##classname##name(#name, __mc##classname##name, __scc##classname); \
@@ -218,7 +220,7 @@ public:
 	classname *c_##name
 
 #define EXTERN_OBJECT(classname, name) \
-	ext_##classname *c_##name = new ext_##classname; \
+	ExternObject<classname> *c_##name = new ExternObject<classname>; \
 	Local<Object> name = ScriptingEngine::instantiateClass(isolate, #classname); \
 	c_##name->Wrap(name); \
 	c_##name->mHandle
@@ -227,6 +229,6 @@ public:
 	ObjectWrap::Unwrap<classname>(thing->ToObject())
 
 #define UNWRAP_EXTERN(classname, thing) \
-	ObjectWrap::Unwrap<ext_##classname>(thing->ToObject())->mHandle
+	ObjectWrap::Unwrap<ExternObject<classname>>(thing->ToObject())->mHandle
 
 #endif
