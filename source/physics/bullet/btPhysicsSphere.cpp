@@ -192,8 +192,9 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 
 	std::vector<int> triangleIndices;
 	bool removed = false;
-
+	std::vector<std::pair<int, int>> removing;
 	int count = manifold->getNumContacts();
+	int simulatedCount = 0;
 	for (int i = 0; i < count; i++) {
 		int index;
 		if (otherIndex == 0)
@@ -206,16 +207,39 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 			BulletTriangle tri2 = btAccessibleTriangleMesh::getTriangle(mesh_int, index);
 
 			if (index == triangleIndices[j] || btAccessibleTriangleMesh::areTrianglesAdjacent(tri1, tri2)) {
-				if (manifold->getContactPoint(i).getDistance() < manifold->getContactPoint(j).getDistance())
-					manifold->removeContactPoint(j);
-				else
-					manifold->removeContactPoint(i);
+				if (manifold->getContactPoint(i).getDistance() < manifold->getContactPoint(j).getDistance()) {
+					std::pair<int, int> x;
+					x.first = count - simulatedCount;
+					x.second = j - simulatedCount;
+					removing.push_back(x);
+
+					//manifold->removeContactPoint(j);
+					simulatedCount++;
+				} else {
+					std::pair<int, int> x;
+					x.first = count - simulatedCount;
+					x.second = i - simulatedCount;
+					removing.push_back(x);
+
+					//manifold->removeContactPoint(i);]
+					simulatedCount++;
+				}
 				//printf("Point removed\n");
 				removed = true;
 				break;
 			}
 		}
 		triangleIndices.push_back(index);
+	}
+
+	if (removing.size() > 1) {
+		bool x = 1;
+	}
+
+	for (S32 i = static_cast<S32>(removing.size()) - 1; i > -1; i--) {
+		if (removing[i].second < 0)
+			continue; // it's safe to continue, it will already be gone
+		manifold->removeContactPoint(removing[i].second);
 	}
 
 	if (removed) {
