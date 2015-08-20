@@ -97,6 +97,10 @@ public:
 	virtual void getCameraPosition(glm::mat4x4 &mat);
 
 	virtual void updateTick(const F64 &deltaMS);
+
+	OBJECT_CONSTRUCTOR(Sphere, (glm::vec3(0), 0.2)) {
+		
+	}
 };
 
 #endif

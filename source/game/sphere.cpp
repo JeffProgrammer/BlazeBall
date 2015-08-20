@@ -35,6 +35,9 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+IMPLEMENT_OBJECT(Sphere);
+OBJECT_PARENT(Sphere, GameObject);
+
 Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), maxAngVel(1000.0f), material(nullptr), mVBO(nullptr) {
 	mActor = PhysicsEngine::getEngine()->createSphere(radius);
 	mActor->setPosition(origin);
