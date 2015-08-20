@@ -79,3 +79,18 @@ OBJECT_METHOD(GameObject, getScale) {
 	EXTERN_OBJECT(glm::vec3, scale) = &scl;
 	args.GetReturnValue().Set(scale);
 }
+
+OBJECT_METHOD(GameObject, setPosition) {
+	glm::vec3 *position = UNWRAP_EXTERN(glm::vec3, args[0]);
+	object->setPosition(*position);
+}
+
+OBJECT_METHOD(GameObject, setRotation) {
+	glm::quat *rotation = UNWRAP_EXTERN(glm::quat, args[0]);
+	object->setRotation(*rotation);
+}
+
+OBJECT_METHOD(GameObject, setScale) {
+	glm::vec3 *scale = UNWRAP_EXTERN(glm::vec3, args[0]);
+	object->setScale(*scale);
+}

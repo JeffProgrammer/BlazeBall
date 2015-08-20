@@ -1,6 +1,7 @@
-var vec = new vec3(1, 2, 3);
-var vec2 = new vec3(-1, 3, 4);
+var a = new GameObject();
 
-print(vec.add(vec2));
+a.setPosition(new vec3(2, 4, 5));
+a.setRotation(new quat(1, 0, 0, 2));
+a.setScale(new vec3(1, 1, 1));
 
-print(vec3(2, 3, 4));
+print(a);

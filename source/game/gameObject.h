@@ -57,7 +57,7 @@ public:
 	virtual void setPosition(const glm::vec3 &position) { mOrigin = position; }
 
 	virtual glm::quat getRotation() { return mRotation; }
-	virtual void setPosition(const glm::quat &rotation) { mRotation = rotation; }
+	virtual void setRotation(const glm::quat &rotation) { mRotation = rotation; }
 
 	virtual glm::vec3 getScale() { return mScale; }
 	virtual void setScale(const glm::vec3 &scale) { mScale = scale; }
