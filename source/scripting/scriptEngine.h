@@ -177,15 +177,19 @@ public:
 			delete mHandle; \
 		} \
 	}; \
-	static void __eocc##name(name *object, const v8::FunctionCallbackInfo<v8::Value> &args); \
-	static void __occext_##name(ext_##name *object, const v8::FunctionCallbackInfo<v8::Value> &args); \
-	\
-	OBJECT_CONSTRUCTOR(ext_##name, ()) { \
+	static void __occ##name(name *object, const v8::FunctionCallbackInfo<v8::Value> &args); \
+	static void __oc##name(const FunctionCallbackInfo<Value> &args) { \
+		HandleScope scope(args.GetIsolate()); \
+		\
+		ext_##name *object = new ext_##name (); \
 		object->mHandle = new name constructor; \
-		__eocc##name(object->mHandle, args); \
+		__occ##name(object->mHandle, args); \
+		\
+		object->Wrap(args.This()); \
+		args.GetReturnValue().Set(args.This()); \
 	} \
-	static ScriptClassConstructor *__scc##name = new ScriptClassConstructor(#name, __ocext_##name); \
-	static void __eocc##name(name *object, const v8::FunctionCallbackInfo<v8::Value> &args) \
+	static ScriptClassConstructor *__scc##name = new ScriptClassConstructor(#name, __oc##name); \
+	static void __occ##name(name *object, const v8::FunctionCallbackInfo<v8::Value> &args) \
 
 #define EXTERN_OBJECT_METHOD(classname, name) \
 	void __m##classname##name(classname *object, Isolate *isolate, const FunctionCallbackInfo<Value> &args); \
