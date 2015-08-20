@@ -40,6 +40,9 @@ public:
 	virtual bool getColliding();
 	virtual glm::vec3 getCollisionNormal();
 
+	virtual F32 getRadius();
+	virtual void setRadius(const F32 &radius);
+
 	virtual void modifyContact(btPersistentManifold *const &manifold, const btCollisionObject *other, U32 otherIndex);
 };
 

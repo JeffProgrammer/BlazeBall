@@ -78,6 +78,9 @@ public:
 	virtual void setPosition(const glm::vec3 &pos);
 	virtual void setRotation(const glm::quat &rot);
 
+	F32 getRadius();
+	void setRadius(const F32 &radius);
+
 	void setMaterial(Material *material) {
 		this->material = material;
 	}
@@ -99,7 +102,12 @@ public:
 	virtual void updateTick(const F64 &deltaMS);
 
 	OBJECT_CONSTRUCTOR(Sphere, (glm::vec3(0), 0.2)) {
-		
+		if (args.Length() >= 1) {
+			object->setPosition(*UNWRAP_EXTERN(glm::vec3, args[0]));
+		}
+		if (args.Length() >= 2) {
+			object->setRadius(args[1]->ToNumber()->Value());
+		}
 	}
 };
 

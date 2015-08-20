@@ -181,6 +181,15 @@ void Sphere::setAngularVelocity(const glm::vec3 &vel) {
     mActor->setAngularVelocity(vel);
 }
 
+F32 Sphere::getRadius() {
+	return dynamic_cast<PhysicsSphere *>(mActor)->getRadius();
+}
+
+void Sphere::setRadius(const F32 &radius) {
+	this->radius = radius;
+	dynamic_cast<PhysicsSphere *>(mActor)->setRadius(radius);
+}
+
 void Sphere::updateCamera(const Movement &movement, const F64 &deltaMS) {
 	if (movement.pitchUp) cameraPitch -= keyCameraSpeed;
 	if (movement.pitchDown) cameraPitch += keyCameraSpeed;

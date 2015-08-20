@@ -270,3 +270,11 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 		manifold->getContactPoint(i).m_combinedRollingFriction *= friction;
 	}
 }
+
+F32 btPhysicsSphere::getRadius() {
+	return dynamic_cast<btSphereShape *>(mActor->getCollisionShape())->getRadius();
+}
+
+void btPhysicsSphere::setRadius(const F32 &radius) {
+	dynamic_cast<btSphereShape *>(mActor->getCollisionShape())->setUnscaledRadius(radius);
+}

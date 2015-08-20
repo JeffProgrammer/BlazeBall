@@ -35,6 +35,9 @@ class PhysicsSphere {
 public:
 	virtual bool getColliding() = 0;
 	virtual glm::vec3 getCollisionNormal() = 0;
+
+	virtual F32 getRadius() = 0;
+	virtual void setRadius(const F32 &radius) = 0;
 };
 
 #endif
