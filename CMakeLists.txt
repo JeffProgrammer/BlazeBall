@@ -311,6 +311,7 @@ set (DIFVIEWERGAME_SRC
 
 	# Scripts folder
 	source/scripts/main.js
+	source/scripts/test.js
 )
 
 set (DIFVIEWERGAME_LIBRARIES
