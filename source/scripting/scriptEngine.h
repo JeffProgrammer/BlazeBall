@@ -184,11 +184,19 @@ public:
 	inline ~ExternObject() {
 		delete mHandle;
 	}
+
+	static ScriptClassConstructor *__scc;
 };
 
+template <typename T>
+static void __occ(T *object, Isolate *isolate, const v8::FunctionCallbackInfo<v8::Value> &args);
+
+template <typename T>
+static void __oc(const FunctionCallbackInfo<Value> &args);
+
 #define EXTERN_OBJECT_CONSTRUCTOR(name, constructor) \
-	static void __occ##name(name *object, Isolate *isolate, const v8::FunctionCallbackInfo<v8::Value> &args); \
-	static void __oc##name(const FunctionCallbackInfo<Value> &args) { \
+	template<> static void __occ<name>(name *object, Isolate *isolate, const v8::FunctionCallbackInfo<v8::Value> &args); \
+	template<> static void __oc<name>(const FunctionCallbackInfo<Value> &args) { \
 		HandleScope scope(args.GetIsolate()); \
 		if (args.This()->InternalFieldCount() == 0) { \
 			args.GetReturnValue().SetUndefined(); \
@@ -197,22 +205,33 @@ public:
 		\
 		ExternObject<name> *object = new ExternObject<name> (); \
 		object->mHandle = new name constructor; \
-		__occ##name(object->mHandle, args.GetIsolate(), args); \
+		__occ<name>(object->mHandle, args.GetIsolate(), args); \
 		\
 		object->Wrap(args.This()); \
 		args.GetReturnValue().Set(args.This()); \
 	} \
-	static ScriptClassConstructor *__scc##name = new ScriptClassConstructor(#name, __oc##name); \
-	static void __occ##name(name *object, Isolate *isolate, const v8::FunctionCallbackInfo<v8::Value> &args) \
+	template<> ScriptClassConstructor *ExternObject<name>::__scc = new ScriptClassConstructor(#name, __oc<name>); \
+	template<> static void __occ<name>(name *object, Isolate *isolate, const v8::FunctionCallbackInfo<v8::Value> &args) \
 
 #define EXTERN_OBJECT_METHOD(classname, name) \
-	void __m##classname##name(classname *object, Isolate *isolate, const FunctionCallbackInfo<Value> &args); \
-	static void __mc##classname##name(const FunctionCallbackInfo<Value> &args) { \
+	static void __m##name(classname *object, Isolate *isolate, const FunctionCallbackInfo<Value> &args); \
+	template <typename T> \
+	static void __mc##name(const FunctionCallbackInfo<Value> &args); \
+	\
+	template<> static void __mc##name<classname>(const FunctionCallbackInfo<Value> &args) { \
 		ExternObject<classname> *object = ObjectWrap::Unwrap<ExternObject<classname>>(args.This()); \
-		__m##classname##name(object->mHandle, args.GetIsolate(), args); \
+		__m##name(object->mHandle, args.GetIsolate(), args); \
 	} \
-	ScriptClassConstructor::MethodConstructor mc##classname##name(#name, __mc##classname##name, __scc##classname); \
-	void __m##classname##name(classname *object, Isolate *isolate, const FunctionCallbackInfo<Value> &args)
+	namespace name { \
+		template <typename T> \
+		class Constructor; \
+		template <> \
+		class Constructor<classname> { \
+			static ScriptClassConstructor::MethodConstructor *mcstr; \
+		}; \
+		ScriptClassConstructor::MethodConstructor *Constructor<classname>::mcstr = new ScriptClassConstructor::MethodConstructor(#name, __mc##name<classname>, ExternObject<classname>::__scc); \
+	} \
+	static void __m##name(classname *object, Isolate *isolate, const FunctionCallbackInfo<Value> &args)
 
 #define OBJECT(classname, name) \
 	Local<Object> name = ScriptingEngine::instantiateClass(isolate, #classname); \
