@@ -34,6 +34,7 @@
 
 using namespace v8;
 
+class ScriptClassConstructor;
 class ScriptingEngine {
 protected:
 	std::map<std::string, void(*)(const FunctionCallbackInfo<Value> &)> functions;
@@ -54,6 +55,8 @@ protected:
 		concat_array(array, first);
 		concat_array(array, args...);
 	}
+
+	void createFunctionTemplate(Local<ObjectTemplate> &global, ScriptClassConstructor *scc);
 public:
 	Isolate *isolate;
 	Local<Context> context;
@@ -124,6 +127,8 @@ public:
 	v8callback mConstructor;
 	std::vector<std::pair<std::string, v8callback> > mMethods;
 
+	std::string mParentName;
+
 	ScriptClassConstructor *next;
 	static ScriptClassConstructor *last;
 
@@ -139,10 +144,20 @@ public:
 		mMethods.push_back(std::make_pair(name, callback));
 	}
 
+	void setParent(const std::string &parentName) {
+		mParentName = parentName;
+	}
+
 	class MethodConstructor {
 	public:
 		MethodConstructor(const std::string &name, v8callback function, ScriptClassConstructor *parent) {
 			parent->addMethod(name, function);
+		}
+	};
+	class ParentConstructor {
+	public:
+		ParentConstructor(const std::string &parentName, ScriptClassConstructor *parent) {
+			parent->setParent(parentName);
 		}
 	};
 };
@@ -166,6 +181,9 @@ public:
 
 #define IMPLEMENT_OBJECT(name) \
 	ScriptClassConstructor *name::__scc##name = new ScriptClassConstructor(#name, __oc##name)
+
+#define OBJECT_PARENT(name, parent) \
+	ScriptClassConstructor::ParentConstructor op##name##parent(#parent, name::__scc##name);
 
 #define OBJECT_METHOD(classname, name) \
 	void __m##classname##name(classname *object, Isolate *isolate, const FunctionCallbackInfo<Value> &args); \

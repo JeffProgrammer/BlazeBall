@@ -51,6 +51,42 @@ ScriptingEngine::~ScriptingEngine() {
 	V8::ShutdownPlatform();
 }
 
+void ScriptingEngine::createFunctionTemplate(Local<ObjectTemplate> &global, ScriptClassConstructor *scc) {
+	//Don't add more than once
+	if (objectConstructors.find(scc->mName) != objectConstructors.end())
+		return;
+
+	Local<FunctionTemplate> testTemp = FunctionTemplate::New(isolate, scc->mConstructor);
+
+	std::string className = scc->mName.substr(scc->mName.find_last_of(':') + 1);
+
+	//Create the class
+	testTemp->SetClassName(String::NewFromUtf8(isolate, className.c_str()));
+	//Need one field for the wrapped object
+	testTemp->InstanceTemplate()->SetInternalFieldCount(1);
+
+	//Add all the methods for the class
+	for (auto it : scc->mMethods) {
+		testTemp->PrototypeTemplate()->Set(String::NewFromUtf8(isolate, it.first.c_str()), FunctionTemplate::New(isolate, it.second));
+	}
+
+	if (scc->mParentName.length()) {
+		//Try to find the parent's constructor
+		for (ScriptClassConstructor *start = ScriptClassConstructor::last; start; start = start->next) {
+			if (start->mName == scc->mParentName) {
+				createFunctionTemplate(global, start);
+			}
+		}
+
+		testTemp->Inherit(objectConstructors[scc->mParentName].Get(isolate));
+	}
+
+	//Add to global scope
+	global->Set(String::NewFromUtf8(isolate, className.c_str()), testTemp);
+
+	objectConstructors[scc->mName] = Global<FunctionTemplate>(isolate, testTemp);
+}
+
 void ScriptingEngine::createContext() {
 	//This needs to be in two separate things so it can be copied into global
 	Local<ObjectTemplate> otemp = ObjectTemplate::New(isolate);
@@ -78,24 +114,7 @@ void ScriptingEngine::createContext() {
 	}
 
 	for (ScriptClassConstructor *start = ScriptClassConstructor::last; start; start = start->next) {
-		Local<FunctionTemplate> testTemp = FunctionTemplate::New(isolate, start->mConstructor);
-
-		std::string className = start->mName.substr(start->mName.find_last_of(':') + 1);
-
-		//Create the class
-		testTemp->SetClassName(String::NewFromUtf8(isolate, className.c_str()));
-		//Need one field for the wrapped object
-		testTemp->InstanceTemplate()->SetInternalFieldCount(1);
-
-		//Add all the methods for the class
-		for (auto it : start->mMethods) {
-			testTemp->PrototypeTemplate()->Set(String::NewFromUtf8(isolate, it.first.c_str()), FunctionTemplate::New(isolate, it.second));
-		}
-
-		//Add to global scope
-		otemp->Set(String::NewFromUtf8(isolate, className.c_str()), testTemp);
-
-		objectConstructors[start->mName] = Global<FunctionTemplate>(isolate, testTemp);
+		createFunctionTemplate(otemp, start);
 	}
 
 	//Two lines, same as above
