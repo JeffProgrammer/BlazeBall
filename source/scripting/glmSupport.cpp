@@ -27,31 +27,58 @@
 //------------------------------------------------------------------------------
 
 #include "scriptEngine.h"
-#include "render/scene.h"
 
-SCRIPT_FUNCTION(quit) {
-	//Quit the game, duh
-	exit(0);
-}
-
-SCRIPT_FUNCTION(print) {
-	//Print all the args from the method in order
-	for (U32 i = 0; i < args.Length(); i ++) {
-		v8::HandleScope scope(args.GetIsolate());
-		printf("%s", V8Utils::v8convert<Local<String>, std::string>(args[i]->ToString()).c_str());
+namespace glm {
+	EXTERN_OBJECT_CONSTRUCTOR(vec3, (0)) {
+		switch (args.Length()) {
+			case 1: {
+				auto value = args[0]->ToNumber()->Value();
+				object->x = value;
+				object->y = value;
+				object->z = value;
+				break;
+			}
+			case 3: {
+				object->x = args[0]->ToNumber()->Value();
+				object->y = args[1]->ToNumber()->Value();
+				object->z = args[2]->ToNumber()->Value();
+				break;
+			}
+		}
 	}
-	//Newline at the end
-	printf("\n");
-}
 
-SCRIPT_FUNCTION(require) {
-	//Execute another script file and return its values
-	std::string path = V8Utils::v8convert<Local<String>, std::string>(args[0]->ToString());
-
-	std::string result;
-	if (Scene::getSingleton()->mEngine->runScriptFile(path, result)) {
-		args.GetReturnValue().Set(V8Utils::v8convert<std::string, Local<String>>(Scene::getSingleton()->mEngine->isolate, result));
-	} else {
-		args.GetReturnValue().SetEmptyString();
+	EXTERN_OBJECT_METHOD(vec3, getX) {
+		args.GetReturnValue().Set(Number::New(isolate, object->x));
+	}
+	EXTERN_OBJECT_METHOD(vec3, getY) {
+		args.GetReturnValue().Set(Number::New(isolate, object->y));
+	}
+	EXTERN_OBJECT_METHOD(vec3, getZ) {
+		args.GetReturnValue().Set(Number::New(isolate, object->z));
+	}
+	EXTERN_OBJECT_METHOD(vec3, setX) {
+		object->x = args[0]->ToNumber()->Value();
+	}
+	EXTERN_OBJECT_METHOD(vec3, setY) {
+		object->y = args[0]->ToNumber()->Value();
+	}
+	EXTERN_OBJECT_METHOD(vec3, setZ) {
+		object->z = args[0]->ToNumber()->Value();
+	}
+	EXTERN_OBJECT_METHOD(vec3, set) {
+		object->x = args[0]->ToNumber()->Value();
+		object->y = args[1]->ToNumber()->Value();
+		object->z = args[2]->ToNumber()->Value();
+	}
+	EXTERN_OBJECT_METHOD(vec3, length) {
+		args.GetReturnValue().Set(glm::length(*object));
+	}
+	EXTERN_OBJECT_METHOD(vec3, dot) {
+		glm::vec3 *object2 = ObjectWrap::Unwrap<ext_vec3>(args[0]->ToObject())->mHandle;
+		args.GetReturnValue().Set(Number::New(isolate, glm::dot(*object, *object2)));
+	}
+	EXTERN_OBJECT_METHOD(vec3, toString) {
+		std::string out = "{" + std::to_string(object->x) + ", " + std::to_string(object->y) + ", " + std::to_string(object->z) + "}";
+		args.GetReturnValue().Set(String::NewFromUtf8(isolate, out.c_str()));
 	}
 }

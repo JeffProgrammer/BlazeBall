@@ -1,2 +1,4 @@
 var vec = new vec3(1, 2, 3);
-print(vec.getX());
+var vec2 = new vec3(-1, 3, 4);
+
+print(vec.cross(vec2));
