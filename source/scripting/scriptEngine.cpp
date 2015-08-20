@@ -80,8 +80,10 @@ void ScriptingEngine::createContext() {
 	for (ScriptClassConstructor *start = ScriptClassConstructor::last; start; start = start->next) {
 		Local<FunctionTemplate> testTemp = FunctionTemplate::New(isolate, start->mConstructor);
 
+		std::string className = start->mName.substr(start->mName.find_last_of(':') + 1);
+
 		//Create the class
-		testTemp->SetClassName(String::NewFromUtf8(isolate, start->mName.c_str()));
+		testTemp->SetClassName(String::NewFromUtf8(isolate, className.c_str()));
 		//Need one field for the wrapped object
 		testTemp->InstanceTemplate()->SetInternalFieldCount(1);
 
@@ -91,7 +93,7 @@ void ScriptingEngine::createContext() {
 		}
 
 		//Add to global scope
-		otemp->Set(String::NewFromUtf8(isolate, start->mName.c_str()), testTemp);
+		otemp->Set(String::NewFromUtf8(isolate, className.c_str()), testTemp);
 
 		objectConstructors[start->mName] = Global<FunctionTemplate>(isolate, testTemp);
 	}
