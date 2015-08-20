@@ -69,7 +69,6 @@ public:
 	virtual void updateTick(const F64 &deltaMS);
 
 	OBJECT_CONSTRUCTOR(GameObject, ()) {
-		//TODO make glm::vec3 in the constructor
 		glm::vec3 pos = object->getPosition();
 		EXTERN_OBJECT(glm::vec3, origin) = &pos;
 		args.This()->Set(String::NewFromUtf8(isolate, "origin"), origin);

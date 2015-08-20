@@ -28,134 +28,132 @@
 
 #include "scriptEngine.h"
 
-namespace glm {
-	EXTERN_OBJECT_CONSTRUCTOR(vec3, (0)) {
-		switch (args.Length()) {
-			case 1: {
-				auto value = args[0]->ToNumber()->Value();
-				object->x = value;
-				object->y = value;
-				object->z = value;
-				break;
-			}
-			case 3: {
-				object->x = args[0]->ToNumber()->Value();
-				object->y = args[1]->ToNumber()->Value();
-				object->z = args[2]->ToNumber()->Value();
-				break;
-			}
+EXTERN_OBJECT_CONSTRUCTOR(glm::vec3, (0)) {
+	switch (args.Length()) {
+		case 1: {
+			auto value = args[0]->ToNumber()->Value();
+			object->x = value;
+			object->y = value;
+			object->z = value;
+			break;
+		}
+		case 3: {
+			object->x = args[0]->ToNumber()->Value();
+			object->y = args[1]->ToNumber()->Value();
+			object->z = args[2]->ToNumber()->Value();
+			break;
 		}
 	}
+}
 
-	EXTERN_OBJECT_METHOD(vec3, getX) {
-		args.GetReturnValue().Set(Number::New(isolate, object->x));
-	}
-	EXTERN_OBJECT_METHOD(vec3, getY) {
-		args.GetReturnValue().Set(Number::New(isolate, object->y));
-	}
-	EXTERN_OBJECT_METHOD(vec3, getZ) {
-		args.GetReturnValue().Set(Number::New(isolate, object->z));
-	}
-	EXTERN_OBJECT_METHOD(vec3, setX) {
-		object->x = args[0]->ToNumber()->Value();
-	}
-	EXTERN_OBJECT_METHOD(vec3, setY) {
-		object->y = args[0]->ToNumber()->Value();
-	}
-	EXTERN_OBJECT_METHOD(vec3, setZ) {
-		object->z = args[0]->ToNumber()->Value();
-	}
-	EXTERN_OBJECT_METHOD(vec3, set) {
-		object->x = args[0]->ToNumber()->Value();
-		object->y = args[1]->ToNumber()->Value();
-		object->z = args[2]->ToNumber()->Value();
-	}
-	EXTERN_OBJECT_METHOD(vec3, length) {
-		args.GetReturnValue().Set(glm::length(*object));
-	}
-	EXTERN_OBJECT_METHOD(vec3, dot) {
-		//Second vector
-		glm::vec3 *object2 = UNWRAP_EXTERN(vec3, args[0]);
-		//Dot them and set that as the return value
-		args.GetReturnValue().Set(Number::New(isolate, glm::dot(*object, *object2)));
-	}
-	EXTERN_OBJECT_METHOD(vec3, cross) {
-		//Second vector
-		glm::vec3 *object2 = UNWRAP_EXTERN(vec3, args[0]);
+EXTERN_OBJECT_METHOD(glm::vec3, getX) {
+	args.GetReturnValue().Set(Number::New(isolate, object->x));
+}
+EXTERN_OBJECT_METHOD(glm::vec3, getY) {
+	args.GetReturnValue().Set(Number::New(isolate, object->y));
+}
+EXTERN_OBJECT_METHOD(glm::vec3, getZ) {
+	args.GetReturnValue().Set(Number::New(isolate, object->z));
+}
+EXTERN_OBJECT_METHOD(glm::vec3, setX) {
+	object->x = args[0]->ToNumber()->Value();
+}
+EXTERN_OBJECT_METHOD(glm::vec3, setY) {
+	object->y = args[0]->ToNumber()->Value();
+}
+EXTERN_OBJECT_METHOD(glm::vec3, setZ) {
+	object->z = args[0]->ToNumber()->Value();
+}
+EXTERN_OBJECT_METHOD(glm::vec3, set) {
+	object->x = args[0]->ToNumber()->Value();
+	object->y = args[1]->ToNumber()->Value();
+	object->z = args[2]->ToNumber()->Value();
+}
+EXTERN_OBJECT_METHOD(glm::vec3, length) {
+	args.GetReturnValue().Set(glm::length(*object));
+}
+EXTERN_OBJECT_METHOD(glm::vec3, dot) {
+	//Second vector
+	glm::vec3 *object2 = UNWRAP_EXTERN(glm::vec3, args[0]);
+	//Dot them and set that as the return value
+	args.GetReturnValue().Set(Number::New(isolate, glm::dot(*object, *object2)));
+}
+EXTERN_OBJECT_METHOD(glm::vec3, cross) {
+	//Second vector
+	glm::vec3 *object2 = UNWRAP_EXTERN(glm::vec3, args[0]);
 
-		//The cross product is another vector, instantiate it.
-		EXTERN_OBJECT(vec3, retobj) = new glm::vec3(glm::cross(*object, *object2));
+	//The cross product is another vector, instantiate it.
+	EXTERN_OBJECT(glm::vec3, retobj) = new glm::vec3(glm::cross(*object, *object2));
 
-		//And return it
-		args.GetReturnValue().Set(retobj);
-	}
-	EXTERN_OBJECT_METHOD(vec3, toString) {
-		std::string out = "{" + std::to_string(object->x) + ", " + std::to_string(object->y) + ", " + std::to_string(object->z) + "}";
-		args.GetReturnValue().Set(String::NewFromUtf8(isolate, out.c_str()));
-	}
+	//And return it
+	args.GetReturnValue().Set(retobj);
+}
+EXTERN_OBJECT_METHOD(glm::vec3, toString) {
+	std::string out = "{" + std::to_string(object->x) + ", " + std::to_string(object->y) + ", " + std::to_string(object->z) + "}";
+	args.GetReturnValue().Set(String::NewFromUtf8(isolate, out.c_str()));
+}
 
-	EXTERN_OBJECT_METHOD(vec3, add) {
-		glm::vec3 *object2 = UNWRAP_EXTERN(vec3, args[0]);
-		EXTERN_OBJECT(vec3, retobj) = new glm::vec3(*object + *object2);
-		args.GetReturnValue().Set(retobj);
-	}
-	EXTERN_OBJECT_METHOD(vec3, sub) {
-		glm::vec3 *object2 = UNWRAP_EXTERN(vec3, args[0]);
-		EXTERN_OBJECT(vec3, retobj) = new glm::vec3(*object - *object2);
-		args.GetReturnValue().Set(retobj);
-	}
+EXTERN_OBJECT_METHOD(glm::vec3, add) {
+	glm::vec3 *object2 = UNWRAP_EXTERN(glm::vec3, args[0]);
+	EXTERN_OBJECT(glm::vec3, retobj) = new glm::vec3(*object + *object2);
+	args.GetReturnValue().Set(retobj);
+}
+EXTERN_OBJECT_METHOD(glm::vec3, sub) {
+	glm::vec3 *object2 = UNWRAP_EXTERN(glm::vec3, args[0]);
+	EXTERN_OBJECT(glm::vec3, retobj) = new glm::vec3(*object - *object2);
+	args.GetReturnValue().Set(retobj);
+}
 
 
-	EXTERN_OBJECT_CONSTRUCTOR(quat, (0, glm::vec3(0))) {
-		switch (args.Length()) {
-			case 1: {
-				auto value = args[0]->ToNumber()->Value();
-				object->w = value;
-				object->x = value;
-				object->y = value;
-				object->z = value;
-				break;
-			}
-			case 4: {
-				object->w = args[0]->ToNumber()->Value();
-				object->x = args[1]->ToNumber()->Value();
-				object->y = args[2]->ToNumber()->Value();
-				object->z = args[3]->ToNumber()->Value();
-				break;
-			}
+EXTERN_OBJECT_CONSTRUCTOR(glm::quat, (0, glm::vec3(0))) {
+	switch (args.Length()) {
+		case 1: {
+			auto value = args[0]->ToNumber()->Value();
+			object->w = value;
+			object->x = value;
+			object->y = value;
+			object->z = value;
+			break;
+		}
+		case 4: {
+			object->w = args[0]->ToNumber()->Value();
+			object->x = args[1]->ToNumber()->Value();
+			object->y = args[2]->ToNumber()->Value();
+			object->z = args[3]->ToNumber()->Value();
+			break;
 		}
 	}
-	EXTERN_OBJECT_METHOD(quat, getW) {
-		args.GetReturnValue().Set(Number::New(isolate, object->w));
-	}
-	EXTERN_OBJECT_METHOD(quat, getX) {
-		args.GetReturnValue().Set(Number::New(isolate, object->x));
-	}
-	EXTERN_OBJECT_METHOD(quat, getY) {
-		args.GetReturnValue().Set(Number::New(isolate, object->y));
-	}
-	EXTERN_OBJECT_METHOD(quat, getZ) {
-		args.GetReturnValue().Set(Number::New(isolate, object->z));
-	}
-	EXTERN_OBJECT_METHOD(quat, setW) {
-		object->w = args[0]->ToNumber()->Value();
-	}
-	EXTERN_OBJECT_METHOD(quat, setX) {
-		object->x = args[0]->ToNumber()->Value();
-	}
-	EXTERN_OBJECT_METHOD(quat, setY) {
-		object->y = args[0]->ToNumber()->Value();
-	}
-	EXTERN_OBJECT_METHOD(quat, setZ) {
-		object->z = args[0]->ToNumber()->Value();
-	}
-	EXTERN_OBJECT_METHOD(quat, set) {
-		object->w = args[0]->ToNumber()->Value();
-		object->x = args[1]->ToNumber()->Value();
-		object->y = args[2]->ToNumber()->Value();
-		object->z = args[3]->ToNumber()->Value();
-	}
-	EXTERN_OBJECT_METHOD(quat, length) {
-		args.GetReturnValue().Set(glm::length(*object));
-	}
+}
+EXTERN_OBJECT_METHOD(glm::quat, getW) {
+	args.GetReturnValue().Set(Number::New(isolate, object->w));
+}
+EXTERN_OBJECT_METHOD(glm::quat, getX) {
+	args.GetReturnValue().Set(Number::New(isolate, object->x));
+}
+EXTERN_OBJECT_METHOD(glm::quat, getY) {
+	args.GetReturnValue().Set(Number::New(isolate, object->y));
+}
+EXTERN_OBJECT_METHOD(glm::quat, getZ) {
+	args.GetReturnValue().Set(Number::New(isolate, object->z));
+}
+EXTERN_OBJECT_METHOD(glm::quat, setW) {
+	object->w = args[0]->ToNumber()->Value();
+}
+EXTERN_OBJECT_METHOD(glm::quat, setX) {
+	object->x = args[0]->ToNumber()->Value();
+}
+EXTERN_OBJECT_METHOD(glm::quat, setY) {
+	object->y = args[0]->ToNumber()->Value();
+}
+EXTERN_OBJECT_METHOD(glm::quat, setZ) {
+	object->z = args[0]->ToNumber()->Value();
+}
+EXTERN_OBJECT_METHOD(glm::quat, set) {
+	object->w = args[0]->ToNumber()->Value();
+	object->x = args[1]->ToNumber()->Value();
+	object->y = args[2]->ToNumber()->Value();
+	object->z = args[3]->ToNumber()->Value();
+}
+EXTERN_OBJECT_METHOD(glm::quat, length) {
+	args.GetReturnValue().Set(glm::length(*object));
 }
