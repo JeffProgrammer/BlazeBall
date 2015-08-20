@@ -104,7 +104,7 @@ btPhysicsSphere::btPhysicsSphere(const F32 &radius) : mRadius(radius) {
 	//Create the actor and add it to the scene
 	mActor = new btRigidBody(info);
 	mActor->setActivationState(DISABLE_DEACTIVATION);
-	mActor->setCcdMotionThreshold(1e-3);
+	mActor->setCcdMotionThreshold(static_cast<btScalar>(1e-3));
 	mActor->setCcdSweptSphereRadius(radius / 10.0f);
 	mActor->setAnisotropicFriction(shape->getAnisotropicRollingFrictionDirection(), btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION);
 
@@ -177,7 +177,7 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 		return;
 
 	int ind = -1;
-	for (int i = 0; i < bodies.size(); i++) {
+	for (size_t i = 0; i < bodies.size(); i++) {
 		if (bodies[i].body == other) {
 			ind = i;
 			break;
@@ -201,7 +201,7 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 		else
 			index = manifold->getContactPoint(i).m_index1;
 
-		for (int j = 0; j < triangleIndices.size(); j++) {
+		for (size_t j = 0; j < triangleIndices.size(); j++) {
 			BulletTriangle tri1 = btAccessibleTriangleMesh::getTriangle(mesh_int, triangleIndices[j]);
 			BulletTriangle tri2 = btAccessibleTriangleMesh::getTriangle(mesh_int, index);
 

@@ -40,7 +40,7 @@ void Scene::loadShaderUniforms() {
 
 	//Sun
 	glUniform3fv(GLLocations.sunPosition, 1, &sunPosition.x);
-	glUniform1f(GLLocations.specularExponent, specularExponent);
+	glUniform1f(GLLocations.specularExponent, static_cast<F32>(specularExponent));
 
 	//Projection matrix
 	glUniformMatrix4fv(GLLocations.projectionMatrix, 1, GL_FALSE, &projectionMatrix[0][0]);
@@ -88,7 +88,7 @@ void Scene::loop(const F64 &deltaMS) {
 	}
 
 	for (auto object : objects) {
-		object->updateTick(fmodf(deltaMS, 16.f));
+		object->updateTick(fmodf(static_cast<F32>(deltaMS), 16.f));
 	}
 }
 

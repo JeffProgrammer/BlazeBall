@@ -204,7 +204,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	if (movement.left) move.x --;
 	if (movement.right) move.x ++;
 
-	F32 timeMod = (deltaMS / 16.f);
+	F32 timeMod = (static_cast<F32>(deltaMS) / 16.f);
 
 	//Multiplied by 2.5 (magic number alert)
 	F32 modifier = 2.5f * timeMod;
@@ -213,7 +213,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 
 	//Crappy damping
 	if (glm::length(move) == 0 && getColliding()) {
-		F32 damping = 1.f - (0.075f * (deltaMS / 16.f));
+		F32 damping = 1.f - (0.075f * (static_cast<F32>(deltaMS) / 16.f));
 		mActor->setAngularVelocity(mActor->getAngularVelocity() * damping);
 	}
 

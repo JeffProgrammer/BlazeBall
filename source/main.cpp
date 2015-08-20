@@ -46,7 +46,7 @@ int main(int argc, const char * argv[])
 	PhysicsEngine::setEngine(new btPhysicsEngine());
 	Scene *scene = Scene::getSingleton();
 
-	for (U32 i = 1; i < argc; i ++) {
+	for (S32 i = 1; i < argc; i ++) {
 		std::string directory = IO::getPath(argv[i]);
 
 		std::ifstream file(argv[i], std::ios::binary);
