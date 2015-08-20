@@ -31,6 +31,7 @@
 
 ScriptFunctionConstructor *ScriptFunctionConstructor::last = nullptr;
 ScriptClassConstructor *ScriptClassConstructor::last = nullptr;
+auto ScriptingEngine::objectConstructors = std::map<std::string, Global<FunctionTemplate>>();
 
 ScriptingEngine::ScriptingEngine() {
 	// Initialize V8.
@@ -91,6 +92,8 @@ void ScriptingEngine::createContext() {
 
 		//Add to global scope
 		otemp->Set(String::NewFromUtf8(isolate, start->mName.c_str()), testTemp);
+
+		objectConstructors[start->mName] = Global<FunctionTemplate>(isolate, testTemp);
 	}
 
 	//Two lines, same as above

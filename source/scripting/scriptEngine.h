@@ -58,6 +58,8 @@ public:
 	Isolate *isolate;
 	Local<Context> context;
 
+	static std::map<std::string, Global<FunctionTemplate>> objectConstructors;
+
 	ScriptingEngine();
 	~ScriptingEngine();
 

@@ -77,6 +77,17 @@ namespace glm {
 		glm::vec3 *object2 = ObjectWrap::Unwrap<ext_vec3>(args[0]->ToObject())->mHandle;
 		args.GetReturnValue().Set(Number::New(isolate, glm::dot(*object, *object2)));
 	}
+	EXTERN_OBJECT_METHOD(vec3, cross) {
+		glm::vec3 *object2 = ObjectWrap::Unwrap<ext_vec3>(args[0]->ToObject())->mHandle;
+
+		ext_vec3 *v3 = new ext_vec3;
+		v3->mHandle = new glm::vec3(glm::cross(*object, *object2));
+		Local<FunctionTemplate> templ = ScriptingEngine::objectConstructors["vec3"].Get(isolate);
+		Local<Object> retobj = templ->InstanceTemplate()->NewInstance();
+		v3->Wrap(retobj);
+
+		args.GetReturnValue().Set(retobj);
+	}
 	EXTERN_OBJECT_METHOD(vec3, toString) {
 		std::string out = "{" + std::to_string(object->x) + ", " + std::to_string(object->y) + ", " + std::to_string(object->z) + "}";
 		args.GetReturnValue().Set(String::NewFromUtf8(isolate, out.c_str()));
