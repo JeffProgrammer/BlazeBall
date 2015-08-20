@@ -74,14 +74,19 @@ namespace glm {
 		args.GetReturnValue().Set(glm::length(*object));
 	}
 	EXTERN_OBJECT_METHOD(vec3, dot) {
-		glm::vec3 *object2 = ObjectWrap::Unwrap<ext_vec3>(args[0]->ToObject())->mHandle;
+		//Second vector
+		glm::vec3 *object2 = UNWRAP_EXTERN(vec3, args[0]);
+		//Dot them and set that as the return value
 		args.GetReturnValue().Set(Number::New(isolate, glm::dot(*object, *object2)));
 	}
 	EXTERN_OBJECT_METHOD(vec3, cross) {
-		glm::vec3 *object2 = ObjectWrap::Unwrap<ext_vec3>(args[0]->ToObject())->mHandle;
+		//Second vector
+		glm::vec3 *object2 = UNWRAP_EXTERN(vec3, args[0]);
 
+		//The cross product is another vector, instantiate it.
 		EXTERN_OBJECT(vec3, retobj) = new glm::vec3(glm::cross(*object, *object2));
 
+		//And return it
 		args.GetReturnValue().Set(retobj);
 	}
 	EXTERN_OBJECT_METHOD(vec3, toString) {

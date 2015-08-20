@@ -215,5 +215,10 @@ public:
 	c_##name->Wrap(name); \
 	c_##name->mHandle
 
+#define UNWRAP(classname, thing) \
+	ObjectWrap::Unwrap<classname>(thing->ToObject())
+
+#define UNWRAP_EXTERN(classname, thing) \
+	ObjectWrap::Unwrap<ext_##classname>(thing->ToObject())->mHandle
 
 #endif
