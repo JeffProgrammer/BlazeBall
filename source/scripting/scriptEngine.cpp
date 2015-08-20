@@ -32,25 +32,6 @@
 ScriptFunctionConstructor *ScriptFunctionConstructor::last = nullptr;
 ScriptClassConstructor *ScriptClassConstructor::last = nullptr;
 
-class Test : public ObjectWrap {
-public:
-	U32 thing;
-
-	OBJECT_CONSTRUCTOR(Test, ()) {
-		object->thing = args[0]->ToUint32()->Value();
-	}
-};
-
-IMPLEMENT_OBJECT(Test);
-
-OBJECT_METHOD(Test, getThing) {
-	args.GetReturnValue().Set(Integer::New(isolate, object->thing));
-}
-
-OBJECT_METHOD(Test, setThing) {
-	object->thing = args[0]->ToInt32()->Value();
-}
-
 ScriptingEngine::ScriptingEngine() {
 	// Initialize V8.
 	V8::InitializeICU();
