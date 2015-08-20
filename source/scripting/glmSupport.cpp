@@ -93,4 +93,15 @@ namespace glm {
 		std::string out = "{" + std::to_string(object->x) + ", " + std::to_string(object->y) + ", " + std::to_string(object->z) + "}";
 		args.GetReturnValue().Set(String::NewFromUtf8(isolate, out.c_str()));
 	}
+
+	EXTERN_OBJECT_METHOD(vec3, add) {
+		glm::vec3 *object2 = UNWRAP_EXTERN(vec3, args[0]);
+		EXTERN_OBJECT(vec3, retobj) = new glm::vec3(*object + *object2);
+		args.GetReturnValue().Set(retobj);
+	}
+	EXTERN_OBJECT_METHOD(vec3, sub) {
+		glm::vec3 *object2 = UNWRAP_EXTERN(vec3, args[0]);
+		EXTERN_OBJECT(vec3, retobj) = new glm::vec3(*object - *object2);
+		args.GetReturnValue().Set(retobj);
+	}
 }
