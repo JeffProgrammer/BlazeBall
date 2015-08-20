@@ -55,3 +55,27 @@ SCRIPT_FUNCTION(require) {
 		args.GetReturnValue().SetEmptyString();
 	}
 }
+
+namespace glm {
+	EXTERN_OBJECT_CONSTRUCTOR(vec3, (0)) {
+		switch (args.Length()) {
+			case 1: {
+				auto value = args[0]->ToNumber()->Value();
+				object->x = value;
+				object->y = value;
+				object->z = value;
+				break;
+			}
+			case 3: {
+				object->x = args[0]->ToNumber()->Value();
+				object->y = args[1]->ToNumber()->Value();
+				object->z = args[2]->ToNumber()->Value();
+				break;
+			}
+		}
+	}
+
+	EXTERN_OBJECT_METHOD(vec3, getX) {
+		args.GetReturnValue().Set(Number::New(isolate, object->x));
+	}
+}
