@@ -13,6 +13,8 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+// This file is modified for BlazeBall.
+
 #ifndef BT_PERSISTENT_MANIFOLD_H
 #define BT_PERSISTENT_MANIFOLD_H
 
@@ -121,13 +123,27 @@ public:
 
 	SIMD_FORCE_INLINE const btManifoldPoint& getContactPoint(int index) const
 	{
-		btAssert(index < m_cachedPoints);
+		// we are going to actually violate the rule of assertion here
+		// because there will always be 4 indices.
+		// We will make a code promise that we will not go beyond 4 incides by
+		// using the new assert below this one
+		// OLD ASSERT:
+		//btAssert(index < m_cachedPoints);
+		// NEW ASSERT:
+		btAssert(index < MANIFOLD_CACHE_SIZE);
 		return m_pointCache[index];
 	}
 
 	SIMD_FORCE_INLINE btManifoldPoint& getContactPoint(int index)
 	{
-		btAssert(index < m_cachedPoints);
+		// we are going to actually violate the rule of assertion here
+		// because there will always be 4 indices.
+		// We will make a code promise that we will not go beyond 4 incides by
+		// using the new assert below this one
+		// OLD ASSERT:
+		//btAssert(index < m_cachedPoints);
+		// NEW ASSERT:
+		btAssert(index < MANIFOLD_CACHE_SIZE);
 		return m_pointCache[index];
 	}
 

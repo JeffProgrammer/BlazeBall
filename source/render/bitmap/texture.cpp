@@ -34,7 +34,6 @@
 #include <OpenGL/glu.h>
 #include <OpenGL/gl.h>
 #else
-#include <GL/GLU.h>
 #include <GL/glew.h>
 #endif
 
@@ -124,19 +123,19 @@ void Texture::deactivate() {
  */
 inline bool checkTexture(const std::string &path, const std::string &name, std::string &final) {
 	//Check for no extension
-	final = path + '/' + name;
+	final = path + DIR_SEP + name;
 	if (IO::isfile(final))
 		return true;
 	//Check for .png
-	final = path + '/' + name + ".png";
+	final = path + DIR_SEP + name + ".png";
 	if (IO::isfile(final))
 		return true;
 	//Check for .jpg
-	final = path + '/' + name + ".jpg";
+	final = path + DIR_SEP + name + ".jpg";
 	if (IO::isfile(final))
 		return true;
 	// Check for .jng
-	final  =path + '/' + name + ".jng";
+	final  =path + DIR_SEP + name + ".jng";
 	if (IO::isfile(final))
 		return true;
 	//Couldn't find it, clean up
@@ -156,12 +155,12 @@ std::string Texture::find(const std::string &fullName) {
 	//Search recurse directories
 	std::string testName(fullName);
 	//Base file name for checking
-	std::string baseName = fullName.substr(fullName.find_last_of('/') + 1);
+	std::string baseName =  IO::getName(fullName);
 	
 	//Iterate over every subdirectory in the path and check if it has the file
-	while (testName.find_last_of('/') != std::string::npos) {
+	while (testName.find_last_of(DIR_SEP) != std::string::npos) {
 		//Strip off the last directory
-		testName = IO::getPath(testName, '/');
+		testName = IO::getPath(testName);
 		
 		//Check if the texture exists at the current location
 		std::string finalName;

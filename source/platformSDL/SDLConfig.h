@@ -30,7 +30,15 @@
 #ifndef _PLATFORMSDL_SDLCONFIG_H_
 #define _PLATFORMSDL_SDLCONFIG_H_
 
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#include <OpenGL/gl.h>
+#else
+#include <GL/glew.h>
+#endif
+
 #include <SDL.h>
+#undef main
 
 /// We are using SDL
 #define USING_SDL

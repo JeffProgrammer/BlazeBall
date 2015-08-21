@@ -48,6 +48,9 @@ Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), max
 	mVBO->setBufferType(BufferType::STATIC);
 	
 	firstDraw = false;
+
+	cameraYaw = 0.0f;
+	cameraPitch = 0.0f;
 }
 
 Sphere::~Sphere() {
@@ -55,13 +58,14 @@ Sphere::~Sphere() {
 }
 
 void Sphere::generate() {
-	F32 step = (M_PI * 2.0f / segments);
+	F32 step = (glm::pi<F32>() * 2.0f / segments);
 
 	S32 segments2 = segments / 2;
 	S32 slices2 = slices / 2;
 
 	S32 size = segments * slices * 2;
 	Vertex *points = new Vertex[size];
+
 	U32 point = 0;
 
 	for (S32 y = -slices2; y < slices2; y ++) {
@@ -212,7 +216,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	if (movement.left) move.x --;
 	if (movement.right) move.x ++;
 
-	F32 timeMod = (deltaMS / 16.f);
+	F32 timeMod = (static_cast<F32>(deltaMS) / 16.f);
 
 	//Multiplied by 2.5 (magic number alert)
 	F32 modifier = 2.5f * timeMod;
@@ -221,7 +225,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 
 	//Crappy damping
 	if (glm::length(move) == 0 && getColliding()) {
-		F32 damping = 1.f - (0.075f * (deltaMS / 16.f));
+		F32 damping = 1.f - (0.075f * (static_cast<F32>(deltaMS) / 16.f));
 		mActor->setAngularVelocity(mActor->getAngularVelocity() * damping);
 	}
 

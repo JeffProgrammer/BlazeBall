@@ -29,6 +29,11 @@
 #include "camera.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+Camera::Camera() {
+	pitch = 0.0f;
+	yaw = 0.0f;
+}
+
 void Camera::updateCamera(const Movement &movement, const F64 &deltaMS) {
 	//Keyboard movement
 	if (movement.pitchUp)   pitch -= keyCameraSpeed;
@@ -37,8 +42,10 @@ void Camera::updateCamera(const Movement &movement, const F64 &deltaMS) {
 	if (movement.yawRight)  yaw += keyCameraSpeed;
 
 	//Mouse movement
-	pitch += movement.pitch * cameraSpeed * (deltaMS / 16.f);
-	yaw   += movement.yaw   * cameraSpeed * (deltaMS / 16.f);
+	// we do not need to use a delta, because SDL resets the delta from the previous call.
+	// so it will be same speed regardless of framerate already!
+	pitch += movement.pitch * cameraSpeed; //*(deltaMS / 16.f);
+	yaw   += movement.yaw   * cameraSpeed; //*(deltaMS / 16.f);
 }
 
 void Camera::updateMove(const Movement &movement, const F64 &deltaMS) {

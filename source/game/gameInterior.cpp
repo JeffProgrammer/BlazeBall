@@ -48,7 +48,7 @@ void GameInterior::generateMaterials(std::string directory) {
 	if (mInterior.materialName.size()) {
 		for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
 			std::string materialName = IO::getName(mInterior.materialName[i]);
-			std::string diffuseFile = Texture::find(directory + '/' + materialName);
+			std::string diffuseFile = Texture::find(directory + DIR_SEP + materialName);
 
 			//If we can't find it, just chuck the lot and keep going.
 			if (!diffuseFile.length()) {
@@ -57,9 +57,9 @@ void GameInterior::generateMaterials(std::string directory) {
 				continue;
 			}
 			std::string normalName = materialName + ".normal";
-			std::string normalFile = Texture::find(directory + '/' + normalName);
+			std::string normalFile = Texture::find(directory + DIR_SEP + normalName);
 			std::string specularName = materialName + ".alpha";
-			std::string specularFile = Texture::find(directory + '/' + specularName);
+			std::string specularFile = Texture::find(directory + DIR_SEP + specularName);
 
 			Material *material = new Material(diffuseFile, normalFile, specularFile);
 

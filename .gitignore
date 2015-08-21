@@ -31,3 +31,4 @@ Bullet/bullet.pc
 Bullet/BulletConfig.cmake
 *.psd
 bin
+interiors/

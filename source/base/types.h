@@ -40,6 +40,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <glm/gtc/constants.hpp>
 
 //Base types (names stolen from TGE because lazy)
 typedef unsigned char      U8;

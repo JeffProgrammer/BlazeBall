@@ -911,7 +911,7 @@ elseif(WINDOWS)
     if(HAVE_DINPUT_H)
       set(SDL_JOYSTICK_DINPUT 1)
       set(SOURCE_FILES ${SOURCE_FILES} ${SDL2_SOURCE_DIR}/src/joystick/windows/SDL_dxjoystick.c)
-      list(APPEND EXTRA_LIBS dinput8 dxguid dxerr)
+      list(APPEND EXTRA_LIBS dinput8 dxguid) # dxerr) THIS IS NOT IN WINDOWS 8-10 SDK
     else()
       set(SDL_JOYSTICK_WINMM 1)
       set(SOURCE_FILES ${SOURCE_FILES} ${SDL2_SOURCE_DIR}/src/joystick/windows/SDL_mmjoystick.c)
@@ -1303,7 +1303,7 @@ if(NOT WINDOWS OR CYGWIN)
   install(PROGRAMS ${SDL2_BINARY_DIR}/sdl2-config DESTINATION bin)
   # TODO: what about the .spec file? Is it only needed for RPM creation?
   install(FILES "${SDL2_SOURCE_DIR}/sdl2.m4" DESTINATION "share/aclocal")
-else()
+elseif(SDL_SHARED)
   install(TARGETS SDL2 RUNTIME DESTINATION bin)
 endif()
 

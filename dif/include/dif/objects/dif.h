@@ -55,6 +55,8 @@ public:
 
 	U32 dummy;
 
+	DIF() : readGameEntities(0), dummy(0) {}
+
 	/**
 	 * Reads a DIF from a stream
 	 * @param stream The stream to read from

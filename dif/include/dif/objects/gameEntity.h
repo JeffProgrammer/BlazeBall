@@ -39,6 +39,8 @@ public:
 	Point3F position;
 	Dictionary properties;
 
+	GameEntity() : datablock(""), gameClass(""), position(Point3F(0.0f, 0.0f, 0.0f)) {}
+
 	/**
 	 * Reads a GameEntity from a stream
 	 * @param stream The stream to read from

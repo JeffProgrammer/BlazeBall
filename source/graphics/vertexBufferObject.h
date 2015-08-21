@@ -29,8 +29,13 @@
 #ifndef _GRAPHICS_VERTEXBUFFEROBJECT_H_
 #define _GRAPHICS_VERTEXBUFFEROBJECT_H_
 
+#ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/gl3.h>
+#else
+#include <GL/glew.h>
+#endif // __APPLE__
+
 #include "base/types.h"
 #include "graphics/gfxTypes.h"
 #include "graphics/gl/glUtils.h"
