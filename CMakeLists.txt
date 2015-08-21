@@ -378,15 +378,6 @@ set (DIFVIEWERGAME_LIBRARIES
 
 	# DIF
 	Dif
-
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libicudata.a
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libicui18n.a
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libicuuc.a
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_base.a
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_libbase.a
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_libplatform.a
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_snapshot.a
-	/usr/lib/libstdc++.6.dylib
 )
 
 if (MSVC)
@@ -398,13 +389,35 @@ set (DIFVIEWERGAME_LIBRARIES
 	Kernel32
 	User32
 	OpenGL32
-    SDL2-static
+   SDL2-static
+	
+	# TODO: have seperate paths for debug and release as well as 32bit/64bit
+	# right now, they're debug
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_libbase.lib
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/icui18n.lib
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/icuuc.lib
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_nosnapshot.lib
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_base_0.lib
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_base_1.lib
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_base_2.lib
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_base_3.lib
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_libplatform.lib
 )
 else()
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
 	SDL2
 	z
+	
+	# TODO: seperate x64 and x86 for build instructions
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libicudata.a
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libicui18n.a
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libicuuc.a
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_base.a
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_libbase.a
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_libplatform.a
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_snapshot.a
+	/usr/lib/libstdc++.6.dylib
 )
 endif()
 

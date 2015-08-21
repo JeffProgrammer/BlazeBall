@@ -31,7 +31,7 @@
 
 ScriptFunctionConstructor *ScriptFunctionConstructor::last = nullptr;
 ScriptClassConstructor *ScriptClassConstructor::last = nullptr;
-auto ScriptingEngine::objectConstructors = std::map<std::string, Global<FunctionTemplate>>();
+std::map<std::string, Global<FunctionTemplate>> ScriptingEngine::objectConstructors;
 
 ScriptingEngine::ScriptingEngine() {
 	// Initialize V8.
@@ -175,8 +175,7 @@ bool ScriptingEngine::runScriptFile(const std::string &path, std::string &output
 
 Local<String> ScriptingEngine::call(const std::string &function) {
 	EscapableHandleScope scope(isolate);
-	Local<Value> values[] = {};
-	return scope.Escape(callValues(function, 0, values));
+	return scope.Escape(callValues(function, 0, nullptr));
 }
 
 Local<String> ScriptingEngine::call(const std::string &function, std::vector<Local<Value>> &args) {
