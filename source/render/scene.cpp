@@ -382,7 +382,7 @@ SCRIPT_FUNCTION(createPlayer) {
 void Scene::createInterior(const std::string &path) {
 	std::string directory = IO::getPath(path);
 
-	std::ifstream file(path);
+	std::ifstream file(path, std::ios::binary);
 
 	//Read the .dif
 	DIF::DIF dif;
