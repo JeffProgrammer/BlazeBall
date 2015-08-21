@@ -10,7 +10,7 @@ Tested on windows 7 using Microsoft Visual Studio 2015
 **NOTE** for best results don't have spaces in any of your paths when doing this stuff.
 
 * Install Python 2.7 in C:\Python27\ (you may download the windows installer from python.org)
-* Download and install the [https://src.chromium.org/svn/trunk/tools/depot_tools.zip](depot_tools)
+* Download and install the [depot tools](https://src.chromium.org/svn/trunk/tools/depot_tools.zip)
   * When extracting, make sure the path doesn't have spaces in its path or else it won't work (ask google, don't ask me)
 * Put both the python executable and the depot_tools inside of your PATH found in: startmenu/control pannel/system/advanced settings/environment variables
 * open up a cmd prompt
