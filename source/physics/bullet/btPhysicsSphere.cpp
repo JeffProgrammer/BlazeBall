@@ -191,6 +191,12 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 
 	bool removed = false;
 	int count = manifold->getNumContacts();
+
+	bool *removedPoints = new bool[count];
+	memset(removedPoints, 0, count * sizeof(bool));
+
+	int upCount = 0;
+
 	for (int i = 0; i < count; i++) {
 		int index;
 		if (otherIndex == 0)
@@ -199,20 +205,35 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 			index = manifold->getContactPoint(i).m_index1;
 
 		for (size_t j = 0; j < triangleIndices.size(); j++) {
+			if (removedPoints[j])
+				continue;
+
 			BulletTriangle tri1 = btAccessibleTriangleMesh::getTriangle(mesh_int, triangleIndices[j]);
 			BulletTriangle tri2 = btAccessibleTriangleMesh::getTriangle(mesh_int, index);
 
 			if (index == triangleIndices[j] || btAccessibleTriangleMesh::areTrianglesAdjacent(tri1, tri2)) {
-				if (manifold->getContactPoint(i).getDistance() < manifold->getContactPoint(j).getDistance())
-					manifold->removeContactPoint(j);
-				else
-					manifold->removeContactPoint(i);
+				if (manifold->getContactPoint(i).getDistance() < manifold->getContactPoint(j).getDistance()) {
+					//manifold->removeContactPoint(j);
+					removedPoints[j + upCount] = true;
+				}
+				else {
+					//manifold->removeContactPoint(i);
+					removedPoints[i + upCount] = true;
+				}
 				removed = true;
+				upCount++;
 				break;
 			}
 		}
 		triangleIndices.push_back(index);
 	}
+
+	for (int i = count - 1; i >= 0; i--) {
+		if (removedPoints[i])
+			manifold->removeContactPoint(i);
+	}
+
+	delete[] removedPoints;
 
 	if (removed) {
 		for (int i = 0; i < manifold->getNumContacts(); i++) {
