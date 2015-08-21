@@ -56,6 +56,8 @@ struct BodyInfo {
     btVector3 collisionNormalTemp;
     bool isDynamic;
     float timeout;
+
+	 BodyInfo() : isDynamic(false), timeout(0.0f) {}
 };
 
 struct BodyMovement {
@@ -68,12 +70,12 @@ class btPhysicsEngine : public PhysicsEngine {
 	btDiscreteDynamicsWorld *world;
 	btCollisionDispatcher *dispatcher;
 	bool running;
-	F32 extraTime;
+	F64 extraTime;
 public:
 	btPhysicsEngine();
 	
 	virtual void init();
-	virtual void simulate(const F32 &delta);
+	virtual void simulate(const F64 &delta);
 	virtual void addBody(PhysicsBody *body);
 	virtual PhysicsBody *createInterior(GameInterior *interior);
 	virtual PhysicsBody *createSphere(const F32 &radius);

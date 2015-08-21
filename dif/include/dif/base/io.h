@@ -32,6 +32,7 @@
 #include <type_traits>
 #include <map>
 #include <iostream>
+#include <functional>
 
 DIF_NAMESPACE
 
@@ -122,7 +123,7 @@ public:
 		value.reserve(size);
 
 		//Read all the objects
-		for (int i = 0; i < size; i ++) {
+		for (U32 i = 0; i < size; i ++) {
 			T obj;
 			//Make sure the read succeeds
 			if (read(stream, obj, "obj"))
@@ -235,7 +236,7 @@ public:
 		value.reserve(size);
 
 		//Read all the objects
-		for (int i = 0; i < size; i ++) {
+		for (U32 i = 0; i < size; i ++) {
 			//Should we use the alternate type? Lambda functions to the rescue!
 			if (condition(isSigned, param)) {
 				type2 obj;
@@ -278,7 +279,7 @@ public:
 		value.reserve(size);
 
 		//Read all the objects
-		for (int i = 0; i < size; i ++) {
+		for (U32 i = 0; i < size; i ++) {
 			T obj;
 			//Make sure the read succeeds
 			if (passed_method(obj, stream))
@@ -314,7 +315,7 @@ public:
 			return false;
 
 		//Read all the objects
-		for (int i = 0; i < size; i ++) {
+		for (U32 i = 0; i < size; i ++) {
 			T obj;
 			//Make sure the read succeeds
 			if (read(stream, obj, "obj"))
@@ -372,7 +373,7 @@ public:
 		if (!write(stream, static_cast<U32>(value.size()), "size"))
 			return false;
 		//Write all of the objects in the vector
-		for (int i = 0; i < value.size(); i ++) {
+		for (size_t i = 0; i < value.size(); i ++) {
 			if (!write(stream, value[i], "value"))
 				return false;
 		}
@@ -441,7 +442,7 @@ public:
 			return false;
 
 		//Write all of the objects in the vector
-		for (int i = 0; i < value.size(); i ++) {
+		for (size_t i = 0; i < value.size(); i ++) {
 			if (!write(stream, value[i], "value"))
 				return false;
 		}

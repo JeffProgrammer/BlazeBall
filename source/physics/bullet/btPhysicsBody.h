@@ -36,7 +36,7 @@ class btPhysicsBody : public PhysicsBody {
 protected:
 	btRigidBody *mActor;
 public:
-	btPhysicsBody() : mActor(NULL) {};
+	btPhysicsBody() : mActor(nullptr) {};
 	btPhysicsBody(btRigidBody *actor) : mActor(actor) {};
 
 	virtual const F32 getMass();

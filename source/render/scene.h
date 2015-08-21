@@ -52,7 +52,6 @@
 #include <OpenGL/gl3.h>
 #include <OpenGL/glu.h>
 #else
-#include <GL/GLU.h>
 #include <GL/glew.h>
 #endif
 

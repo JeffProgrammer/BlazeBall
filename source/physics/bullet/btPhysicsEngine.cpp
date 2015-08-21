@@ -70,6 +70,8 @@ void physicsWorldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
 
 btPhysicsEngine::btPhysicsEngine() : PhysicsEngine() {
 	init();
+
+	extraTime = 0.0f;
 }
 
 void btPhysicsEngine::init() {
@@ -86,14 +88,18 @@ void btPhysicsEngine::init() {
 	running = true;
 }
 
-void btPhysicsEngine::simulate(const F32 &delta) {
+void btPhysicsEngine::simulate(const F64 &delta) {
 	if (running) {
-		extraTime += delta;
+		extraTime += delta / 1000.0;
 		for ( ; extraTime > PHYSICS_TICK; extraTime -= PHYSICS_TICK) {
-			world->stepSimulation(PHYSICS_TICK, 10);
+			world->stepSimulation(static_cast<btScalar>(PHYSICS_TICK), 10);
 		}
-		world->stepSimulation(extraTime);
-		extraTime = 0;
+
+		// NO. NO. NO. THIS IS AN ACCUMULATOR. IF YOU DON'T DO THIS,
+		// THE PHYSICS WILL NOT WORK PROPERLY IF WE DO NOT HAVE A STEADY FRAME RATE.
+		// you basically are killing the whole purpose of a fixed timestep.
+		//world->stepSimulation(extraTime);
+		//extraTime = 0;
 	}
 }
 

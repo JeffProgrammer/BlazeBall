@@ -58,6 +58,8 @@ public:
 	PolyHedron polyhedron;
 	Point3F offset;
 
+	Trigger() : name(""), datablock("") {};
+
 	/**
 	 * Reads a Trigger from a stream
 	 * @param stream The stream to read from

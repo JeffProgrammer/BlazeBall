@@ -57,11 +57,11 @@ bool jpegReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, Textu
 
 	U8 *b = bitmap;
 
-	for (U32 y = 0; y < dims.y; y ++) {
+	for (S32 y = 0; y < dims.y; y ++) {
 		JSAMPROW row = new U8[dims.x * 4];
 		jpeg_read_scanlines(&dptr, &row, 1);
 
-		for (U32 x = 0; x < dims.x; x ++) {
+		for (S32 x = 0; x < dims.x; x ++) {
 			switch (dptr.output_components) {
 				case 1: //Grayscale
 					*b++ = row[x];

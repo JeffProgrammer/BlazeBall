@@ -32,6 +32,10 @@
 #include "base/types.h"
 
 struct Movement {
+	Movement() : forward(false), backward(false), left(false), right(false), jump(false), pitch(0.0f), yaw(0.0f), pitchUp(false), pitchDown(false), yawLeft(false), yawRight(false), fire(false) {
+
+	}
+
 	bool forward;
 	bool backward;
 	bool left;

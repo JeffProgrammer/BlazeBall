@@ -27,13 +27,13 @@
 //------------------------------------------------------------------------------
 
 #include <fstream>
-#include "platformSDL/SDLWindow.h"
-#include "platformSDL/SDLTimer.h"
 #include "render/scene.h"
 #include "game/gameInterior.h"
 
 #include "physics/bullet/btPhysicsEngine.h"
 
+#include "platformSDL/SDLWindow.h"
+#include "platformSDL/SDLTimer.h"
 
 int main(int argc, const char * argv[])
 {
@@ -46,10 +46,10 @@ int main(int argc, const char * argv[])
 	PhysicsEngine::setEngine(new btPhysicsEngine());
 	Scene *scene = Scene::getSingleton();
 
-	for (U32 i = 1; i < argc; i ++) {
+	for (S32 i = 1; i < argc; i ++) {
 		std::string directory = IO::getPath(argv[i]);
 
-		std::ifstream file(argv[i]);
+		std::ifstream file(argv[i], std::ios::binary);
 
 		//Read the .dif
 		DIF::DIF dif;
@@ -65,6 +65,7 @@ int main(int argc, const char * argv[])
 		//Clean up
 		file.close();
 	}
+
 	//Init SDL and go!
 	scene->window = new SDLWindow();
 	scene->mTimer = new SDLTimer();

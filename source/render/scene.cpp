@@ -31,6 +31,7 @@
 #include <chrono>
 #include <thread>
 #include <algorithm>
+#include <ctime>
 
 void Scene::loadShaderUniforms() {
 	//Light
@@ -39,7 +40,7 @@ void Scene::loadShaderUniforms() {
 
 	//Sun
 	glUniform3fv(GLLocations.sunPosition, 1, &sunPosition.x);
-	glUniform1f(GLLocations.specularExponent, specularExponent);
+	glUniform1f(GLLocations.specularExponent, static_cast<F32>(specularExponent));
 
 	//Projection matrix
 	glUniformMatrix4fv(GLLocations.projectionMatrix, 1, GL_FALSE, &projectionMatrix[0][0]);
@@ -87,7 +88,7 @@ void Scene::loop(const F64 &deltaMS) {
 	}
 
 	for (auto object : objects) {
-		object->updateTick(fmodf(deltaMS, 16.f));
+		object->updateTick(fmodf(static_cast<F32>(deltaMS), 16.f));
 	}
 }
 
@@ -133,7 +134,10 @@ bool Scene::initGL() {
 
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
+		// win32 doesn't have gluErrorString
+#ifndef _WIN32
 		fprintf(stderr, "Error in GL init: %d / %s", err, gluErrorString(err));
+#endif
 		return false;
 	}
 	return true;
@@ -288,11 +292,12 @@ void Scene::run() {
 		exit(-1);
 	}
 
-	Event *event;
+	Event *eventt;
 
 	F64 lastDelta = 0;
 	
 	F64 counter = 0;
+	U32 fpsCounter = 0;
 
 	//Main loop
 	while (running) {
@@ -300,24 +305,25 @@ void Scene::run() {
 		mTimer->start();
 		
 		if (mShouldSleep) {
-			U32 sleepTime = std::max((F64)0.f, 200.f - lastDelta);
-			std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		}
 
 		//Input
-		while (window->pollEvents(event)) {
-			if (event != NULL) {
-				handleEvent(event);
-				delete event;
+		while (window->pollEvents(eventt)) {
+			if (eventt != NULL) {
+				handleEvent(eventt);
+				delete eventt;
 			}
 		}
+
+		//printf("delta is: %f\n", lastDelta);
 
 		//Hard work
 		loop(lastDelta);
 		render();
 		
 		// simulate the physics engine.
-		PhysicsEngine::getEngine()->simulate(lastDelta / 1000.0);
+		PhysicsEngine::getEngine()->simulate(lastDelta);
 		
 		//Flip buffers
 		window->swapBuffers();
@@ -325,12 +331,14 @@ void Scene::run() {
 		//Profiling
 		if (printFPS) {
 			counter += lastDelta;
+			fpsCounter++;
 			if (counter >= 1000.0) {
-				F32 fps = static_cast<F32>(1.0 / (lastDelta / 1000.0));
-				std::string title = "FPS: " + std::to_string(fps) + " mspf: " + std::to_string(lastDelta);
+				F32 mspf = 1000.0f / fpsCounter;
+				std::string title = "FPS: " + std::to_string(fpsCounter) + " mspf: " + std::to_string(mspf);
 				window->setWindowTitle(title.c_str());
 				
 				counter = 0.0;
+				fpsCounter = 0;
 			}
 		}
 		

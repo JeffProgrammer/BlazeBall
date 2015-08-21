@@ -37,6 +37,8 @@ public:
 	std::string name;
 	Point3F position;
 
+	AISpecialNode() : name(""), position(Point3F(0.0f, 0.0f, 0.0f)) {}
+
 	/**
 	 * Reads an AISpecialNode from a stream
 	 * @param stream The stream to read from
