@@ -31,7 +31,7 @@
 
 bool SDLWindow::createContext() {
 	//Init SDL
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
 		fprintf(stderr, "SDL Error: %s", SDL_GetError());
 		return false;
 	}

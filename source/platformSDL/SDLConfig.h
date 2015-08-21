@@ -30,7 +30,10 @@
 #ifndef _PLATFORMSDL_SDLCONFIG_H_
 #define _PLATFORMSDL_SDLCONFIG_H_
 
-#ifdef _WIN32
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#include <OpenGL/gl.h>
+#else
 #include <GL/glew.h>
 #endif
 
