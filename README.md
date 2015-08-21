@@ -34,8 +34,14 @@ Requirements
 C++11 support  
 OpenGL 3.3+
 
-Windows 7+
-Mac OSX 10.9+
+* Windows 7+
+* Mac OSX 10.9+
+* Dual Core CPU @ 2.0ghz
+* GPU:
+  * GeForce 8000 series or better GPU with at least 256MB VRAM
+  * ATI Radeon HD 2000 series or better GPU with at least 256MB VRAM
+  * Intel HD Graphics or better with at least 256MB Shared VRAM
+* 2GB Ram
 
 Acknowledgements
 -------------------
