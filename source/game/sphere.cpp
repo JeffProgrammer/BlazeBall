@@ -38,7 +38,7 @@
 IMPLEMENT_OBJECT(Sphere);
 OBJECT_PARENT(Sphere, GameObject);
 
-Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), maxAngVel(1000.0f), material(nullptr), mVBO(nullptr) {
+Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), maxAngVel(1000.0f), material(nullptr), mVBO(nullptr), lastMove() {
 	mActor = PhysicsEngine::getEngine()->createSphere(radius);
 	mActor->setPosition(origin);
 	mActor->setMass(1.0f);
@@ -223,12 +223,6 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 
 	move *= modifier;
 
-	//Crappy damping
-	if (glm::length(move) == 0 && getColliding()) {
-		F32 damping = 1.f - (0.075f * (static_cast<F32>(deltaMS) / 16.f));
-		mActor->setAngularVelocity(mActor->getAngularVelocity() * damping);
-	}
-
 	//Linear velocity relative to camera yaw (for capping)
 	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getLinearVelocity())[3]);
 	glm::vec3 torque = move;
@@ -281,6 +275,12 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat) {
 }
 
 void Sphere::updateTick(const F64 &deltaMS) {
+	//Crappy damping
+	if (lastMove.forward + lastMove.backward + lastMove.left + lastMove.right == 0 && getColliding()) {
+		F32 damping = 1.f - (0.075f * (static_cast<F32>(deltaMS) / 16.f));
+		mActor->setAngularVelocity(mActor->getAngularVelocity() * damping);
+	}
+
 	//Temporary OOB solution for now
 	if (getPosition().z < -40) {
 		setPosition(glm::vec3(0, 0, 60));
