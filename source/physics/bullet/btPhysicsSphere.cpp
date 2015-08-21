@@ -192,12 +192,7 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 
 	std::vector<int> triangleIndices;
 
-	// This vector keeps track of the indices that we have to remove from the manifold.
-	// we can not remove in the loop because calling manifold->removeContactPoint actually
-	// reduces the size of the manifold contact point cache. Doing this can cause an array
-	// index overflow (which is how I discovered this bug) and will then throw the btAssert.
-	std::vector<S32> removing;
-
+	bool removed = false;
 	int count = manifold->getNumContacts();
 	for (int i = 0; i < count; i++) {
 		int index;
@@ -211,31 +206,18 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 			BulletTriangle tri2 = btAccessibleTriangleMesh::getTriangle(mesh_int, index);
 
 			if (index == triangleIndices[j] || btAccessibleTriangleMesh::areTrianglesAdjacent(tri1, tri2)) {
-				// For the removal index, we must subtract from the size so that we get the proper index.
-				// the size subtraction simulates removing points from the manifold array cache.
-				S32 toRemove;
 				if (manifold->getContactPoint(i).getDistance() < manifold->getContactPoint(j).getDistance())
-					toRemove = j - removing.size();
+					manifold->removeContactPoint(j);
 				else
-					toRemove = i - removing.size();
-				removing.push_back(toRemove);
+					manifold->removeContactPoint(i);
+				removed = true;
 				break;
 			}
 		}
 		triangleIndices.push_back(index);
 	}
 
-	// Finally, we can now remove points from the manifold.
-	for (S32 i = static_cast<S32>(removing.size()) - 1; i > -1; i--) {
-		// because we subtract removing.size() from the index, sometimes
-		// the same point can be removed. If the same point is hit, it 
-		// ends up being a negative index, so we can just safely ignore it.
-		if (removing[i] < 0)
-			continue;
-		manifold->removeContactPoint(removing[i]);
-	}
-
-	if (removing.size() > 0) {
+	if (removed) {
 		for (int i = 0; i < manifold->getNumContacts(); i++) {
 			int index;
 			if (otherIndex == 0)
