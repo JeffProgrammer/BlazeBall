@@ -373,9 +373,13 @@ OBJECT_METHOD(Scene, addObject) {
 
 SCRIPT_FUNCTION(getScene) {
 	Isolate *isolate = args.GetIsolate();
-	Local<Object> object = ScriptingEngine::instantiateClass(isolate, "Scene"); \
+	Local<Object> object = ScriptingEngine::instantiateClass(isolate, "Scene");
 	Scene *scene = Scene::getSingleton();
-	scene->Wrap(object);
+
+	if (scene->persistent().IsEmpty())
+		scene->Wrap(object);
+	else
+		object = scene->handle(isolate);
 
 	args.GetReturnValue().Set(object);
 }
