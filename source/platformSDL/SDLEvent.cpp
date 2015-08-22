@@ -35,13 +35,13 @@ Event *SDLEvent::convert(SDL_Event sdlevent) {
 		case Event::Quit: return new QuitEvent();
 		case Event::KeyDown: {
 			KeyDownEvent *event = new KeyDownEvent();
-			event->key = sdlevent.key.keysym.scancode;
+			event->key = sdlevent.key.keysym.sym;
 			event->modifier = sdlevent.key.keysym.mod;
 			return event;
 		}
 		case Event::KeyUp: {
 			KeyUpEvent *event = new KeyUpEvent();
-			event->key = sdlevent.key.keysym.scancode;
+			event->key = sdlevent.key.keysym.sym;
 			event->modifier = sdlevent.key.keysym.mod;
 			return event;
 		}
