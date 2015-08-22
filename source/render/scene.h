@@ -101,9 +101,6 @@ public:
 	const glm::vec3 sunPosition    = glm::vec3(100.0f, 75.0f, 100.0f);
 	const U32 specularExponent   = 7;
 
-	Sphere *sphere;
-	Camera *camera;
-
 	std::vector<GameObject *>objects;
 	GameObject *controlObject;
 

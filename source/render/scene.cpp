@@ -194,12 +194,6 @@ void Scene::handleEvent(Event *event) {
 				case KeyEvent::KEY_LEFT:  movement.yawLeft   = true; break;
 				case KeyEvent::KEY_RIGHT: movement.yawRight  = true; break;
 				case KeyEvent::KEY_SPACE: movement.jump      = true; break;
-				case KeyEvent::KEY_C:
-					if (controlObject == camera)
-						controlObject = sphere;
-					else
-						controlObject = camera;
-					break;
 				case KeyEvent::KEY_V: window->toggleVsync(); break;
 				case KeyEvent::KEY_Q: movement.fire = true; break;
 				default: break;
@@ -359,68 +353,6 @@ void Scene::run() {
 	
 	//Clean up (duh)
 	cleanup();
-}
-
-void Scene::createPlayer(const glm::vec3 &position, F32 radius) {
-	sphere = new Sphere(position, radius);
-	addObject(sphere);
-
-	controlObject = sphere;
-}
-
-SCRIPT_FUNCTION(createPlayer) {
-	glm::vec3 position;
-	F32 radius;
-
-	position.x = args[0]->ToNumber()->Value();
-	position.y = args[1]->ToNumber()->Value();
-	position.z = args[2]->ToNumber()->Value();
-	radius     = args[3]->ToNumber()->Value();
-
-	Scene::getSingleton()->createPlayer(position, radius);
-}
-
-void Scene::createInterior(const std::string &path) {
-	std::string directory = IO::getPath(path);
-
-	std::ifstream file(path, std::ios::binary);
-
-	//Read the .dif
-	DIF::DIF dif;
-	if (dif.read(file)) {
-		for (auto dinterior : dif.interior) {
-			GameInterior *interior = new GameInterior(dinterior);
-			interior->generateMaterials(directory);
-			interior->generateMesh();
-			addObject(interior);
-		}
-	}
-
-	//Clean up
-	file.close();
-}
-
-SCRIPT_FUNCTION(createInterior) {
-	std::string path = V8Utils::v8convert<Local<String>, std::string>(args[0]->ToString());
-	Scene::getSingleton()->createInterior(path);
-}
-
-void Scene::createCamera(const glm::vec3 &position) {
-	camera = new Camera();
-	camera->setPosition(position);
-
-	addObject(camera);
-
-	controlObject = camera;
-}
-
-SCRIPT_FUNCTION(createCamera) {
-	glm::vec3 position;
-	position.x = args[0]->ToNumber()->Value();
-	position.y = args[1]->ToNumber()->Value();
-	position.z = args[2]->ToNumber()->Value();
-
-	Scene::getSingleton()->createCamera(position);
 }
 
 Scene::Scene() {

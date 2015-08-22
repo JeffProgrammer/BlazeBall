@@ -1,5 +1,8 @@
 "use strict";
 
+var scene = getScene();
+scene.interiors = [];
+
 function onFrameAdvance(delta) {
 	//print("Time advance: ", delta);
 }
@@ -12,7 +15,10 @@ function parseArgs(args) {
 	}
 
 	for (var i = 1; i < args.length; i ++) {
-		createInterior(args[i]);
+		var interior = new GameInterior(args[i]);
+		interior.generate();
+		scene.addObject(interior);
+		scene.interiors.push(interior);
 	}
 }
 
