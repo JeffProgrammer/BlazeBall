@@ -128,9 +128,9 @@ public:
 		// We will make a code promise that we will not go beyond 4 incides by
 		// using the new assert below this one
 		// OLD ASSERT:
-		//btAssert(index < m_cachedPoints);
+		btAssert(index < m_cachedPoints);
 		// NEW ASSERT:
-		btAssert(index < MANIFOLD_CACHE_SIZE);
+		//btAssert(index < MANIFOLD_CACHE_SIZE);
 		return m_pointCache[index];
 	}
 
@@ -141,9 +141,9 @@ public:
 		// We will make a code promise that we will not go beyond 4 incides by
 		// using the new assert below this one
 		// OLD ASSERT:
-		//btAssert(index < m_cachedPoints);
+		btAssert(index < m_cachedPoints);
 		// NEW ASSERT:
-		btAssert(index < MANIFOLD_CACHE_SIZE);
+		//btAssert(index < MANIFOLD_CACHE_SIZE);
 		return m_pointCache[index];
 	}
 
