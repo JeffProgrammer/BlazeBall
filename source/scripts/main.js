@@ -18,9 +18,14 @@ function parseArgs(args) {
 
 function onStart() {
 	//Create a basic default camera
-	createCamera(0, 0, 30);
+	scene.camera = new Camera();
+	scene.addObject(scene.camera);
+
 	//Create us a player at (0, 0, 60) radius 0.2
-	createPlayer(0, 0, 10, 0.2);
+	scene.player = new Sphere(new vec3(0, 0, 20), 0.2);
+	scene.addObject(scene.player);
+
+	scene.setControlObject(scene.player);
 }
 
 function printThings(list) {

@@ -52,7 +52,8 @@ void Scene::loadShaderUniforms() {
 void Scene::render() {
 	//Get the camera transform from the marble
 	glm::mat4 cameraTransform;
-	controlObject->getCameraPosition(cameraTransform);
+	if (controlObject)
+		controlObject->getCameraPosition(cameraTransform);
 
 	//Camera
 	viewMatrix = glm::mat4x4(1);
@@ -445,4 +446,13 @@ SCRIPT_FUNCTION(getScene) {
 	scene->Wrap(object);
 
 	args.GetReturnValue().Set(object);
+}
+
+OBJECT_METHOD(Scene, setControlObject) {
+	GameObject *obj = UNWRAP(GameObject, args[0]);
+	object->controlObject = obj;
+}
+
+OBJECT_METHOD(Scene, getControlObject) {
+	args.GetReturnValue().Set(object->controlObject->handle());
 }
