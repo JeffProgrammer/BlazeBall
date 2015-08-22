@@ -196,7 +196,9 @@ void Scene::handleEvent(Event *event) {
 				case KeyEvent::KEY_SPACE: movement.jump      = true; break;
 				case KeyEvent::KEY_V: window->toggleVsync(); break;
 				case KeyEvent::KEY_Q: movement.fire = true; break;
-				default: break;
+				default:
+					mEngine->call("onKeyDown", ((KeyDownEvent *)event)->key);
+					break;
 			}
 			break;
 		case Event::KeyUp:
@@ -211,7 +213,9 @@ void Scene::handleEvent(Event *event) {
 				case KeyEvent::KEY_RIGHT: movement.yawRight  = false; break;
 				case KeyEvent::KEY_SPACE: movement.jump      = false; break;
 				case KeyEvent::KEY_Q:     movement.fire      = false; break;
-				default: break;
+				default:
+					mEngine->call("onKeyUp", ((KeyDownEvent *)event)->key);
+					break;
 			}
 			break;
 		//Mouse for rotation

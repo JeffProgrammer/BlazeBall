@@ -34,6 +34,19 @@ function onStart() {
 	scene.setControlObject(scene.player);
 }
 
+function onKeyDown(key) {
+	var chr = String.fromCharCode(key);
+	print(scene.getControlObject() == scene.player);
+
+	if (chr == "c" || chr == "C") {
+		scene.setControlObject(scene.getControlObject() == scene.player ? scene.camera : scene.player);
+	}
+}
+
+function onKeyUp(key) {
+	var chr = String.fromCharCode(key);
+}
+
 function printThings(list) {
 	print("Count: ", list.length);
 
