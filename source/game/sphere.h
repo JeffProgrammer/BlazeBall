@@ -105,7 +105,7 @@ public:
 
 	OBJECT_CONSTRUCTOR(Sphere, (glm::vec3(0), 0.2)) {
 		if (args.Length() >= 1) {
-			object->setPosition(*UNWRAP_EXTERN(glm::vec3, args[0]));
+			object->setPosition(UNWRAP_EXTERN(glm::vec3, args[0]));
 		}
 		if (args.Length() >= 2) {
 			object->setRadius(args[1]->ToNumber()->Value());

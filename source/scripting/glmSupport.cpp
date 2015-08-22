@@ -74,16 +74,16 @@ EXTERN_OBJECT_METHOD(glm::vec3, length) {
 }
 EXTERN_OBJECT_METHOD(glm::vec3, dot) {
 	//Second vector
-	glm::vec3 *object2 = UNWRAP_EXTERN(glm::vec3, args[0]);
+	glm::vec3 object2 = UNWRAP_EXTERN(glm::vec3, args[0]);
 	//Dot them and set that as the return value
-	args.GetReturnValue().Set(Number::New(isolate, glm::dot(*object, *object2)));
+	args.GetReturnValue().Set(Number::New(isolate, glm::dot(*object, object2)));
 }
 EXTERN_OBJECT_METHOD(glm::vec3, cross) {
 	//Second vector
-	glm::vec3 *object2 = UNWRAP_EXTERN(glm::vec3, args[0]);
+	glm::vec3 object2 = UNWRAP_EXTERN(glm::vec3, args[0]);
 
 	//The cross product is another vector, instantiate it.
-	EXTERN_OBJECT(glm::vec3, retobj) = new glm::vec3(glm::cross(*object, *object2));
+	EXTERN_OBJECT(glm::vec3, retobj) = new glm::vec3(glm::cross(*object, object2));
 
 	//And return it
 	args.GetReturnValue().Set(retobj);
@@ -94,13 +94,13 @@ EXTERN_OBJECT_METHOD(glm::vec3, toString) {
 }
 
 EXTERN_OBJECT_METHOD(glm::vec3, add) {
-	glm::vec3 *object2 = UNWRAP_EXTERN(glm::vec3, args[0]);
-	EXTERN_OBJECT(glm::vec3, retobj) = new glm::vec3(*object + *object2);
+	glm::vec3 object2 = UNWRAP_EXTERN(glm::vec3, args[0]);
+	EXTERN_OBJECT(glm::vec3, retobj) = new glm::vec3(*object + object2);
 	args.GetReturnValue().Set(retobj);
 }
 EXTERN_OBJECT_METHOD(glm::vec3, sub) {
-	glm::vec3 *object2 = UNWRAP_EXTERN(glm::vec3, args[0]);
-	EXTERN_OBJECT(glm::vec3, retobj) = new glm::vec3(*object - *object2);
+	glm::vec3 object2 = UNWRAP_EXTERN(glm::vec3, args[0]);
+	EXTERN_OBJECT(glm::vec3, retobj) = new glm::vec3(*object - object2);
 	args.GetReturnValue().Set(retobj);
 }
 

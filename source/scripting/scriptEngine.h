@@ -266,6 +266,6 @@ static void __oc(const FunctionCallbackInfo<Value> &args);
 	ObjectWrap::Unwrap<classname>(thing->ToObject())
 
 #define UNWRAP_EXTERN(classname, thing) \
-	ObjectWrap::Unwrap<ExternObject<classname>>(thing->ToObject())->mHandle
+	*ObjectWrap::Unwrap<ExternObject<classname>>(thing->ToObject())->mHandle
 
 #endif
