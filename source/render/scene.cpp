@@ -89,15 +89,14 @@ void Scene::loop(const F64 &deltaMS) {
 	movement.yaw = 0;
 
 	if (movement.fire) {
-		Sphere *extra = new Sphere(glm::vec3(0, 0, 0), 0.5f);
-		addObject(extra);
+		mEngine->call("fire");
 	}
 
 	for (auto object : objects) {
 		object->updateTick(fmodf(static_cast<F32>(deltaMS), 16.f));
 	}
 
-	mEngine->runScript("onFrameAdvance(" + std::to_string(deltaMS) + ");");
+	mEngine->call("onFrameAdvance", deltaMS);
 }
 
 void Scene::updateWindowSize(const glm::ivec2 &size) {

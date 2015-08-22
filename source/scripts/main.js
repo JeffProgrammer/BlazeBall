@@ -47,6 +47,10 @@ function onKeyUp(key) {
 	var chr = String.fromCharCode(key);
 }
 
+function fire() {
+	scene.addObject(new Sphere(new vec3(0, 0, 30), 0.75));
+}
+
 function printThings(list) {
 	print("Count: ", list.length);
 
