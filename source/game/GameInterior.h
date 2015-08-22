@@ -29,6 +29,7 @@
 #ifndef gameInterior_h
 #define gameInterior_h
 
+#include "base/io.h"
 #include "base/types.h"
 #include "render/material.h"
 #include "physics/physicsEngine.h"
@@ -36,7 +37,7 @@
 #include "base/ray.h"
 #include "graphics/vertexBufferObject.h"
 
-#include <dif/objects/interior.h>
+#include <dif/objects/dif.h>
 #include <vector>
 
 class GameInterior : public GameObject {
@@ -56,6 +57,7 @@ private:
 	VertexBufferObject *mVbo;
 
 public:
+	GameInterior();
 	GameInterior(DIF::Interior interior);
 	virtual ~GameInterior();
 	
@@ -65,12 +67,38 @@ public:
 	U32 rayCast(RayF ray);
 
 	const DIF::Interior &getInterior() {return mInterior;}
+	void setInterior(const DIF::Interior &interior) { mInterior = interior; }
 
 	void init();
 	virtual void render();
 
+	virtual glm::vec3 getPosition();
+	virtual glm::quat getRotation();
+
+	virtual void setPosition(const glm::vec3 &pos);
+	virtual void setRotation(const glm::quat &rot);
+
 	virtual glm::vec3 getScale();
 	virtual void setScale(const glm::vec3 &scale);
+
+	OBJECT_CONSTRUCTOR(GameInterior, ()) {
+		std::string path = V8Utils::v8convert<Local<String>, std::string>(args[0]->ToString());
+
+		std::string directory = IO::getPath(path);
+		std::ifstream file(path, std::ios::binary);
+
+		//Read the .dif
+		DIF::DIF dif;
+		if (dif.read(file)) {
+			for (auto dinterior : dif.interior) {
+				object->setInterior(dinterior);
+				object->generateMaterials(directory);
+			}
+		}
+
+		//Clean up
+		file.close();
+	}
 };
 
 #endif

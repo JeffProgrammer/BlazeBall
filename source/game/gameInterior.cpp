@@ -33,7 +33,16 @@
 #include <string>
 #include <cfloat>
 
+IMPLEMENT_OBJECT(GameInterior);
+OBJECT_PARENT(GameInterior, GameObject);
+
 GameInterior::GameInterior(DIF::Interior interior) : GameObject(), mInterior(interior) {
+	renderInfo.generated = false;
+	mVbo = new VertexBufferObject();
+	mVbo->setBufferType(BufferType::STATIC);
+}
+
+GameInterior::GameInterior() : GameObject() {
 	renderInfo.generated = false;
 	mVbo = new VertexBufferObject();
 	mVbo->setBufferType(BufferType::STATIC);
@@ -152,10 +161,29 @@ U32 GameInterior::rayCast(RayF ray) {
 	return closest;
 }
 
+glm::vec3 GameInterior::getPosition() {
+	return mActor->getPosition();
+}
+
+glm::quat GameInterior::getRotation() {
+	return mActor->getRotation();
+}
+
+void GameInterior::setPosition(const glm::vec3 &pos) {
+	mActor->setPosition(pos);
+}
+
+void GameInterior::setRotation(const glm::quat &rot) {
+	mActor->setRotation(rot);
+}
 
 glm::vec3 GameInterior::getScale() {
 	return mActor->getScale();
 }
 void GameInterior::setScale(const glm::vec3 &scale) {
 	mActor->setScale(scale);
+}
+
+OBJECT_METHOD(GameInterior, generate) {
+	object->generateMesh();
 }

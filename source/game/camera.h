@@ -46,6 +46,10 @@ public:
 	virtual void updateCamera(const Movement &movement, const F64 &deltaMS);
 	virtual void updateMove(const Movement &movement, const F64 &deltaMS);
 	virtual void getCameraPosition(glm::mat4x4 &mat);
+
+	OBJECT_CONSTRUCTOR(Camera, ()) {
+		
+	}
 };
 
 #endif

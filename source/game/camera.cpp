@@ -29,6 +29,9 @@
 #include "camera.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+IMPLEMENT_OBJECT(Camera);
+OBJECT_PARENT(Camera, GameObject);
+
 Camera::Camera() {
 	pitch = 0.0f;
 	yaw = 0.0f;
