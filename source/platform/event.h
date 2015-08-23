@@ -64,28 +64,28 @@ public:
 
 class KeyDownEvent : public Event {
 public:
-	U16 key;
-	U16 modifier;
+	U32 key;
+	U32 modifier;
 
 	KeyDownEvent() : key(0), modifier(0), Event(KeyDown) {};
-	U16 getKey() {
+	U32 getKey() {
 		return key;
 	}
-	U16 getModifier() {
+	U32 getModifier() {
 		return modifier;
 	}
 };
 
 class KeyUpEvent : public Event {
 public:
-	U16 key;
-	U16 modifier;
+	U32 key;
+	U32 modifier;
 
 	KeyUpEvent() : key(0), modifier(0), Event(KeyUp) {};
-	U16 getKey() {
+	U32 getKey() {
 		return key;
 	}
-	U16 getModifier() {
+	U32 getModifier() {
 		return modifier;
 	}
 };
