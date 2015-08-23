@@ -135,6 +135,7 @@ endif()
 
 add_library(Jpeg STATIC ${JPEG_SRC})
 set_property (TARGET Jpeg APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
 #------------------------------------------------------------------------------
 # MNG Library
