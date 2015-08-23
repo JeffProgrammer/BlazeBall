@@ -34,6 +34,10 @@
 #include <algorithm>
 #include <ctime>
 
+/// The amount of time that has to pass before a tick happens.
+/// Default is 16.6667 ms which means we tick at 60 frames per second
+#define TICK_MS 16.6666666666666667
+
 IMPLEMENT_OBJECT(Scene);
 
 void Scene::loadShaderUniforms() {
@@ -80,6 +84,10 @@ void Scene::render() {
 }
 
 void Scene::loop(const F64 &deltaMS) {
+	mEngine->call("onFrameAdvance", deltaMS);
+}
+
+void Scene::tick(const F64 &deltaMS) {
 	if (controlObject) {
 		controlObject->updateCamera(movement, deltaMS);
 		controlObject->updateMove(movement, deltaMS);
@@ -93,10 +101,11 @@ void Scene::loop(const F64 &deltaMS) {
 	}
 
 	for (auto object : objects) {
-		object->updateTick(fmodf(static_cast<F32>(deltaMS), 16.f));
+		object->updateTick(deltaMS);
 	}
 
-	mEngine->call("onFrameAdvance", deltaMS);
+	// simulate the physics engine.
+	PhysicsEngine::getEngine()->simulate(deltaMS);
 }
 
 void Scene::updateWindowSize(const glm::ivec2 &size) {
@@ -304,6 +313,8 @@ void Scene::run() {
 	F64 counter = 0;
 	U32 fpsCounter = 0;
 
+	F64 tickTracker = 0.0f;
+
 	//Main loop
 	while (running) {
 		//Profiling
@@ -325,10 +336,15 @@ void Scene::run() {
 
 		//Hard work
 		loop(lastDelta);
+
+		// handle the frame rate independent tick
+		tickTracker += lastDelta;
+		while (tickTracker > TICK_MS) {
+			tick(TICK_MS);
+			tickTracker -= TICK_MS;
+		}
+
 		render();
-		
-		// simulate the physics engine.
-		PhysicsEngine::getEngine()->simulate(lastDelta);
 		
 		//Flip buffers
 		window->swapBuffers();

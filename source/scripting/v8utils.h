@@ -171,7 +171,7 @@ namespace V8Utils {
 		v8::EscapableHandleScope scope(isolate);
 
 		v8::Local<v8::Array> array = v8::Array::New(isolate);
-		for (U32 i = 0; i < count; i ++) {
+		for (S32 i = 0; i < count; i ++) {
 			v8::Local<v8::String> str = V8Utils::v8convert<const char *, v8::Local<v8::String>>(isolate, items[i]);
 			array->Set(i, str);
 		}

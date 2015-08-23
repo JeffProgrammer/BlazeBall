@@ -129,6 +129,7 @@ public:
 
 	void render();
 	void loop(const F64 &deltaMS);
+	void tick(const F64 &deltaMS);
 	bool initGL();
 	bool init();
 	void cleanup();
