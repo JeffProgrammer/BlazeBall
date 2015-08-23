@@ -31,16 +31,16 @@
 EXTERN_OBJECT_CONSTRUCTOR(glm::vec3, (0)) {
 	switch (args.Length()) {
 		case 1: {
-			auto value = args[0]->ToNumber()->Value();
+			auto value = static_cast<F32>(args[0]->ToNumber()->Value());
 			object->x = value;
 			object->y = value;
 			object->z = value;
 			break;
 		}
 		case 3: {
-			object->x = args[0]->ToNumber()->Value();
-			object->y = args[1]->ToNumber()->Value();
-			object->z = args[2]->ToNumber()->Value();
+			object->x = static_cast<F32>(args[0]->ToNumber()->Value());
+			object->y = static_cast<F32>(args[1]->ToNumber()->Value());
+			object->z = static_cast<F32>(args[2]->ToNumber()->Value());
 			break;
 		}
 	}
@@ -56,18 +56,18 @@ EXTERN_OBJECT_METHOD(glm::vec3, getZ) {
 	args.GetReturnValue().Set(Number::New(isolate, object->z));
 }
 EXTERN_OBJECT_METHOD(glm::vec3, setX) {
-	object->x = args[0]->ToNumber()->Value();
+	object->x = static_cast<F32>(args[0]->ToNumber()->Value());
 }
 EXTERN_OBJECT_METHOD(glm::vec3, setY) {
-	object->y = args[0]->ToNumber()->Value();
+	object->y = static_cast<F32>(args[0]->ToNumber()->Value());
 }
 EXTERN_OBJECT_METHOD(glm::vec3, setZ) {
-	object->z = args[0]->ToNumber()->Value();
+	object->z = static_cast<F32>(args[0]->ToNumber()->Value());
 }
 EXTERN_OBJECT_METHOD(glm::vec3, set) {
-	object->x = args[0]->ToNumber()->Value();
-	object->y = args[1]->ToNumber()->Value();
-	object->z = args[2]->ToNumber()->Value();
+	object->x = static_cast<F32>(args[0]->ToNumber()->Value());
+	object->y = static_cast<F32>(args[1]->ToNumber()->Value());
+	object->z = static_cast<F32>(args[2]->ToNumber()->Value());
 }
 EXTERN_OBJECT_METHOD(glm::vec3, length) {
 	args.GetReturnValue().Set(glm::length(*object));
@@ -108,18 +108,18 @@ EXTERN_OBJECT_METHOD(glm::vec3, sub) {
 EXTERN_OBJECT_CONSTRUCTOR(glm::quat, (0, glm::vec3(0))) {
 	switch (args.Length()) {
 		case 1: {
-			auto value = args[0]->ToNumber()->Value();
-			object->w = value;
-			object->x = value;
-			object->y = value;
-			object->z = value;
+			auto value = static_cast<F32>(args[0]->ToNumber()->Value());
+			object->w = static_cast<F32>(value);
+			object->x = static_cast<F32>(value);
+			object->y = static_cast<F32>(value);
+			object->z = static_cast<F32>(value);
 			break;
 		}
 		case 4: {
-			object->w = args[0]->ToNumber()->Value();
-			object->x = args[1]->ToNumber()->Value();
-			object->y = args[2]->ToNumber()->Value();
-			object->z = args[3]->ToNumber()->Value();
+			object->w = static_cast<F32>(args[0]->ToNumber()->Value());
+			object->x = static_cast<F32>(args[1]->ToNumber()->Value());
+			object->y = static_cast<F32>(args[2]->ToNumber()->Value());
+			object->z = static_cast<F32>(args[3]->ToNumber()->Value());
 			break;
 		}
 	}
@@ -137,22 +137,22 @@ EXTERN_OBJECT_METHOD(glm::quat, getZ) {
 	args.GetReturnValue().Set(Number::New(isolate, object->z));
 }
 EXTERN_OBJECT_METHOD(glm::quat, setW) {
-	object->w = args[0]->ToNumber()->Value();
+	object->w = static_cast<F32>(args[0]->ToNumber()->Value());
 }
 EXTERN_OBJECT_METHOD(glm::quat, setX) {
-	object->x = args[0]->ToNumber()->Value();
+	object->x = static_cast<F32>(args[0]->ToNumber()->Value());
 }
 EXTERN_OBJECT_METHOD(glm::quat, setY) {
-	object->y = args[0]->ToNumber()->Value();
+	object->y = static_cast<F32>(args[0]->ToNumber()->Value());
 }
 EXTERN_OBJECT_METHOD(glm::quat, setZ) {
-	object->z = args[0]->ToNumber()->Value();
+	object->z = static_cast<F32>(args[0]->ToNumber()->Value());
 }
 EXTERN_OBJECT_METHOD(glm::quat, set) {
-	object->w = args[0]->ToNumber()->Value();
-	object->x = args[1]->ToNumber()->Value();
-	object->y = args[2]->ToNumber()->Value();
-	object->z = args[3]->ToNumber()->Value();
+	object->w = static_cast<F32>(args[0]->ToNumber()->Value());
+	object->x = static_cast<F32>(args[1]->ToNumber()->Value());
+	object->y = static_cast<F32>(args[2]->ToNumber()->Value());
+	object->z = static_cast<F32>(args[3]->ToNumber()->Value());
 }
 EXTERN_OBJECT_METHOD(glm::quat, length) {
 	args.GetReturnValue().Set(glm::length(*object));
