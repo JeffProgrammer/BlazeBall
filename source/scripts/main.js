@@ -2,6 +2,7 @@
 
 var scene = getScene();
 scene.interiors = [];
+scene.projectiles = [];
 
 function onFrameAdvance(delta) {
 	//print("Time advance: ", delta);
@@ -48,7 +49,9 @@ function onKeyUp(key) {
 }
 
 function fire() {
-	scene.addObject(new Sphere(new vec3(0, 0, 30), 0.75));
+	var proj = new Sphere(new vec3(0, 0, 30), 0.75);
+	scene.projectiles.push(proj);
+	scene.addObject(proj);
 }
 
 function printThings(list) {
