@@ -153,7 +153,7 @@ if(NOT ("$ENV{CFLAGS}" STREQUAL "")) # Hackish, but does the trick on Win32
 endif()
 
 if(MSVC)
-  option(FORCE_STATIC_VCRT "Force /MT for static VC runtimes" OFF)
+  option(FORCE_STATIC_VCRT "Force /MT for static VC runtimes" ON) # Jeff: changed to true
   if(FORCE_STATIC_VCRT)
     foreach(flag_var
         CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
@@ -188,12 +188,14 @@ add_definitions(-DUSING_GENERATED_CONFIG_H)
 # General includes
 include_directories(${SDL2_BINARY_DIR}/include ${SDL2_SOURCE_DIR}/include)
 
+# Jeff: removed AUDIO from the list as we are not using SDL audio
 set(SDL_SUBSYSTEMS
-    Atomic Audio Video Render Events Joystick Haptic Power Threads Timers
+    Atomic Video Render Events Joystick Haptic Power Threads Timers
     File Loadso CPUinfo Filesystem)
 foreach(_SUB ${SDL_SUBSYSTEMS})
   string(TOUPPER ${_SUB} _OPT)
-  option(SDL_${_OPT} "Enable the ${_SUB} subsystem" ON)
+  #option(SDL_${_OPT} "Enable the ${_SUB} subsystem" ON)
+  set(SDL_${OPT} ON)
 endforeach()
 
 option_string(ASSERTIONS "Enable internal sanity checks (auto/disabled/release/enabled/paranoid)" "auto")
