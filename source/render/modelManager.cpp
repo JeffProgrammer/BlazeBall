@@ -51,7 +51,7 @@ bool ModelManager::loadAsset(const std::string &file) {
 	modelScene->sceneCenter.y = (modelScene->sceneMin.y + modelScene->sceneMax.y) / 2.0f;
 	modelScene->sceneCenter.z = (modelScene->sceneMin.z + modelScene->sceneMax.z) / 2.0f;
 
-	_glCreateMesh(scene);
+	_glCreateMesh(modelScene);
 
 	return true;
 }
@@ -59,6 +59,13 @@ bool ModelManager::loadAsset(const std::string &file) {
 bool ModelManager::releaseAsset(const std::string &file) {
 	if (!containsModel(file))
 		return false;
+
+	// delete geometry on the GPU
+	for (size_t i = 0; i < mResourceCache[file]->meshes.size(); i++) {
+		const ModelScene::ModelMesh &mesh = mResourceCache[file]->meshes[i];
+		glDeleteBuffers(1, &mesh.vbo);
+		glDeleteBuffers(1, &mesh.ibo);
+	}
 
 	delete mResourceCache[file];
 	mResourceCache[file] = nullptr;
