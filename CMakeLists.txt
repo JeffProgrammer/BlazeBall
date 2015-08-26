@@ -268,6 +268,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty
 	dif/include
 	thirdparty/v8/include
+	thirdparty/assimp/include
 )
 
 # Main project source
@@ -301,6 +302,7 @@ set (DIFVIEWERGAME_SRC
 	source/game/movement.h
 	source/game/sphere.cpp
 	source/game/sphere.h
+	
 	# Graphics folder
 	source/graphics/gfxTypes.h
 	source/graphics/shader.cpp
@@ -340,6 +342,8 @@ set (DIFVIEWERGAME_SRC
 	source/render/InteriorRender.cpp
 	source/render/material.cpp
 	source/render/material.h
+	source/render/modelManager.cpp
+	source/render/modelManager.h
 	source/render/scene.cpp
 	source/render/scene.h
 

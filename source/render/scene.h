@@ -47,6 +47,7 @@
 #include "game/movement.h"
 #include "game/camera.h"
 #include "scripting/scriptEngine.h"
+#include "render/modelManager.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
