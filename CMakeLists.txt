@@ -471,6 +471,11 @@ set (BUILD_DIR_FILES
 	assets/DefaultNormal.png
 	assets/DefaultSpec.png
 	assets/noise.jpg
+	
+	assets/cube.dae
+	assets/grid.png
+	assets/grid.normal.png
+	assets/grid.alpha.png
 
 	source/shaders/interiorF.glsl
 	source/shaders/interiorV.glsl
