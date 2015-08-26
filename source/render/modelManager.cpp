@@ -27,6 +27,7 @@
 //
 // Note: portions of this code is from the assimp sample code:
 // https://github.com/assimp/assimp/blob/master/samples/SimpleOpenGL/Sample_SimpleOpenGL.c
+// https://github.com/assimp/assimp/tree/master/samples/SimpleAssimpViewX
 //------------------------------------------------------------------------------
 
 #include "render/modelManager.h"
