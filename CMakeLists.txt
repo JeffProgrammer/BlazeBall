@@ -474,6 +474,8 @@ set (BUILD_DIR_FILES
 
 	source/shaders/interiorF.glsl
 	source/shaders/interiorV.glsl
+	source/shaders/modelV.glsl
+	source/shaders/modelF.glsl
 )
 
 add_custom_command(TARGET Game PRE_BUILD
