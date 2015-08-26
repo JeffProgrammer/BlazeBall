@@ -51,6 +51,8 @@ bool ModelManager::loadAsset(const std::string &file) {
 	modelScene->sceneCenter.y = (modelScene->sceneMin.y + modelScene->sceneMax.y) / 2.0f;
 	modelScene->sceneCenter.z = (modelScene->sceneMin.z + modelScene->sceneMax.z) / 2.0f;
 
+	_glCreateMesh(scene);
+
 	return true;
 }
 
@@ -66,6 +68,10 @@ bool ModelManager::releaseAsset(const std::string &file) {
 
 bool ModelManager::containsModel(const std::string &file) const {
 	return std::find(mResourceCache.begin(), mResourceCache.end(), file) != mResourceCache.end();
+}
+
+void ModelManager::render() {
+
 }
 
 //------------------------------------------------------------------------------
@@ -110,4 +116,66 @@ void ModelManager::_getBoundingBox(const aiScene *scene, aiVector3D *min, aiVect
 	min->x = min->y = min->z = 1e10f;
 	max->x = max->y = max->z = -1e10f;
 	_getBoundingBoxNode(scene, scene->mRootNode, min, max, &transform);
+}
+
+void ModelManager::_glCreateMesh(ModelScene *scene) {
+	for (U32 i = 0; i < scene->scene->mNumMeshes; i++) {
+		const aiMesh *mesh = scene->scene->mMeshes[i];
+
+		ModelScene::ModelMesh modelMesh;
+		memset(&modelMesh, 0, sizeof(ModelScene::ModelMesh));
+
+		std::vector<ModelVertex> vertList(mesh->mNumVertices);
+		for (U32 j = 0; j < mesh->mNumVertices; j++) {
+			ModelVertex vertex;
+			vertex.position = mesh->mVertices[j];
+			vertex.normal = mesh->mNormals[j];
+			vertex.textureCoords = glm::vec2(mesh->mTextureCoords[0][j].x, mesh->mTextureCoords[0][j].y);
+			vertex.tangent = mesh->mTangents[j];
+			vertex.bitangent = mesh->mBitangents[j];
+
+			vertList[j] = vertex;
+		}
+
+		// now, upload the vertices to the GL
+		glGenBuffers(1, &modelMesh.vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, modelMesh.vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(ModelVertex) * mesh->mNumVertices, &vertList[0], GL_STATIC_DRAW);
+
+		// get primitive type
+		switch (mesh->mPrimitiveTypes) {
+		case aiPrimitiveType_POINT:
+			modelMesh.primitive = 1;
+			break;
+		case aiPrimitiveType_LINE:
+			modelMesh.primitive = 2;
+			break;
+		case aiPrimitiveType_TRIANGLE:
+			modelMesh.primitive = 3;
+			break;
+		default:
+			// invalid primitive type
+			assert(false);
+			break;
+		}
+
+		// now, do the index buffer
+		std::vector<U16> indices;
+		for (U32 j = 0; j < mesh->mNumFaces; j++) {
+			for (U32 k = 0; k < modelMesh.primitive; j++) {
+				indices.push_back(mesh->mFaces[j].mIndices[k]);
+			}
+		}
+		glGenBuffers(1, &modelMesh.ibo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, modelMesh.ibo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(U16) * indices.size(), &indices, GL_STATIC_DRAW);
+
+		modelMesh.numIndices = indices.size();
+
+		scene->meshes.push_back(modelMesh);
+	}
+
+	// clear the GL states
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

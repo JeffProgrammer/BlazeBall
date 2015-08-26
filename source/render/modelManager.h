@@ -34,15 +34,31 @@
 #include <assimp/postprocess.h>
 #include <unordered_map>
 #include "base/types.h"
+#include "render/material.h"
+
+struct ModelVertex {
+	aiVector3D position;
+	aiVector3D normal;
+	glm::vec2 textureCoords;
+	aiVector3D tangent;
+	aiVector3D bitangent;
+};
 
 class ModelManager {
 private:
-
 	struct ModelScene {
 		const aiScene *scene;
 		aiVector3D sceneCenter;
 		aiVector3D sceneMin;
 		aiVector3D sceneMax;
+
+		struct ModelMesh {
+			GLuint vbo;
+			GLuint ibo;
+			U16 numIndices;
+			GLuint primitive;
+		};
+		std::vector<ModelMesh> meshes;
 
 		ModelScene() : scene(nullptr), sceneCenter(0.0f), sceneMin(0.0f), sceneMax(0.0f) {};
 
@@ -56,12 +72,15 @@ private:
 	void _getBoundingBoxNode(const aiScene *scene, const aiNode *node, aiVector3D *min, aiVector3D *max, aiMatrix4x4 *transform);
 	void _getBoundingBox(const aiScene *scene, aiVector3D *min, aiVector3D *max);
 
+	void _glCreateMesh(ModelScene *scene);
+
 public:
 	ModelManager();
 
 	bool loadAsset(const std::string &file);
 	bool releaseAsset(const std::string &file);
 	bool containsModel(const std::string &file) const;
+	void render();
 };
 
 #endif 
