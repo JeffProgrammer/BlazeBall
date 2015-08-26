@@ -1,0 +1,5 @@
+from torque3d.
+
+MIT License
+
+Copyright (c) 2012 GarageGames, LLC
