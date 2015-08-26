@@ -57,6 +57,7 @@ private:
 			GLuint ibo;
 			U16 numIndices;
 			GLuint primitive;
+			Material *material;
 		};
 		std::vector<ModelMesh> meshes;
 

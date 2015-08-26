@@ -31,6 +31,7 @@
 //------------------------------------------------------------------------------
 
 #include "render/modelManager.h"
+#include "base/io.h"
 
 ModelManager::ModelManager() {
 
@@ -129,8 +130,13 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 	for (U32 i = 0; i < scene->scene->mNumMeshes; i++) {
 		const aiMesh *mesh = scene->scene->mMeshes[i];
 
+		Material *material;
+		if (!_generateMaterial(scene, mesh, material));
+			continue;
+
 		ModelScene::ModelMesh modelMesh;
 		memset(&modelMesh, 0, sizeof(ModelScene::ModelMesh));
+		modelMesh.material = material;
 
 		std::vector<ModelVertex> vertList(mesh->mNumVertices);
 		for (U32 j = 0; j < mesh->mNumVertices; j++) {
@@ -185,4 +191,33 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 	// clear the GL states
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+bool ModelManager::_generateMaterial(const ModelScene *scene, const aiMesh *mesh, Material *material) {
+	aiString path;
+	aiMaterial *aiMat = scene->scene->mMaterials[mesh->mMaterialIndex];
+	if (aiMat->GetTexture(aiTextureType_DIFFUSE, 0, &path) != AI_SUCCESS) {
+		// failed to load a texture
+		printf("Failed to load texture at path: %s", path.C_Str());
+		material = nullptr;
+		return false;
+	}
+	std::string directory = IO::getPath(std::string(path.C_Str()));
+	std::string materialName = IO::getName(std::string(path.C_Str()));
+	std::string diffuseFile = Texture::find(directory + DIR_SEP + materialName);
+
+	//If we can't find it, just chuck the lot and keep going.
+	if (!diffuseFile.length()) {
+		fprintf(stderr, "Error in reading bitmap: %s Bitmap not found.\n", materialName.c_str());
+		material = nullptr;
+		return false;
+	}
+	std::string normalName = materialName + ".normal";
+	std::string normalFile = Texture::find(directory + DIR_SEP + normalName);
+	std::string specularName = materialName + ".alpha";
+	std::string specularFile = Texture::find(directory + DIR_SEP + specularName);
+
+	Material *mat = new Material(diffuseFile, normalFile, specularFile);
+	material = mat;
+	return true;
 }
