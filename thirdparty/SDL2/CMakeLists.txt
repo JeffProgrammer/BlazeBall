@@ -201,7 +201,69 @@ endforeach()
 option_string(ASSERTIONS "Enable internal sanity checks (auto/disabled/release/enabled/paranoid)" "auto")
 
 # Jeff: we are now using built in options.
-include(${SDL2_SOURCE_DIR}/cmake/options.cmake)
+#include(${SDL2_SOURCE_DIR}/cmake/options.cmake)
+
+set(LIBC ON)
+set(GCC_ATOMICS ${USE_GCC})
+set(ASSEMBLY ${OPT_DEF_ASM})
+set(SSEMATH ${OPT_DEF_SSEMATH})
+set(MMX ${OPT_DEF_ASM})
+set(3DNOW ${OPT_DEF_ASM})
+set(SSE ${OPT_DEF_ASM})
+set(SSE2 ${OPT_DEF_SSEMATH})
+set(ALTIVEC OFF) # We aren't supporting the PowerPC architecture
+set(DISKAUDIO OFF) # using fmod not SDL audio
+set(DUMMYAUDIO OFF) # using fmod not SDL audio
+set(VIDEO_DIRECTFB OFF)
+set(DIRECTFB_SHARED OFF)
+set(FUSIONSOUND OFF) # using fmod not SDL audio
+set(FUSIONSOUND_SHARED OFF) # using fmod not SDL audio
+set(VIDEO_DUMMY ON)
+set(VIDEO_OPENGL ON)
+set(VIDEO_OPENGLES OFF)
+set(PTHREADS ${UNIX_OR_MAC_SYS})
+set(PTHREADS_SEM ${UNIX_OR_MAC_SYS})
+set(SDL_DLOPEN ON)
+set(OSS OFF) # using fmod not SDL audio
+set(ALSA OFF) # using fmod not SDL audio
+set(ALSA_SHARED OFF) # using fmod not SDL audio
+set(ESD OFF) # using fmod not SDL audio
+set(ESD_SHARED OFF) # using fmod not SDL audio
+set(PULSEAUDIO OFF) # using fmod not SDL audio
+set(PULSEAUDIO_SHARED OFF) # using fmod not SDL audio
+set(ARTS OFF) # using fmod not SDL audio
+set(ARTS_SHARED OFF) # using fmod not SDL audio
+set(NAS OFF) # using fmod not SDL audio
+set(NAS_SHARED OFF) # using fmod not SDL audio
+set(SNDIO OFF) # using fmod not SDL audio
+set(RPATH ${UNIX_SYS})
+set(CLOCK_GETTIME OFF)
+set(INPUT_TSLIB ${UNIX_SYS})
+set(VIDEO_X11 ${UNIX_SYS})
+set(VIDEO_WAYLAND OFF)
+set(VIDEO_MIR OFF)
+if (VIDEO_X11)
+	set(X11_SHARED ON)
+else()
+	set(X11_SHARED OFF)
+endif()
+
+set(SDL_X11_OPTIONS Xcursor Xinerama XInput Xrandr Xscrnsaver XShape Xvm)
+foreach(_SUB ${SDL_X11_OPTIONS})
+  string(TOUPPER "VIDEO_X11_${_SUB}" _OPT)
+  if (VIDEO_X11)
+	set(${_OPT} ON)
+  else()
+	set(${_OPT} OFF)
+  endif()
+endforeach()
+set(VIDEO_COCOA ${APPLE})
+set(DIRECTX ${WINDOWS})
+set(RENDER_D3D OFF) # Not using D3D
+
+# We want to static link only pls
+set(SDL_SHARED OFF)
+set(SDL_STATIC ON)
 
 # General source files
 file(GLOB SOURCE_FILES
