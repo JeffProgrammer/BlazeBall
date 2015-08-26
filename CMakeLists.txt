@@ -405,6 +405,9 @@ set (DIFVIEWERGAME_LIBRARIES
 	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_base_2.lib
 	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_base_3.lib
 	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_libplatform.lib
+	
+	# Assimp
+	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimpd.lib
 )
 else()
 set (DIFVIEWERGAME_LIBRARIES
