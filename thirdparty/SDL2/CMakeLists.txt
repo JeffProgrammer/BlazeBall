@@ -195,7 +195,7 @@ set(SDL_SUBSYSTEMS
 foreach(_SUB ${SDL_SUBSYSTEMS})
   string(TOUPPER ${_SUB} _OPT)
   #option(SDL_${_OPT} "Enable the ${_SUB} subsystem" ON)
-  set(SDL_${OPT} ON)
+  set(SDL_${_OPT} ON)
 endforeach()
 
 option_string(ASSERTIONS "Enable internal sanity checks (auto/disabled/release/enabled/paranoid)" "auto")
