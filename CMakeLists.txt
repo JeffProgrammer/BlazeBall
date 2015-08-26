@@ -379,6 +379,9 @@ set (DIFVIEWERGAME_LIBRARIES
 
 	# DIF
 	Dif
+	
+	#SDL2
+	SDL2-static
 )
 
 if (MSVC)
@@ -390,7 +393,6 @@ set (DIFVIEWERGAME_LIBRARIES
 	Kernel32
 	User32
 	OpenGL32
-   SDL2-static
 	
 	# TODO: have seperate paths for debug and release as well as 32bit/64bit
 	# right now, they're debug
@@ -407,7 +409,6 @@ set (DIFVIEWERGAME_LIBRARIES
 else()
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
-	SDL2
 	z
 	
 	# TODO: seperate x64 and x86 for build instructions
