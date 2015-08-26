@@ -75,6 +75,13 @@ private:
 
 	void _glCreateMesh(ModelScene *scene);
 
+	/// Generates the materials for this specific mesh.
+	/// @param IN scene The model scene object of which we are generating materials for.
+	/// @param IN mesh The mesh object that the material is for.
+	/// @param OUT material The material object that will be used for this mesh, or nullptr if failure.
+	/// @return true if the materials could be created, false if the material could not be created.
+	bool _generateMaterial(const ModelScene *scene, const aiMesh *mesh, Material *material);
+
 public:
 	ModelManager();
 
