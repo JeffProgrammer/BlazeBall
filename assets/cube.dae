@@ -13,8 +13,8 @@
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_images>
-    <image id="grid.dds" name="grid_dds">
-      <init_from>./grid.dds</init_from>
+    <image id="grid.png" name="grid_dds">
+      <init_from>./grid.png</init_from>
     </image>
   </library_images>
   <library_materials>
@@ -27,7 +27,7 @@
       <profile_COMMON>
         <newparam sid="grid_dds-surface">
           <surface type="2D">
-            <init_from>grid.dds</init_from>
+            <init_from>grid.png</init_from>
             <format>A8R8G8B8</format>
           </surface>
         </newparam>
