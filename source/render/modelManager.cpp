@@ -162,7 +162,7 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 		// now, do the index buffer
 		std::vector<U16> indices;
 		for (U32 j = 0; j < mesh->mNumFaces; j++) {
-			for (U32 k = 0; k < modelMesh.primitive; j++) {
+			for (U32 k = 0; k < modelMesh.primitive; k++) {
 				indices.push_back(mesh->mFaces[j].mIndices[k]);
 			}
 		}
