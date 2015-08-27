@@ -215,8 +215,8 @@ bool ModelManager::_generateMaterial(const ModelScene *scene, const aiMesh *mesh
 		material = nullptr;
 		return false;
 	}
-	std::string directory = IO::getPath(std::string(path.C_Str()));
-	std::string materialName = IO::getName(std::string(path.C_Str()));
+	std::string directory = mCurrentWorkingDir + IO::getPath(std::string(path.C_Str()));
+	std::string materialName = IO::getBase(std::string(path.C_Str()), '/');
 	std::string diffuseFile = Texture::find(directory + DIR_SEP + materialName);
 
 	//If we can't find it, just chuck the lot and keep going.
