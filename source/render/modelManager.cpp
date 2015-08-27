@@ -92,8 +92,8 @@ void ModelManager::_getBoundingBoxNode(const aiScene *scene, const aiNode *node,
 
 	aiMultiplyMatrix4(transform, &node->mTransformation);
 
-	numVerts = node->mNumMeshes;
-	for (i = 0; i < numVerts; i++) {
+	numMeshes = node->mNumMeshes;
+	for (i = 0; i < numMeshes; i++) {
 		const aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
 		numVerts = mesh->mNumVertices;
 		for (j = 0; j < numVerts; j++) {
@@ -130,7 +130,7 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 	for (U32 i = 0; i < scene->scene->mNumMeshes; i++) {
 		const aiMesh *mesh = scene->scene->mMeshes[i];
 
-		Material *material;
+		Material *material = nullptr;
 		if (!_generateMaterial(scene, mesh, material));
 			continue;
 
