@@ -39,12 +39,16 @@
 #endif
 
 #include <string>
+#include <unordered_map>
 
 class Shader {
 protected:
 	GLuint vertId;
 	GLuint fragId;
 	GLuint programId;
+
+	std::unordered_map<std::string, GLuint> mUniformLocations;
+	std::unordered_map<std::string, GLuint> mAttribLocations;
 	
 	/**
 	 * Load a shader from a given path with a given type.

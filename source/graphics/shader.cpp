@@ -154,16 +154,24 @@ GLuint Shader::getProgramId() {
 }
 
 GLuint Shader::getUniformLocation(const std::string &name) {
-	return glGetUniformLocation(getProgramId(), name.c_str());
+	// store location in hashmap to avoid gpu sync point everytime we call this method.
+	if (mUniformLocations.find(name) == mUniformLocations.end())
+		mUniformLocations[name] = glGetUniformLocation(getProgramId(), name.c_str());
+	return mUniformLocations[name];
 }
 
 void Shader::setUniformLocation(const std::string &name, const GLuint &location) {
-	GLuint glLocation = glGetUniformLocation(getProgramId(), name.c_str());
-	glUniform1i(glLocation, location);
+	// store location in hashmap to avoid gpu sync point everytime we call this method.
+	if (mUniformLocations.find(name) == mUniformLocations.end())
+		mUniformLocations[name] = glGetUniformLocation(getProgramId(), name.c_str());
+	glUniform1i(mUniformLocations[name], location);
 }
 
 GLuint Shader::getAttributeLocation(const std::string &name) {
-	return glGetAttribLocation(getProgramId(), name.c_str());
+	// store location in hashmap to avoid gpu sync point everytime we call this method.
+	if (mAttribLocations.find(name) == mAttribLocations.end())
+		mAttribLocations[name] = glGetAttribLocation(getProgramId(), name.c_str());
+	return mAttribLocations[name];
 }
 
 void Shader::activate() {
