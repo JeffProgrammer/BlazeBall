@@ -40,17 +40,31 @@
 
 IMPLEMENT_OBJECT(Scene);
 
+
+Scene::Scene() {
+	mInteriorShader = nullptr;
+	mShapeShader = nullptr;
+}
+
+Scene::~Scene() {
+	for (auto object : objects) {
+		delete object;
+	}
+	delete window;
+	delete mTimer;
+}
+
 void Scene::loadShaderUniforms() {
 	//Light
-	glUniform4fv(GLLocations.lightColor, 1, &lightColor.r);
-	glUniform4fv(GLLocations.ambientColor, 1, &ambientColor.r);
+	glUniform4fv(mInteriorShader->getUniformLocation("lightColor"), 1, &lightColor.r);
+	glUniform4fv(mInteriorShader->getUniformLocation("ambientColor"), 1, &ambientColor.r);
 
 	//Sun
-	glUniform3fv(GLLocations.sunPosition, 1, &sunPosition.x);
-	glUniform1f(GLLocations.specularExponent, static_cast<F32>(specularExponent));
+	glUniform3fv(mInteriorShader->getUniformLocation("sunPosition"), 1, &sunPosition.x);
+	glUniform1f(mInteriorShader->getUniformLocation("specularExponent"), static_cast<F32>(specularExponent));
 
 	//Projection matrix
-	glUniformMatrix4fv(GLLocations.projectionMatrix, 1, GL_FALSE, &projectionMatrix[0][0]);
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
 }
 
 void Scene::render() {
@@ -64,9 +78,6 @@ void Scene::render() {
 	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
 	viewMatrix *= cameraTransform;
 
-	//Send to OpenGL
-	glUniformMatrix4fv(GLLocations.viewMatrix, 1, GL_FALSE, &viewMatrix[0][0]);
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
@@ -75,12 +86,21 @@ void Scene::render() {
 	glEnable(GL_MULTISAMPLE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	mInteriorShader->activate();
+	mInteriorShader->setUniformLocation("textureSampler", 0);
+	mInteriorShader->setUniformLocation("normalSampler", 1);
+	mInteriorShader->setUniformLocation("specularSampler", 2);
+	mInteriorShader->setUniformLocation("noiseSampler", 3);
+	loadShaderUniforms();
+	//Send to OpenGL
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
 	for (auto object : objects) {
 		glm::mat4 modelMatrix(1);
 		object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
-		glUniformMatrix4fv(GLLocations.modelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
+		glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
 		object->render();
 	}
+	mInteriorShader->deactivate();
 }
 
 void Scene::loop(const F64 &deltaMS) {
@@ -118,32 +138,15 @@ bool Scene::initGL() {
 	glGenVertexArrays(1, &vertexArrayID);
 	glBindVertexArray(vertexArrayID);
 
-	Shader *shader = new Shader("interiorV.glsl", "interiorF.glsl");
+	mInteriorShader = new Shader("interiorV.glsl", "interiorF.glsl");
+	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 
-	shader->activate();
-	shader->setUniformLocation("textureSampler", 0);
-	shader->setUniformLocation("normalSampler", 1);
-	shader->setUniformLocation("specularSampler", 2);
-	shader->setUniformLocation("noiseSampler", 3);
-
-	GLLocations.projectionMatrix = shader->getUniformLocation("projectionMat");
-	GLLocations.modelMatrix = shader->getUniformLocation("modelMat");
-	GLLocations.viewMatrix = shader->getUniformLocation("viewMat");
-
-	GLLocations.lightColor = shader->getUniformLocation("lightColor");
-	GLLocations.ambientColor = shader->getUniformLocation("ambientColor");
-
-	GLLocations.sunPosition = shader->getUniformLocation("sunPosition");
-	GLLocations.specularExponent = shader->getUniformLocation("specularExponent");
-
 	//Window size for viewport
 	glm::ivec2 screenSize = window->getWindowSize();
 	updateWindowSize(screenSize);
-
-	loadShaderUniforms();
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -374,17 +377,6 @@ void Scene::run() {
 	
 	//Clean up (duh)
 	cleanup();
-}
-
-Scene::Scene() {
-}
-
-Scene::~Scene() {
-	for (auto object : objects) {
-		delete object;
-	}
-	delete window;
-	delete mTimer;
 }
 
 OBJECT_METHOD(Scene, addObject) {

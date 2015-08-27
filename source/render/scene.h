@@ -68,17 +68,6 @@ protected:
 
 	//F32 maxFPS = 60.0f;
 
-	struct {
-		GLuint projectionMatrix;
-		GLuint modelMatrix;
-		GLuint viewMatrix;
-
-		GLuint lightColor;
-		GLuint ambientColor;
-		GLuint sunPosition;
-		GLuint specularExponent;
-	} GLLocations;
-
 	glm::mat4x4 projectionMatrix, modelMatrix, viewMatrix;
 
 	struct {
@@ -110,6 +99,9 @@ public:
 	ScriptingEngine *mEngine;
 
 	ModelManager modelManager;
+
+	Shader *mInteriorShader;
+	Shader *mShapeShader;
 	
 	bool mShouldSleep;
 
