@@ -183,7 +183,7 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, modelMesh.ibo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(U16) * indices.size(), &indices, GL_STATIC_DRAW);
 
-		modelMesh.numIndices = indices.size();
+		modelMesh.numIndices = static_cast<U16>(indices.size());
 
 		scene->meshes.push_back(modelMesh);
 	}
