@@ -33,8 +33,21 @@
 #include "render/modelManager.h"
 #include "base/io.h"
 
-ModelManager::ModelManager() {
+// For getcwd
+#ifdef _WIN32
+#include <direct.h>
 
+inline char* getcwd(char *buf, size_t size) {
+	return _getcwd(buf, size);
+}
+
+#else
+#include <unistd.h>
+#endif
+
+ModelManager::ModelManager() {
+	char buffer[512]; // If your path is longer than this, then FUCK YOU
+	mCurrentWorkingDir = getcwd(buffer, 512);
 }
 
 bool ModelManager::loadAsset(const std::string &file) {

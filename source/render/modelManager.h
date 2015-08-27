@@ -82,6 +82,8 @@ private:
 	/// @return true if the materials could be created, false if the material could not be created.
 	bool _generateMaterial(const ModelScene *scene, const aiMesh *mesh, Material *material);
 
+	std::string mCurrentWorkingDir;
+
 public:
 	ModelManager();
 
