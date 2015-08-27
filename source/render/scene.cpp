@@ -101,6 +101,17 @@ void Scene::render() {
 		object->render();
 	}
 	mInteriorShader->deactivate();
+
+	// render models.
+	// yeah i know this is shitty rendering at the moment, we need to actually batch shit.
+	mShapeShader->activate();
+	mInteriorShader->setUniformLocation("textureSampler", 0);
+	mInteriorShader->setUniformLocation("normalSampler", 1);
+	mInteriorShader->setUniformLocation("specularSampler", 2);
+	glUniformMatrix4fv(mShapeShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
+	glUniformMatrix4fv(mShapeShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
+	modelManager.render();
+	mShapeShader->deactivate();
 }
 
 void Scene::loop(const F64 &deltaMS) {
