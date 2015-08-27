@@ -315,6 +315,8 @@ void Scene::run() {
 
 	F64 tickTracker = 0.0f;
 
+	bool loaded = modelManager.loadAsset("E:\\DifViewerGame\\build\\Debug\\cube.dae");
+
 	//Main loop
 	while (running) {
 		//Profiling

@@ -108,6 +108,8 @@ public:
 	Window *window;
 	Timer *mTimer;
 	ScriptingEngine *mEngine;
+
+	ModelManager modelManager;
 	
 	bool mShouldSleep;
 
