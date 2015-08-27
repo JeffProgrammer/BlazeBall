@@ -75,7 +75,7 @@ bool ModelManager::releaseAsset(const std::string &file) {
 }
 
 bool ModelManager::containsModel(const std::string &file) const {
-	return std::find(mResourceCache.begin(), mResourceCache.end(), file) != mResourceCache.end();
+	return mResourceCache.find(file) != mResourceCache.end();
 }
 
 void ModelManager::render() {
