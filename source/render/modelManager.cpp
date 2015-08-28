@@ -98,7 +98,8 @@ void ModelManager::render() {
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
 	glEnableVertexAttribArray(4);
-	GL_CHECKERRORS();
+
+	bool firstRender = true;
 
 	for (auto model : mResourceCache) {
 		const auto &meshes = model.second->meshes;
@@ -108,64 +109,31 @@ void ModelManager::render() {
 
 			mesh.vbo->bind();
 
-			//0th array - vertices
-			glVertexAttribPointer(0, //Attribute 0
-				3, //3 components
-				GL_FLOAT, //Type
-				GL_FALSE, //Normalized
-				sizeof(ModelVertex), //Stride
-				(void *)offsetof(ModelVertex, position)); //Offset
-			GL_CHECKERRORS();
+			// for now, this will cache these, as each VBO currently uses the same offsets
+			if (firstRender) {
+				firstRender = false;
 
-			//1st array - uvs
-			glVertexAttribPointer(1, //Attribute 1
-				2, //2 components
-				GL_FLOAT, //Type
-				GL_FALSE, //Normalized
-				sizeof(ModelVertex), //Stride
-				(void *)offsetof(ModelVertex, textureCoords)); //Offset
-			GL_CHECKERRORS();
-
-			//2nd array - normals
-			glVertexAttribPointer(2, //Attribute 2
-				3, //3 components
-				GL_FLOAT, //Type
-				GL_FALSE, //Normalized
-				sizeof(ModelVertex), //Stride
-				(void *)offsetof(ModelVertex, normal)); //Offset
-			GL_CHECKERRORS();
-
-			//3rd array - tangents
-			glVertexAttribPointer(3, //Attribute 3
-				3, //3 components
-				GL_FLOAT, //Type
-				GL_FALSE, //Normalized
-				sizeof(ModelVertex), //Stride
-				(void *)offsetof(ModelVertex, tangent)); //Offset
-
-			GL_CHECKERRORS();
-
-			//4th array - bitangents
-			glVertexAttribPointer(4, //Attribute 4
-				3, //3 components
-				GL_FLOAT, //Type
-				GL_FALSE, //Normalized
-				sizeof(ModelVertex), //Stride
-				(void *)offsetof(ModelVertex, bitangent)); //Offset
-
-			GL_CHECKERRORS();
-
-
+				// 0th array - vertices
+				// 1st array - texture coordinates
+				// 2nd array - normals
+				// 3rd array - tangents
+				// 4th array - bitangents
+				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, position)));
+				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, textureCoords)));
+				glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, normal)));
+				glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, tangent)));
+				glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, bitangent)));
+			}
 
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo);
-			GL_CHECKERRORS(); // FUCKING CHECK THE GODDAMM ERROR. MATE.
 			glDrawElements(mesh.primitive, mesh.numIndices, GL_UNSIGNED_SHORT, (void*)0);
+
+			GL_CHECKERRORS();
 		}
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	GL_CHECKERRORS();
 
 	//Disable arrays
 	glDisableVertexAttribArray(4);
@@ -173,7 +141,6 @@ void ModelManager::render() {
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
-	GL_CHECKERRORS();
 }
 
 //------------------------------------------------------------------------------
