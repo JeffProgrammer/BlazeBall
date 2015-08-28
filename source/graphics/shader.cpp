@@ -28,6 +28,7 @@
 
 #include "graphics/shader.h"
 #include "base/io.h"
+#include "graphics/gl/glUtils.h"
 
 #ifdef _WIN32
 #include <GL/glew.h>
@@ -176,8 +177,9 @@ GLuint Shader::getAttributeLocation(const std::string &name) {
 
 void Shader::activate() {
 	glUseProgram(this->getProgramId());
+	GL_CHECKERRORS();
 }
 
 void Shader::deactivate() {
-	glUseProgram(0);
+
 }
