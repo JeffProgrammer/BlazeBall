@@ -400,15 +400,24 @@ set (DIFVIEWERGAME_LIBRARIES
 	
 	# TODO: have seperate paths for debug and release as well as 32bit/64bit
 	# right now, they're debug
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_libbase.lib
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/icui18n.lib
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/icuuc.lib
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_nosnapshot.lib
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_base_0.lib
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_base_1.lib
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_base_2.lib
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_base_3.lib
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/v8_libplatform.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/v8_libbase.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/icui18n.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/icuuc.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/v8_nosnapshot.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/v8_base_0.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/v8_base_1.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/v8_base_2.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/v8_base_3.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/v8_libplatform.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/v8_libbase.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/icui18n.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/icuuc.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/v8_nosnapshot.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/v8_base_0.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/v8_base_1.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/v8_base_2.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/v8_base_3.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/v8_libplatform.lib
 	
 	# Assimp
 	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimpd.lib
@@ -419,14 +428,25 @@ set (DIFVIEWERGAME_LIBRARIES
 	z
 	
 	# TODO: seperate x64 and x86 for build instructions
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libicudata.a
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libicui18n.a
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libicuuc.a
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_base.a
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_libbase.a
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_libplatform.a
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/libv8_snapshot.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Debug/libicudata.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Debug/libicui18n.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Debug/libicuuc.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Debug/libv8_base.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Debug/libv8_libbase.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Debug/libv8_libplatform.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Debug/libv8_snapshot.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Release/libicudata.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Release/libicui18n.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Release/libicuuc.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Release/libv8_base.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Release/libv8_libbase.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Release/libv8_libplatform.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Release/libv8_snapshot.a
 	/usr/lib/libstdc++.6.dylib
+	
+	# Assimp
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/Debug/assimpd.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/Release/assimpd.lib
 )
 endif()
 
