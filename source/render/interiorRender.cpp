@@ -215,4 +215,5 @@ void GameInterior::render() {
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
+	GL_CHECKERRORS();
 }
