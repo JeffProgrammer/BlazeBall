@@ -169,15 +169,19 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 		glBufferData(GL_ARRAY_BUFFER, sizeof(ModelVertex) * mesh->mNumVertices, &vertList[0], GL_STATIC_DRAW);
 
 		// get primitive type
+		U32 primCount = 0;
 		switch (mesh->mPrimitiveTypes) {
 		case aiPrimitiveType_POINT:
-			modelMesh.primitive = 1;
+			modelMesh.primitive = GL_POINTS;
+			primCount = 1;
 			break;
 		case aiPrimitiveType_LINE:
-			modelMesh.primitive = 2;
+			modelMesh.primitive = GL_LINES;
+			primCount = 2;
 			break;
 		case aiPrimitiveType_TRIANGLE:
-			modelMesh.primitive = 3;
+			modelMesh.primitive = GL_TRIANGLES;
+			primCount = 3;
 			break;
 		default:
 			// invalid primitive type
@@ -188,7 +192,7 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 		// now, do the index buffer
 		std::vector<U16> indices;
 		for (U32 j = 0; j < mesh->mNumFaces; j++) {
-			for (U32 k = 0; k < modelMesh.primitive; k++) {
+			for (U32 k = 0; k < primCount; k++) {
 				indices.push_back(mesh->mFaces[j].mIndices[k]);
 			}
 		}
