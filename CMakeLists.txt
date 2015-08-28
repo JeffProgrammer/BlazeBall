@@ -445,8 +445,8 @@ set (DIFVIEWERGAME_LIBRARIES
 	/usr/lib/libstdc++.6.dylib
 	
 	# Assimp
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/Debug/assimpd.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/Release/assimpd.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/Debug/assimpd.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/Release/assimpd.a
 )
 endif()
 
