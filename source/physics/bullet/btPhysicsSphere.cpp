@@ -205,6 +205,7 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 			index = manifold->getContactPoint(i).m_index1;
 
 		for (size_t j = 0; j < triangleIndices.size(); j++) {
+			assert(j < count);
 			if (removedPoints[j])
 				continue;
 
@@ -215,10 +216,12 @@ void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const
 				if (manifold->getContactPoint(i).getDistance() < manifold->getContactPoint(j).getDistance()) {
 					//manifold->removeContactPoint(j);
 					removedPoints[j + upCount] = true;
+					assert(j + upCount < count);
 				}
 				else {
 					//manifold->removeContactPoint(i);
 					removedPoints[i + upCount] = true;
+					assert(i + upCount < count);
 				}
 				removed = true;
 				upCount++;
