@@ -82,7 +82,6 @@ void Scene::render() {
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_ALPHA);
 	glEnable(GL_MULTISAMPLE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -102,8 +101,6 @@ void Scene::render() {
 	}
 	mInteriorShader->deactivate();
 
-	GL_CHECKERRORS(); // FUCKING CHECK THE GODDAMM ERROR. MATE.
-
 	// render models.
 	// yeah i know this is shitty rendering at the moment, we need to actually batch shit.
 	mShapeShader->activate();
@@ -116,9 +113,11 @@ void Scene::render() {
 	glm::mat4x4 modelMatrix = glm::mat4x4(1);
 	modelMatrix = glm::translate(modelMatrix, glm::vec3(5.0f, 5.0f, 5.0f));
 	glUniformMatrix4fv(mShapeShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
-	GL_CHECKERRORS(); // FUCKING CHECK THE GODDAMM ERROR. MATE.
 	modelManager.render();
 	mShapeShader->deactivate();
+
+	// check for opengl errors
+	GL_CHECKERRORS();
 }
 
 void Scene::loop(const F64 &deltaMS) {
@@ -152,7 +151,6 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 }
 
 bool Scene::initGL() {
-	GL_CHECKERRORS();
 	GLuint vertexArrayID;
 	glGenVertexArrays(1, &vertexArrayID);
 	GL_CHECKERRORS();
