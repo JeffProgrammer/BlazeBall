@@ -39,6 +39,7 @@
 
 #include "base/io.h"
 #include "render/bitmap/texture.h"
+#include "graphics/gl/glUtils.h"
 
 #define TEXTURE_MAX_SIZE 1024
 
@@ -59,9 +60,6 @@ Texture::Texture(U8 *pixels, const glm::ivec2 &extent, const BitmapFormat &forma
 }
 
 void Texture::generateBuffer() {
-	//Just in case
-	glEnable(GL_TEXTURE_2D);
-
 	//Set mode
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -88,6 +86,9 @@ void Texture::generateBuffer() {
 	// Generate mipmaps, by the way.
 	glGenerateMipmap(GL_TEXTURE_2D);
 
+	// check for errors
+	GL_CHECKERRORS();
+
 	generated = true;
 }
 
@@ -105,13 +106,11 @@ void Texture::activate() {
 		return;
 	//Activate and bind the buffer
 	glActiveTexture(texNum);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glBindTexture(GL_TEXTURE_2D, buffer);
 }
 
 void Texture::deactivate() {
 	//Haha, this method is just BS. Fooled you.
-	glActiveTexture(0);
 }
 
 /**
