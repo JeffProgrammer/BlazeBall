@@ -207,7 +207,7 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 		const aiMesh *mesh = scene->scene->mMeshes[i];
 
 		Material *material = nullptr;
-		if (!_generateMaterial(scene, mesh, material));
+		if (!_generateMaterial(scene, mesh, material))
 			continue;
 
 		ModelScene::ModelMesh modelMesh;
