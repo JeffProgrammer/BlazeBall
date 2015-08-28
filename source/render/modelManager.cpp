@@ -92,7 +92,70 @@ bool ModelManager::containsModel(const std::string &file) const {
 }
 
 void ModelManager::render() {
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
 
+	//0th array - vertices
+	glVertexAttribPointer(0, //Attribute 0
+		3, //3 components
+		GL_FLOAT, //Type
+		GL_FALSE, //Normalized
+		sizeof(ModelVertex), //Stride
+		(void *)offsetof(ModelVertex, position)); //Offset
+
+													 //1st array - uvs
+	glVertexAttribPointer(1, //Attribute 1
+		2, //2 components
+		GL_FLOAT, //Type
+		GL_FALSE, //Normalized
+		sizeof(ModelVertex), //Stride
+		(void *)offsetof(ModelVertex, textureCoords)); //Offset
+
+												 //2nd array - normals
+	glVertexAttribPointer(2, //Attribute 2
+		3, //3 components
+		GL_FLOAT, //Type
+		GL_FALSE, //Normalized
+		sizeof(ModelVertex), //Stride
+		(void *)offsetof(ModelVertex, normal)); //Offset
+
+													  //3rd array - tangents
+	glVertexAttribPointer(3, //Attribute 3
+		3, //3 components
+		GL_FLOAT, //Type
+		GL_FALSE, //Normalized
+		sizeof(ModelVertex), //Stride
+		(void *)offsetof(ModelVertex, tangent)); //Offset
+
+														//4th array - bitangents
+	glVertexAttribPointer(4, //Attribute 4
+		3, //3 components
+		GL_FLOAT, //Type
+		GL_FALSE, //Normalized
+		sizeof(ModelVertex), //Stride
+		(void *)offsetof(ModelVertex, bitangent)); //Offset
+
+	for (auto model : mResourceCache) {
+		const auto &meshes = model.second->meshes;
+
+		for (const auto &mesh : meshes) {
+			mesh.material->activate();
+
+			glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo);
+			glDrawElements(mesh.primitive, mesh.numIndices, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(0));
+		}
+	}
+
+	//Disable arrays
+	glDisableVertexAttribArray(4);
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(0);
 }
 
 //------------------------------------------------------------------------------
