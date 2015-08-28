@@ -29,12 +29,27 @@
 #ifndef _GRAPHICS_GL_GLUTILS_H_
 #define _GRAPHICS_GL_GLUTILS_H_
 
+#ifdef _DEBUG
+#define GL_CHECKERRORS() GLUtils::checkErrors(__FILE__, __LINE__)
+#else
+#define GL_CHECKERRORS()
+#endif
+
+#include "graphics/vertexBufferObject.h"
+
 namespace GLUtils {
 	inline GLenum convertBufferType(BufferType type) {
 		switch (type) {
 			case STATIC: return GL_STATIC_DRAW;
 			case STREAM: return GL_STREAM_DRAW;
 			default: return GL_ZERO;
+		}
+	}
+
+	inline void checkErrors(const char *fileName, int lineNumber) {
+		GLenum error = GL_NO_ERROR;
+		while ((error = glGetError()) != GL_NO_ERROR) {
+			printf("OpenGL Error: %d at file %s on line %d\n", error, fileName, lineNumber);
 		}
 	}
 }
