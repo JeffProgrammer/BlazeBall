@@ -79,6 +79,11 @@ bool SDLWindow::createContext() {
 		fprintf(stderr, "GLEW failed to init. Error: %d\n", error);
 		return false;
 	}
+
+	// stew on the error, as GLEW actually generates an error in teh core profile.
+	// its known, and documented, on their github. and they refuse to do anything about it.
+	// pussies.
+	while (glGetError() != GL_NO_ERROR);
 #endif
 
 	printf("OpenGL Info\n");
