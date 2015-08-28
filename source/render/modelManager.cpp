@@ -78,7 +78,7 @@ bool ModelManager::releaseAsset(const std::string &file) {
 	// delete geometry on the GPU
 	for (size_t i = 0; i < mResourceCache[file]->meshes.size(); i++) {
 		const ModelScene::ModelMesh &mesh = mResourceCache[file]->meshes[i];
-		glDeleteBuffers(1, &mesh.vbo);
+		delete mesh.vbo;
 		glDeleteBuffers(1, &mesh.ibo);
 	}
 
@@ -106,9 +106,7 @@ void ModelManager::render() {
 		for (const auto &mesh : meshes) {
 			mesh.material->activate();
 
-			glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
-			GL_CHECKERRORS();
-
+			mesh.vbo->bind();
 
 			//0th array - vertices
 			glVertexAttribPointer(0, //Attribute 0
@@ -253,11 +251,9 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 		}
 
 		// now, upload the vertices to the GL
-		glGenBuffers(1, &modelMesh.vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, modelMesh.vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(ModelVertex) * mesh->mNumVertices, &vertList[0], GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		GL_CHECKERRORS();
+		modelMesh.vbo = new VertexBufferObject();
+		modelMesh.vbo->setBufferType(BufferType::STATIC);
+		modelMesh.vbo->submit(&vertList[0], mesh->mNumVertices);
 
 		// get primitive type
 		U32 primCount = 0;

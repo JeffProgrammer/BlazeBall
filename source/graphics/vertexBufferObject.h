@@ -40,6 +40,8 @@
 #include "graphics/gfxTypes.h"
 #include "graphics/gl/glUtils.h"
 
+struct ModelVertex;
+
 class VertexBufferObject {
 public:
 	VertexBufferObject();
@@ -52,6 +54,7 @@ public:
 	
 	void submit(const Triangle *data, const U32 count);
 	void submit(const Vertex *data, const U32 count);
+	void submit(const ModelVertex *data, const U32 count);
 	
 	void setBufferType(BufferType type);
 	

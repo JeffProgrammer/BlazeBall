@@ -35,6 +35,7 @@
 #include <unordered_map>
 #include "base/types.h"
 #include "render/material.h"
+#include "graphics/vertexBufferObject.h"
 
 struct ModelVertex {
 	aiVector3D position;
@@ -43,6 +44,7 @@ struct ModelVertex {
 	aiVector3D tangent;
 	aiVector3D bitangent;
 };
+
 
 class ModelManager {
 private:
@@ -53,7 +55,7 @@ private:
 		aiVector3D sceneMax;
 
 		struct ModelMesh {
-			GLuint vbo;
+			VertexBufferObject *vbo;
 			GLuint ibo;
 			U16 numIndices;
 			GLuint primitive;
@@ -83,7 +85,6 @@ private:
 	bool _generateMaterial(const ModelScene *scene, const aiMesh *mesh, Material *&material);
 
 	std::string mCurrentWorkingDir;
-
 public:
 	ModelManager();
 
