@@ -32,6 +32,7 @@
 
 #include "render/modelManager.h"
 #include "base/io.h"
+#include "graphics/gl/glUtils.h"
 
 // For getcwd
 #ifdef _WIN32
@@ -97,46 +98,7 @@ void ModelManager::render() {
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
 	glEnableVertexAttribArray(4);
-
-	//0th array - vertices
-	glVertexAttribPointer(0, //Attribute 0
-		3, //3 components
-		GL_FLOAT, //Type
-		GL_FALSE, //Normalized
-		sizeof(ModelVertex), //Stride
-		(void *)offsetof(ModelVertex, position)); //Offset
-
-													 //1st array - uvs
-	glVertexAttribPointer(1, //Attribute 1
-		2, //2 components
-		GL_FLOAT, //Type
-		GL_FALSE, //Normalized
-		sizeof(ModelVertex), //Stride
-		(void *)offsetof(ModelVertex, textureCoords)); //Offset
-
-												 //2nd array - normals
-	glVertexAttribPointer(2, //Attribute 2
-		3, //3 components
-		GL_FLOAT, //Type
-		GL_FALSE, //Normalized
-		sizeof(ModelVertex), //Stride
-		(void *)offsetof(ModelVertex, normal)); //Offset
-
-													  //3rd array - tangents
-	glVertexAttribPointer(3, //Attribute 3
-		3, //3 components
-		GL_FLOAT, //Type
-		GL_FALSE, //Normalized
-		sizeof(ModelVertex), //Stride
-		(void *)offsetof(ModelVertex, tangent)); //Offset
-
-														//4th array - bitangents
-	glVertexAttribPointer(4, //Attribute 4
-		3, //3 components
-		GL_FLOAT, //Type
-		GL_FALSE, //Normalized
-		sizeof(ModelVertex), //Stride
-		(void *)offsetof(ModelVertex, bitangent)); //Offset
+	GL_CHECKERRORS();
 
 	for (auto model : mResourceCache) {
 		const auto &meshes = model.second->meshes;
@@ -145,10 +107,67 @@ void ModelManager::render() {
 			mesh.material->activate();
 
 			glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
+			GL_CHECKERRORS();
+
+
+			//0th array - vertices
+			glVertexAttribPointer(0, //Attribute 0
+				3, //3 components
+				GL_FLOAT, //Type
+				GL_FALSE, //Normalized
+				sizeof(ModelVertex), //Stride
+				(void *)offsetof(ModelVertex, position)); //Offset
+			GL_CHECKERRORS();
+
+			//1st array - uvs
+			glVertexAttribPointer(1, //Attribute 1
+				2, //2 components
+				GL_FLOAT, //Type
+				GL_FALSE, //Normalized
+				sizeof(ModelVertex), //Stride
+				(void *)offsetof(ModelVertex, textureCoords)); //Offset
+			GL_CHECKERRORS();
+
+			//2nd array - normals
+			glVertexAttribPointer(2, //Attribute 2
+				3, //3 components
+				GL_FLOAT, //Type
+				GL_FALSE, //Normalized
+				sizeof(ModelVertex), //Stride
+				(void *)offsetof(ModelVertex, normal)); //Offset
+			GL_CHECKERRORS();
+
+			//3rd array - tangents
+			glVertexAttribPointer(3, //Attribute 3
+				3, //3 components
+				GL_FLOAT, //Type
+				GL_FALSE, //Normalized
+				sizeof(ModelVertex), //Stride
+				(void *)offsetof(ModelVertex, tangent)); //Offset
+
+			GL_CHECKERRORS();
+
+			//4th array - bitangents
+			glVertexAttribPointer(4, //Attribute 4
+				3, //3 components
+				GL_FLOAT, //Type
+				GL_FALSE, //Normalized
+				sizeof(ModelVertex), //Stride
+				(void *)offsetof(ModelVertex, bitangent)); //Offset
+
+			GL_CHECKERRORS();
+
+
+
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo);
-			glDrawElements(mesh.primitive, mesh.numIndices, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(0));
+			GL_CHECKERRORS(); // FUCKING CHECK THE GODDAMM ERROR. MATE.
+			glDrawElements(mesh.primitive, mesh.numIndices, GL_UNSIGNED_SHORT, (void*)0);
 		}
 	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	GL_CHECKERRORS();
 
 	//Disable arrays
 	glDisableVertexAttribArray(4);
@@ -156,6 +175,7 @@ void ModelManager::render() {
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
+	GL_CHECKERRORS();
 }
 
 //------------------------------------------------------------------------------
@@ -220,8 +240,14 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 			vertex.position = mesh->mVertices[j];
 			vertex.normal = mesh->mNormals[j];
 			vertex.textureCoords = glm::vec2(mesh->mTextureCoords[0][j].x, mesh->mTextureCoords[0][j].y);
-			vertex.tangent = mesh->mTangents[j];
-			vertex.bitangent = mesh->mBitangents[j];
+
+			if (mesh->HasTangentsAndBitangents()) {
+				vertex.tangent = mesh->mTangents[j];
+				vertex.bitangent = mesh->mBitangents[j];
+			} else {
+				vertex.tangent = aiVector3D(0.0f);
+				vertex.bitangent = aiVector3D(0.0f);
+			}
 
 			vertList[j] = vertex;
 		}
@@ -230,6 +256,8 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 		glGenBuffers(1, &modelMesh.vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, modelMesh.vbo);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(ModelVertex) * mesh->mNumVertices, &vertList[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		GL_CHECKERRORS();
 
 		// get primitive type
 		U32 primCount = 0;
@@ -261,19 +289,17 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 		}
 		glGenBuffers(1, &modelMesh.ibo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, modelMesh.ibo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(U16) * indices.size(), &indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(U16) * indices.size(), &indices[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		GL_CHECKERRORS();
 
 		modelMesh.numIndices = static_cast<U16>(indices.size());
 
 		scene->meshes.push_back(modelMesh);
 	}
-
-	// clear the GL states
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-bool ModelManager::_generateMaterial(const ModelScene *scene, const aiMesh *mesh, Material *material) {
+bool ModelManager::_generateMaterial(const ModelScene *scene, const aiMesh *mesh, Material *&material) {
 	aiString path;
 	aiMaterial *aiMat = scene->scene->mMaterials[mesh->mMaterialIndex];
 	if (aiMat->GetTexture(aiTextureType_DIFFUSE, 0, &path) != AI_SUCCESS) {
@@ -297,7 +323,6 @@ bool ModelManager::_generateMaterial(const ModelScene *scene, const aiMesh *mesh
 	std::string specularName = materialName + ".alpha";
 	std::string specularFile = Texture::find(directory + DIR_SEP + specularName);
 
-	Material *mat = new Material(diffuseFile, normalFile, specularFile);
-	material = mat;
+	material = new Material(diffuseFile, normalFile, specularFile);
 	return true;
 }

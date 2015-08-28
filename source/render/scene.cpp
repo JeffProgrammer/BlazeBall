@@ -102,6 +102,8 @@ void Scene::render() {
 	}
 	mInteriorShader->deactivate();
 
+	GL_CHECKERRORS(); // FUCKING CHECK THE GODDAMM ERROR. MATE.
+
 	// render models.
 	// yeah i know this is shitty rendering at the moment, we need to actually batch shit.
 	mShapeShader->activate();
@@ -110,6 +112,11 @@ void Scene::render() {
 	mShapeShader->setUniformLocation("specularSampler", 2);
 	glUniformMatrix4fv(mShapeShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(mShapeShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
+
+	glm::mat4x4 modelMatrix = glm::mat4x4(1);
+	modelMatrix = glm::translate(modelMatrix, glm::vec3(5.0f, 5.0f, 5.0f));
+	glUniformMatrix4fv(mShapeShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+	GL_CHECKERRORS(); // FUCKING CHECK THE GODDAMM ERROR. MATE.
 	modelManager.render();
 	mShapeShader->deactivate();
 }
@@ -145,9 +152,12 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 }
 
 bool Scene::initGL() {
+	GL_CHECKERRORS();
 	GLuint vertexArrayID;
 	glGenVertexArrays(1, &vertexArrayID);
+	GL_CHECKERRORS();
 	glBindVertexArray(vertexArrayID);
+	GL_CHECKERRORS();
 
 	mInteriorShader = new Shader("interiorV.glsl", "interiorF.glsl");
 	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
