@@ -50,6 +50,7 @@ Texture::Texture(U8 *pixels, const glm::ivec2 &extent, const BitmapFormat &forma
 
 	//Set some fields
 	this->extent = extent;
+	this->format = format;
 	generated = false;
 
 	//Load pixels into pixels (assume RGBA)
