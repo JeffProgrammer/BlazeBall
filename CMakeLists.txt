@@ -300,6 +300,8 @@ set (DIFVIEWERGAME_SRC
 	source/game/gameInterior.cpp
 	source/game/gameInterior.h
 	source/game/movement.h
+	source/game/shape.cpp
+	source/game/shape.h
 	source/game/sphere.cpp
 	source/game/sphere.h
 	
