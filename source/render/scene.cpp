@@ -113,7 +113,7 @@ void Scene::render() {
 	glm::mat4x4 modelMatrix = glm::mat4x4(1);
 	modelMatrix = glm::translate(modelMatrix, glm::vec3(5.0f, 5.0f, 5.0f));
 	glUniformMatrix4fv(mShapeShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
-	modelManager.render();
+	MODELMGR->render();
 	mShapeShader->deactivate();
 
 	// check for opengl errors
@@ -337,7 +337,7 @@ void Scene::run() {
 
 	F64 tickTracker = 0.0f;
 
-	bool loaded = modelManager.loadAsset("cube.dae");
+	bool loaded = MODELMGR->loadAsset("cube.dae");
 
 	//Main loop
 	while (running) {

@@ -37,6 +37,8 @@
 #include "render/material.h"
 #include "graphics/vertexBufferObject.h"
 
+#define MODELMGR ModelManager::getSingleton()
+
 struct ModelVertex {
 	aiVector3D position;
 	glm::vec2 textureCoords;
@@ -44,7 +46,6 @@ struct ModelVertex {
 	aiVector3D tangent;
 	aiVector3D bitangent;
 };
-
 
 class ModelManager {
 private:
@@ -92,6 +93,11 @@ public:
 	bool releaseAsset(const std::string &file);
 	bool containsModel(const std::string &file) const;
 	void render();
+
+	static ModelManager* getSingleton() {
+		static ModelManager *manager = new ModelManager();
+		return manager;
+	}
 };
 
 #endif 

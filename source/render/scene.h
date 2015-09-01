@@ -98,8 +98,6 @@ public:
 	Timer *mTimer;
 	ScriptingEngine *mEngine;
 
-	ModelManager modelManager;
-
 	Shader *mInteriorShader;
 	Shader *mShapeShader;
 	
