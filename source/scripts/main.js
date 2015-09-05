@@ -3,6 +3,7 @@
 var scene = getScene();
 scene.interiors = [];
 scene.projectiles = [];
+scene.shapes = [];
 
 function onFrameAdvance(delta) {
 	//print("Time advance: ", delta);
@@ -41,6 +42,16 @@ function onKeyDown(key) {
 
 	if (chr == "c" || chr == "C") {
 		scene.setControlObject(scene.getControlObject() == scene.player ? scene.camera : scene.player);
+	}
+	
+	if (chr == "m" || chr == "M") {
+		var object = new Shape("cube.dae");
+		scene.addObject(object);
+		scene.shapes.push(object);
+		
+		// set position
+		var pos = scene.getControlObject().getPosition();
+		object.setPosition(pos);
 	}
 }
 
