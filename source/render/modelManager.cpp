@@ -225,7 +225,7 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 		// now, upload the vertices to the GL
 		modelMesh.vbo = new VertexBufferObject();
 		modelMesh.vbo->setBufferType(BufferType::STATIC);
-		modelMesh.vbo->submit(&vertList[0], mesh->mNumVertices);
+		modelMesh.vbo->submit(&vertList[0], sizeof(ModelVertex), mesh->mNumVertices);
 
 		// get primitive type
 		U32 primCount = 0;

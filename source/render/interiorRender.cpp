@@ -133,7 +133,7 @@ void GameInterior::init() {
 	}
 
 	//Upload the buffer data to OpenGL
-	mVbo->submit(&triangle[0], numTriangles);
+	mVbo->submit(&triangle[0], sizeof(Triangle), numTriangles);
 	
 	renderInfo.generated = true;
 }

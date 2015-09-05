@@ -106,7 +106,7 @@ void Sphere::generate() {
 	}
 
 	//Generate a buffer
-	mVBO->submit(&points[0], point);
+	mVBO->submit(&points[0], sizeof(Vertex), point);
 }
 
 void Sphere::render() {

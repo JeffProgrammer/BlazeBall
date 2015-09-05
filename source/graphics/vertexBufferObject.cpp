@@ -48,7 +48,7 @@ void VertexBufferObject::unbind() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void VertexBufferObject::submit(const Triangle *data, const U32 count) {
+void VertexBufferObject::submit(const void *data, const U32 stride, const U32 count) {
 	glGenBuffers(1, &mVBO);
 	
 	// bind this buffer
@@ -58,40 +58,8 @@ void VertexBufferObject::submit(const Triangle *data, const U32 count) {
 	assert(bufferType != GL_ZERO);
 	
 	// upload to the gpu
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * count, data, bufferType);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(stride) * count, data, bufferType);
 	
-	// finished uploading data to the GL
-	unbind();
-}
-
-void VertexBufferObject::submit(const Vertex *data, const U32 count) {
-	glGenBuffers(1, &mVBO);
-	
-	// bind this buffer
-	bind();
-	
-	GLenum bufferType = GLUtils::convertBufferType(mBufferType);
-	assert(bufferType != GL_ZERO);
-	
-	// upload to the gpu
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * count, data, bufferType);
-	
-	// finished uploading data to the GL
-	unbind();
-}
-
-void VertexBufferObject::submit(const ModelVertex *data, const U32 count) {
-	glGenBuffers(1, &mVBO);
-
-	// bind this buffer
-	bind();
-
-	GLenum bufferType = GLUtils::convertBufferType(mBufferType);
-	assert(bufferType != GL_ZERO);
-
-	// upload to the gpu
-	glBufferData(GL_ARRAY_BUFFER, sizeof(ModelVertex) * count, data, bufferType);
-
 	// finished uploading data to the GL
 	unbind();
 }

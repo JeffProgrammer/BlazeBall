@@ -52,9 +52,7 @@ public:
 	
 	void unbind();
 	
-	void submit(const Triangle *data, const U32 count);
-	void submit(const Vertex *data, const U32 count);
-	void submit(const ModelVertex *data, const U32 count);
+	void submit(const void *data, const U32 stride, const U32 count);
 	
 	void setBufferType(BufferType type);
 	
