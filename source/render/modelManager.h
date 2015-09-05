@@ -47,6 +47,8 @@ struct ModelVertex {
 	aiVector3D bitangent;
 };
 
+class Shape;
+
 class ModelManager {
 private:
 	struct ModelScene {
@@ -73,6 +75,8 @@ private:
 
 	std::unordered_map<std::string, ModelScene*> mResourceCache;
 
+	std::vector<Shape*> mShapeList;
+
 	void _getBoundingBoxNode(const aiScene *scene, const aiNode *node, aiVector3D *min, aiVector3D *max, aiMatrix4x4 *transform);
 	void _getBoundingBox(const aiScene *scene, aiVector3D *min, aiVector3D *max);
 
@@ -90,9 +94,12 @@ public:
 	ModelManager();
 
 	bool loadAsset(const std::string &file);
+	void addShape(Shape *shape) {
+		mShapeList.push_back(shape);
+	}
 	bool releaseAsset(const std::string &file);
 	bool containsModel(const std::string &file) const;
-	void render();
+	void render(Shader *shader, const glm::mat4 &viewMatrix, const glm::mat4 &projectionMatrix);
 
 	static ModelManager* getSingleton() {
 		static ModelManager *manager = new ModelManager();

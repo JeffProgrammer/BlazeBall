@@ -31,13 +31,13 @@
 #include "scripting/scriptEngine.h"
 
 IMPLEMENT_OBJECT(Shape);
+OBJECT_PARENT(Shape, GameObject);
 
 Shape::Shape(const std::string &shapeFile) {
 	mShapeFile = shapeFile;
 }
 
 Shape::~Shape() {
-
 }
 
 void Shape::updateTick(const F64 &delta) {
@@ -45,5 +45,6 @@ void Shape::updateTick(const F64 &delta) {
 }
 
 void Shape::loadShape() {
-
+	bool loaded = MODELMGR->loadAsset(mShapeFile);
+	MODELMGR->addShape(this);
 }

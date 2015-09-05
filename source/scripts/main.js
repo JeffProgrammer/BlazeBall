@@ -49,9 +49,10 @@ function onKeyDown(key) {
 		scene.addObject(object);
 		scene.shapes.push(object);
 		
-		// set position
-		var pos = scene.getControlObject().getPosition();
-		object.setPosition(pos);
+		var x = Math.random() * 10.0;
+		var y = Math.random() * 10.0;
+		var z = Math.random() * -10.0;
+		object.setPosition(new vec3(x, y, z));
 	}
 }
 

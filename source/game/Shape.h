@@ -45,6 +45,10 @@ public:
 
 	void loadShape();
 
+	const std::string& getShapeFile() const {
+		return mShapeFile;
+	}
+
 	OBJECT_CONSTRUCTOR(Shape, ("")) {
 		if (args.Length() == 0) {
 			printf("Unable to create object. ShapeFile not specificed.\n");

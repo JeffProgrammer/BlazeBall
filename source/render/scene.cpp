@@ -44,6 +44,7 @@ IMPLEMENT_OBJECT(Scene);
 Scene::Scene() {
 	mInteriorShader = nullptr;
 	mShapeShader = nullptr;
+	controlObject = nullptr;
 }
 
 Scene::~Scene() {
@@ -110,10 +111,7 @@ void Scene::render() {
 	glUniformMatrix4fv(mShapeShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(mShapeShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
 
-	glm::mat4x4 modelMatrix = glm::mat4x4(1);
-	modelMatrix = glm::translate(modelMatrix, glm::vec3(5.0f, 5.0f, 5.0f));
-	glUniformMatrix4fv(mShapeShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
-	MODELMGR->render();
+	MODELMGR->render(mShapeShader, viewMatrix, projectionMatrix);
 	mShapeShader->deactivate();
 
 	// check for opengl errors
@@ -336,8 +334,6 @@ void Scene::run() {
 	U32 fpsCounter = 0;
 
 	F64 tickTracker = 0.0f;
-
-	bool loaded = MODELMGR->loadAsset("cube.dae");
 
 	//Main loop
 	while (running) {

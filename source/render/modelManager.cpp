@@ -33,6 +33,7 @@
 #include "render/modelManager.h"
 #include "base/io.h"
 #include "graphics/gl/glUtils.h"
+#include "game/Shape.h"
 
 // For getcwd
 #ifdef _WIN32
@@ -52,6 +53,9 @@ ModelManager::ModelManager() {
 }
 
 bool ModelManager::loadAsset(const std::string &file) {
+	if (mResourceCache[file])
+		return true;
+
 	const aiScene *scene = aiImportFile(file.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	if (scene == nullptr)
 		return false;
@@ -92,7 +96,7 @@ bool ModelManager::containsModel(const std::string &file) const {
 	return mResourceCache.find(file) != mResourceCache.end();
 }
 
-void ModelManager::render() {
+void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, const glm::mat4 &projectionMatrix) {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
@@ -101,8 +105,13 @@ void ModelManager::render() {
 
 	bool firstRender = true;
 
-	for (auto model : mResourceCache) {
-		const auto &meshes = model.second->meshes;
+	for (auto shape : mShapeList) {
+		auto model = mResourceCache[shape->getShapeFile()];
+		const auto &meshes = model->meshes;
+
+		glm::mat4x4 modelMatrix = glm::mat4x4(1);
+		shape->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
+		glUniformMatrix4fv(shapeShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
 
 		for (const auto &mesh : meshes) {
 			mesh.material->activate();
