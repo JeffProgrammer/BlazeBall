@@ -38,11 +38,7 @@
 // For getcwd
 #ifdef _WIN32
 #include <direct.h>
-
-inline char* getcwd(char *buf, size_t size) {
-	return _getcwd(buf, size);
-}
-
+#define getcwd _getcwd
 #else
 #include <unistd.h>
 #endif
