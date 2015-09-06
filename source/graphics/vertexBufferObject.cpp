@@ -58,7 +58,7 @@ void VertexBufferObject::submit(const void *data, const U32 stride, const U32 co
 	assert(bufferType != GL_ZERO);
 	
 	// upload to the gpu
-	glBufferData(GL_ARRAY_BUFFER, sizeof(stride) * count, data, bufferType);
+	glBufferData(GL_ARRAY_BUFFER, stride * count, data, bufferType);
 	
 	// finished uploading data to the GL
 	unbind();
