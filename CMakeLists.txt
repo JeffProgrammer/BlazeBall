@@ -307,10 +307,16 @@ set (DIFVIEWERGAME_SRC
 	
 	# Graphics folder
 	source/graphics/gfxTypes.h
+	source/graphics/graphicsDevice.cpp
+	source/graphics/graphicsDevice.h
+	source/graphics/indexBufferObject.cpp
+	source/graphics/indexBufferObject.h
 	source/graphics/shader.cpp
 	source/graphics/shader.h
 	source/graphics/vertexBufferObject.cpp
 	source/graphics/vertexBufferObject.h
+	source/graphics/vertexInputLayout.cpp
+	source/graphics/vertexInputLayout.h
 	source/graphics/gl/glUtils.h
 
 	# Physics folder
