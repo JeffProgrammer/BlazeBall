@@ -26,8 +26,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef _GRAPHICS_VERTEXBUFFEROBJECT_H_
-#define _GRAPHICS_VERTEXBUFFEROBJECT_H_
+#ifndef _GRAPHICS_INDEXBUFFEROBJECT_H_
+#define _GRAPHICS_INDEXBUFFEROBJECT_H_
 
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
@@ -59,4 +59,4 @@ private:
 	BufferType mBufferType;
 };
 
-#endif // _GRAPHICS_VERTEXBUFFEROBJECT_H_
+#endif // _GRAPHICS_INDEXBUFFEROBJECT_H_
