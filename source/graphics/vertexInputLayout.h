@@ -36,4 +36,39 @@
 #include <GL/glew.h>
 #endif // __APPLE__
 
+#include "base/types.h"
+#include <string>
+#include <vector>
+
+struct VertexInput {
+	U32 attribNumber;
+	U32 size;
+	U32 type;
+	size_t stride;
+	void *offset;
+
+	VertexInput(U32 attribNum, U32 size, U32 type, size_t stride, void *offset) {
+		this->attribNumber = attribNum;
+		this->size = size;
+		this->type = type;
+		this->stride = stride;
+		this->offset = offset;
+	}
+};
+
+class VertexInputLayout {
+private:
+	std::vector<VertexInput> mVertexInputs;
+
+public:
+	VertexInputLayout();
+	~VertexInputLayout();
+
+	void bind();
+
+	void unbind();
+
+	void set(const VertexInput &input);
+};
+
 #endif // _GRAPHICS_VERTEXINPUTLAYOUT_H_

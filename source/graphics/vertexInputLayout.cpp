@@ -27,3 +27,30 @@
 //------------------------------------------------------------------------------
 
 #include "graphics/vertexInputLayout.h"
+#include "graphics/gl/glUtils.h"
+
+VertexInputLayout::VertexInputLayout() {
+
+}
+
+VertexInputLayout::~VertexInputLayout() {
+
+}
+
+void VertexInputLayout::bind() {
+	for (const VertexInput &input : mVertexInputs) {
+		glEnableVertexAttribArray(input.attribNumber);
+		glVertexAttribPointer(input.attribNumber, input.size, input.type, GL_FALSE, input.stride, input.offset);
+	}
+	GL_CHECKERRORS();
+}
+
+void VertexInputLayout::unbind() {
+	for (const VertexInput &input : mVertexInputs)
+		glDisableVertexAttribArray(input.attribNumber);
+	GL_CHECKERRORS();
+}
+
+void VertexInputLayout::set(const VertexInput &input) {
+	mVertexInputs.push_back(input);
+}
