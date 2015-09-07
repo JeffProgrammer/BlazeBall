@@ -37,19 +37,31 @@ IMPLEMENT_OBJECT(GameInterior);
 OBJECT_PARENT(GameInterior, GameObject);
 
 GameInterior::GameInterior(DIF::Interior interior) : GameObject(), mInterior(interior) {
-	renderInfo.generated = false;
-	mVbo = new VertexBufferObject();
-	mVbo->setBufferType(BufferType::STATIC);
+	gfxInit();
 }
 
 GameInterior::GameInterior() : GameObject() {
-	renderInfo.generated = false;
-	mVbo = new VertexBufferObject();
-	mVbo->setBufferType(BufferType::STATIC);
+	gfxInit();
 }
 
 GameInterior::~GameInterior() {
 	delete mVbo;
+	delete mInputLayout;
+}
+
+void GameInterior::gfxInit() {
+	renderInfo.generated = false;
+	mVbo = new VertexBufferObject();
+	mVbo->setBufferType(BufferType::STATIC);
+
+	mInputLayout = new VertexInputLayout();
+
+	// set each attrib
+	mInputLayout->set(VertexInput(0, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point))));     // vertices
+	mInputLayout->set(VertexInput(1, 2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv))));        // uv
+	mInputLayout->set(VertexInput(2, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal))));    // normal
+	mInputLayout->set(VertexInput(3, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent))));   // tagent
+	mInputLayout->set(VertexInput(4, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)))); // bitangent
 }
 
 void GameInterior::generateMaterials(std::string directory) {

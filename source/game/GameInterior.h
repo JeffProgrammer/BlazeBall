@@ -36,6 +36,7 @@
 #include "game/gameObject.h"
 #include "base/ray.h"
 #include "graphics/vertexBufferObject.h"
+#include "graphics/vertexInputLayout.h"
 
 #include <dif/objects/dif.h>
 #include <vector>
@@ -55,6 +56,7 @@ private:
 	RenderInfo renderInfo;
 	
 	VertexBufferObject *mVbo;
+	VertexInputLayout *mInputLayout;
 
 public:
 	GameInterior();
@@ -68,6 +70,8 @@ public:
 
 	const DIF::Interior &getInterior() {return mInterior;}
 	void setInterior(const DIF::Interior &interior) { mInterior = interior; }
+
+	void gfxInit();
 
 	void init();
 	virtual void render();

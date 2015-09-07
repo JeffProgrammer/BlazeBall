@@ -141,53 +141,9 @@ void GameInterior::init() {
 void GameInterior::render() {
 	if (!renderInfo.generated)
 		init();
-	
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	glEnableVertexAttribArray(4);
+
 	mVbo->bind();
-
-	//0th array - vertices
-	glVertexAttribPointer(0, //Attribute 0
-						  3, //3 components
-						  GL_FLOAT, //Type
-						  GL_FALSE, //Normalized
-						  sizeof(Vertex), //Stride
-						  (void *)offsetof(Vertex, point)); //Offset
-
-	//1st array - uvs
-	glVertexAttribPointer(1, //Attribute 1
-						  2, //2 components
-						  GL_FLOAT, //Type
-						  GL_FALSE, //Normalized
-						  sizeof(Vertex), //Stride
-						  (void *)offsetof(Vertex, uv)); //Offset
-
-	//2nd array - normals
-	glVertexAttribPointer(2, //Attribute 2
-						  3, //3 components
-						  GL_FLOAT, //Type
-						  GL_FALSE, //Normalized
-						  sizeof(Vertex), //Stride
-						  (void *)offsetof(Vertex, normal)); //Offset
-
-	//3rd array - tangents
-	glVertexAttribPointer(3, //Attribute 3
-						  3, //3 components
-						  GL_FLOAT, //Type
-						  GL_FALSE, //Normalized
-						  sizeof(Vertex), //Stride
-						  (void *)offsetof(Vertex, tangent)); //Offset
-
-	//4th array - bitangents
-	glVertexAttribPointer(4, //Attribute 4
-						  3, //3 components
-						  GL_FLOAT, //Type
-						  GL_FALSE, //Normalized
-						  sizeof(Vertex), //Stride
-						  (void *)offsetof(Vertex, bitangent)); //Offset
+	mInputLayout->bind();
 
 	U32 start = 0;
 	for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
@@ -210,10 +166,6 @@ void GameInterior::render() {
 	mVbo->unbind();
 	
 	//Disable arrays
-	glDisableVertexAttribArray(4);
-	glDisableVertexAttribArray(3);
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
+	mInputLayout->unbind();
 	GL_CHECKERRORS();
 }
