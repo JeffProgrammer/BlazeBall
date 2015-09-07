@@ -47,7 +47,7 @@ void IndexBufferObject::unbind() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void IndexBufferObject::submit(const U16 *data, const U32 count) {
+void IndexBufferObject::submit(const U16 *data, const U16 count) {
 	glGenBuffers(1, &mIBO);
 	
 	// bind this buffer

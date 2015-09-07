@@ -50,7 +50,7 @@ public:
 	
 	void unbind();
 	
-	void submit(const U16 *data, const U32 count);
+	void submit(const U16 *data, const U16 count);
 	
 	void setBufferType(BufferType type);
 	
