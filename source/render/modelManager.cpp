@@ -34,6 +34,7 @@
 #include "base/io.h"
 #include "graphics/gl/glUtils.h"
 #include "game/Shape.h"
+#include "graphics/graphicsDevice.h"
 
 // For getcwd
 #ifdef _WIN32
@@ -129,12 +130,9 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 			}
 
 			mesh.ibo->bind();
-			glDrawElements(mesh.primitive, mesh.numIndices, GL_UNSIGNED_SHORT, (void*)0);
+			GFXDEVICE->drawIndexedPrimitive(mesh.primitive, 0, mesh.numIndices);
 		}
 	}
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	//Disable arrays
 	mInputLayout->unbind();

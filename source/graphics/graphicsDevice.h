@@ -36,4 +36,23 @@
 #include <GL/glew.h>
 #endif // __APPLE__
 
+#include "base/types.h"
+
+class GraphicsDevice {
+public:
+	GraphicsDevice();
+	~GraphicsDevice();
+
+	void drawPrimitive(GLenum primitiveType, U32 start, U32 count);
+
+	void drawIndexedPrimitive(GLenum primitiveType, U32 start, U32 count);
+
+	static GraphicsDevice* getSingleton() {
+		static GraphicsDevice *device = new GraphicsDevice();
+		return device;
+	}
+};
+
+#define GFXDEVICE GraphicsDevice::getSingleton()
+
 #endif // _GRAPHICS_GRAPHICSDEVICE_H_

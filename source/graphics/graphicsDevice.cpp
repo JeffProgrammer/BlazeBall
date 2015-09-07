@@ -27,3 +27,19 @@
 //------------------------------------------------------------------------------
 
 #include "graphics/graphicsDevice.h"
+
+GraphicsDevice::GraphicsDevice() {
+
+}
+
+GraphicsDevice::~GraphicsDevice() {
+
+}
+
+void GraphicsDevice::drawPrimitive(GLenum primitiveType, U32 start, U32 count) {
+	glDrawArrays(primitiveType, start, count);
+}
+
+void GraphicsDevice::drawIndexedPrimitive(GLenum primitiveType, U32 start, U32 count) {
+	glDrawElements(primitiveType, count, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(sizeof(U16)*start));
+}
