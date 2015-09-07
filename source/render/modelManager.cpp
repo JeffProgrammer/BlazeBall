@@ -79,7 +79,7 @@ bool ModelManager::releaseAsset(const std::string &file) {
 	for (size_t i = 0; i < mResourceCache[file]->meshes.size(); i++) {
 		const ModelScene::ModelMesh &mesh = mResourceCache[file]->meshes[i];
 		delete mesh.vbo;
-		glDeleteBuffers(1, &mesh.ibo);
+		delete mesh.ibo;
 	}
 
 	delete mResourceCache[file];
@@ -130,7 +130,7 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 				glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, bitangent)));
 			}
 
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo);
+			mesh.ibo->bind();
 			glDrawElements(mesh.primitive, mesh.numIndices, GL_UNSIGNED_SHORT, (void*)0);
 
 			GL_CHECKERRORS();
@@ -255,12 +255,11 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 				indices.push_back(mesh->mFaces[j].mIndices[k]);
 			}
 		}
-		glGenBuffers(1, &modelMesh.ibo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, modelMesh.ibo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(U16) * indices.size(), &indices[0], GL_STATIC_DRAW);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		GL_CHECKERRORS();
 
+		IndexBufferObject *ibo = new IndexBufferObject();
+		ibo->setBufferType(BufferType::STATIC);
+		ibo->submit(&indices[0], static_cast<U16>(indices.size()));
+		modelMesh.ibo = ibo;
 		modelMesh.numIndices = static_cast<U16>(indices.size());
 
 		scene->meshes.push_back(modelMesh);

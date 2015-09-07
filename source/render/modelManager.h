@@ -36,6 +36,7 @@
 #include "base/types.h"
 #include "render/material.h"
 #include "graphics/vertexBufferObject.h"
+#include "graphics/indexBufferObject.h"
 
 #define MODELMGR ModelManager::getSingleton()
 
@@ -59,7 +60,7 @@ private:
 
 		struct ModelMesh {
 			VertexBufferObject *vbo;
-			GLuint ibo;
+			IndexBufferObject *ibo;
 			U16 numIndices;
 			GLuint primitive;
 			Material *material;
