@@ -50,8 +50,6 @@ public:
 	
 	void bind();
 	
-	void unbind();
-	
 	void submit(const void *data, const U32 stride, const U32 count);
 	
 	void setBufferType(BufferType type);

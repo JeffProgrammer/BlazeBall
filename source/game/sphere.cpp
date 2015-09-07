@@ -130,7 +130,6 @@ void Sphere::render() {
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, tangent));
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, bitangent));
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
-	mVBO->unbind();
 	glDisableVertexAttribArray(4);
 	glDisableVertexAttribArray(3);
 	glDisableVertexAttribArray(2);

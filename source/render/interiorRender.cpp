@@ -162,8 +162,6 @@ void GameInterior::render() {
 			}
 		}
 	}
-
-	mVbo->unbind();
 	
 	//Disable arrays
 	mInputLayout->unbind();

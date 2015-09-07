@@ -48,8 +48,6 @@ public:
 	
 	void bind();
 	
-	void unbind();
-	
 	void submit(const U16 *data, const U16 count);
 	
 	void setBufferType(BufferType type);

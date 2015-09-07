@@ -44,10 +44,6 @@ void VertexBufferObject::bind() {
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 }
 
-void VertexBufferObject::unbind() {
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
 void VertexBufferObject::submit(const void *data, const U32 stride, const U32 count) {
 	glGenBuffers(1, &mVBO);
 	
@@ -61,7 +57,7 @@ void VertexBufferObject::submit(const void *data, const U32 stride, const U32 co
 	glBufferData(GL_ARRAY_BUFFER, stride * count, data, bufferType);
 	
 	// finished uploading data to the GL
-	unbind();
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void VertexBufferObject::setBufferType(BufferType type) {
