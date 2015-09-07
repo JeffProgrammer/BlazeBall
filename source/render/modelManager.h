@@ -37,6 +37,7 @@
 #include "render/material.h"
 #include "graphics/vertexBufferObject.h"
 #include "graphics/indexBufferObject.h"
+#include "graphics/vertexInputLayout.h"
 
 #define MODELMGR ModelManager::getSingleton()
 
@@ -74,6 +75,8 @@ private:
 		}
 	};
 
+	VertexInputLayout *mInputLayout;
+
 	std::unordered_map<std::string, ModelScene*> mResourceCache;
 
 	std::vector<Shape*> mShapeList;
@@ -93,6 +96,7 @@ private:
 	std::string mCurrentWorkingDir;
 public:
 	ModelManager();
+	~ModelManager();
 
 	bool loadAsset(const std::string &file);
 	void addShape(Shape *shape) {

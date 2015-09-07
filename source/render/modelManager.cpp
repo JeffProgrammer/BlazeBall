@@ -46,6 +46,19 @@
 ModelManager::ModelManager() {
 	char buffer[512]; // If your path is longer than this, then FUCK YOU
 	mCurrentWorkingDir = getcwd(buffer, 512);
+
+	mInputLayout = new VertexInputLayout();
+
+	// set each attrib
+	mInputLayout->set(VertexInput(0, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, position))));      // vertices
+	mInputLayout->set(VertexInput(1, 2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, textureCoords)))); // uv
+	mInputLayout->set(VertexInput(2, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, normal))));        // normal
+	mInputLayout->set(VertexInput(3, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, tangent))));       // tagent
+	mInputLayout->set(VertexInput(4, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, bitangent))));     // bitangent
+}
+
+ModelManager::~ModelManager() {
+	delete mInputLayout;
 }
 
 bool ModelManager::loadAsset(const std::string &file) {
@@ -93,12 +106,6 @@ bool ModelManager::containsModel(const std::string &file) const {
 }
 
 void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, const glm::mat4 &projectionMatrix) {
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	glEnableVertexAttribArray(4);
-
 	bool firstRender = true;
 
 	for (auto shape : mShapeList) {
@@ -115,25 +122,14 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 			mesh.vbo->bind();
 
 			// for now, this will cache these, as each VBO currently uses the same offsets
+			// note: a VBO must be bound before the layout can be bound
 			if (firstRender) {
 				firstRender = false;
-
-				// 0th array - vertices
-				// 1st array - texture coordinates
-				// 2nd array - normals
-				// 3rd array - tangents
-				// 4th array - bitangents
-				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, position)));
-				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, textureCoords)));
-				glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, normal)));
-				glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, tangent)));
-				glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, bitangent)));
+				mInputLayout->bind();
 			}
 
 			mesh.ibo->bind();
 			glDrawElements(mesh.primitive, mesh.numIndices, GL_UNSIGNED_SHORT, (void*)0);
-
-			GL_CHECKERRORS();
 		}
 	}
 
@@ -141,11 +137,8 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	//Disable arrays
-	glDisableVertexAttribArray(4);
-	glDisableVertexAttribArray(3);
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
+	mInputLayout->unbind();
+	GL_CHECKERRORS();
 }
 
 //------------------------------------------------------------------------------
