@@ -49,33 +49,6 @@ bool contact_added_callback(btManifoldPoint& cp, const btCollisionObjectWrapper*
 	return true;
 }
 
-// This is where the FUN begins.
-// dear god I hope I can multithread this shit.
-void contactStarted(btPersistentManifold* const &manifold) {
-    btPhysicsBody *body0 = static_cast<btPhysicsBody *>(manifold->getBody0()->getUserPointer());
-    btPhysicsBody *body1 = static_cast<btPhysicsBody *>(manifold->getBody1()->getUserPointer());
-
-	if (body0)
-		body0->modifyContact(manifold, manifold->getBody1(), 1);
-	if (body1)
-		body1->modifyContact(manifold, manifold->getBody0(), 0);
-}
-
-void physicsWorldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
-    //btDispatcher *dispatcher = world->getDispatcher();
-    
-    //S32 numManifolds = dispatcher->getNumManifolds();
-    //for (S32 i = 0; i < numManifolds; i++) {
-        //btPersistentManifold *manifold = dispatcher->getManifoldByIndexInternal(i);
-        // This is a callback ya know, we can do physics script callbacks in here.
-        
-        // clear manifold cache so it has to regenerate every tick. I know this doesn't
-        // help performance but we need this for detecting real time collisions multiple times
-        // so that we can ignore them.
-//        manifold->clearManifold();
-    //}
-}
-
 btPhysicsEngine::btPhysicsEngine() : PhysicsEngine() {
 	init();
 
@@ -91,9 +64,7 @@ void btPhysicsEngine::init() {
 	world = new btDiscreteDynamicsWorld(dispatcher, interface, solver, configuration);
 	world->setGravity(btVector3(0, 0, -20.0f));
 
-    //gContactStartedCallback = contactStarted;
-	 gContactAddedCallback = contact_added_callback;
-    //world->setInternalTickCallback(physicsWorldTickCallback);
+	gContactAddedCallback = contact_added_callback;
 	running = true;
 }
 

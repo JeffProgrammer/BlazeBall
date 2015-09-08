@@ -108,16 +108,17 @@ btPhysicsSphere::btPhysicsSphere(const F32 &radius) : mRadius(radius) {
 	mActor->setCcdSweptSphereRadius(radius / 10.0f);
 	mActor->setAnisotropicFriction(shape->getAnisotropicRollingFrictionDirection(), btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION);
 	mActor->setContactProcessingThreshold(0.0f);
-    ShapeInfo infooo;
-    infooo.shape = shape;
-    shapes.push_back(infooo);
+
+	ShapeInfo infooo;
+	infooo.shape = shape;
+	shapes.push_back(infooo);
     
-    BodyInfo infoo;
-    infoo.body = mActor;
-    infoo.collisionNormal = btVector3(0.0f, 0.0f, 0.0f);
-    infoo.isDynamic = true;
-    infoo.shape = infooo;
-    bodies.push_back(infoo);
+	BodyInfo infoo;
+	infoo.body = mActor;
+	infoo.collisionNormal = btVector3(0.0f, 0.0f, 0.0f);
+	infoo.isDynamic = true;
+	infoo.shape = infooo;
+	bodies.push_back(infoo);
 }
 
 bool btPhysicsSphere::getColliding() {
@@ -168,98 +169,6 @@ glm::vec3 btPhysicsSphere::getCollisionNormal() {
 }
 
 void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const btCollisionObject *other, U32 otherIndex) {
-	const btBvhTriangleMeshShape *trimesh = dynamic_cast<const btBvhTriangleMeshShape *>(other->getCollisionShape());
-
-	if (trimesh == NULL)
-		return;
-
-	int ind = -1;
-	for (size_t i = 0; i < bodies.size(); i++) {
-		if (bodies[i].body == other) {
-			ind = i;
-			break;
-		}
-	}
-	if (ind < 0)
-		return;
-
-	BodyInfo bodyInfo = bodies[ind];
-
-	btTriangleMesh *mesh_int = (btTriangleMesh*)trimesh->getMeshInterface();
-
-	std::vector<int> triangleIndices;
-
-	bool removed = false;
-	int count = manifold->getNumContacts();
-
-	bool *removedPoints = new bool[count];
-	memset(removedPoints, 0, count * sizeof(bool));
-
-	int upCount = 0;
-
-	for (int i = 0; i < count; i++) {
-		int index;
-		if (otherIndex == 0)
-			index = manifold->getContactPoint(i).m_index0;
-		else
-			index = manifold->getContactPoint(i).m_index1;
-
-		for (size_t j = 0; j < triangleIndices.size(); j++) {
-			assert(j < count);
-			if (removedPoints[j])
-				continue;
-
-			BulletTriangle tri1 = btAccessibleTriangleMesh::getTriangle(mesh_int, triangleIndices[j]);
-			BulletTriangle tri2 = btAccessibleTriangleMesh::getTriangle(mesh_int, index);
-
-			if (index == triangleIndices[j] || btAccessibleTriangleMesh::areTrianglesAdjacent(tri1, tri2)) {
-				if (manifold->getContactPoint(i).getDistance() < manifold->getContactPoint(j).getDistance()) {
-					//manifold->removeContactPoint(j);
-					removedPoints[j + upCount] = true;
-					assert(j + upCount < count);
-				}
-				else {
-					//manifold->removeContactPoint(i);
-					removedPoints[i + upCount] = true;
-					assert(i + upCount < count);
-				}
-				removed = true;
-				upCount++;
-				break;
-			}
-		}
-		triangleIndices.push_back(index);
-	}
-
-	for (int i = count - 1; i >= 0; i--) {
-		if (removedPoints[i])
-			manifold->removeContactPoint(i);
-	}
-
-	delete[] removedPoints;
-
-	if (removed) {
-		for (int i = 0; i < manifold->getNumContacts(); i++) {
-			int index;
-			if (otherIndex == 0)
-				index = manifold->getContactPoint(i).m_index0;
-			else
-				index = manifold->getContactPoint(i).m_index1;
-			const BulletTriangle &points = btAccessibleTriangleMesh::getTriangle(mesh_int, index);
-
-			btVector3 normal = (points.point1 - points.point0).cross(points.point2 - points.point0);
-			normal.safeNormalize();
-
-			btQuaternion rot = bodyInfo.body->getWorldTransform().getRotation();
-			normal = normal.rotate(rot.getAxis(), rot.getAngle());
-
-			if (otherIndex == 0)
-				manifold->getContactPoint(i).m_normalWorldOnB = -normal;
-			else
-				manifold->getContactPoint(i).m_normalWorldOnB = normal;
-		}
-	}
-
 	//The interior with which we collided
 	btPhysicsInterior *inter = static_cast<btPhysicsInterior *>(other->getUserPointer());
 	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
