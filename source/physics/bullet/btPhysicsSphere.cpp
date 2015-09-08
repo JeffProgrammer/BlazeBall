@@ -97,8 +97,8 @@ btPhysicsSphere::btPhysicsSphere(const F32 &radius) : mRadius(radius) {
 
 	//Construction info
 	btRigidBody::btRigidBodyConstructionInfo info(1, state, shape, fallInertia);
-	info.m_restitution = 0.35f; // 0.5 * 0.7
-	info.m_friction = 1.1f;
+	info.m_restitution = 0.5f; // 0.5 * 0.7
+	info.m_friction = 1.0f;
 	info.m_rollingFriction = 1.1f;
 
 	//Create the actor and add it to the scene
