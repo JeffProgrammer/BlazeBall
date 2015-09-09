@@ -45,6 +45,12 @@
 #include <glm/matrix.hpp>
 
 class Sphere : public GameObject {
+	const F32 AppliedAcceleration = 2.5f; //Maximum, lowers when reaching max roll velocity
+	const F32 MaxRollVelocity     = 15.f; //In one direction (diagonal-supported)
+	const F32 JumpImpulse         = 7.5f; //Per jump, magnitude of the vector
+	const F32 AirAcceleration     = 2.5f; //Applied every tick in the air
+	const F32 LinearRollDamping   = 0.025f; // 97.5% of original
+
 protected:
 	std::vector<glm::vec3> geometry;
 public:

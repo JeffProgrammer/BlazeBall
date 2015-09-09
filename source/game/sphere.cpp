@@ -215,12 +215,8 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	if (movement.left) move.x --;
 	if (movement.right) move.x ++;
 
-	F32 timeMod = (static_cast<F32>(deltaMS) / 16.f);
-
-	//Multiplied by 2.5 (magic number alert)
-	F32 modifier = 2.5f * timeMod;
-
-	move *= modifier;
+	//Multiplied by the acceleration
+	move *= AppliedAcceleration;
 
 	//Linear velocity relative to camera yaw (for capping)
 	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getLinearVelocity())[3]);
@@ -228,12 +224,12 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 
 //	printf("LR: %f %f\n", linRel.x, linRel.y);
 
-	//Don't let us go faster than 15 u/s in any direction.
-	if (torque.x > 0 && torque.x + linRel.x >  15.f) torque.x = glm::max(0.f,  15.f - linRel.x);
-	if (torque.y > 0 && torque.y + linRel.y >  15.f) torque.y = glm::max(0.f,  15.f - linRel.y);
+	//Don't let us go faster than the max velocity in any direction.
+	if (torque.x > 0 && torque.x + linRel.x >  MaxRollVelocity) torque.x = glm::max(0.f,  MaxRollVelocity - linRel.x);
+	if (torque.y > 0 && torque.y + linRel.y >  MaxRollVelocity) torque.y = glm::max(0.f,  MaxRollVelocity - linRel.y);
 	//Same for backwards
-	if (torque.x < 0 && torque.x + linRel.x < -15.f) torque.x = glm::min(0.f, -15.f - linRel.x);
-	if (torque.y < 0 && torque.y + linRel.y < -15.f) torque.y = glm::min(0.f, -15.f - linRel.y);
+	if (torque.x < 0 && torque.x + linRel.x < -MaxRollVelocity) torque.x = glm::min(0.f, -MaxRollVelocity - linRel.x);
+	if (torque.y < 0 && torque.y + linRel.y < -MaxRollVelocity) torque.y = glm::min(0.f, -MaxRollVelocity - linRel.y);
 
 //	printf("T:  %f %f\n", torque.x, torque.y);
 
@@ -248,18 +244,19 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 		if (movement.jump && glm::dot(normal, glm::vec3(0, 0, 1)) > 0.1) {
 			//Jump takes the average of the collision normal and the up vector to provide a mostly upwards
 			// jump but still taking the surface into account.
-			applyImpulse((normal + glm::vec3(0, 0, 1)) / 2.f * 7.5f, glm::vec3(0, 0, 0));
+			glm::vec3 jumpNormal = (normal + glm::vec3(0, 0, 1)) / 2.f;
+			applyImpulse(jumpNormal * JumpImpulse, glm::vec3(0, 0, 0));
 			printf("Jump!\n");
 		}
 	} else {
 		glm::vec3 moveRel = glm::vec3(glm::translate(delta, move)[3]);
 
 		//If we're not touching the ground, apply slight air movement.
-		applyForce(moveRel * 2.5f, glm::vec3(0, 0, 0));
+		applyForce(moveRel * AirAcceleration, glm::vec3(0, 0, 0));
 	}
 	//Crappy damping
 	if (movement.forward + movement.backward + movement.left + movement.right == 0 && getColliding()) {
-		F32 damping = 1.f - (0.025f * (static_cast<F32>(deltaMS) / 16.f));
+		F32 damping = 1.f - LinearRollDamping;
 		mActor->setAngularVelocity(mActor->getAngularVelocity() * damping);
 	}
 }
