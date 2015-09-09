@@ -36,9 +36,18 @@ class PhysicsBody;
 class GameInterior;
 
 class PhysicsEngine {
+public:
+	typedef std::function<void(F64)> StepCallback;
+protected:
 	static PhysicsEngine *gEngine;
 
 	bool running;
+
+	StepCallback stepCallback;
+
+	inline virtual void step(F64 delta) {
+		this->stepCallback(delta);
+	}
 public:
 	PhysicsEngine() : running(false) {}
 
@@ -51,6 +60,8 @@ public:
 
 	void setRunning(bool running) { this->running = running; }
 	bool getRunning() { return running; }
+
+	void setStepCallback(StepCallback callback) { this->stepCallback = callback; }
 
 	static void setEngine(PhysicsEngine *engine);
 	static PhysicsEngine *getEngine();

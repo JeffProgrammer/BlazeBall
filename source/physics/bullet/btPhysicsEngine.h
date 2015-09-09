@@ -71,6 +71,8 @@ class btPhysicsEngine : public PhysicsEngine {
 	btCollisionDispatcher *dispatcher;
 	bool running;
 	F64 extraTime;
+
+	virtual void step(F64 delta);
 public:
 	btPhysicsEngine();
 	

@@ -138,9 +138,6 @@ void Scene::tick(const F64 &deltaMS) {
 	for (auto object : objects) {
 		object->updateTick(deltaMS);
 	}
-
-	// simulate the physics engine.
-	PhysicsEngine::getEngine()->simulate(deltaMS);
 }
 
 void Scene::updateWindowSize(const glm::ivec2 &size) {
@@ -333,7 +330,10 @@ void Scene::run() {
 	F64 counter = 0;
 	U32 fpsCounter = 0;
 
-	F64 tickTracker = 0.0f;
+	PhysicsEngine::getEngine()->setStepCallback([&](F64 delta){
+		this->loop(delta * 1000.0f);
+		this->tick(delta * 1000.0f);
+	});
 
 	//Main loop
 	while (running) {
@@ -352,17 +352,8 @@ void Scene::run() {
 			}
 		}
 
-		//printf("delta is: %f\n", lastDelta);
-
-		//Hard work
-		loop(lastDelta);
-
-		// handle the frame rate independent tick
-		tickTracker += lastDelta;
-		while (tickTracker > TICK_MS) {
-			tick(TICK_MS);
-			tickTracker -= TICK_MS;
-		}
+		//Update the physics and game items
+		PhysicsEngine::getEngine()->simulate(lastDelta);
 
 		render();
 		
