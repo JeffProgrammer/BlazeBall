@@ -247,6 +247,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 			//Jump takes the average of the collision normal and the up vector to provide a mostly upwards
 			// jump but still taking the surface into account.
 			applyImpulse((normal + glm::vec3(0, 0, 1)) / 2.f * 7.5f, glm::vec3(0, 0, 0));
+			printf("Jump!\n");
 		}
 	} else {
 		glm::vec3 moveRel = glm::vec3(glm::translate(delta, move)[3]);
