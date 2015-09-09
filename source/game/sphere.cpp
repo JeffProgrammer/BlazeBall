@@ -227,11 +227,11 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	glm::vec3 torque = move;
 
 	//Don't let us go faster than 15 u/s in any direction.
-	if (torque.x + linRel.x >  25.f) torque.x = glm::max(0.f,  25.f - linRel.x);
-	if (torque.y + linRel.y >  25.f) torque.y = glm::max(0.f,  25.f - linRel.y);
+	if (torque.x + linRel.x >  15.f) torque.x = glm::max(0.f,  15.f - linRel.x);
+	if (torque.y + linRel.y >  15.f) torque.y = glm::max(0.f,  15.f - linRel.y);
 	//Same for backwards
-	if (torque.x + linRel.x < -25.f) torque.x = glm::min(0.f, -25.f - linRel.x);
-	if (torque.y + linRel.y < -25.f) torque.y = glm::min(0.f, -25.f - linRel.y);
+	if (torque.x + linRel.x < -15.f) torque.x = glm::min(0.f, -15.f - linRel.x);
+	if (torque.y + linRel.y < -15.f) torque.y = glm::min(0.f, -15.f - linRel.y);
 
 //	printf("%f %f", linRel.x, linRel.y);
 
@@ -276,7 +276,6 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat) {
 
 void Sphere::updateTick(const F64 &deltaMS) {
 	//Crappy damping
-	if (mActor->getAngularVelocity().length() > 40.0f || mActor->getAngularVelocity().length() < 2.0f)
 	if (lastMove.forward + lastMove.backward + lastMove.left + lastMove.right == 0 && getColliding()) {
 		F32 damping = 1.f - (0.075f * (static_cast<F32>(deltaMS) / 16.f));
 		mActor->setAngularVelocity(mActor->getAngularVelocity() * damping);
