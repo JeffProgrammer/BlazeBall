@@ -38,7 +38,7 @@
 IMPLEMENT_OBJECT(Sphere);
 OBJECT_PARENT(Sphere, GameObject);
 
-Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), maxAngVel(1000.0f), material(nullptr), mVBO(nullptr), lastMove() {
+Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), maxAngVel(1000.0f), material(nullptr), mVBO(nullptr) {
 	mActor = PhysicsEngine::getEngine()->createSphere(radius);
 	mActor->setPosition(origin);
 	mActor->setMass(1.0f);
@@ -226,14 +226,16 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getLinearVelocity())[3]);
 	glm::vec3 torque = move;
 
-	//Don't let us go faster than 15 u/s in any direction.
-	if (torque.x + linRel.x >  15.f) torque.x = glm::max(0.f,  15.f - linRel.x);
-	if (torque.y + linRel.y >  15.f) torque.y = glm::max(0.f,  15.f - linRel.y);
-	//Same for backwards
-	if (torque.x + linRel.x < -15.f) torque.x = glm::min(0.f, -15.f - linRel.x);
-	if (torque.y + linRel.y < -15.f) torque.y = glm::min(0.f, -15.f - linRel.y);
+//	printf("LR: %f %f\n", linRel.x, linRel.y);
 
-//	printf("%f %f", linRel.x, linRel.y);
+	//Don't let us go faster than 15 u/s in any direction.
+	if (torque.x > 0 && torque.x + linRel.x >  15.f) torque.x = glm::max(0.f,  15.f - linRel.x);
+	if (torque.y > 0 && torque.y + linRel.y >  15.f) torque.y = glm::max(0.f,  15.f - linRel.y);
+	//Same for backwards
+	if (torque.x < 0 && torque.x + linRel.x < -15.f) torque.x = glm::min(0.f, -15.f - linRel.x);
+	if (torque.y < 0 && torque.y + linRel.y < -15.f) torque.y = glm::min(0.f, -15.f - linRel.y);
+
+//	printf("T:  %f %f\n", torque.x, torque.y);
 
 	//Torque is based on the movement and yaw
 	glm::vec3 torqueRel = glm::vec3(glm::translate(delta, torque)[3]);
@@ -255,6 +257,11 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 		//If we're not touching the ground, apply slight air movement.
 		applyForce(moveRel * 2.5f, glm::vec3(0, 0, 0));
 	}
+	//Crappy damping
+	if (movement.forward + movement.backward + movement.left + movement.right == 0 && getColliding()) {
+		F32 damping = 1.f - (0.025f * (static_cast<F32>(deltaMS) / 16.f));
+		mActor->setAngularVelocity(mActor->getAngularVelocity() * damping);
+	}
 }
 
 void Sphere::getCameraPosition(glm::mat4x4 &mat) {
@@ -275,12 +282,6 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat) {
 }
 
 void Sphere::updateTick(const F64 &deltaMS) {
-	//Crappy damping
-	if (lastMove.forward + lastMove.backward + lastMove.left + lastMove.right == 0 && getColliding()) {
-		F32 damping = 1.f - (0.075f * (static_cast<F32>(deltaMS) / 16.f));
-		mActor->setAngularVelocity(mActor->getAngularVelocity() * damping);
-	}
-
 	//Temporary OOB solution for now
 	if (getPosition().z < -40) {
 		setPosition(glm::vec3(0, 0, 60));

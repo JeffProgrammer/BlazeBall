@@ -67,8 +67,6 @@ private:
 	const F32 cameraSpeed = 0.3f;
 	const F32 keyCameraSpeed = 3.f;
 
-	Movement lastMove;
-
 public:
 	Sphere(glm::vec3 origin, F32 radius);
 	virtual ~Sphere();
