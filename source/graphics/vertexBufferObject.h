@@ -40,8 +40,6 @@
 #include "graphics/gfxTypes.h"
 #include "graphics/gl/glUtils.h"
 
-struct ModelVertex;
-
 class VertexBufferObject {
 public:
 	VertexBufferObject();
