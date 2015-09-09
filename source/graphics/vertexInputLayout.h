@@ -56,18 +56,38 @@ struct VertexInput {
 	}
 };
 
+/**
+ * This class defines a layout for a shader's attributes. It is based off of 
+ * the OpenGL attrib layout system. After creating the VertexInputLayout, fill
+ * up the layout by calling set with each VertexInput. Then, you can bind and
+ * unbind for each shader change.
+ */
 class VertexInputLayout {
 private:
+	/**
+	 * The vertex input layout, representing each layout line, in order.
+	 */
 	std::vector<VertexInput> mVertexInputs;
 
 public:
 	VertexInputLayout();
 	~VertexInputLayout();
 
+	/**
+	 * Binds the vertex input layout into the graphics API.
+	 */
 	void bind();
 
+	/**
+	 * Unbinds the vertex input layout into the graphics API.
+	 */
 	void unbind();
 
+	/**
+	 * Appends a line of vertex attribute layout into the internal structure 
+	 * holding the layout.
+	 * @param [in] input The vertex input for the specific attribute.
+	 */
 	void set(const VertexInput &input);
 };
 
