@@ -168,6 +168,14 @@ glm::quat Sphere::getRotation() {
 	return mActor->getRotation();
 }
 
+glm::vec3 Sphere::getVelocity() {
+	return mActor->getLinearVelocity();
+}
+
+glm::vec3 Sphere::getAngularVelocity() {
+	return mActor->getAngularVelocity();
+}
+
 void Sphere::setPosition(const glm::vec3 &pos) {
 	mActor->setPosition(pos);
 }
@@ -208,6 +216,8 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	glm::mat4x4 delta = glm::mat4x4(1);
 	delta = glm::rotate(delta, -cameraYaw, glm::vec3(0, 0, 1));
 
+	F32 deltaSeconds = deltaMS / 1000.0f;
+
 	//Convert the movement into a vector
 	glm::vec3 move = glm::vec3();
 	if (movement.forward) move.y ++;
@@ -215,14 +225,11 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	if (movement.left) move.x --;
 	if (movement.right) move.x ++;
 
-	//Multiplied by the acceleration
-	move *= AppliedAcceleration;
-
 	//Linear velocity relative to camera yaw (for capping)
 	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getLinearVelocity())[3]);
-	glm::vec3 torque = move;
+	glm::vec3 torque = move * AppliedAcceleration * deltaSeconds;
 
-//	printf("LR: %f %f\n", linRel.x, linRel.y);
+	printf("LR: %f %f\n", linRel.x, linRel.y);
 
 	//Don't let us go faster than the max velocity in any direction.
 	if (torque.x > 0 && torque.x + linRel.x >  MaxRollVelocity) torque.x = glm::max(0.f,  MaxRollVelocity - linRel.x);
@@ -231,11 +238,13 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	if (torque.x < 0 && torque.x + linRel.x < -MaxRollVelocity) torque.x = glm::min(0.f, -MaxRollVelocity - linRel.x);
 	if (torque.y < 0 && torque.y + linRel.y < -MaxRollVelocity) torque.y = glm::min(0.f, -MaxRollVelocity - linRel.y);
 
-//	printf("T:  %f %f\n", torque.x, torque.y);
+
+	printf("T:  %f %f\n", torque.x, torque.y);
 
 	//Torque is based on the movement and yaw
 	glm::vec3 torqueRel = glm::vec3(glm::translate(delta, torque)[3]);
-	applyForce(torqueRel, glm::vec3(0, 0, 1));
+	//Cross to convert 3d coordinates into torque
+	applyTorque(glm::cross(glm::vec3(0, 0, 1), torqueRel));
 
 	//If we are colliding with the ground, we have the chance to jump
 	if (getColliding()) {
@@ -250,9 +259,10 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 		}
 	} else {
 		glm::vec3 moveRel = glm::vec3(glm::translate(delta, move)[3]);
+		moveRel *= AirAcceleration * deltaSeconds;
 
 		//If we're not touching the ground, apply slight air movement.
-		applyForce(moveRel * AirAcceleration, glm::vec3(0, 0, 0));
+		applyImpulse(moveRel, glm::vec3(0, 0, 0));
 	}
 	//Crappy damping
 	if (movement.forward + movement.backward + movement.left + movement.right == 0 && getColliding()) {

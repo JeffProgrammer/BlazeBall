@@ -45,10 +45,10 @@
 #include <glm/matrix.hpp>
 
 class Sphere : public GameObject {
-	const F32 AppliedAcceleration = 2.5f; //Maximum, lowers when reaching max roll velocity
+	const F32 AppliedAcceleration = 150.f; //Maximum, lowers when reaching max roll velocity
 	const F32 MaxRollVelocity     = 15.f; //In one direction (diagonal-supported)
 	const F32 JumpImpulse         = 7.5f; //Per jump, magnitude of the vector
-	const F32 AirAcceleration     = 2.5f; //Applied every tick in the air
+	const F32 AirAcceleration     = 5.f; //Applied every tick in the air
 	const F32 LinearRollDamping   = 0.025f; // 97.5% of original
 
 protected:
@@ -98,7 +98,10 @@ public:
 	bool getColliding();
 	glm::vec3 getCollisionNormal();
     
-    void setVelocity(const glm::vec3 &vel);
+	glm::vec3 getVelocity();
+	glm::vec3 getAngularVelocity();
+
+	void setVelocity(const glm::vec3 &vel);
     void setAngularVelocity(const glm::vec3 &vel);
 
 	virtual void updateCamera(const Movement &movement, const F64 &deltaMS);
