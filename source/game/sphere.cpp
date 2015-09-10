@@ -211,7 +211,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	glm::mat4x4 delta = glm::mat4x4(1);
 	delta = glm::rotate(delta, -cameraYaw, glm::vec3(0, 0, 1));
 
-	F32 deltaSeconds = deltaMS / 1000.0f;
+	F32 deltaSeconds = static_cast<F32>(deltaMS) / 1000.0f;
 
 	//Convert the movement into a vector
 	glm::vec3 move = glm::vec3();
