@@ -175,17 +175,17 @@ glm::vec3 btPhysicsSphere::getCollisionNormal() {
 void btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	//The interior with which we collided
 	btPhysicsInterior *inter = dynamic_cast<btPhysicsInterior *>(isBody0 ? info.body1 : info.body0);
-	if (!inter)
+	if (inter == nullptr)
 		return;
 
 	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
 
 	//Which surface was it?
 	U32 surfaceNum = inter->getSurfaceIndexFromTriangleIndex(isBody0 ? info.index1 : info.index0);
-	DIF::Interior::Surface surface = dint.surface[surfaceNum];
+	const DIF::Interior::Surface &surface = dint.surface[surfaceNum];
 
 	//Texture names have properties
-	std::string surfName = dint.materialName[surface.textureIndex];
+	const std::string &surfName = dint.materialName[surface.textureIndex];
 
 	//Friction is relative to the slope of the incline
 	F32 friction = (1.0f + info.point.m_normalWorldOnB.dot(btVector3(0, 0, 1))) / 2.0f;
