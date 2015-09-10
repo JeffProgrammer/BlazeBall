@@ -63,6 +63,7 @@ Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), max
 
 Sphere::~Sphere() {
 	delete mVBO;
+	delete mInputLayout;
 }
 
 void Sphere::generate() {
