@@ -227,19 +227,27 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 
 	//Linear velocity relative to camera yaw (for capping)
 	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getLinearVelocity())[3]);
+	glm::vec3 angRel = glm::cross(glm::vec3(glm::translate(glm::inverse(delta), mActor->getAngularVelocity())[3]), glm::vec3(0, 0, 1));
 	glm::vec3 torque = move * AppliedAcceleration * deltaSeconds;
 
-	printf("LR: %f %f\n", linRel.x, linRel.y);
+	if (getColliding()) {
+		//Don't let us go faster than the max velocity in any direction.
+		if (torque.x > 0 && torque.x + linRel.x >  MaxRollVelocity) torque.x = glm::max(0.f,  MaxRollVelocity - linRel.x);
+		if (torque.y > 0 && torque.y + linRel.y >  MaxRollVelocity) torque.y = glm::max(0.f,  MaxRollVelocity - linRel.y);
+		//Same for backwards
+		if (torque.x < 0 && torque.x + linRel.x < -MaxRollVelocity) torque.x = glm::min(0.f, -MaxRollVelocity - linRel.x);
+		if (torque.y < 0 && torque.y + linRel.y < -MaxRollVelocity) torque.y = glm::min(0.f, -MaxRollVelocity - linRel.y);
+	} else {
+		//Don't let us roll faster than the max air roll velocity
+		if (torque.x > 0 && torque.x + angRel.x >  MaxAirSpinVelocity) torque.x = glm::max(0.0f,  MaxAirSpinVelocity - angRel.x);
+		if (torque.y > 0 && torque.y + angRel.y >  MaxAirSpinVelocity) torque.y = glm::max(0.0f,  MaxAirSpinVelocity - angRel.y);
+		if (torque.x < 0 && torque.x + angRel.x < -MaxAirSpinVelocity) torque.x = glm::min(0.0f, -MaxAirSpinVelocity - angRel.x);
+		if (torque.y < 0 && torque.y + angRel.y < -MaxAirSpinVelocity) torque.y = glm::min(0.0f, -MaxAirSpinVelocity - angRel.y);
+	}
 
-	//Don't let us go faster than the max velocity in any direction.
-	if (torque.x > 0 && torque.x + linRel.x >  MaxRollVelocity) torque.x = glm::max(0.f,  MaxRollVelocity - linRel.x);
-	if (torque.y > 0 && torque.y + linRel.y >  MaxRollVelocity) torque.y = glm::max(0.f,  MaxRollVelocity - linRel.y);
-	//Same for backwards
-	if (torque.x < 0 && torque.x + linRel.x < -MaxRollVelocity) torque.x = glm::min(0.f, -MaxRollVelocity - linRel.x);
-	if (torque.y < 0 && torque.y + linRel.y < -MaxRollVelocity) torque.y = glm::min(0.f, -MaxRollVelocity - linRel.y);
-
-
-	printf("T:  %f %f\n", torque.x, torque.y);
+//	printf("LR: %f %f\n", linRel.x, linRel.y);
+//	printf("AR: %f %f\n", angRel.x, angRel.y);
+//	printf("T:  %f %f\n", torque.x, torque.y);
 
 	//Torque is based on the movement and yaw
 	glm::vec3 torqueRel = glm::vec3(glm::translate(delta, torque)[3]);
