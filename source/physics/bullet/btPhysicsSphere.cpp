@@ -204,9 +204,9 @@ void btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 }
 
 F32 btPhysicsSphere::getRadius() {
-	return dynamic_cast<btSphereShape *>(mActor->getCollisionShape())->getRadius();
+	return static_cast<btSphereShape *>(mActor->getCollisionShape())->getRadius();
 }
 
 void btPhysicsSphere::setRadius(const F32 &radius) {
-	dynamic_cast<btSphereShape *>(mActor->getCollisionShape())->setUnscaledRadius(radius);
+	static_cast<btSphereShape *>(mActor->getCollisionShape())->setUnscaledRadius(radius);
 }
