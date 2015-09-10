@@ -46,7 +46,7 @@ Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), max
 	PhysicsEngine::getEngine()->addBody(mActor);
 	
 	mVBO = new VertexBufferObject();
-	mVBO->setBufferType(BufferType::STATIC);
+	mVBO->setBufferType(GFX::BufferType::STATIC);
 
 	mInputLayout = new VertexInputLayout();
 	mInputLayout->set(VertexInput(0, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point))));

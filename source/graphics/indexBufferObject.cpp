@@ -30,7 +30,7 @@
 
 IndexBufferObject::IndexBufferObject() {
 	mIBO = 0;
-	mBufferType = BufferType::NONE;
+	mBufferType = GFX::BufferType::NONE;
 }
 
 IndexBufferObject::~IndexBufferObject() {
@@ -59,6 +59,6 @@ void IndexBufferObject::submit(const U16 *data, const U16 count) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void IndexBufferObject::setBufferType(BufferType type) {
+void IndexBufferObject::setBufferType(GFX::BufferType type) {
 	mBufferType = type;
 }

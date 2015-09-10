@@ -52,7 +52,7 @@ GameInterior::~GameInterior() {
 void GameInterior::gfxInit() {
 	renderInfo.generated = false;
 	mVbo = new VertexBufferObject();
-	mVbo->setBufferType(BufferType::STATIC);
+	mVbo->setBufferType(GFX::BufferType::STATIC);
 
 	mInputLayout = new VertexInputLayout();
 

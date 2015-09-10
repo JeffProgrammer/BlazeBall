@@ -50,11 +50,11 @@ public:
 	
 	void submit(const U16 *data, const U16 count);
 	
-	void setBufferType(BufferType type);
+	void setBufferType(GFX::BufferType type);
 	
 private:
 	GLuint mIBO;
-	BufferType mBufferType;
+	GFX::BufferType mBufferType;
 };
 
 #endif // _GRAPHICS_INDEXBUFFEROBJECT_H_

@@ -215,7 +215,7 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 
 		// now, upload the vertices to the GL
 		modelMesh.vbo = new VertexBufferObject();
-		modelMesh.vbo->setBufferType(BufferType::STATIC);
+		modelMesh.vbo->setBufferType(GFX::BufferType::STATIC);
 		modelMesh.vbo->submit(&vertList[0], sizeof(ModelVertex), mesh->mNumVertices);
 
 		// get primitive type
@@ -248,7 +248,7 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 		}
 
 		IndexBufferObject *ibo = new IndexBufferObject();
-		ibo->setBufferType(BufferType::STATIC);
+		ibo->setBufferType(GFX::BufferType::STATIC);
 		ibo->submit(&indices[0], static_cast<U16>(indices.size()));
 		modelMesh.ibo = ibo;
 		modelMesh.numIndices = static_cast<U16>(indices.size());

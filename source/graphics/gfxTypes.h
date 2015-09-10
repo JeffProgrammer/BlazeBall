@@ -29,10 +29,19 @@
 #ifndef _GRAPHICS_GFXTYPES_H_
 #define _GRAPHICS_GFXTYPES_H_
 
-enum BufferType {
-	NONE,
-	STATIC,
-	STREAM
-};
+namespace GFX {
+	enum BufferType {
+		NONE,
+		STATIC,
+		STREAM
+	};
+
+	enum GeometryType {
+		LINES,
+		LINE_STRIP,
+		TRIANGLES,
+		TRIANGLE_STRIP
+	};
+}
 
 #endif // _GRAPHICS_GFXTYPES_H_

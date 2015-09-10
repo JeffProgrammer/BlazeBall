@@ -38,11 +38,31 @@
 #include "graphics/vertexBufferObject.h"
 
 namespace GLUtils {
-	inline GLenum convertBufferType(BufferType type) {
+	inline GLenum convertBufferType(GFX::BufferType type) {
 		switch (type) {
-			case STATIC: return GL_STATIC_DRAW;
-			case STREAM: return GL_STREAM_DRAW;
-			default: return GL_ZERO;
+		case GFX::BufferType::STATIC: 
+			return GL_STATIC_DRAW;
+		case GFX::BufferType::STREAM: 
+			return GL_STREAM_DRAW;
+		default: 
+			assert(false);
+			return GL_ZERO;
+		}
+	}
+
+	inline GLenum convertGeometryType(GFX::GeometryType type) {
+		switch (type) {
+		case GFX::GeometryType::LINES:
+			return GL_LINES;
+		case GFX::GeometryType::LINE_STRIP:
+			return GL_LINE_STRIP;
+		case GFX::GeometryType::TRIANGLES:
+			return GL_TRIANGLES;
+		case GFX::GeometryType::TRIANGLE_STRIP:
+			return GL_TRIANGLE_STRIP;
+		default:
+			assert(false);
+			return GL_ZERO;
 		}
 	}
 

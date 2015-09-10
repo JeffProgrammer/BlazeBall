@@ -31,7 +31,7 @@
 
 VertexBufferObject::VertexBufferObject() {
 	mVBO = 0;
-	mBufferType = BufferType::NONE;
+	mBufferType = GFX::BufferType::NONE;
 }
 
 VertexBufferObject::~VertexBufferObject() {
@@ -60,6 +60,6 @@ void VertexBufferObject::submit(const void *data, const U32 stride, const U32 co
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void VertexBufferObject::setBufferType(BufferType type) {
+void VertexBufferObject::setBufferType(GFX::BufferType type) {
 	mBufferType = type;
 }

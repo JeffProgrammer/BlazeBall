@@ -50,11 +50,11 @@ public:
 	
 	void submit(const void *data, const U32 stride, const U32 count);
 	
-	void setBufferType(BufferType type);
+	void setBufferType(GFX::BufferType type);
 	
 private:
 	GLuint mVBO;
-	BufferType mBufferType;
+	GFX::BufferType mBufferType;
 };
 
 #endif // _GRAPHICS_VERTEXBUFFEROBJECT_H_
