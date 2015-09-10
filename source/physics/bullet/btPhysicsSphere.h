@@ -43,7 +43,7 @@ public:
 	virtual F32 getRadius();
 	virtual void setRadius(const F32 &radius);
 
-	virtual void modifyContact(btPersistentManifold *const &manifold, const btCollisionObject *other, U32 otherIndex);
+	virtual void modifyContact(ContactCallbackInfo &info, bool isBody0);
 };
 
 #endif /* btPhysicsSphere_h */
