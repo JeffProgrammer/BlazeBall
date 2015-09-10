@@ -57,7 +57,7 @@ public:
 	virtual void applyImpulse(const glm::vec3 &impulse, const glm::vec3 &origin);
 	virtual void applyForce(const glm::vec3 &force, const glm::vec3 &origin);
 
-	virtual void modifyContact(btPersistentManifold *const &manifold, const btCollisionObject *other, U32 otherIndex);
+	virtual void modifyContact(ContactCallbackInfo &info, bool isBody0);
 
 	btRigidBody *getActor() {
 		return mActor;

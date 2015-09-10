@@ -33,6 +33,10 @@
 
 #include <glm/ext.hpp>
 
+#ifndef _WIN32
+#define stricmp strcasecmp
+#endif
+
 /// BEHOLD, THE MAGIC NUMBER
 #define ADJACENCY_NORMAL_THRESHOLD 0.01f
 
@@ -168,39 +172,35 @@ glm::vec3 btPhysicsSphere::getCollisionNormal() {
 	return best;
 }
 
-void btPhysicsSphere::modifyContact(btPersistentManifold *const &manifold, const btCollisionObject *other, U32 otherIndex) {
+void btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	//The interior with which we collided
-	btPhysicsInterior *inter = static_cast<btPhysicsInterior *>(other->getUserPointer());
+	btPhysicsInterior *inter = dynamic_cast<btPhysicsInterior *>(isBody0 ? info.body1 : info.body0);
+	if (!inter)
+		return;
+
 	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
 
-	for (int i = 0; i < manifold->getNumContacts(); i ++) {
-		//Get the collision index
-		U32 index;
-		if (otherIndex == 0)
-			index = manifold->getContactPoint(i).m_index0;
-		else
-			index = manifold->getContactPoint(i).m_index1;
+	//Which surface was it?
+	U32 surfaceNum = inter->getSurfaceIndexFromTriangleIndex(isBody0 ? info.index1 : info.index0);
+	DIF::Interior::Surface surface = dint.surface[surfaceNum];
 
-		//Which surface was it?
-		U32 surfaceNum = inter->getSurfaceIndexFromTriangleIndex(index);
-		DIF::Interior::Surface surface = dint.surface[surfaceNum];
+	//Texture names have properties
+	std::string surfName = dint.materialName[surface.textureIndex];
 
-		//Texture names have properties
-		std::string surfName = dint.materialName[surface.textureIndex];
+	//Friction is relative to the slope of the incline
+	F32 friction = (1.0f + info.point.m_normalWorldOnB.dot(btVector3(0, 0, 1))) / 2.0f;
 
-		//Friction is relative to the slope of the incline
-		F32 friction = (1.0f + manifold->getContactPoint(i).m_normalWorldOnB.dot(btVector3(0, 0, 1))) / 2.0f;
-
-		//Frictions
-		if (surfName == "friction_low" || surfName == "friction_low_shadow") {
-			friction *= 0.01f;
-		} else if (surfName == "friction_high" || surfName == "friction_high_shadow") {
-			friction *= 2.5f;
-		}
-
-		manifold->getContactPoint(i).m_combinedFriction *= friction;
-		manifold->getContactPoint(i).m_combinedRollingFriction *= friction;
+	//Frictions
+	if (stricmp(surfName.c_str(), "friction_low") == 0 ||
+		stricmp(surfName.c_str(), "friction_low_shadow") == 0) {
+		friction *= 0.01f;
+	} else if (stricmp(surfName.c_str(), "friction_high") == 0 ||
+			   stricmp(surfName.c_str(), "friction_high_shadow") == 0) {
+		friction *= 2.5f;
 	}
+
+	info.point.m_combinedFriction *= friction;
+	info.point.m_combinedRollingFriction *= friction;
 }
 
 F32 btPhysicsSphere::getRadius() {

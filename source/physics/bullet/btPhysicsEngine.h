@@ -36,6 +36,7 @@
 #include "base/types.h"
 #include "physics/physicsEngine.h"
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/NarrowPhaseCollision/btManifoldPoint.h>
 #include <BulletCollision/CollisionDispatch/btInternalEdgeUtility.h>
 #include <vector>
 
@@ -64,6 +65,24 @@ struct BodyMovement {
     btRigidBody *body;
     btVector3 velocity;
     btVector3 angularVelocity;
+};
+
+class btPhysicsBody;
+
+struct ContactCallbackInfo {
+	btManifoldPoint &point;
+	
+	const btCollisionObjectWrapper *colObj0Wrap;
+	const btCollisionObjectWrapper *colObj1Wrap;
+	int partId0;
+	int partId1;
+	int index0;
+	int index1;
+
+	btPhysicsBody *body0;
+	btPhysicsBody *body1;
+
+	ContactCallbackInfo(btManifoldPoint &pt) : point(pt) {};
 };
 
 class btPhysicsEngine : public PhysicsEngine {
