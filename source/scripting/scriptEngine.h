@@ -179,6 +179,24 @@ public:
 	static ScriptClassConstructor *__scc##name; \
 	static void __occ##name(name *object, Isolate *isolate, const v8::FunctionCallbackInfo<v8::Value> &args)
 
+#define OBJECT_CONSTRUCTOR_GC(name, constructor) \
+	static void __oc##name(const FunctionCallbackInfo<Value> &args) { \
+		HandleScope scope(args.GetIsolate()); \
+		if (args.This()->InternalFieldCount() == 0) { \
+			args.GetReturnValue().SetUndefined(); \
+			return; \
+		} \
+		\
+		name *object = new name constructor; \
+		__occ##name(object, args.GetIsolate(), args); \
+		\
+		object->Wrap(args.This()); \
+      object->MakeWeak(); \
+		args.GetReturnValue().Set(args.This()); \
+	} \
+	static ScriptClassConstructor *__scc##name; \
+	static void __occ##name(name *object, Isolate *isolate, const v8::FunctionCallbackInfo<v8::Value> &args)
+
 #define IMPLEMENT_OBJECT(name) \
 	ScriptClassConstructor *name::__scc##name = new ScriptClassConstructor(#name, __oc##name)
 
@@ -226,6 +244,7 @@ static void __oc(const FunctionCallbackInfo<Value> &args);
 		__occ<name>(object->mHandle, args.GetIsolate(), args); \
 		\
 		object->Wrap(args.This()); \
+		object->MakeWeak(); \
 		args.GetReturnValue().Set(args.This()); \
 	} \
 	template<> ScriptClassConstructor *ExternObject<name>::__scc = new ScriptClassConstructor(#name, __oc<name>); \

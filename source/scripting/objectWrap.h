@@ -76,16 +76,14 @@ class ObjectWrap {
     assert(handle->InternalFieldCount() > 0);
     handle->SetAlignedPointerInInternalField(0, this);
     persistent().Reset(v8::Isolate::GetCurrent(), handle);
-    MakeWeak();
   }
 
-
-protected:
   inline void MakeWeak(void) {
     persistent().SetWeak(this, WeakCallback);
     persistent().MarkIndependent();
   }
 
+protected:
   /* Ref() marks the object as being attached to an event loop.
    * Refed objects will not be garbage collected, even if
    * all references are lost.
