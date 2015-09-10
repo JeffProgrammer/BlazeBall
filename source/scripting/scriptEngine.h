@@ -275,10 +275,17 @@ static void __oc(const FunctionCallbackInfo<Value> &args);
 	name->Wrap(name); \
 	classname *c_##name
 
+#define OBJECT_GC(classname, name) \
+	Local<Object> name = ScriptingEngine::instantiateClass(isolate, #classname); \
+	name->Wrap(name); \
+	name->MakeWeak(); \
+	classname *c_##name
+
 #define EXTERN_OBJECT(classname, name) \
 	ExternObject<classname> *c_##name = new ExternObject<classname>; \
 	Local<Object> name = ScriptingEngine::instantiateClass(isolate, #classname); \
 	c_##name->Wrap(name); \
+	c_##name->MakeWeak(); \
 	c_##name->mHandle
 
 #define UNWRAP(classname, thing) \
