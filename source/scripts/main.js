@@ -1,9 +1,6 @@
 "use strict";
 
 var scene = getScene();
-scene.interiors = [];
-scene.projectiles = [];
-scene.shapes = [];
 
 function onFrameAdvance(delta) {
 	//print("Time advance: ", delta);
@@ -20,7 +17,6 @@ function parseArgs(args) {
 		var interior = new GameInterior(args[i]);
 		interior.generate();
 		scene.addObject(interior);
-		scene.interiors.push(interior);
 	}
 }
 
@@ -47,7 +43,6 @@ function onKeyDown(key) {
 	if (chr == "m" || chr == "M") {
 		var object = new Shape("cube.dae");
 		scene.addObject(object);
-		scene.shapes.push(object);
 		
 		var x = Math.random() * 10.0;
 		var y = Math.random() * 10.0;
@@ -62,7 +57,6 @@ function onKeyUp(key) {
 
 function fire() {
 	var proj = new Sphere(new vec3(0, 0, 30), 0.75);
-	scene.projectiles.push(proj);
 	scene.addObject(proj);
 }
 
