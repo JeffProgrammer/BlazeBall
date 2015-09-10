@@ -32,6 +32,7 @@
 #include <glm/ext.hpp>
 #include "game/gameInterior.h"
 #include "base/math.h"
+#include "graphics/graphicsDevice.h"
 
 void GameInterior::init() {
 	std::vector<std::vector<Triangle>> perMaterialTriangles(mInterior.materialName.size());
@@ -154,7 +155,7 @@ void GameInterior::render() {
 			} else {
 				printf("Trying to render with invalid material %d: %s\n", i, mInterior.materialName[i].c_str());
 			}
-			glDrawArrays(GL_TRIANGLES, start * 3, renderInfo.numMaterialTriangles[i] * 3);
+			GFXDEVICE->drawPrimitive(GL_TRIANGLES, start * 3, renderInfo.numMaterialTriangles[i] * 3);
 			start += renderInfo.numMaterialTriangles[i];
 			if (mMaterialList[i]) {
 				mNoiseTexture->deactivate();
