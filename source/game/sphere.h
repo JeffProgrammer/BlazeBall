@@ -41,6 +41,7 @@
 #include "physics/physicsBody.h"
 #include "render/material.h"
 #include "graphics/vertexBufferObject.h"
+#include "graphics/vertexInputLayout.h"
 #include "game/movement.h"
 #include <glm/matrix.hpp>
 
@@ -61,6 +62,7 @@ public:
 	Material *material;
 
 	VertexBufferObject *mVBO;
+	VertexInputLayout *mInputLayout;
 	bool firstDraw;
 
 	F32 cameraYaw;

@@ -31,6 +31,7 @@
 #include "base/io.h"
 #include "render/scene.h"
 #include "physics/physicsSphere.h"
+#include "graphics/graphicsDevice.h"
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -46,6 +47,13 @@ Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), max
 	
 	mVBO = new VertexBufferObject();
 	mVBO->setBufferType(BufferType::STATIC);
+
+	mInputLayout = new VertexInputLayout();
+	mInputLayout->set(VertexInput(0, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point))));
+	mInputLayout->set(VertexInput(1, 2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv))));
+	mInputLayout->set(VertexInput(2, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal))));
+	mInputLayout->set(VertexInput(3, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent))));
+	mInputLayout->set(VertexInput(4, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent))));
 	
 	firstDraw = false;
 
@@ -55,6 +63,7 @@ Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), max
 
 Sphere::~Sphere() {
 	delete mVBO;
+	delete mInputLayout;
 }
 
 void Sphere::generate() {
@@ -118,23 +127,10 @@ void Sphere::render() {
 	if (material) {
 		material->activate();
 	}
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	glEnableVertexAttribArray(4);
 	mVBO->bind();
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, point));
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, uv));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, tangent));
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, bitangent));
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
-	glDisableVertexAttribArray(4);
-	glDisableVertexAttribArray(3);
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
+	mInputLayout->bind();
+	GFXDEVICE->drawPrimitive(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
+	mInputLayout->unbind();
 	if (material) {
 		material->deactivate();
 	}
@@ -216,7 +212,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	glm::mat4x4 delta = glm::mat4x4(1);
 	delta = glm::rotate(delta, -cameraYaw, glm::vec3(0, 0, 1));
 
-	F32 deltaSeconds = deltaMS / 1000.0f;
+	F32 deltaSeconds = static_cast<F32>(deltaMS) / 1000.0f;
 
 	//Convert the movement into a vector
 	glm::vec3 move = glm::vec3();
