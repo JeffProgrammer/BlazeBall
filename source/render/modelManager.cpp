@@ -222,15 +222,15 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 		U32 primCount = 0;
 		switch (mesh->mPrimitiveTypes) {
 		case aiPrimitiveType_POINT:
-			modelMesh.primitive = GL_POINTS;
+			modelMesh.primitive = GFX::GeometryType::POINTS;
 			primCount = 1;
 			break;
 		case aiPrimitiveType_LINE:
-			modelMesh.primitive = GL_LINES;
+			modelMesh.primitive = GFX::GeometryType::LINES;
 			primCount = 2;
 			break;
 		case aiPrimitiveType_TRIANGLE:
-			modelMesh.primitive = GL_TRIANGLES;
+			modelMesh.primitive = GFX::GeometryType::TRIANGLES;
 			primCount = 3;
 			break;
 		default:

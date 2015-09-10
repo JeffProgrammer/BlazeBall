@@ -37,15 +37,16 @@
 #endif // __APPLE__
 
 #include "base/types.h"
+#include "graphics/gfxTypes.h"
 
 class GraphicsDevice {
 public:
 	GraphicsDevice();
 	~GraphicsDevice();
 
-	void drawPrimitive(GLenum primitiveType, U32 start, U32 count);
+	void drawPrimitive(GFX::GeometryType primitiveType, U32 start, U32 count);
 
-	void drawIndexedPrimitive(GLenum primitiveType, U32 start, U32 count);
+	void drawIndexedPrimitive(GFX::GeometryType primitiveType, U32 start, U32 count);
 
 	static GraphicsDevice* getSingleton() {
 		static GraphicsDevice *device = new GraphicsDevice();

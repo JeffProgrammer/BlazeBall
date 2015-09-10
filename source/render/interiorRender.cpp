@@ -155,7 +155,7 @@ void GameInterior::render() {
 			} else {
 				printf("Trying to render with invalid material %d: %s\n", i, mInterior.materialName[i].c_str());
 			}
-			GFXDEVICE->drawPrimitive(GL_TRIANGLES, start * 3, renderInfo.numMaterialTriangles[i] * 3);
+			GFXDEVICE->drawPrimitive(GFX::GeometryType::TRIANGLES, start * 3, renderInfo.numMaterialTriangles[i] * 3);
 			start += renderInfo.numMaterialTriangles[i];
 			if (mMaterialList[i]) {
 				mNoiseTexture->deactivate();

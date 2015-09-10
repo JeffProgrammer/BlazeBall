@@ -37,6 +37,7 @@ namespace GFX {
 	};
 
 	enum GeometryType {
+		POINTS,
 		LINES,
 		LINE_STRIP,
 		TRIANGLES,

@@ -27,6 +27,7 @@
 //------------------------------------------------------------------------------
 
 #include "graphics/graphicsDevice.h"
+#include "graphics/gl/glUtils.h"
 
 GraphicsDevice::GraphicsDevice() {
 
@@ -36,10 +37,10 @@ GraphicsDevice::~GraphicsDevice() {
 
 }
 
-void GraphicsDevice::drawPrimitive(GLenum primitiveType, U32 start, U32 count) {
-	glDrawArrays(primitiveType, start, count);
+void GraphicsDevice::drawPrimitive(GFX::GeometryType primitiveType, U32 start, U32 count) {
+	glDrawArrays(GLUtils::convertGeometryType(primitiveType), start, count);
 }
 
-void GraphicsDevice::drawIndexedPrimitive(GLenum primitiveType, U32 start, U32 count) {
-	glDrawElements(primitiveType, count, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(sizeof(U16)*start));
+void GraphicsDevice::drawIndexedPrimitive(GFX::GeometryType primitiveType, U32 start, U32 count) {
+	glDrawElements(GLUtils::convertGeometryType(primitiveType), count, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(sizeof(U16)*start));
 }

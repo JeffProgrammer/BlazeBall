@@ -52,6 +52,8 @@ namespace GLUtils {
 
 	inline GLenum convertGeometryType(GFX::GeometryType type) {
 		switch (type) {
+		case GFX::GeometryType::POINTS:
+			return GL_POINTS;
 		case GFX::GeometryType::LINES:
 			return GL_LINES;
 		case GFX::GeometryType::LINE_STRIP:

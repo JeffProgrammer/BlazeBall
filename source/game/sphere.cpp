@@ -129,7 +129,7 @@ void Sphere::render() {
 	}
 	mVBO->bind();
 	mInputLayout->bind();
-	GFXDEVICE->drawPrimitive(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
+	GFXDEVICE->drawPrimitive(GFX::GeometryType::TRIANGLE_STRIP, 0, segments * slices * 2);
 	mInputLayout->unbind();
 	if (material) {
 		material->deactivate();
