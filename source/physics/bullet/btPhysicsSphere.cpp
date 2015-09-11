@@ -189,10 +189,12 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	glm::vec3 in(normal.x, normal.y, normal.z);
 	glm::vec3 bn = btConvert(info.point.m_normalWorldOnB);
 
-	if (glm::dot(in, bn) < 0.95) {
-		//Remove it
-		return false;
-	}
+	//Doesn't really work
+//	if (glm::dot(in, bn) < 0.95) {
+//		//Remove it
+//		return false;
+//	}
+
 
 	//Texture names have properties
 	const std::string &surfName = dint.materialName[surface.textureIndex];
