@@ -77,6 +77,9 @@ void btPhysicsInterior::construct() {
     }
 
     btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(mesh, true, true);
+	btTriangleInfoMap *map = new btTriangleInfoMap();
+	btGenerateInternalEdgeInfo(shape, map);
+
     shape->setMargin(0.01f);
     
     btTransform transform;
