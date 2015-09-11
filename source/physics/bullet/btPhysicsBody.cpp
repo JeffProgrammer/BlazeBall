@@ -88,5 +88,6 @@ void btPhysicsBody::setAngularVelocity(const glm::vec3 &velocity) {
     mActor->setAngularVelocity(btConvert(velocity));
 }
 
-void btPhysicsBody::modifyContact(ContactCallbackInfo &info, bool isBody0) {
+bool btPhysicsBody::modifyContact(ContactCallbackInfo &info, bool isBody0) {
+	return true;
 }

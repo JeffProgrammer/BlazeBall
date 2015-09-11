@@ -172,7 +172,7 @@ glm::vec3 btPhysicsSphere::getCollisionNormal() {
 	return best;
 }
 
-void btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
+bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	//The interior with which we collided
 	btPhysicsInterior *inter = dynamic_cast<btPhysicsInterior *>(isBody0 ? info.body1 : info.body0);
 	if (inter == nullptr)
@@ -183,6 +183,16 @@ void btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	//Which surface was it?
 	U32 surfaceNum = inter->getSurfaceIndexFromTriangleIndex(isBody0 ? info.index1 : info.index0);
 	const DIF::Interior::Surface &surface = dint.surface[surfaceNum];
+
+	const DIF::Point3F &normal = dint.normal[dint.plane[surface.planeIndex].normalIndex];
+
+	glm::vec3 in(normal.x, normal.y, normal.z);
+	glm::vec3 bn = btConvert(info.point.m_normalWorldOnB);
+
+	if (glm::dot(in, bn) < 0.95) {
+		//Remove it
+		return false;
+	}
 
 	//Texture names have properties
 	const std::string &surfName = dint.materialName[surface.textureIndex];
@@ -201,6 +211,8 @@ void btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 
 	info.point.m_combinedFriction *= friction;
 	info.point.m_combinedRollingFriction *= friction;
+
+	return true;
 }
 
 F32 btPhysicsSphere::getRadius() {

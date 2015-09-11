@@ -59,10 +59,10 @@ bool contact_added_callback(btManifoldPoint& cp, const btCollisionObjectWrapper*
 	info.body0 = body0;
 	info.body1 = body1;
 
-	if (body0)
-		body0->modifyContact(info, true);
-	if (body1)
-		body1->modifyContact(info, false);
+	if (body0 && !body0->modifyContact(info, true))
+		return false;
+	if (body1 && !body1->modifyContact(info, false))
+		return false;
 
 	return true;
 }
