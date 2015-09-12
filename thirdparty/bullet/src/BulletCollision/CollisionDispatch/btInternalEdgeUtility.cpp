@@ -106,13 +106,15 @@ struct btConnectivityProcessor : public btTriangleCallback
 					sharedVertsB[numshared] = j;
 					numshared++;
 					///degenerate case
-					if(numshared >= 3)
+					if(numshared >= 3) {
 						return;
+					}
 				}
 			}
 			///degenerate case
-			if(numshared >= 3)
+			if(numshared >= 3) {
 				return;
+			}
 		}
 		switch (numshared)
 		{
@@ -153,6 +155,11 @@ struct btConnectivityProcessor : public btTriangleCallback
 
 				
 				btVector3 edge(m_triangleVerticesA[sharedVertsA[1]]-m_triangleVerticesA[sharedVertsA[0]]);
+
+				//Can't really do anything with this
+				if (sharedVertsA[0] == sharedVertsA[1] || sharedVertsB[0] == sharedVertsB[1]) {
+					return;
+				}
 
 				btTriangleShape tA(m_triangleVerticesA[0],m_triangleVerticesA[1],m_triangleVerticesA[2]);
 				int otherIndexB = 3-(sharedVertsB[0]+sharedVertsB[1]);
