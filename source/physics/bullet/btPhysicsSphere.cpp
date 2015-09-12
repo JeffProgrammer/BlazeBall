@@ -205,7 +205,7 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	//Frictions
 	if (stricmp(surfName.c_str(), "friction_low") == 0 ||
 		stricmp(surfName.c_str(), "friction_low_shadow") == 0) {
-		friction *= 0.01f;
+		friction *= 0.2f;
 	} else if (stricmp(surfName.c_str(), "friction_high") == 0 ||
 			   stricmp(surfName.c_str(), "friction_high_shadow") == 0) {
 		friction *= 2.5f;
