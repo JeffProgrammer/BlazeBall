@@ -176,7 +176,7 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	//The interior with which we collided
 	btPhysicsInterior *inter = dynamic_cast<btPhysicsInterior *>(isBody0 ? info.body1 : info.body0);
 	if (inter == nullptr)
-		return;
+		return false;
 
 	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
 
