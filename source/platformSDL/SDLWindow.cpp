@@ -28,6 +28,7 @@
 
 #include "platformSDL/SDLWindow.h"
 #include "platformSDL/SDLEvent.h"
+#include "graphics/graphicsDevice.h"
 
 bool SDLWindow::createContext() {
 	//Init SDL
@@ -94,6 +95,9 @@ bool SDLWindow::createContext() {
 
 	//Use Vsync
 	setVerticalSync(true);
+
+	// Initialize the graphics device
+	GFXDEVICE->init();
 	
 	//Lock cursor
 	lockCursor(true);

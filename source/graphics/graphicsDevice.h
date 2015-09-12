@@ -48,6 +48,8 @@ public:
 
 	void drawIndexedPrimitive(GFX::GeometryType primitiveType, U32 start, U32 count);
 
+	void init();
+
 	static GraphicsDevice* getSingleton() {
 		static GraphicsDevice *device = new GraphicsDevice();
 		return device;
