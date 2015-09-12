@@ -61,7 +61,7 @@ public:
 	F32 maxAngVel;
 	Material *material;
 
-	VertexBufferObject *mVBO;
+	static VertexBufferObject *sVBO;
 	VertexInputLayout *mInputLayout;
 	bool firstDraw;
 
@@ -80,7 +80,9 @@ public:
 	Sphere(glm::vec3 origin, F32 radius);
 	virtual ~Sphere();
 
+	virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix);
 	virtual void render();
+
 	virtual glm::vec3 getPosition();
 	virtual glm::quat getRotation();
 

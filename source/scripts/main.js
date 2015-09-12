@@ -49,6 +49,10 @@ function onKeyDown(key) {
 		var z = Math.random() * -10.0;
 		object.setPosition(new vec3(x, y, z));
 	}
+
+	if (chr == "g") {
+		scene.getControlObject().setRadius(1.0);
+	}
 }
 
 function onKeyUp(key) {

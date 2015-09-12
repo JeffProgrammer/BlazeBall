@@ -39,15 +39,14 @@
 IMPLEMENT_OBJECT(Sphere);
 OBJECT_PARENT(Sphere, GameObject);
 
-Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), maxAngVel(1000.0f), material(nullptr), mVBO(nullptr) {
+VertexBufferObject *Sphere::sVBO = nullptr;
+
+Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), maxAngVel(1000.0f), material(nullptr) {
 	mActor = PhysicsEngine::getEngine()->createSphere(radius);
 	mActor->setPosition(origin);
 	mActor->setMass(1.0f);
 	PhysicsEngine::getEngine()->addBody(mActor);
 	
-	mVBO = new VertexBufferObject();
-	mVBO->setBufferType(GFX::BufferType::STATIC);
-
 	mInputLayout = new VertexInputLayout();
 	mInputLayout->set(VertexInput(0, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point))));
 	mInputLayout->set(VertexInput(1, 2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv))));
@@ -62,11 +61,16 @@ Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), max
 }
 
 Sphere::~Sphere() {
-	delete mVBO;
 	delete mInputLayout;
 }
 
 void Sphere::generate() {
+	if (sVBO != nullptr)
+		return;
+
+	sVBO = new VertexBufferObject();
+	sVBO->setBufferType(GFX::BufferType::STATIC);
+
 	F32 step = (glm::pi<F32>() * 2.0f / segments);
 
 	S32 segments2 = segments / 2;
@@ -88,8 +92,8 @@ void Sphere::generate() {
 			float sini = sin(i * step);
 
 			//Math not invented by me
-			glm::vec3 point0 = glm::vec3(radius * cosi * cosy, radius * siny, radius * sini * cosy);
-			glm::vec3 point1 = glm::vec3(radius * cosi * cosy1, radius * siny1, radius * sini * cosy1);
+			glm::vec3 point0 = glm::vec3(cosi * cosy, siny, sini * cosy);
+			glm::vec3 point1 = glm::vec3(cosi * cosy1, siny1, sini * cosy1);
 
 			glm::vec2 uv0 = glm::vec2((F32)i / (F32)segments2, (F32)y / (F32)slices2);
 			glm::vec2 uv1 = glm::vec2((F32)i / (F32)segments2, (F32)(y + 1) / (F32)slices2);
@@ -115,7 +119,13 @@ void Sphere::generate() {
 	}
 
 	//Generate a buffer
-	mVBO->submit(&points[0], sizeof(Vertex), point);
+	sVBO->submit(&points[0], sizeof(Vertex), point);
+}
+
+void Sphere::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix) {
+	GameObject::loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
+
+	modelMatrix = glm::scale(modelMatrix, glm::vec3(radius));
 }
 
 void Sphere::render() {
@@ -127,7 +137,7 @@ void Sphere::render() {
 	if (material) {
 		material->activate();
 	}
-	mVBO->bind();
+	sVBO->bind();
 	mInputLayout->bind();
 	GFXDEVICE->drawPrimitive(GFX::GeometryType::TRIANGLE_STRIP, 0, segments * slices * 2);
 	mInputLayout->unbind();
@@ -299,4 +309,14 @@ void Sphere::updateTick(const F64 &deltaMS) {
 		setVelocity(glm::vec3(0, 0, 0));
 		setAngularVelocity(glm::vec3(0, 0, 0));
 	}
+}
+
+OBJECT_METHOD(Sphere, setRadius) {
+	F32 rad = args[0]->ToNumber()->Value();
+	object->setRadius(rad);
+}
+
+OBJECT_METHOD(Sphere, getRadius) {
+	F32 rad = object->getRadius();
+	args.GetReturnValue().Set(rad);
 }
