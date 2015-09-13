@@ -37,6 +37,10 @@ GraphicsDevice::~GraphicsDevice() {
 
 }
 
+void GraphicsDevice::init() {
+
+}
+
 void GraphicsDevice::drawPrimitive(GFX::GeometryType primitiveType, U32 start, U32 count) {
 	glDrawArrays(GLUtils::convertGeometryType(primitiveType), start, count);
 }
