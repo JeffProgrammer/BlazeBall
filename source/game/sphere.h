@@ -67,6 +67,8 @@ public:
 
 	F32 cameraYaw;
 	F32 cameraPitch;
+
+	U32 jumpTicks;
 private:
 	void generate();
 
