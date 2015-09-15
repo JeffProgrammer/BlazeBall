@@ -55,7 +55,7 @@ private:
 	};
 	RenderInfo renderInfo;
 	
-	VertexBufferObject *mVbo;
+	GLuint mVbo;
 	VertexInputLayout *mInputLayout;
 
 public:

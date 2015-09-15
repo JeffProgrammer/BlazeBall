@@ -134,7 +134,9 @@ void GameInterior::init() {
 	}
 
 	//Upload the buffer data to OpenGL
-	mVbo->submit(&triangle[0], sizeof(Triangle), numTriangles);
+	glGenBuffers(1, &mVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * numTriangles, &triangle[0], GL_STATIC_DRAW);
 	
 	renderInfo.generated = true;
 }
@@ -143,7 +145,7 @@ void GameInterior::render() {
 	if (!renderInfo.generated)
 		init();
 
-	mVbo->bind();
+	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
 	mInputLayout->bind();
 
 	U32 start = 0;

@@ -45,14 +45,12 @@ GameInterior::GameInterior() : GameObject() {
 }
 
 GameInterior::~GameInterior() {
-	delete mVbo;
+	glDeleteBuffers(1, &mVbo);
 	delete mInputLayout;
 }
 
 void GameInterior::gfxInit() {
 	renderInfo.generated = false;
-	mVbo = new VertexBufferObject();
-	mVbo->setBufferType(GFX::BufferType::STATIC);
 
 	mInputLayout = new VertexInputLayout();
 
