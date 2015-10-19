@@ -1,12 +1,12 @@
-#version 330 core
+#version 120
 
-layout (location = 0) in vec3 vertexPosition_model;
-layout (location = 1) in vec2 vertexUV;
-layout (location = 2) in vec3 vertexNormal;
-layout (location = 3) in vec3 vertexTangent;
-layout (location = 4) in vec3 vertexBitangent;
+attribute vec3 vertexPosition_model;
+attribute vec2 vertexUV;
+attribute vec3 vertexNormal;
+attribute vec3 vertexTangent;
+attribute vec3 vertexBitangent;
 
-out vec2 UV;
+varying vec2 UV;
 
 uniform mat4 projectionMat;
 uniform mat4 modelMat;
