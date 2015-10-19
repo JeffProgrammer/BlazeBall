@@ -92,6 +92,8 @@ public:
 
 	std::vector<GameObject *>objects;
 	GameObject *controlObject;
+	Camera *mCamera;
+	Sphere *mPlayer;
 
 	Window *window;
 	Timer *mTimer;

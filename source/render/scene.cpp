@@ -28,6 +28,8 @@
 
 #include "render/scene.h"
 #include "game/gameInterior.h"
+#include "game/camera.h"
+#include "game/Shape.h"
 #include <chrono>
 #include <thread>
 #include <algorithm>
@@ -216,7 +218,43 @@ void Scene::handleEvent(Event *event) {
 				case KeyEvent::KEY_RIGHT: movement.yawRight  = true; break;
 				case KeyEvent::KEY_SPACE: movement.jump      = true; break;
 				case KeyEvent::KEY_V: window->toggleVsync(); break;
-				case KeyEvent::KEY_Q: movement.fire = true; break;
+				case KeyEvent::KEY_Q:
+				{
+					movement.fire = true;
+
+					// make a new sphere!
+					Sphere *sphere = new Sphere(glm::vec3(0, 0, 30), 0.75);
+					addObject(sphere);
+
+					break;
+				}
+				case KeyEvent::KEY_C:
+				{
+					// swap control objects!
+					if (controlObject == mPlayer)
+						controlObject = mCamera;
+					else
+						controlObject = mPlayer;
+					break;
+				}
+				case KeyEvent::KEY_M:
+				{
+					// add a cube!
+					Shape *shape = new Shape("cube.dae");
+					shape->loadShape();
+					shape->setPosition(glm::vec3(rand() % 10, rand() % 10, rand() % 10));
+					addObject(shape);
+					break;
+				}
+				case KeyEvent::KEY_G:
+				{
+					// mega / regular marble
+					if (mPlayer->getRadius() < 1.0f)
+						mPlayer->setRadius(1.0f);
+					else
+						mPlayer->setRadius(0.2f);
+					break;
+				}
 				default:
 					break;
 			}
@@ -328,6 +366,14 @@ void Scene::run() {
 		this->loop(delta * 1000.0f);
 		this->tick(delta * 1000.0f);
 	});
+
+	// onStart
+	Camera *camera = new Camera();
+	addObject(camera);
+	mCamera = camera;
+	Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
+	addObject(player);
+	mPlayer = player;
 
 	//Main loop
 	while (running) {
