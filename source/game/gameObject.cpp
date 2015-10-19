@@ -29,8 +29,6 @@
 #include "gameObject.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-IMPLEMENT_OBJECT(GameObject);
-
 void GameObject::updateCamera(const Movement &movement, const F64 &deltaMS) {
 	//Nothing
 }
@@ -60,37 +58,4 @@ void GameObject::render() {
 
 void GameObject::updateTick(const F64 &deltaMS) {
 	
-}
-
-OBJECT_METHOD(GameObject, getPosition) {
-	glm::vec3 pos = object->getPosition();
-	EXTERN_OBJECT(glm::vec3, position) = &pos;
-	args.GetReturnValue().Set(position);
-}
-
-OBJECT_METHOD(GameObject, getRotation) {
-	glm::quat rot = object->getRotation();
-	EXTERN_OBJECT(glm::quat, rotation) = &rot;
-	args.GetReturnValue().Set(rotation);
-}
-
-OBJECT_METHOD(GameObject, getScale) {
-	glm::vec3 scl = object->getScale();
-	EXTERN_OBJECT(glm::vec3, scale) = &scl;
-	args.GetReturnValue().Set(scale);
-}
-
-OBJECT_METHOD(GameObject, setPosition) {
-	glm::vec3 position = UNWRAP_EXTERN(glm::vec3, args[0]);
-	object->setPosition(position);
-}
-
-OBJECT_METHOD(GameObject, setRotation) {
-	glm::quat rotation = UNWRAP_EXTERN(glm::quat, args[0]);
-	object->setRotation(rotation);
-}
-
-OBJECT_METHOD(GameObject, setScale) {
-	glm::vec3 scale = UNWRAP_EXTERN(glm::vec3, args[0]);
-	object->setScale(scale);
 }

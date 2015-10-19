@@ -27,7 +27,6 @@
 //------------------------------------------------------------------------------
 
 #include "render/scene.h"
-#include "scripting/scriptEngine.h"
 #include "game/gameInterior.h"
 #include <chrono>
 #include <thread>
@@ -37,9 +36,6 @@
 /// The amount of time that has to pass before a tick happens.
 /// Default is 16.6667 ms which means we tick at 60 frames per second
 #define TICK_MS 16.6666666666666667
-
-IMPLEMENT_OBJECT(Scene);
-
 
 Scene::Scene() {
 	mInteriorShader = nullptr;
@@ -119,7 +115,7 @@ void Scene::render() {
 }
 
 void Scene::loop(const F64 &deltaMS) {
-	mEngine->call("onFrameAdvance", deltaMS);
+
 }
 
 void Scene::tick(const F64 &deltaMS) {
@@ -132,7 +128,7 @@ void Scene::tick(const F64 &deltaMS) {
 	movement.yaw = 0;
 
 	if (movement.fire) {
-		mEngine->call("fire");
+
 	}
 
 	for (auto object : objects) {
@@ -222,7 +218,6 @@ void Scene::handleEvent(Event *event) {
 				case KeyEvent::KEY_V: window->toggleVsync(); break;
 				case KeyEvent::KEY_Q: movement.fire = true; break;
 				default:
-					mEngine->call("onKeyDown", ((KeyDownEvent *)event)->key);
 					break;
 			}
 			break;
@@ -239,7 +234,6 @@ void Scene::handleEvent(Event *event) {
 				case KeyEvent::KEY_SPACE: movement.jump      = false; break;
 				case KeyEvent::KEY_Q:     movement.fire      = false; break;
 				default:
-					mEngine->call("onKeyUp", ((KeyDownEvent *)event)->key);
 					break;
 			}
 			break;
@@ -383,31 +377,4 @@ void Scene::run() {
 	
 	//Clean up (duh)
 	cleanup();
-}
-
-OBJECT_METHOD(Scene, addObject) {
-	GameObject *obj = UNWRAP(GameObject, args[0]);
-	object->addObject(obj);
-}
-
-SCRIPT_FUNCTION(getScene) {
-	Isolate *isolate = args.GetIsolate();
-	Local<Object> object = ScriptingEngine::instantiateClass(isolate, "Scene");
-	Scene *scene = Scene::getSingleton();
-
-	if (scene->persistent().IsEmpty())
-		scene->Wrap(object);
-	else
-		object = scene->handle(isolate);
-
-	args.GetReturnValue().Set(object);
-}
-
-OBJECT_METHOD(Scene, setControlObject) {
-	GameObject *obj = UNWRAP(GameObject, args[0]);
-	object->controlObject = obj;
-}
-
-OBJECT_METHOD(Scene, getControlObject) {
-	args.GetReturnValue().Set(object->controlObject->handle());
 }

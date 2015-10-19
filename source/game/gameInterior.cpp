@@ -33,9 +33,6 @@
 #include <string>
 #include <cfloat>
 
-IMPLEMENT_OBJECT(GameInterior);
-OBJECT_PARENT(GameInterior, GameObject);
-
 GameInterior::GameInterior(DIF::Interior interior) : GameObject(), mInterior(interior) {
 	gfxInit();
 }
@@ -192,8 +189,4 @@ glm::vec3 GameInterior::getScale() {
 }
 void GameInterior::setScale(const glm::vec3 &scale) {
 	mActor->setScale(scale);
-}
-
-OBJECT_METHOD(GameInterior, generate) {
-	object->generateMesh();
 }

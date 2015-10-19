@@ -29,13 +29,6 @@ endmacro(ADD_FRAMEWORK)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
 
 #------------------------------------------------------------------------------
-# SDL
-#------------------------------------------------------------------------------
-
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
-
-
-#------------------------------------------------------------------------------
 # Zlib
 #------------------------------------------------------------------------------
 
@@ -359,19 +352,18 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/interiorF.glsl
 	source/shaders/interiorV.glsl
 
-	# Scripting folder
-	source/scripting/glmSupport.cpp
-	source/scripting/basicScriptFunctions.cpp
-	source/scripting/scriptEngine.cpp
-	source/scripting/scriptEngine.h
-	source/scripting/v8utils.cpp
-	source/scripting/v8utils.h
-	source/scripting/objectWrap.h
-
 	# Scripts folder
 	source/scripts/main.js
 	source/scripts/test.js
 )
+
+#------------------------------------------------------------------------------
+# SDL
+#------------------------------------------------------------------------------
+
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
+
+#------------------------------------------------------------------------------
 
 set (DIFVIEWERGAME_LIBRARIES
 	# Bullet
@@ -405,28 +397,7 @@ set (DIFVIEWERGAME_LIBRARIES
 	Kernel32
 	User32
 	OpenGL32
-	
-	# TODO: have seperate paths for debug and release as well as 32bit/64bit
-	# right now, they're debug
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/v8_libbase.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/icui18n.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/icuuc.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/v8_nosnapshot.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/v8_base_0.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/v8_base_1.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/v8_base_2.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/v8_base_3.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Debug/v8_libplatform.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/v8_libbase.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/icui18n.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/icuuc.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/v8_nosnapshot.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/v8_base_0.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/v8_base_1.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/v8_base_2.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/v8_base_3.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x86/Release/v8_libplatform.lib
-	
+
 	# Assimp
 	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimpd.lib
 )
@@ -434,23 +405,6 @@ else()
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
 	z
-	
-	# TODO: seperate x64 and x86 for build instructions
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Debug/libicudata.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Debug/libicui18n.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Debug/libicuuc.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Debug/libv8_base.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Debug/libv8_libbase.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Debug/libv8_libplatform.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Debug/libv8_snapshot.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Release/libicudata.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Release/libicui18n.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Release/libicuuc.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Release/libv8_base.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Release/libv8_libbase.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Release/libv8_libplatform.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v8/bin/x64/Release/libv8_snapshot.a
-	/usr/lib/libstdc++.6.dylib
 	
 	# Assimp
 	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x64/Debug/libassimpd.a
@@ -478,7 +432,6 @@ source_group("platform"              REGULAR_EXPRESSION platform/.*)
 source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
 source_group("graphics"              REGULAR_EXPRESSION graphics/.*)
 source_group("graphics\\gl"          REGULAR_EXPRESSION gl/.*)
-source_group("scripting"             REGULAR_EXPRESSION scripting/.*)
 source_group("assets\\shaders"       REGULAR_EXPRESSION shaders/.*)
 source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)
 

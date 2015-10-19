@@ -36,9 +36,6 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-IMPLEMENT_OBJECT(Sphere);
-OBJECT_PARENT(Sphere, GameObject);
-
 VertexBufferObject *Sphere::sVBO = nullptr;
 
 Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), maxAngVel(1000.0f), material(nullptr) {
@@ -326,14 +323,4 @@ void Sphere::updateTick(const F64 &deltaMS) {
 		setVelocity(glm::vec3(0, 0, 0));
 		setAngularVelocity(glm::vec3(0, 0, 0));
 	}
-}
-
-OBJECT_METHOD(Sphere, setRadius) {
-	F32 rad = args[0]->ToNumber()->Value();
-	object->setRadius(rad);
-}
-
-OBJECT_METHOD(Sphere, getRadius) {
-	F32 rad = object->getRadius();
-	args.GetReturnValue().Set(rad);
 }

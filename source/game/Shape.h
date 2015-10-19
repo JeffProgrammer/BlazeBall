@@ -48,16 +48,6 @@ public:
 	const std::string& getShapeFile() const {
 		return mShapeFile;
 	}
-
-	OBJECT_CONSTRUCTOR(Shape, ("")) {
-		if (args.Length() == 0) {
-			printf("Unable to create object. ShapeFile not specificed.\n");
-			return;
-		}
-
-		object->mShapeFile = V8Utils::v8convert<v8::Local<v8::String>, std::string>(args[0]->ToString());
-		object->loadShape();
-	}
 };
 
 #endif

@@ -84,25 +84,6 @@ public:
 
 	virtual glm::vec3 getScale();
 	virtual void setScale(const glm::vec3 &scale);
-
-	OBJECT_CONSTRUCTOR(GameInterior, ()) {
-		std::string path = V8Utils::v8convert<Local<String>, std::string>(args[0]->ToString());
-
-		std::string directory = IO::getPath(path);
-		std::ifstream file(path, std::ios::binary);
-
-		//Read the .dif
-		DIF::DIF dif;
-		if (dif.read(file)) {
-			for (auto dinterior : dif.interior) {
-				object->setInterior(dinterior);
-				object->generateMaterials(directory);
-			}
-		}
-
-		//Clean up
-		file.close();
-	}
 };
 
 #endif

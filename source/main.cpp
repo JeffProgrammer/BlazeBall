@@ -30,21 +30,11 @@
 #include "platformSDL/SDLWindow.h"
 #include "platformSDL/SDLTimer.h"
 #include "render/scene.h"
-#include "scripting/scriptEngine.h"
 #include "physics/bullet/btPhysicsEngine.h"
 
 int main(int argc, const char *argv[]) {
 	//Create us a new scene
 	Scene *scene = Scene::getSingleton();
-
-	//Create the scripting engine
-	ScriptingEngine *scripting = new ScriptingEngine();
-	scene->mEngine = scripting;
-
-	//Load up the scope and context of the scripting system
-	SCRIPT_CREATE_SCOPE(scripting->isolate);
-	scripting->createContext();
-	SCRIPT_CREATE_CONTEXT(scripting->context);
 
 	//Load the physics engine
 	PhysicsEngine::setEngine(new btPhysicsEngine());
@@ -52,16 +42,6 @@ int main(int argc, const char *argv[]) {
 	//Init SDL
 	scene->window = new SDLWindow();
 	scene->mTimer = new SDLTimer();
-
-	//Load up the main script file which has all the starting stuff
-	scripting->runScriptFile("main.js");
-
-	//Load up the arguments and let javascript parse them
-	v8::Local<v8::Array> args = V8Utils::createStringArray(scripting->isolate, argc, argv);
-	std::string out = V8Utils::v8convert<Local<String>, std::string>(scripting->call("parseArgs", args)->ToString(scripting->isolate));
-
-	//Start it up
-	scripting->call("onStart");
 
 	//Let our scene go!
 	scene->run();

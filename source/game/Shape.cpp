@@ -28,10 +28,6 @@
 
 #include "game/Shape.h"
 #include "render/modelManager.h"
-#include "scripting/scriptEngine.h"
-
-IMPLEMENT_OBJECT(Shape);
-OBJECT_PARENT(Shape, GameObject);
 
 Shape::Shape(const std::string &shapeFile) {
 	mShapeFile = shapeFile;

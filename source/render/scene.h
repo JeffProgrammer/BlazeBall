@@ -46,7 +46,6 @@
 #include <vector>
 #include "game/movement.h"
 #include "game/camera.h"
-#include "scripting/scriptEngine.h"
 #include "render/modelManager.h"
 
 #ifdef __APPLE__
@@ -61,7 +60,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/vec3.hpp>
 
-class Scene : public ObjectWrap {
+class Scene {
 protected:
 	bool running;
 	bool printFPS = true;
@@ -96,7 +95,6 @@ public:
 
 	Window *window;
 	Timer *mTimer;
-	ScriptingEngine *mEngine;
 
 	Shader *mInteriorShader;
 	Shader *mShapeShader;
@@ -133,10 +131,6 @@ public:
 	void createCamera(const glm::vec3 &position);
 	void createPlayer(const glm::vec3 &position, F32 radius);
 	void createInterior(const std::string &path);
-
-	OBJECT_CONSTRUCTOR(Scene, ()) {
-		
-	}
 };
 
 #endif
