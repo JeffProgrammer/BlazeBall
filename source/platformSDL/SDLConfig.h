@@ -43,16 +43,10 @@
 /// We are using SDL
 #define USING_SDL
 
-/// The major opengl version required for the core profile
-#define SDL_CONFIG_CORE_MAJOR_GL_VERSION 3
+/// The major opengl version required
+#define SDL_CONFIG_MAJOR_GL_VERSION 2
 
-/// The minor opengl version required for the core profile
-#define SDL_CONFIG_CORE_MINOR_GL_VERSION 3
-
-/// The major opengl version required for the legacy profile (pre 3.0)
-#define SDL_CONFIG_LEGACY_MAJOR_GL_VERSION 2
-
-/// The minor opengl version required for the legacy profile (pre 3.0)
-#define SDL_CONFIG_LEGACY_MINOR_GL_VERSION 1
+/// The minor opengl version required
+#define SDL_CONFIG_MINOR_GL_VERSION 1
 
 #endif // _PLATFORMSDL_SDLCONFIG_H_
