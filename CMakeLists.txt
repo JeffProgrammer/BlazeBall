@@ -351,10 +351,6 @@ set (DIFVIEWERGAME_SRC
 	# Shaders folder
 	source/shaders/interiorF.glsl
 	source/shaders/interiorV.glsl
-
-	# Scripts folder
-	source/scripts/main.js
-	source/scripts/test.js
 )
 
 #------------------------------------------------------------------------------
