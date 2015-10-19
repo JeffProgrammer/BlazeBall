@@ -374,6 +374,8 @@ void Scene::run() {
 	Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
 	addObject(player);
 	mPlayer = player;
+	
+	controlObject = player;
 
 	//Main loop
 	while (running) {
