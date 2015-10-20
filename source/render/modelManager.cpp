@@ -82,8 +82,8 @@ bool ModelManager::releaseAsset(const std::string &file) {
 	// delete geometry on the GPU
 	for (size_t i = 0; i < mResourceCache[file]->meshes.size(); i++) {
 		const ModelScene::ModelMesh &mesh = mResourceCache[file]->meshes[i];
-		delete mesh.vbo;
-		delete mesh.ibo;
+		glDeleteBuffers(1, &mesh.vbo);
+		glDeleteBuffers(1, &mesh.ibo);
 	}
 
 	delete mResourceCache[file];
@@ -111,7 +111,7 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 		for (const auto &mesh : meshes) {
 			mesh.material->activate();
 
-			mesh.vbo->bind();
+			glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
 
 			// for now, this will cache these, as each VBO currently uses the same offsets
 			// note: a VBO must be bound before the layout can be bound
@@ -124,7 +124,7 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 				GL_CHECKERRORS();
 			}
 
-			mesh.ibo->bind();
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo);
 			glDrawElements(mesh.primitive, mesh.numIndices, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(0));
 		}
 		GL_CHECKERRORS();
@@ -213,9 +213,9 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 		}
 
 		// now, upload the vertices to the GL
-		modelMesh.vbo = new VertexBufferObject();
-		modelMesh.vbo->setBufferType(GFX::BufferType::STATIC);
-		modelMesh.vbo->submit(&vertList[0], sizeof(ModelVertex), mesh->mNumVertices);
+		glGenBuffers(1, &modelMesh.vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, modelMesh.vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(ModelVertex) * mesh->mNumVertices, &vertList[0], GL_STATIC_DRAW);
 
 		// get primitive type
 		U32 primCount = 0;
@@ -239,17 +239,17 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 		}
 
 		// now, do the index buffer
-		std::vector<U16> indices;
+		std::vector<U16> indices(mesh->mNumFaces * primCount);
+		int index = 0;
 		for (U32 j = 0; j < mesh->mNumFaces; j++) {
 			for (U32 k = 0; k < primCount; k++) {
-				indices.push_back(mesh->mFaces[j].mIndices[k]);
+				indices[index] = mesh->mFaces[j].mIndices[k];
+				index++;
 			}
 		}
-
-		IndexBufferObject *ibo = new IndexBufferObject();
-		ibo->setBufferType(GFX::BufferType::STATIC);
-		ibo->submit(&indices[0], static_cast<U16>(indices.size()));
-		modelMesh.ibo = ibo;
+		glGenBuffers(1, &modelMesh.ibo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, modelMesh.ibo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(U16) * indices.size(), &indices[0], GL_STATIC_DRAW);
 		modelMesh.numIndices = static_cast<U16>(indices.size());
 
 		scene->meshes.push_back(modelMesh);

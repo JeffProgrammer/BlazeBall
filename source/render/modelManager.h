@@ -35,8 +35,6 @@
 #include <unordered_map>
 #include "base/types.h"
 #include "render/material.h"
-#include "graphics/vertexBufferObject.h"
-#include "graphics/indexBufferObject.h"
 
 #define MODELMGR ModelManager::getSingleton()
 
@@ -59,8 +57,8 @@ private:
 		aiVector3D sceneMax;
 
 		struct ModelMesh {
-			VertexBufferObject *vbo;
-			IndexBufferObject *ibo;
+			GLuint vbo;
+			GLuint ibo;
 			U16 numIndices;
 			GLenum primitive;
 			Material *material;
