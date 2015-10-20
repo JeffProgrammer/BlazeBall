@@ -54,7 +54,20 @@ namespace GLUtils {
 	inline void checkErrors(const char *fileName, int lineNumber) {
 		GLenum error = GL_NO_ERROR;
 		while ((error = glGetError()) != GL_NO_ERROR) {
-			printf("OpenGL Error: %d at file %s on line %d\n", error, fileName, lineNumber);
+			printf("//--------------------------------------------------------\n");
+			switch (error) {
+				case 0x500: printf("Code: Invalid Enum\n"); break;
+				case 0x501: printf("Code: Invalid Value\n"); break;
+				case 0x502: printf("Code: Invalid Operation\n"); break;
+				case 0x503: printf("Code: Stack Overflow\n"); break;
+				case 0x504: printf("Code: Stack Underflow\n"); break;
+				case 0x505: printf("Code: Out of Memory\n"); break;
+				case 0x506: printf("Code: Invalid Framebuffer Operation\n"); break;
+				default:    printf("Code: Unkown\n"); break;
+			}
+			printf("File: %s\n", fileName);
+			printf("Line Number: %d\n", lineNumber);
+			printf("//--------------------------------------------------------\n");
 		}
 	}
 }
