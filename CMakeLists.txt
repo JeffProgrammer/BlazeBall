@@ -282,8 +282,6 @@ set (DIFVIEWERGAME_SRC
 	source/render/bitmap/jpegsupport.h
 	source/render/bitmap/mngsupport.cpp
 	source/render/bitmap/mngsupport.h
-	source/render/bitmap/texture.cpp
-	source/render/bitmap/texture.h
 
 	# Game folder
 	source/game/camera.cpp
@@ -301,6 +299,8 @@ set (DIFVIEWERGAME_SRC
 	# Graphics folder
 	source/graphics/shader.cpp
 	source/graphics/shader.h
+	source/graphics/texture.cpp
+	source/graphics/texture.h
 	source/graphics/util.h
 
 	# Physics folder

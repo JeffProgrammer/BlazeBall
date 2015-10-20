@@ -31,7 +31,7 @@
 
 #include <stdbool.h>
 #include "base/types.h"
-#include "render/bitmap/texture.h"
+#include "graphics/texture.h"
 
 /**
  Reads an image from a given file using MNG (PNG/MNG support)

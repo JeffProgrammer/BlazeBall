@@ -32,7 +32,7 @@
 #include <stdio.h>
 #include <unordered_map>
 #include "base/types.h"
-#include "render/bitmap/texture.h"
+#include "graphics/texture.h"
 #include "graphics/shader.h"
 
 #define DEFAULT_NORMAL_TEXTURE   "DefaultNormal.png"

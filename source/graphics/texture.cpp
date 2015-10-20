@@ -38,7 +38,7 @@
 #endif
 
 #include "base/io.h"
-#include "render/bitmap/texture.h"
+#include "graphics/texture.h"
 #include "graphics/util.h"
 
 #define TEXTURE_MAX_SIZE 1024
