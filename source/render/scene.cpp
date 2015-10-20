@@ -144,12 +144,6 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 }
 
 bool Scene::initGL() {
-	GLuint vertexArrayID;
-	glGenVertexArrays(1, &vertexArrayID);
-	GL_CHECKERRORS();
-	glBindVertexArray(vertexArrayID);
-	GL_CHECKERRORS();
-
 	mInteriorShader = new Shader("interiorV.glsl", "interiorF.glsl");
 	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
 
