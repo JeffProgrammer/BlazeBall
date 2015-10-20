@@ -144,8 +144,20 @@ void GameInterior::render() {
 	if (!renderInfo.generated)
 		init();
 
+	// bind vbo
 	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
-	mInputLayout->bind();
+
+	// enable attributes
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));     // vertices
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));        // uv
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));    // normal
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));   // tagent
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent))); // bitangent
 
 	U32 start = 0;
 	for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
@@ -166,6 +178,10 @@ void GameInterior::render() {
 	}
 	
 	//Disable arrays
-	mInputLayout->unbind();
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(4);
 	GL_CHECKERRORS();
 }

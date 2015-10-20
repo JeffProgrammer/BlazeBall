@@ -37,7 +37,6 @@
 #include "render/material.h"
 #include "graphics/vertexBufferObject.h"
 #include "graphics/indexBufferObject.h"
-#include "graphics/vertexInputLayout.h"
 
 #define MODELMGR ModelManager::getSingleton()
 

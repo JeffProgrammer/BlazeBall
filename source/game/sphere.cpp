@@ -43,13 +43,6 @@ Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), max
 	mActor->setMass(1.0f);
 	PhysicsEngine::getEngine()->addBody(mActor);
 	
-	mInputLayout = new VertexInputLayout();
-	mInputLayout->set(VertexInput(0, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point))));
-	mInputLayout->set(VertexInput(1, 2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv))));
-	mInputLayout->set(VertexInput(2, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal))));
-	mInputLayout->set(VertexInput(3, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent))));
-	mInputLayout->set(VertexInput(4, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent))));
-	
 	firstDraw = false;
 
 	cameraYaw = 0.0f;
@@ -57,7 +50,7 @@ Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), max
 }
 
 Sphere::~Sphere() {
-	delete mInputLayout;
+	// todo: remove body from physics engine
 }
 
 void Sphere::generate() {
@@ -134,9 +127,23 @@ void Sphere::render() {
 		material->activate();
 	}
 	sVBO->bind();
-	mInputLayout->bind();
+	// enable attributes
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));     // vertices
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));        // uv
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));    // normal
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));   // tagent
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent))); // bitangent
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
-	mInputLayout->unbind();
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(4);
 	if (material) {
 		material->deactivate();
 	}

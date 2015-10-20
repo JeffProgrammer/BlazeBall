@@ -43,20 +43,10 @@ GameInterior::GameInterior() : GameObject() {
 
 GameInterior::~GameInterior() {
 	glDeleteBuffers(1, &mVbo);
-	delete mInputLayout;
 }
 
 void GameInterior::gfxInit() {
 	renderInfo.generated = false;
-
-	mInputLayout = new VertexInputLayout();
-
-	// set each attrib
-	mInputLayout->set(VertexInput(0, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point))));     // vertices
-	mInputLayout->set(VertexInput(1, 2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv))));        // uv
-	mInputLayout->set(VertexInput(2, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal))));    // normal
-	mInputLayout->set(VertexInput(3, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent))));   // tagent
-	mInputLayout->set(VertexInput(4, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)))); // bitangent
 }
 
 void GameInterior::generateMaterials(std::string directory) {

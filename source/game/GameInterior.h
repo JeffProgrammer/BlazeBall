@@ -36,7 +36,6 @@
 #include "game/gameObject.h"
 #include "base/ray.h"
 #include "graphics/vertexBufferObject.h"
-#include "graphics/vertexInputLayout.h"
 
 #include <dif/objects/dif.h>
 #include <vector>
@@ -56,7 +55,6 @@ private:
 	RenderInfo renderInfo;
 	
 	GLuint mVbo;
-	VertexInputLayout *mInputLayout;
 
 public:
 	GameInterior();
