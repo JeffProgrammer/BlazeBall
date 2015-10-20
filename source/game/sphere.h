@@ -40,7 +40,6 @@
 #include "base/types.h"
 #include "physics/physicsBody.h"
 #include "render/material.h"
-#include "graphics/vertexBufferObject.h"
 #include "game/movement.h"
 #include <glm/matrix.hpp>
 
@@ -60,7 +59,6 @@ public:
 	F32 maxAngVel;
 	Material *material;
 
-	static VertexBufferObject *sVBO;
 	bool firstDraw;
 
 	F32 cameraYaw;

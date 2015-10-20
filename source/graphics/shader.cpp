@@ -28,7 +28,7 @@
 
 #include "graphics/shader.h"
 #include "base/io.h"
-#include "graphics/gl/glUtils.h"
+#include "graphics/util.h"
 
 #ifdef _WIN32
 #include <GL/glew.h>

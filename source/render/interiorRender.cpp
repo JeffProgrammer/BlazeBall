@@ -32,6 +32,7 @@
 #include <glm/ext.hpp>
 #include "game/gameInterior.h"
 #include "base/math.h"
+#include "graphics/util.h"
 
 void GameInterior::init() {
 	std::vector<std::vector<Triangle>> perMaterialTriangles(mInterior.materialName.size());

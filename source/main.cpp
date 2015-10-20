@@ -33,6 +33,8 @@
 #include "physics/bullet/btPhysicsEngine.h"
 #include "game/GameInterior.h"
 
+extern GLuint gSphereVBO;
+
 void parseArgs(int argc, const char *argv[]);
 
 int main(int argc, const char *argv[]) {
@@ -51,6 +53,10 @@ int main(int argc, const char *argv[]) {
 
 	//Let our scene go!
 	scene->run();
+
+	// much hack, very wow
+	if (gSphereVBO)
+		glDeleteBuffers(1, &gSphereVBO);
 
 	return 0;
 }

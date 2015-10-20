@@ -299,14 +299,9 @@ set (DIFVIEWERGAME_SRC
 	source/game/sphere.h
 	
 	# Graphics folder
-	source/graphics/gfxTypes.h
-	source/graphics/indexBufferObject.cpp
-	source/graphics/indexBufferObject.h
 	source/graphics/shader.cpp
 	source/graphics/shader.h
-	source/graphics/vertexBufferObject.cpp
-	source/graphics/vertexBufferObject.h
-	source/graphics/gl/glUtils.h
+	source/graphics/util.h
 
 	# Physics folder
 	source/physics/physicsBody.cpp

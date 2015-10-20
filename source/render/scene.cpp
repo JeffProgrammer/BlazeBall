@@ -30,6 +30,7 @@
 #include "game/gameInterior.h"
 #include "game/camera.h"
 #include "game/Shape.h"
+#include "graphics/util.h"
 #include <chrono>
 #include <thread>
 #include <algorithm>

@@ -26,31 +26,16 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef _GRAPHICS_GL_GLUTILS_H_
-#define _GRAPHICS_GL_GLUTILS_H_
+#ifndef _GRAPHICS_UTIL_H_
+#define _GRAPHICS_UTIL_H_
 
 #ifdef _DEBUG
-#define GL_CHECKERRORS() GLUtils::checkErrors(__FILE__, __LINE__)
+#define GL_CHECKERRORS() GL::checkErrors(__FILE__, __LINE__)
 #else
 #define GL_CHECKERRORS()
 #endif
 
-#include "graphics/vertexBufferObject.h"
-
-namespace GLUtils {
-	inline GLenum convertBufferType(GFX::BufferType type) {
-		switch (type) {
-		case GFX::BufferType::STATIC: 
-			return GL_STATIC_DRAW;
-		case GFX::BufferType::STREAM: 
-			return GL_STREAM_DRAW;
-		default: 
-			assert(false);
-			return GL_ZERO;
-		}
-	}
-
-
+namespace GL {
 	inline void checkErrors(const char *fileName, int lineNumber) {
 		GLenum error = GL_NO_ERROR;
 		while ((error = glGetError()) != GL_NO_ERROR) {
@@ -72,4 +57,4 @@ namespace GLUtils {
 	}
 }
 
-#endif // _GRAPHICS_GL_GLUTILS_H_
+#endif // _GRAPHICS_UTIL_H_

@@ -35,7 +35,7 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-VertexBufferObject *Sphere::sVBO = nullptr;
+GLuint gSphereVBO = 0;
 
 Sphere::Sphere(glm::vec3 origin, F32 radius) : GameObject(), radius(radius), maxAngVel(1000.0f), material(nullptr) {
 	mActor = PhysicsEngine::getEngine()->createSphere(radius);
@@ -54,11 +54,8 @@ Sphere::~Sphere() {
 }
 
 void Sphere::generate() {
-	if (sVBO != nullptr)
+	if (gSphereVBO)
 		return;
-
-	sVBO = new VertexBufferObject();
-	sVBO->setBufferType(GFX::BufferType::STATIC);
 
 	F32 step = (glm::pi<F32>() * 2.0f / segments);
 
@@ -108,7 +105,9 @@ void Sphere::generate() {
 	}
 
 	//Generate a buffer
-	sVBO->submit(&points[0], sizeof(Vertex), point);
+	glGenBuffers(1, &gSphereVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * point, &points[0], GL_STATIC_DRAW);
 }
 
 void Sphere::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix) {
@@ -126,7 +125,7 @@ void Sphere::render() {
 	if (material) {
 		material->activate();
 	}
-	sVBO->bind();
+	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
 	// enable attributes
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
