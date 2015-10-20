@@ -34,7 +34,6 @@
 #include "base/io.h"
 #include "graphics/gl/glUtils.h"
 #include "game/Shape.h"
-#include "graphics/graphicsDevice.h"
 
 // For getcwd
 #ifdef _WIN32
@@ -130,7 +129,7 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 			}
 
 			mesh.ibo->bind();
-			GFXDEVICE->drawIndexedPrimitive(mesh.primitive, 0, mesh.numIndices);
+			glDrawElements(mesh.primitive, 0, mesh.numIndices, reinterpret_cast<void*>(0));
 		}
 	}
 
@@ -222,15 +221,15 @@ void ModelManager::_glCreateMesh(ModelScene *scene) {
 		U32 primCount = 0;
 		switch (mesh->mPrimitiveTypes) {
 		case aiPrimitiveType_POINT:
-			modelMesh.primitive = GFX::GeometryType::POINTS;
+			modelMesh.primitive = GL_POINTS;
 			primCount = 1;
 			break;
 		case aiPrimitiveType_LINE:
-			modelMesh.primitive = GFX::GeometryType::LINES;
+			modelMesh.primitive = GL_LINES;
 			primCount = 2;
 			break;
 		case aiPrimitiveType_TRIANGLE:
-			modelMesh.primitive = GFX::GeometryType::TRIANGLES;
+			modelMesh.primitive = GL_TRIANGLES;
 			primCount = 3;
 			break;
 		default:

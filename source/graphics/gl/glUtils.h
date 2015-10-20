@@ -50,23 +50,6 @@ namespace GLUtils {
 		}
 	}
 
-	inline GLenum convertGeometryType(GFX::GeometryType type) {
-		switch (type) {
-		case GFX::GeometryType::POINTS:
-			return GL_POINTS;
-		case GFX::GeometryType::LINES:
-			return GL_LINES;
-		case GFX::GeometryType::LINE_STRIP:
-			return GL_LINE_STRIP;
-		case GFX::GeometryType::TRIANGLES:
-			return GL_TRIANGLES;
-		case GFX::GeometryType::TRIANGLE_STRIP:
-			return GL_TRIANGLE_STRIP;
-		default:
-			assert(false);
-			return GL_ZERO;
-		}
-	}
 
 	inline void checkErrors(const char *fileName, int lineNumber) {
 		GLenum error = GL_NO_ERROR;

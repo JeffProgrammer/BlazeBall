@@ -300,8 +300,6 @@ set (DIFVIEWERGAME_SRC
 	
 	# Graphics folder
 	source/graphics/gfxTypes.h
-	source/graphics/graphicsDevice.cpp
-	source/graphics/graphicsDevice.h
 	source/graphics/indexBufferObject.cpp
 	source/graphics/indexBufferObject.h
 	source/graphics/shader.cpp

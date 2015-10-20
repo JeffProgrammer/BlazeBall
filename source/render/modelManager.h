@@ -63,7 +63,7 @@ private:
 			VertexBufferObject *vbo;
 			IndexBufferObject *ibo;
 			U16 numIndices;
-			GFX::GeometryType primitive;
+			GLenum primitive;
 			Material *material;
 		};
 		std::vector<ModelMesh> meshes;

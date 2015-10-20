@@ -31,7 +31,6 @@
 #include "base/io.h"
 #include "render/scene.h"
 #include "physics/physicsSphere.h"
-#include "graphics/graphicsDevice.h"
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -136,7 +135,7 @@ void Sphere::render() {
 	}
 	sVBO->bind();
 	mInputLayout->bind();
-	GFXDEVICE->drawPrimitive(GFX::GeometryType::TRIANGLE_STRIP, 0, segments * slices * 2);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
 	mInputLayout->unbind();
 	if (material) {
 		material->deactivate();

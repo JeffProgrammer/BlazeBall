@@ -35,14 +35,6 @@ namespace GFX {
 		STATIC,
 		STREAM
 	};
-
-	enum GeometryType {
-		POINTS,
-		LINES,
-		LINE_STRIP,
-		TRIANGLES,
-		TRIANGLE_STRIP
-	};
 }
 
 #endif // _GRAPHICS_GFXTYPES_H_
