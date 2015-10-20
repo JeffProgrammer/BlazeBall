@@ -75,8 +75,6 @@ private:
 		}
 	};
 
-	VertexInputLayout *mInputLayout;
-
 	std::unordered_map<std::string, ModelScene*> mResourceCache;
 
 	std::vector<Shape*> mShapeList;

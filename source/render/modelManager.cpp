@@ -46,19 +46,10 @@
 ModelManager::ModelManager() {
 	char buffer[512]; // If your path is longer than this, then FUCK YOU
 	mCurrentWorkingDir = getcwd(buffer, 512);
-
-	mInputLayout = new VertexInputLayout();
-
-	// set each attrib
-	mInputLayout->set(VertexInput(0, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, position))));      // vertices
-	mInputLayout->set(VertexInput(1, 2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, textureCoords)))); // uv
-	mInputLayout->set(VertexInput(2, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, normal))));        // normal
-	mInputLayout->set(VertexInput(3, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, tangent))));       // tagent
-	mInputLayout->set(VertexInput(4, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, bitangent))));     // bitangent
 }
 
 ModelManager::~ModelManager() {
-	delete mInputLayout;
+
 }
 
 bool ModelManager::loadAsset(const std::string &file) {
@@ -107,6 +98,7 @@ bool ModelManager::containsModel(const std::string &file) const {
 
 void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, const glm::mat4 &projectionMatrix) {
 	bool firstRender = true;
+	GL_CHECKERRORS();
 
 	for (auto shape : mShapeList) {
 		auto model = mResourceCache[shape->getShapeFile()];
@@ -125,16 +117,24 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 			// note: a VBO must be bound before the layout can be bound
 			if (firstRender) {
 				firstRender = false;
-				mInputLayout->bind();
+				glEnableVertexAttribArray(shapeShader->getAttributeLocation("vertexPosition_model"));
+				glEnableVertexAttribArray(shapeShader->getAttributeLocation("vertexUV"));
+				glVertexAttribPointer(shapeShader->getAttributeLocation("vertexPosition_model"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, position)));
+				glVertexAttribPointer(shapeShader->getAttributeLocation("vertexUV"), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, textureCoords)));
+				GL_CHECKERRORS();
 			}
 
 			mesh.ibo->bind();
-			glDrawElements(mesh.primitive, 0, mesh.numIndices, reinterpret_cast<void*>(0));
+			glDrawElements(mesh.primitive, mesh.numIndices, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(0));
 		}
+		GL_CHECKERRORS();
 	}
 
-	//Disable arrays
-	mInputLayout->unbind();
+	//Disable arrays if any models were drawn.
+	if (firstRender == false) {
+		glDisableVertexAttribArray(shapeShader->getAttributeLocation("vertexPosition_model"));
+		glDisableVertexAttribArray(shapeShader->getAttributeLocation("vertexUV"));
+	}
 	GL_CHECKERRORS();
 }
 

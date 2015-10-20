@@ -2,9 +2,6 @@
 
 attribute vec3 vertexPosition_model;
 attribute vec2 vertexUV;
-attribute vec3 vertexNormal;
-attribute vec3 vertexTangent;
-attribute vec3 vertexBitangent;
 
 varying vec2 UV;
 
