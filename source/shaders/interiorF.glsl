@@ -43,14 +43,14 @@ void main() {
 	vec3 eye = normalize(direction_tangent);
 
 	//Direction that light reflects
-	vec3 reflect = reflect(-l.0, n);
+	vec3 reflect = reflect(-l, n);
 
 	//Angle from the eye vector and reflect vector
 	float cosAlpha = clamp(dot(eye, reflect), 0.0, 1.0);
 	
 
 	//Diffuse
-	vec4 color = materialColor * (lightColor.rgb * lightColor.a) * cosTheta;
+	vec3 color = materialColor * (lightColor.rgb * lightColor.a) * cosTheta;
 	//Ambient
 	color += materialColor * ambientColor.rgb;
 	//Specular
@@ -59,5 +59,5 @@ void main() {
 	//Shade
 	color *= shade;
 
-	gl_FragColor = color;
+	gl_FragColor = vec4(color, 1);
 }
