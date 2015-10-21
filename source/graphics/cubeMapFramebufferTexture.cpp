@@ -17,7 +17,7 @@ void checkStatus() {
 }
 
 void CubeMapFramebufferTexture::generateBuffer() {
-	extent = glm::ivec2(512, 512);
+	extent = glm::ivec2(128, 128);
 
 	//Set mode
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
