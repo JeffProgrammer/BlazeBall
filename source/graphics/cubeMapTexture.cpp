@@ -44,6 +44,7 @@
 #define TEXTURE_MAX_SIZE 2048
 
 CubeMapTexture::CubeMapTexture(const std::vector<TextureInfo> &textureInfos) {
+	//Load each of the new textures into the cubemap
 	for (const auto &texture : textureInfos) {
 		if (texture.extent.x > TEXTURE_MAX_SIZE || texture.extent.y > TEXTURE_MAX_SIZE) {
 			printf("Texture too large! (%d, %d) > (%d, %d). Bug HiGuy to make textures larger.", texture.extent.x, texture.extent.y, TEXTURE_MAX_SIZE, TEXTURE_MAX_SIZE);
@@ -93,7 +94,7 @@ CubeMapTexture::~CubeMapTexture() {
 void CubeMapTexture::activate() {
 	//Error check
 	if (!mGenerated)
-		generateBuffer();
+		return;
 
 	//Activate and bind the buffer
 	glActiveTexture(mTexNum);

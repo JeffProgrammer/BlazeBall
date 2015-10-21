@@ -89,24 +89,27 @@ Skybox::~Skybox() {
 void Skybox::generate() {
 	glGenBuffers(1, &mBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
+
+	//Just use the contents of sVertices
 	glBufferData(GL_ARRAY_BUFFER, sVertCount * sizeof(GLfloat), sVertices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	mGenerated = true;
 }
 
-void Skybox::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix) {
-	modelMatrix = glm::scale(modelMatrix, glm::vec3(10, 10, 10));
-}
-
 void Skybox::render(Shader *shader) {
 	if (!mGenerated) {
 		generate();
 	}
+	if (!mTexture->mGenerated) {
+		mTexture->generateBuffer();
+	}
+
 	mTexture->activate();
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	shader->enableAttribute("vertexPosition", 3, GL_FLOAT, GL_FALSE, 0, 0);
 
+	//Simple draw
 	glDrawArrays(GL_TRIANGLES, 0, sVertCount);
 
 	shader->disableAttribute("vertexPosition");

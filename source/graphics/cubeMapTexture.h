@@ -56,16 +56,23 @@ public:
 		Texture::BitmapFormat format;
 		CubeFace face;
 
-		TextureInfo() {
-
-		}
-		TextureInfo(Texture *texture, CubeFace face) {
+		/**
+		 * Load a TextureInfo from a texture for a given face. The texture will not be modified.
+		 * @param texture The texture to use
+		 * @param face The cube face for this texture on the cubemap
+		 */
+		TextureInfo(Texture const *texture, CubeFace face) {
 			this->extent = texture->extent;
 			this->pixels = new U8[texture->extent.x * texture->extent.y * texture->format];
 			this->format = texture->format;
 			this->face = face;
 			memcpy(this->pixels, texture->pixels, sizeof(U8) * texture->extent.x * texture->extent.y * texture->format);
 		}
+
+		/**
+		 * Copy a TextureInfo from another.
+		 * @param info The TextureInfo to copy
+		 */
 		TextureInfo(const TextureInfo &info) {
 			this->extent = info.extent;
 			this->pixels = new U8[info.extent.x * info.extent.y * info.format];
@@ -73,6 +80,12 @@ public:
 			this->face = info.face;
 			memcpy(this->pixels, info.pixels, sizeof(U8) * info.extent.x * info.extent.y * info.format);
 		}
+
+		/**
+		 * Load a TextureInfo from a given file for a given face.
+		 * @param path The path of the file with the texture
+		 * @param face The cube face for this texture on the cubemap
+		 */
 		TextureInfo(const std::string &path, CubeFace face) {
 			Texture *texture = IO::loadTexture(path);
 			this->extent = texture->extent;
@@ -91,46 +104,47 @@ public:
 	bool mGenerated;
 
 	/**
-	 Creates and allocates a Texture from a pixel array and extent
-	 @arg pixels - A 4-component list of pixels in a RGBA list
-	 @arg extent - A glm::ivec2 with the image extent
-	 @arg format - The bitmap's format (Either RGB8 or RGBA8)
+	 * Creates and allocates a cubemap texture from a list of textures
+	 * @param textureInfos A vector of TextureInfo objects containing texture data
 	 */
 	CubeMapTexture(const std::vector<TextureInfo> &textureInfos);
 
 	/**
-	 Releases a Texture, freeing both its store and its buffer
+	 * Releases a cubemap texture, freeing both its store and its buffer
 	 */
 	~CubeMapTexture();
 
+	/**
+	 * Set the texture's OpenGL texture number (e.g. GL_TEXTURE0)
+	 * @param texNum The OpenGL texture number
+	 */
 	void setTexNum(const GLenum &texNum) {
 		this->mTexNum = texNum;
 	}
 
+	/**
+	 * Get the texture's OpenGL texture number (e.g. GL_TEXTURE0)
+	 * @return The OpenGL texture number
+	 */
 	GLenum getTexNum() {
 		return mTexNum;
 	}
 
 	/**
-	 Generates the OpenGL buffer for a Texture. Don't call this before setting
-	 up the OpenGL canvas!
+	 * Generates the OpenGL buffer for a Texture. Don't call this before setting
+	 * up the OpenGL canvas!
 	 */
 	void generateBuffer();
 
 	/**
-	 Activates a Texture for drawing with OpenGL and binds its buffer
+	 * Activates a Texture for drawing with OpenGL and binds its buffer
 	 */
 	void activate();
 
 	/**
-	 Deactivates a Texture after drawing
+	 * Deactivates a Texture after drawing
 	 */
 	void deactivate();
-
-	/**
-	 Find a texture in a directory
-	 */
-	static std::string find(const std::string &fullName);
 };
 
 #endif

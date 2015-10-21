@@ -117,7 +117,9 @@ void Scene::render() {
 	mSkyboxShader->activate();
 	mSkyboxShader->setUniformLocation("cubemapSampler", 0);
 
+	//Strip any positional data from the camera, so we just have rotation
 	glm::mat4 skyboxView = glm::mat4(glm::mat3(viewMatrix));
+	//Un-rotate the projection matrix because Y is up in OpenGL
 	skyboxView = glm::rotate(skyboxView, 90.f, glm::vec3(1, 0, 0));
 	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);

@@ -45,7 +45,6 @@ public:
 
 	void generate();
 
-	virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix);
 	virtual void render(Shader *shader);
 };
 
