@@ -97,6 +97,7 @@ void Scene::render() {
 	loadShaderUniforms();
 
 	//Send to OpenGL
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseRotMat"), 1, GL_FALSE, &inverseRotMat[0][0]);
 	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
@@ -110,24 +111,37 @@ void Scene::render() {
 	}
 
 	marbleCubemap->generateBuffer(mPlayer->getPosition(), [&](glm::mat4 matrix){
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glm::mat4 perspectiveMatrix = glm::perspective(90.f, 1.f, 1.f, 1000.f);
+		glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &perspectiveMatrix[0][0]);
+		glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &matrix[0][0]);
 		for (auto object : objects) {
 			glm::mat4 modelMatrix(1);
-			object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
+			object->loadMatrix(perspectiveMatrix, viewMatrix, modelMatrix);
 			glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
 			glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
 			glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
 			object->render(mInteriorShader);
 		}
+		GL_CHECKERRORS();
 	});
 	mInteriorShader->setUniformLocation("cubemapSampler", 5);
 	marbleCubemap->activate(GL_TEXTURE5);
 
+	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
 	glm::mat4 modelMatrix(1);
 	mPlayer->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
 	glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
+	GL_CHECKERRORS();
+
 	mPlayer->render(mInteriorShader);
+	GL_CHECKERRORS();
+
+	marbleCubemap->deactivate();
 
 	mInteriorShader->deactivate();
 

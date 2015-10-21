@@ -155,6 +155,7 @@ void GameInterior::render(Shader *shader) {
 	shader->enableAttribute("vertexNormal",         3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
 	shader->enableAttribute("vertexTangent",        3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
 	shader->enableAttribute("vertexBitangent",      3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
+	GL_CHECKERRORS();
 
 	U32 start = 0;
 	for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
@@ -162,14 +163,17 @@ void GameInterior::render(Shader *shader) {
 			if (mMaterialList[i]) {
 				mMaterialList[i]->activate();
 				mNoiseTexture->activate(GL_TEXTURE3);
+				GL_CHECKERRORS();
 			} else {
 				printf("Trying to render with invalid material %d: %s\n", i, mInterior.materialName[i].c_str());
 			}
 			glDrawArrays(GL_TRIANGLES, start * 3, renderInfo.numMaterialTriangles[i] * 3);
+			GL_CHECKERRORS();
 			start += renderInfo.numMaterialTriangles[i];
 			if (mMaterialList[i]) {
 				mNoiseTexture->deactivate();
 				mMaterialList[i]->deactivate();
+				GL_CHECKERRORS();
 			}
 		}
 	}

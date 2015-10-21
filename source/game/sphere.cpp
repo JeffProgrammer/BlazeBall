@@ -122,7 +122,7 @@ void Sphere::render(Shader *shader) {
 		firstDraw = true;
 	}
 
-	glUniform1f(shader->getUniformLocation("reflectivity"), 0.6f);
+	glUniform1f(shader->getUniformLocation("reflectivity"), 1.f);
 
 	if (material) {
 		material->activate();
