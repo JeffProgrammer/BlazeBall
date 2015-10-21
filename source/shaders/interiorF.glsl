@@ -19,6 +19,7 @@ uniform sampler2D normalSampler;
 uniform sampler2D specularSampler;
 uniform sampler2D noiseSampler;
 uniform samplerCube skyboxSampler;
+uniform samplerCube cubemapSampler;
 
 uniform mat4 inverseRotMat;
 
@@ -73,5 +74,5 @@ void main() {
 
 	reflection = (mat3(inverseRotMat) * reflection);
 
-	gl_FragColor += (reflectivity * textureCube(skyboxSampler, reflection));
+	gl_FragColor += (reflectivity * textureCube(cubemapSampler, reflection));
 }

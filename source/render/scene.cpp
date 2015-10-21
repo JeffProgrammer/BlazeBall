@@ -108,6 +108,27 @@ void Scene::render() {
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
 		object->render(mInteriorShader);
 	}
+
+	marbleCubemap->generateBuffer(mPlayer->getPosition(), [&](glm::mat4 matrix){
+		for (auto object : objects) {
+			glm::mat4 modelMatrix(1);
+			object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
+			glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+			glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
+			glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
+			object->render(mInteriorShader);
+		}
+	});
+	mInteriorShader->setUniformLocation("cubemapSampler", 5);
+	marbleCubemap->activate(GL_TEXTURE5);
+
+	glm::mat4 modelMatrix(1);
+	mPlayer->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+	glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
+	mPlayer->render(mInteriorShader);
+
 	mInteriorShader->deactivate();
 
 	// render models.
@@ -180,6 +201,9 @@ bool Scene::initGL() {
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
+
+	marbleCubemap = new CubeMapFramebufferTexture();
+	marbleCubemap->generateBuffer();
 
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
@@ -403,7 +427,6 @@ void Scene::run() {
 	addObject(camera);
 	mCamera = camera;
 	Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
-	addObject(player);
 	mPlayer = player;
 	
 	controlObject = player;

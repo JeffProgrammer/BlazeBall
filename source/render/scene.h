@@ -47,6 +47,7 @@
 #include "game/movement.h"
 #include "game/camera.h"
 #include "game/skybox.h"
+#include "graphics/cubeMapFramebufferTexture.h"
 #include "render/modelManager.h"
 
 #ifdef __APPLE__
@@ -96,6 +97,7 @@ public:
 	Camera *mCamera;
 	Sphere *mPlayer;
 	Skybox *mSkybox;
+	CubeMapFramebufferTexture *marbleCubemap;
 
 	Window *window;
 	Timer *mTimer;
