@@ -77,7 +77,7 @@ static GLfloat sVertices[] = {
 static U32 sVertCount = sizeof(sVertices) / sizeof(GLfloat);
 
 Skybox::Skybox(CubeMapTexture *texture) : mTexture(texture), mGenerated(false) {
-	mTexture->setTexNum(GL_TEXTURE0);
+
 }
 
 Skybox::~Skybox() {
@@ -102,7 +102,7 @@ void Skybox::render(Shader *shader) {
 		generate();
 	}
 
-	mTexture->activate();
+	mTexture->activate(GL_TEXTURE0);
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	shader->enableAttribute("vertexPosition", 3, GL_FLOAT, GL_FALSE, 0, 0);
 

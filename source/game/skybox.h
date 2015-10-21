@@ -45,6 +45,13 @@ public:
 
 	void generate();
 
+	void setTexture(CubeMapTexture *texture) {
+		mTexture = texture;
+	}
+	CubeMapTexture *getTexture() {
+		return mTexture;
+	}
+
 	virtual void render(Shader *shader);
 };
 

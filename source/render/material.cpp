@@ -87,8 +87,6 @@ bool Material::tryLoadTexture(const std::string &path, const GLuint &index) {
 	//Try to load the bitmap at the given path
 	Texture *loaded = IO::loadTexture(path);
 	if (loaded) {
-		loaded->setTexNum(index);
-
 		//If we have a new texture, trash the old one.
 		if (previous) {
 			delete previous;
@@ -109,7 +107,7 @@ void Material::activate() {
 	//Activate all of the textures on this shader.
 	for (auto iter : textures) {
 		if (iter.second) {
-			iter.second->activate();
+			iter.second->activate(iter.first);
 		}
 	}
 }

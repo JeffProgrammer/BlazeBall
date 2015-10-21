@@ -159,7 +159,7 @@ void GameInterior::render(Shader *shader) {
 		if (renderInfo.numMaterialTriangles[i] > 0) {
 			if (mMaterialList[i]) {
 				mMaterialList[i]->activate();
-				mNoiseTexture->activate();
+				mNoiseTexture->activate(GL_TEXTURE3);
 			} else {
 				printf("Trying to render with invalid material %d: %s\n", i, mInterior.materialName[i].c_str());
 			}

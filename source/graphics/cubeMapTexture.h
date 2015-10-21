@@ -139,7 +139,7 @@ public:
 	/**
 	 * Activates a Texture for drawing with OpenGL and binds its buffer
 	 */
-	virtual void activate();
+	virtual void activate(GLenum texNum);
 
 	/**
 	 * Deactivates a Texture after drawing

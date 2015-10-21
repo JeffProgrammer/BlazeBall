@@ -93,13 +93,13 @@ CubeMapTexture::~CubeMapTexture() {
 	}
 }
 
-void CubeMapTexture::activate() {
+void CubeMapTexture::activate(GLenum texNum) {
 	//Error check
 	if (!mGenerated)
 		generateBuffer();
 
 	//Activate and bind the buffer
-	glActiveTexture(mTexNum);
+	glActiveTexture(texNum);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, mBuffer);
 }
 

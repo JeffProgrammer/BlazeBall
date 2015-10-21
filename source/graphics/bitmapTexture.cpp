@@ -101,13 +101,13 @@ BitmapTexture::~BitmapTexture() {
 		delete [] pixels;
 }
 
-void BitmapTexture::activate() {
+void BitmapTexture::activate(GLenum texNum) {
 	//Error check
 	if (!generated)
 		generateBuffer();
 	
 	//Activate and bind the buffer
-	glActiveTexture(mTexNum);
+	glActiveTexture(texNum);
 	glBindTexture(GL_TEXTURE_2D, buffer);
 }
 

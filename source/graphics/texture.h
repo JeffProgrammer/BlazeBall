@@ -37,8 +37,6 @@
 #include "base/types.h"
 
 class Texture {
-protected:
-	GLenum mTexNum;
 public:
 	Texture() {};
 
@@ -46,22 +44,6 @@ public:
 	 Releases a Texture, freeing both its store and its buffer
 	 */
 	virtual ~Texture() {};
-
-	/**
-	 * Set the texture's OpenGL texture number (e.g. GL_TEXTURE0)
-	 * @param texNum The OpenGL texture number
-	 */
-	void setTexNum(const GLenum &texNum) {
-		this->mTexNum = texNum;
-	}
-
-	/**
-	 * Get the texture's OpenGL texture number (e.g. GL_TEXTURE0)
-	 * @return The OpenGL texture number
-	 */
-	GLenum getTexNum() {
-		return mTexNum;
-	}
 
 	/**
 	 Generates the OpenGL buffer for a Texture. Don't call this before setting
@@ -72,7 +54,7 @@ public:
 	/**
 	 Activates a Texture for drawing with OpenGL and binds its buffer
 	 */
-	virtual void activate() = 0;
+	virtual void activate(GLenum texNum) = 0;
 
 	/**
 	 Deactivates a Texture after drawing

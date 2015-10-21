@@ -74,7 +74,6 @@ void GameInterior::generateMaterials(std::string directory) {
 		}
 	}
 	mNoiseTexture = IO::loadTexture("noise.jpg");
-	mNoiseTexture->setTexNum(GL_TEXTURE3);
 }
 
 void GameInterior::generateMesh() {
