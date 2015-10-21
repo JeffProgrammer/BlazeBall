@@ -15,6 +15,8 @@ varying vec3 light_camera;
 varying vec3 normal_camera;
 varying vec3 direction_tangent;
 varying vec3 light_tangent;
+varying vec3 normal_skybox;
+varying vec3 position_skybox;
 
 varying vec3 tangent_camera;
 varying vec3 bitangent_camera;
@@ -22,11 +24,14 @@ varying vec3 bitangent_camera;
 uniform mat4 projectionMat;
 uniform mat4 modelMat;
 uniform mat4 viewMat;
+//uniform mat4 skyboxMat;
+uniform mat4 inverseModelMat;
 
 uniform vec4 lightColor;
 uniform vec4 ambientColor;
 uniform vec3 sunPosition;
 uniform float specularExponent;
+uniform vec3 cameraPos;
 
 void main() {
 	mat4 modelViewProjectionMat = projectionMat * viewMat * modelMat;
@@ -62,4 +67,7 @@ void main() {
 
 	light_tangent = tbn * light_camera;
 	direction_tangent = tbn * direction_camera;
+
+	//Skybox information
+	normal_skybox = mat3(transpose(inverseModelMat)) * vertexNormal;
 }

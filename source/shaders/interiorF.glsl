@@ -9,6 +9,7 @@ varying vec3 light_camera;
 varying vec3 normal_camera;
 varying vec3 direction_tangent;
 varying vec3 light_tangent;
+varying vec3 normal_skybox;
 
 varying vec3 tangent_camera;
 varying vec3 bitangent_camera;
@@ -17,11 +18,13 @@ uniform sampler2D textureSampler;
 uniform sampler2D normalSampler;
 uniform sampler2D specularSampler;
 uniform sampler2D noiseSampler;
+uniform samplerCube skyboxSampler;
 
 uniform vec4 lightColor;
 uniform vec4 ambientColor;
 uniform vec3 sunPosition;
 uniform float specularExponent;
+uniform vec3 cameraPos;
 
 void main() {
 	//Texture
@@ -43,10 +46,10 @@ void main() {
 	vec3 eye = normalize(direction_tangent);
 
 	//Direction that light reflects
-	vec3 reflect = reflect(-l, n);
+	vec3 reflect_light = reflect(-l, n);
 
 	//Angle from the eye vector and reflect vector
-	float cosAlpha = clamp(dot(eye, reflect), 0.0, 1.0);
+	float cosAlpha = clamp(dot(eye, reflect_light), 0.0, 1.0);
 	
 
 	//Diffuse
@@ -60,4 +63,10 @@ void main() {
 	color *= shade;
 
 	gl_FragColor = vec4(color, 1);
+
+	//Skybox
+	vec3 direction_skybox = normalize(position_world - cameraPos);
+	vec3 reflection = reflect(direction_skybox, normalize(normal_skybox));
+
+	gl_FragColor = textureCube(skyboxSampler, reflection);
 }

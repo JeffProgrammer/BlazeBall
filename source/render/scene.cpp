@@ -71,8 +71,9 @@ void Scene::loadShaderUniforms() {
 void Scene::render() {
 	//Get the camera transform from the marble
 	glm::mat4 cameraTransform;
+	glm::vec3 cameraPosition;
 	if (controlObject)
-		controlObject->getCameraPosition(cameraTransform);
+		controlObject->getCameraPosition(cameraTransform, cameraPosition);
 
 	//Camera
 	viewMatrix = glm::mat4x4(1);
@@ -90,13 +91,18 @@ void Scene::render() {
 	mInteriorShader->setUniformLocation("normalSampler", 1);
 	mInteriorShader->setUniformLocation("specularSampler", 2);
 	mInteriorShader->setUniformLocation("noiseSampler", 3);
+	mInteriorShader->setUniformLocation("skyboxSampler", 4);
 	loadShaderUniforms();
+
 	//Send to OpenGL
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
+	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
 	for (auto object : objects) {
 		glm::mat4 modelMatrix(1);
 		object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+		glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
+		glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
 		object->render(mInteriorShader);
 	}
 	mInteriorShader->deactivate();
@@ -119,8 +125,6 @@ void Scene::render() {
 
 	//Strip any positional data from the camera, so we just have rotation
 	glm::mat4 skyboxView = glm::mat4(glm::mat3(viewMatrix));
-	//Un-rotate the projection matrix because Y is up in OpenGL
-	skyboxView = glm::rotate(skyboxView, 90.f, glm::vec3(1, 0, 0));
 	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
 
