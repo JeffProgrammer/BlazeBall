@@ -80,7 +80,6 @@ void Scene::render() {
 	viewMatrix *= cameraTransform;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
@@ -113,6 +112,19 @@ void Scene::render() {
 
 	MODELMGR->render(mShapeShader, viewMatrix, projectionMatrix);
 	mShapeShader->deactivate();
+
+	glDepthFunc(GL_LEQUAL);
+	mSkyboxShader->activate();
+	mSkyboxShader->setUniformLocation("cubemapSampler", 0);
+
+	glm::mat4 skyboxView = glm::mat4(glm::mat3(viewMatrix));
+	skyboxView = glm::rotate(skyboxView, 90.f, glm::vec3(1, 0, 0));
+	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
+	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
+
+	mSkybox->render(mSkyboxShader);
+	mSkyboxShader->deactivate();
+	glDepthFunc(GL_LESS);
 
 	// check for opengl errors
 	GL_CHECKERRORS();
@@ -148,6 +160,7 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 bool Scene::initGL() {
 	mInteriorShader = new Shader("interiorV.glsl", "interiorF.glsl");
 	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
+	mSkyboxShader = new Shader("skyboxV.glsl", "skyboxF.glsl");
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
@@ -365,16 +378,15 @@ void Scene::run() {
 
 	// onStart
 	std::vector<CubeMapTexture::TextureInfo> textures;
-	textures.push_back(CubeMapTexture::TextureInfo(IO::loadTexture("cubemap/sky0.jpg"), CubeMapTexture::PositiveX));
-	textures.push_back(CubeMapTexture::TextureInfo(IO::loadTexture("cubemap/sky1.jpg"), CubeMapTexture::NegativeX));
-	textures.push_back(CubeMapTexture::TextureInfo(IO::loadTexture("cubemap/sky2.jpg"), CubeMapTexture::PositiveY));
-	textures.push_back(CubeMapTexture::TextureInfo(IO::loadTexture("cubemap/sky3.jpg"), CubeMapTexture::NegativeY));
-	textures.push_back(CubeMapTexture::TextureInfo(IO::loadTexture("cubemap/sky4.jpg"), CubeMapTexture::PositiveZ));
-	textures.push_back(CubeMapTexture::TextureInfo(IO::loadTexture("cubemap/sky5.jpg"), CubeMapTexture::NegativeZ));
+	textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky0.jpg", CubeMapTexture::PositiveX));
+	textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky1.jpg", CubeMapTexture::NegativeX));
+	textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky2.jpg", CubeMapTexture::PositiveY));
+	textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky3.jpg", CubeMapTexture::NegativeY));
+	textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky4.jpg", CubeMapTexture::PositiveZ));
+	textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky5.jpg", CubeMapTexture::NegativeZ));
 
 	CubeMapTexture *cubeMap = new CubeMapTexture(textures);
-	Skybox *sky = new Skybox(cubeMap);
-	addObject(sky);
+	mSkybox = new Skybox(cubeMap);
 
 	Camera *camera = new Camera();
 	addObject(camera);

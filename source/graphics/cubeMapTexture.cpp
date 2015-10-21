@@ -41,7 +41,7 @@
 #include "graphics/cubeMapTexture.h"
 #include "graphics/util.h"
 
-#define TEXTURE_MAX_SIZE 1024
+#define TEXTURE_MAX_SIZE 2048
 
 CubeMapTexture::CubeMapTexture(const std::vector<TextureInfo> &textureInfos) {
 	for (const auto &texture : textureInfos) {
@@ -87,13 +87,14 @@ void CubeMapTexture::generateBuffer() {
 CubeMapTexture::~CubeMapTexture() {
 	//Clean up
 	if (mGenerated)
-		glDeleteTextures(1, &mTexNum);
+		glDeleteTextures(1, &mBuffer);
 }
 
 void CubeMapTexture::activate() {
 	//Error check
 	if (!mGenerated)
-		return;
+		generateBuffer();
+
 	//Activate and bind the buffer
 	glActiveTexture(mTexNum);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, mBuffer);

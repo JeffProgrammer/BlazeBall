@@ -37,6 +37,7 @@
 #include <stdbool.h>
 #include "base/types.h"
 #include "texture.h"
+#include "base/io.h"
 
 class CubeMapTexture {
 public:
@@ -71,6 +72,16 @@ public:
 			this->format = info.format;
 			this->face = info.face;
 			memcpy(this->pixels, info.pixels, sizeof(U8) * info.extent.x * info.extent.y * info.format);
+		}
+		TextureInfo(const std::string &path, CubeFace face) {
+			Texture *texture = IO::loadTexture(path);
+			this->extent = texture->extent;
+			this->pixels = new U8[texture->extent.x * texture->extent.y * texture->format];
+			this->format = texture->format;
+			this->face = face;
+			memcpy(this->pixels, texture->pixels, sizeof(U8) * texture->extent.x * texture->extent.y * texture->format);
+
+			delete texture;
 		}
 	};
 

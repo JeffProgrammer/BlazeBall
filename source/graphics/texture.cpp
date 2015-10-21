@@ -41,7 +41,7 @@
 #include "graphics/texture.h"
 #include "graphics/util.h"
 
-#define TEXTURE_MAX_SIZE 1024
+#define TEXTURE_MAX_SIZE 2048
 
 Texture::Texture(U8 *pixels, const glm::ivec2 &extent, const BitmapFormat &format) {
 	if (extent.x > TEXTURE_MAX_SIZE || extent.y > TEXTURE_MAX_SIZE) {

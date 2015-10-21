@@ -27,9 +27,57 @@
 //------------------------------------------------------------------------------
 
 #include "skybox.h"
+#include <glm/glm.hpp>
+#include <glm/matrix.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+static GLfloat sVertices[] = {
+	-1.0f, 1.0f, -1.0f,
+	-1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+	1.0f, 1.0f, -1.0f,
+	-1.0f, 1.0f, -1.0f,
+
+	-1.0f, -1.0f, 1.0f,
+	-1.0f, -1.0f, -1.0f,
+	-1.0f, 1.0f, -1.0f,
+	-1.0f, 1.0f, -1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, -1.0f, 1.0f,
+
+	1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+
+	-1.0f, -1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, -1.0f, 1.0f,
+	-1.0f, -1.0f, 1.0f,
+
+	-1.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, -1.0f,
+
+	-1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f, 1.0f,
+	1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f, 1.0f,
+	1.0f, -1.0f, 1.0f
+};
+static U32 sVertCount = sizeof(sVertices) / sizeof(GLfloat);
 
 Skybox::Skybox(CubeMapTexture *texture) : mTexture(texture), mGenerated(false) {
-	
+	mTexture->setTexNum(GL_TEXTURE0);
 }
 
 Skybox::~Skybox() {
@@ -48,20 +96,21 @@ void Skybox::generate() {
 }
 
 void Skybox::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix) {
-	
+	modelMatrix = glm::scale(modelMatrix, glm::vec3(10, 10, 10));
 }
 
 void Skybox::render(Shader *shader) {
 	if (!mGenerated) {
 		generate();
 	}
-
 	mTexture->activate();
-
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
-	glDrawArrays(GL_TRIANGLES, 0, sVertCount);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	shader->enableAttribute("vertexPosition", 3, GL_FLOAT, GL_FALSE, 0, 0);
 
+	glDrawArrays(GL_TRIANGLES, 0, sVertCount);
+
+	shader->disableAttribute("vertexPosition");
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	mTexture->deactivate();
 }
 

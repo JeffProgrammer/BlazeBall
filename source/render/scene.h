@@ -46,6 +46,7 @@
 #include <vector>
 #include "game/movement.h"
 #include "game/camera.h"
+#include "game/skybox.h"
 #include "render/modelManager.h"
 
 #ifdef __APPLE__
@@ -94,12 +95,14 @@ public:
 	GameObject *controlObject;
 	Camera *mCamera;
 	Sphere *mPlayer;
+	Skybox *mSkybox;
 
 	Window *window;
 	Timer *mTimer;
 
 	Shader *mInteriorShader;
 	Shader *mShapeShader;
+	Shader *mSkyboxShader;
 	
 	bool mShouldSleep;
 
