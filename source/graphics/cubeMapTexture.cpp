@@ -53,6 +53,7 @@ CubeMapTexture::CubeMapTexture(const std::vector<TextureInfo> &textureInfos) {
 
 		mTextures.push_back(TextureInfo(texture)); //Copy the info into a new texture
 	}
+	mGenerated = false;
 }
 
 void CubeMapTexture::generateBuffer() {
