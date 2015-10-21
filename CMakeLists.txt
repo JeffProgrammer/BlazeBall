@@ -297,6 +297,8 @@ set (DIFVIEWERGAME_SRC
 	source/game/sphere.h
 	
 	# Graphics folder
+	source/graphics/cubeMapTexture.cpp
+	source/graphics/cubeMapTexture.h
 	source/graphics/shader.cpp
 	source/graphics/shader.h
 	source/graphics/texture.cpp

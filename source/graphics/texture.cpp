@@ -89,6 +89,7 @@ void Texture::generateBuffer() {
 	// check for errors
 	GL_CHECKERRORS();
 
+	delete [] pixels;
 	generated = true;
 }
 
@@ -96,8 +97,6 @@ Texture::~Texture() {
 	//Clean up
 	if (generated)
 		glDeleteTextures(1, &buffer);
-
-	delete pixels;
 }
 
 void Texture::activate() {
