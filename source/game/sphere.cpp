@@ -318,10 +318,7 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
 	// This is not affected by pitch/yaw
 	mat = glm::translate(mat, -getPosition());
 
-	F32 angle = glm::pi<F32>() / 180.f;
-
-	glm::vec3 rot = glm::vec3(sin(cameraYaw * angle) * cos(-cameraPitch * angle), cos(-cameraYaw * angle) * cos(-cameraPitch * angle), sin(-cameraPitch * angle));
-	rot *= -2.5;
+	glm::vec3 rot = glm::mat3(glm::inverse(mat)) * glm::vec3(0, -2.5, 0);
 	pos = getPosition() + rot;
 }
 
