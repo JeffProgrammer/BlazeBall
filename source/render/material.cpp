@@ -83,12 +83,12 @@ void Material::loadTextures(const std::string &diffusePath, const std::string &n
 	static CubeMapTexture *skyboxTex = nullptr;
 	if (skyboxTex == nullptr) {
 		std::vector<CubeMapTexture::TextureInfo> textures;
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky0.jpg", CubeMapTexture::PositiveX));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky1.jpg", CubeMapTexture::NegativeX));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky2.jpg", CubeMapTexture::PositiveY));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky3.jpg", CubeMapTexture::NegativeY));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky4.jpg", CubeMapTexture::PositiveZ));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky5.jpg", CubeMapTexture::NegativeZ));
+		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "right.jpg", CubeMapTexture::PositiveX));
+		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "left.jpg", CubeMapTexture::NegativeX));
+		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "top.jpg", CubeMapTexture::PositiveY));
+		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "bottom.jpg", CubeMapTexture::NegativeY));
+		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "back.jpg", CubeMapTexture::PositiveZ));
+		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "front.jpg", CubeMapTexture::NegativeZ));
 
 		skyboxTex = new CubeMapTexture(textures);
 	}

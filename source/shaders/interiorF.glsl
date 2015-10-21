@@ -20,6 +20,8 @@ uniform sampler2D specularSampler;
 uniform sampler2D noiseSampler;
 uniform samplerCube skyboxSampler;
 
+uniform mat4 inverseRotMat;
+
 uniform vec4 lightColor;
 uniform vec4 ambientColor;
 uniform vec3 sunPosition;
@@ -67,6 +69,8 @@ void main() {
 	//Skybox
 	vec3 direction_skybox = normalize(position_world - cameraPos);
 	vec3 reflection = reflect(direction_skybox, normalize(normal_skybox));
+
+	reflection = (mat3(inverseRotMat) * reflection);
 
 	gl_FragColor = textureCube(skyboxSampler, reflection);
 }

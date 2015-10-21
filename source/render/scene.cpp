@@ -80,6 +80,8 @@ void Scene::render() {
 	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
 	viewMatrix *= cameraTransform;
 
+	glm::mat4 inverseRotMat = glm::rotate(glm::mat4x4(1), -90.0f, glm::vec3(1, 0, 0));
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_CULL_FACE);
@@ -96,6 +98,7 @@ void Scene::render() {
 
 	//Send to OpenGL
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseRotMat"), 1, GL_FALSE, &inverseRotMat[0][0]);
 	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
 	for (auto object : objects) {
 		glm::mat4 modelMatrix(1);
