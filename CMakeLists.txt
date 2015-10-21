@@ -346,6 +346,10 @@ set (DIFVIEWERGAME_SRC
 	# Shaders folder
 	source/shaders/interiorF.glsl
 	source/shaders/interiorV.glsl
+	source/shaders/modelF.glsl
+	source/shaders/modelV.glsl
+	source/shaders/skyboxF.glsl
+	source/shaders/skyboxV.glsl
 )
 
 #------------------------------------------------------------------------------
