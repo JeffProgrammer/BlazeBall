@@ -70,11 +70,12 @@ void CubeMapTexture::generateBuffer() {
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-	for (const auto &texture : mTextures) {
+	for (auto &texture : mTextures) {
 		//Actually create the texture
 		GLenum glformat = (texture.format == Texture::BitmapFormatRGB8 ? GL_RGB : GL_RGBA);
 		glTexImage2D(texture.face, 0, glformat, texture.extent.x, texture.extent.y, 0, glformat, GL_UNSIGNED_BYTE, texture.pixels);
 		delete [] texture.pixels;
+		texture.pixels = nullptr;
 	}
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
@@ -87,8 +88,9 @@ void CubeMapTexture::generateBuffer() {
 
 CubeMapTexture::~CubeMapTexture() {
 	//Clean up
-	if (mGenerated)
+	if (mGenerated) {
 		glDeleteTextures(1, &mBuffer);
+	}
 }
 
 void CubeMapTexture::activate() {

@@ -379,16 +379,18 @@ void Scene::run() {
 	});
 
 	// onStart
-	std::vector<CubeMapTexture::TextureInfo> textures;
-	textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky0.jpg", CubeMapTexture::PositiveX));
-	textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky1.jpg", CubeMapTexture::NegativeX));
-	textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky2.jpg", CubeMapTexture::PositiveY));
-	textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky3.jpg", CubeMapTexture::NegativeY));
-	textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky4.jpg", CubeMapTexture::PositiveZ));
-	textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky5.jpg", CubeMapTexture::NegativeZ));
+	{
+		std::vector<CubeMapTexture::TextureInfo> textures;
+		textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky0.jpg", CubeMapTexture::PositiveX));
+		textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky1.jpg", CubeMapTexture::NegativeX));
+		textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky2.jpg", CubeMapTexture::PositiveY));
+		textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky3.jpg", CubeMapTexture::NegativeY));
+		textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky4.jpg", CubeMapTexture::PositiveZ));
+		textures.push_back(CubeMapTexture::TextureInfo("cubemap/sky5.jpg", CubeMapTexture::NegativeZ));
 
-	CubeMapTexture *cubeMap = new CubeMapTexture(textures);
-	mSkybox = new Skybox(cubeMap);
+		CubeMapTexture *cubeMap = new CubeMapTexture(textures);
+		mSkybox = new Skybox(cubeMap);
+	}
 
 	Camera *camera = new Camera();
 	addObject(camera);

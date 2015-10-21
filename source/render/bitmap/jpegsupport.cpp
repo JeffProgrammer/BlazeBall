@@ -79,11 +79,15 @@ bool jpegReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, Textu
 					break;
 			}
 		}
+
+		delete [] row;
 	}
 
 	//Much more civil than MNG, 100% fewer callbacks
 	jpeg_finish_decompress(&dptr);
-//	jpeg_destroy_decompress(&dptr);
+	jpeg_destroy_decompress(&dptr);
+
+	fclose(stream);
 
 	return true;
 }

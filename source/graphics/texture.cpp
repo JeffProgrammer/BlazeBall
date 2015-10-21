@@ -97,6 +97,8 @@ Texture::~Texture() {
 	//Clean up
 	if (generated)
 		glDeleteTextures(1, &buffer);
+	else
+		delete [] pixels;
 }
 
 void Texture::activate() {

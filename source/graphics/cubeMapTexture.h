@@ -68,12 +68,24 @@ public:
 			this->face = face;
 			memcpy(this->pixels, texture->pixels, sizeof(U8) * texture->extent.x * texture->extent.y * texture->format);
 		}
+		
+		/**
+		 * Copy a TextureInfo from another.
+		 * @param info The TextureInfo to copy
+		 */
+		explicit TextureInfo(TextureInfo const *info) {
+			this->extent = info->extent;
+			this->pixels = new U8[info->extent.x * info->extent.y * info->format];
+			this->format = info->format;
+			this->face = info->face;
+			memcpy(this->pixels, info->pixels, sizeof(U8) * info->extent.x * info->extent.y * info->format);
+		}
 
 		/**
 		 * Copy a TextureInfo from another.
 		 * @param info The TextureInfo to copy
 		 */
-		TextureInfo(const TextureInfo &info) {
+		explicit TextureInfo(const TextureInfo &info) {
 			this->extent = info.extent;
 			this->pixels = new U8[info.extent.x * info.extent.y * info.format];
 			this->format = info.format;
@@ -95,6 +107,11 @@ public:
 			memcpy(this->pixels, texture->pixels, sizeof(U8) * texture->extent.x * texture->extent.y * texture->format);
 
 			delete texture;
+		}
+
+		~TextureInfo() {
+			if (pixels)
+				delete [] pixels;
 		}
 	};
 
