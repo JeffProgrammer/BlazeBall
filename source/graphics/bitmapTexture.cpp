@@ -107,7 +107,7 @@ void BitmapTexture::activate() {
 		generateBuffer();
 	
 	//Activate and bind the buffer
-	glActiveTexture(texNum);
+	glActiveTexture(mTexNum);
 	glBindTexture(GL_TEXTURE_2D, buffer);
 }
 

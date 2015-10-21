@@ -46,7 +46,6 @@ public:
 
 	bool generated;
 	GLuint buffer;
-	GLenum texNum;
 	glm::ivec2 extent;
 	U8 *pixels;
 	Format format;
