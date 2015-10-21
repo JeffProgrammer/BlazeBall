@@ -101,9 +101,6 @@ void Skybox::render(Shader *shader) {
 	if (!mGenerated) {
 		generate();
 	}
-	if (!mTexture->mGenerated) {
-		mTexture->generateBuffer();
-	}
 
 	mTexture->activate();
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);

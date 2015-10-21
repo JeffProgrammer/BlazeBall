@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <jpeglib.h>
 
-bool jpegReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, Texture::BitmapFormat &format) {
+bool jpegReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, BitmapTexture::Format &format) {
 	struct jpeg_decompress_struct dptr;
 	struct jpeg_error_mgr errmgr;
 
@@ -52,7 +52,7 @@ bool jpegReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, Textu
 		return false;
 	}
 
-	format = Texture::BitmapFormatRGBA8;
+	format = BitmapTexture::FormatRGBA8;
 	bitmap = new U8[dims.x * dims.y * 4];
 
 	U8 *b = bitmap;

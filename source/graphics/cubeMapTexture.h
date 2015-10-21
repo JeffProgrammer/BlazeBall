@@ -36,10 +36,10 @@
 #endif
 #include <stdbool.h>
 #include "base/types.h"
-#include "texture.h"
+#include "bitmapTexture.h"
 #include "base/io.h"
 
-class CubeMapTexture {
+class CubeMapTexture : public Texture {
 public:
 	enum CubeFace {
 		PositiveX = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -53,7 +53,7 @@ public:
 	struct TextureInfo {
 		U8 *pixels;
 		glm::ivec2 extent;
-		Texture::BitmapFormat format;
+		BitmapTexture::Format format;
 		CubeFace face;
 
 		/**
@@ -61,7 +61,7 @@ public:
 		 * @param texture The texture to use
 		 * @param face The cube face for this texture on the cubemap
 		 */
-		TextureInfo(Texture const *texture, CubeFace face) {
+		TextureInfo(BitmapTexture const *texture, CubeFace face) {
 			this->extent = texture->extent;
 			this->pixels = new U8[texture->extent.x * texture->extent.y * texture->format];
 			this->format = texture->format;
@@ -99,7 +99,7 @@ public:
 		 * @param face The cube face for this texture on the cubemap
 		 */
 		TextureInfo(const std::string &path, CubeFace face) {
-			Texture *texture = IO::loadTexture(path);
+			BitmapTexture *texture = dynamic_cast<BitmapTexture *>(IO::loadTexture(path));
 			this->extent = texture->extent;
 			this->pixels = new U8[texture->extent.x * texture->extent.y * texture->format];
 			this->format = texture->format;
@@ -115,7 +115,6 @@ public:
 		}
 	};
 
-	GLenum mTexNum;
 	GLuint mBuffer;
 	std::vector<TextureInfo> mTextures;
 	bool mGenerated;
@@ -129,39 +128,23 @@ public:
 	/**
 	 * Releases a cubemap texture, freeing both its store and its buffer
 	 */
-	~CubeMapTexture();
-
-	/**
-	 * Set the texture's OpenGL texture number (e.g. GL_TEXTURE0)
-	 * @param texNum The OpenGL texture number
-	 */
-	void setTexNum(const GLenum &texNum) {
-		this->mTexNum = texNum;
-	}
-
-	/**
-	 * Get the texture's OpenGL texture number (e.g. GL_TEXTURE0)
-	 * @return The OpenGL texture number
-	 */
-	GLenum getTexNum() {
-		return mTexNum;
-	}
+	virtual ~CubeMapTexture();
 
 	/**
 	 * Generates the OpenGL buffer for a Texture. Don't call this before setting
 	 * up the OpenGL canvas!
 	 */
-	void generateBuffer();
+	virtual void generateBuffer();
 
 	/**
 	 * Activates a Texture for drawing with OpenGL and binds its buffer
 	 */
-	void activate();
+	virtual void activate();
 
 	/**
 	 * Deactivates a Texture after drawing
 	 */
-	void deactivate();
+	virtual void deactivate();
 };
 
 #endif

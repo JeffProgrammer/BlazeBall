@@ -26,93 +26,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include <stdio.h>
-#include <string>
-#include <stdlib.h>
-
-#ifdef __APPLE__
-#include <OpenGL/glu.h>
-#include <OpenGL/gl.h>
-#else
-#include <GL/glew.h>
-#endif
-
+#include "texture.h"
 #include "base/io.h"
-#include "graphics/texture.h"
-#include "graphics/util.h"
-
-#define TEXTURE_MAX_SIZE 2048
-
-Texture::Texture(U8 *pixels, const glm::ivec2 &extent, const BitmapFormat &format) {
-	if (extent.x > TEXTURE_MAX_SIZE || extent.y > TEXTURE_MAX_SIZE) {
-		printf("Texture too large! (%d, %d) > (%d, %d). Bug HiGuy to make textures larger.", extent.x, extent.y, TEXTURE_MAX_SIZE, TEXTURE_MAX_SIZE);
-		return;
-	}
-
-	//Set some fields
-	this->extent = extent;
-	this->format = format;
-	generated = false;
-
-	//Load pixels into pixels (assume RGBA)
-	this->pixels = new U8[extent.x * extent.y * format];
-	memcpy(this->pixels, pixels, sizeof(U8) * extent.x * extent.y * format);
-}
-
-void Texture::generateBuffer() {
-	//Set mode
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-	//Generate the texture buffer
-	glGenTextures(1, &buffer);
-	glBindTexture(GL_TEXTURE_2D, buffer);
-
-	//Set some flags
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	//Actually create the texture
-	GLenum glformat = (format == BitmapFormatRGB8 ? GL_RGB : GL_RGBA);
-	glTexImage2D(GL_TEXTURE_2D, 0, glformat, extent.x, extent.y, 0, glformat, GL_UNSIGNED_BYTE, pixels);
-
-	// When MAGnifying the image (no bigger mipmap available), use LINEAR filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	// When MINifying the image, use a LINEAR blend of two mipmaps, each filtered LINEARLY too
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-	// Generate mipmaps, by the way.
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	// check for errors
-	GL_CHECKERRORS();
-
-	delete [] pixels;
-	generated = true;
-}
-
-Texture::~Texture() {
-	//Clean up
-	if (generated)
-		glDeleteTextures(1, &buffer);
-	else
-		delete [] pixels;
-}
-
-void Texture::activate() {
-	//Error check
-	if (!generated)
-		return;
-	//Activate and bind the buffer
-	glActiveTexture(texNum);
-	glBindTexture(GL_TEXTURE_2D, buffer);
-}
-
-void Texture::deactivate() {
-	//Haha, this method is just BS. Fooled you.
-}
 
 /**
  * Check if a texture exists at the given path that Torque can use. Textures should
@@ -157,12 +72,12 @@ std::string Texture::find(const std::string &fullName) {
 	std::string testName(fullName);
 	//Base file name for checking
 	std::string baseName =  IO::getName(fullName);
-	
+
 	//Iterate over every subdirectory in the path and check if it has the file
 	while (testName.find_last_of(DIR_SEP) != std::string::npos) {
 		//Strip off the last directory
 		testName = IO::getPath(testName);
-		
+
 		//Check if the texture exists at the current location
 		std::string finalName;
 		if (checkTexture(testName, baseName, finalName)) {

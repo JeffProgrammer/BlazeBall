@@ -34,59 +34,50 @@
 #else
 #include <GL/glew.h>
 #endif
-#include <stdbool.h>
 #include "base/types.h"
 
 class Texture {
+protected:
+	GLenum mTexNum;
 public:
-	enum BitmapFormat {
-		BitmapFormatRGB8 = 3,
-		BitmapFormatRGBA8 = 4
-	};
-
-	bool generated;
-	GLuint buffer;
-	GLenum texNum;
-	glm::ivec2 extent;
-	U8 *pixels;
-	BitmapFormat format;
-
-	/**
-	 Creates and allocates a Texture from a pixel array and extent
-	 @arg pixels - A 4-component list of pixels in a RGBA list
-	 @arg extent - A glm::ivec2 with the image extent
-	 @arg format - The bitmap's format (Either RGB8 or RGBA8)
-	 */
-	Texture(U8 *pixels, const glm::ivec2 &extent, const BitmapFormat &format);
+	Texture() {};
 
 	/**
 	 Releases a Texture, freeing both its store and its buffer
 	 */
-	~Texture();
+	virtual ~Texture() {};
 
+	/**
+	 * Set the texture's OpenGL texture number (e.g. GL_TEXTURE0)
+	 * @param texNum The OpenGL texture number
+	 */
 	void setTexNum(const GLenum &texNum) {
-		this->texNum = texNum;
+		this->mTexNum = texNum;
 	}
 
+	/**
+	 * Get the texture's OpenGL texture number (e.g. GL_TEXTURE0)
+	 * @return The OpenGL texture number
+	 */
 	GLenum getTexNum() {
-		return texNum;
+		return mTexNum;
 	}
 
 	/**
 	 Generates the OpenGL buffer for a Texture. Don't call this before setting
 	 up the OpenGL canvas!
 	 */
-	void generateBuffer();
+	virtual void generateBuffer() = 0;
 
 	/**
 	 Activates a Texture for drawing with OpenGL and binds its buffer
 	 */
-	void activate();
+	virtual void activate() = 0;
 
 	/**
 	 Deactivates a Texture after drawing
 	 */
-	void deactivate();
+	virtual void deactivate() = 0;
 
 	/**
 	 Find a texture in a directory
@@ -94,4 +85,5 @@ public:
 	static std::string find(const std::string &fullName);
 };
 
-#endif
+
+#endif /* texture_h */

@@ -109,10 +109,6 @@ void Material::activate() {
 	//Activate all of the textures on this shader.
 	for (auto iter : textures) {
 		if (iter.second) {
-			if (!iter.second->generated) {
-				iter.second->generateBuffer();
-			}
-
 			iter.second->activate();
 		}
 	}

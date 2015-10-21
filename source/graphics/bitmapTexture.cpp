@@ -38,72 +38,79 @@
 #endif
 
 #include "base/io.h"
-#include "graphics/cubeMapTexture.h"
+#include "bitmapTexture.h"
 #include "graphics/util.h"
 
 #define TEXTURE_MAX_SIZE 2048
 
-CubeMapTexture::CubeMapTexture(const std::vector<TextureInfo> &textureInfos) {
-	//Load each of the new textures into the cubemap
-	for (const auto &texture : textureInfos) {
-		if (texture.extent.x > TEXTURE_MAX_SIZE || texture.extent.y > TEXTURE_MAX_SIZE) {
-			printf("Texture too large! (%d, %d) > (%d, %d). Bug HiGuy to make textures larger.", texture.extent.x, texture.extent.y, TEXTURE_MAX_SIZE, TEXTURE_MAX_SIZE);
-			return;
-		}
-
-		mTextures.push_back(TextureInfo(texture)); //Copy the info into a new texture
+BitmapTexture::BitmapTexture(U8 *pixels, const glm::ivec2 &extent, const Format &format) {
+	if (extent.x > TEXTURE_MAX_SIZE || extent.y > TEXTURE_MAX_SIZE) {
+		printf("Texture too large! (%d, %d) > (%d, %d). Bug HiGuy to make textures larger.", extent.x, extent.y, TEXTURE_MAX_SIZE, TEXTURE_MAX_SIZE);
+		return;
 	}
+
+	//Set some fields
+	this->extent = extent;
+	this->format = format;
+	generated = false;
+
+	//Load pixels into pixels (assume RGBA)
+	this->pixels = new U8[extent.x * extent.y * format];
+	memcpy(this->pixels, pixels, sizeof(U8) * extent.x * extent.y * format);
 }
 
-void CubeMapTexture::generateBuffer() {
+void BitmapTexture::generateBuffer() {
 	//Set mode
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 	//Generate the texture buffer
-	glGenTextures(1, &mBuffer);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, mBuffer);
+	glGenTextures(1, &buffer);
+	glBindTexture(GL_TEXTURE_2D, buffer);
 
 	//Set some flags
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	for (auto &texture : mTextures) {
-		//Actually create the texture
-		GLenum glformat = (texture.format == BitmapTexture::FormatRGB8 ? GL_RGB : GL_RGBA);
-		glTexImage2D(texture.face, 0, glformat, texture.extent.x, texture.extent.y, 0, glformat, GL_UNSIGNED_BYTE, texture.pixels);
-		delete [] texture.pixels;
-		texture.pixels = nullptr;
-	}
+	//Actually create the texture
+	GLenum glformat = (format == FormatRGB8 ? GL_RGB : GL_RGBA);
+	glTexImage2D(GL_TEXTURE_2D, 0, glformat, extent.x, extent.y, 0, glformat, GL_UNSIGNED_BYTE, pixels);
 
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	// When MAGnifying the image (no bigger mipmap available), use LINEAR filtering
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// When MINifying the image, use a LINEAR blend of two mipmaps, each filtered LINEARLY too
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+	// Generate mipmaps, by the way.
+	glGenerateMipmap(GL_TEXTURE_2D);
 
 	// check for errors
 	GL_CHECKERRORS();
 
-	mGenerated = true;
+	delete [] pixels;
+	generated = true;
 }
 
-CubeMapTexture::~CubeMapTexture() {
+BitmapTexture::~BitmapTexture() {
 	//Clean up
-	if (mGenerated) {
-		glDeleteTextures(1, &mBuffer);
-	}
+	if (generated)
+		glDeleteTextures(1, &buffer);
+	else
+		delete [] pixels;
 }
 
-void CubeMapTexture::activate() {
+void BitmapTexture::activate() {
 	//Error check
-	if (!mGenerated)
+	if (!generated)
 		generateBuffer();
-
+	
 	//Activate and bind the buffer
-	glActiveTexture(mTexNum);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, mBuffer);
+	glActiveTexture(texNum);
+	glBindTexture(GL_TEXTURE_2D, buffer);
 }
 
-void CubeMapTexture::deactivate() {
+void BitmapTexture::deactivate() {
 	//Haha, this method is just BS. Fooled you.
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }

@@ -52,7 +52,6 @@ void GameInterior::init() {
 	for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
 		perMaterialTriangles[i] = std::vector<Triangle>(renderInfo.numMaterialTriangles[i]);
 	}
-	mNoiseTexture->generateBuffer();
 
 	std::vector<glm::vec3> tangentMap(mInterior.normal.size());
 	std::vector<glm::vec3> bitangentMap(mInterior.normal.size());

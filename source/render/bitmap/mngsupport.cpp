@@ -38,7 +38,7 @@ typedef struct {
 	FILE *stream;
 	glm::ivec2 extent;
 	U8 **pixels;
-	Texture::BitmapFormat *format;
+	BitmapTexture::Format *format;
 } MNGInfo;
 
 static mng_handle gMNG = MNG_NULL;
@@ -95,7 +95,7 @@ mng_bool mng__processheader(mng_handle handle, mng_uint32 width, mng_uint32 heig
 		case MNG_COLORTYPE_GRAY:
 		case MNG_COLORTYPE_JPEGGRAY:
 			//No alpha
-			*info->format = Texture::BitmapFormatRGB8;
+			*info->format = BitmapTexture::FormatRGB8;
 			mng_set_canvasstyle(handle, MNG_CANVAS_RGB8);
 			break;
 		case MNG_COLORTYPE_INDEXED:
@@ -103,17 +103,17 @@ mng_bool mng__processheader(mng_handle handle, mng_uint32 width, mng_uint32 heig
 		case MNG_COLORTYPE_JPEGCOLOR:
 			//May have alpha, not sure
 			if (alphaDepth >= 1) {
-				*info->format = Texture::BitmapFormatRGBA8;
+				*info->format = BitmapTexture::FormatRGBA8;
 				mng_set_canvasstyle(handle, MNG_CANVAS_RGBA8);
 			} else {
-				*info->format = Texture::BitmapFormatRGB8;
+				*info->format = BitmapTexture::FormatRGB8;
 				mng_set_canvasstyle(handle, MNG_CANVAS_RGB8);
 			}
 			break;
 		case MNG_COLORTYPE_RGBA:
 		case MNG_COLORTYPE_JPEGCOLORA:
 			//Always have alpha
-			*info->format = Texture::BitmapFormatRGBA8;
+			*info->format = BitmapTexture::FormatRGBA8;
 			mng_set_canvasstyle(handle, MNG_CANVAS_RGBA8);
 			break;
 		default:
@@ -144,7 +144,7 @@ mng_bool mng__settimer(mng_handle handle, mng_uint32 msecs) {
 	return MNG_TRUE;
 }
 
-bool mngReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, Texture::BitmapFormat &format) {
+bool mngReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, BitmapTexture::Format &format) {
 	if (!initMNG()) {
 		bitmap = NULL;
 		return false;

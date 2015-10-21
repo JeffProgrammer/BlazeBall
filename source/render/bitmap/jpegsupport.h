@@ -31,7 +31,7 @@
 
 #include <stdbool.h>
 #include "base/types.h"
-#include "graphics/texture.h"
+#include "graphics/bitmapTexture.h"
 
 /**
  Reads an image from a given file using JPEG
@@ -41,6 +41,6 @@
  @param format - A reference to a var that will be filled with the image's format
  @return Whether or not the operation succeeded
  */
-bool jpegReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, Texture::BitmapFormat &format);
+bool jpegReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, BitmapTexture::Format &format);
 
 #endif
