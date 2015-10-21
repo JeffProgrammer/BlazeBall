@@ -36,13 +36,10 @@
 #endif
 #include <stdbool.h>
 #include "base/types.h"
+#include "texture.h"
 
 class CubeMapTexture {
 public:
-	enum BitmapFormat {
-		BitmapFormatRGB8 = 3,
-		BitmapFormatRGBA8 = 4
-	};
 	enum CubeFace {
 		PositiveX = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
 		NegativeX = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
@@ -55,15 +52,24 @@ public:
 	struct TextureInfo {
 		U8 *pixels;
 		glm::ivec2 extent;
-		BitmapFormat format;
+		Texture::BitmapFormat format;
 		CubeFace face;
 
 		TextureInfo() {
 
 		}
+		TextureInfo(Texture *texture, CubeFace face) {
+			this->extent = texture->extent;
+			this->pixels = new U8[texture->extent.x * texture->extent.y * texture->format];
+			this->format = texture->format;
+			this->face = face;
+			memcpy(this->pixels, texture->pixels, sizeof(U8) * texture->extent.x * texture->extent.y * texture->format);
+		}
 		TextureInfo(const TextureInfo &info) {
 			this->extent = info.extent;
 			this->pixels = new U8[info.extent.x * info.extent.y * info.format];
+			this->format = info.format;
+			this->face = info.face;
 			memcpy(this->pixels, info.pixels, sizeof(U8) * info.extent.x * info.extent.y * info.format);
 		}
 	};

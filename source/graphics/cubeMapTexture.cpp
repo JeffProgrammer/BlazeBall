@@ -71,7 +71,7 @@ void CubeMapTexture::generateBuffer() {
 
 	for (const auto &texture : mTextures) {
 		//Actually create the texture
-		GLenum glformat = (texture.format == BitmapFormatRGB8 ? GL_RGB : GL_RGBA);
+		GLenum glformat = (texture.format == Texture::BitmapFormatRGB8 ? GL_RGB : GL_RGBA);
 		glTexImage2D(texture.face, 0, glformat, texture.extent.x, texture.extent.y, 0, glformat, GL_UNSIGNED_BYTE, texture.pixels);
 		delete [] texture.pixels;
 	}

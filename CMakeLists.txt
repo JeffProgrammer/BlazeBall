@@ -293,6 +293,8 @@ set (DIFVIEWERGAME_SRC
 	source/game/movement.h
 	source/game/shape.cpp
 	source/game/shape.h
+	source/game/skybox.cpp
+	source/game/skybox.h
 	source/game/sphere.cpp
 	source/game/sphere.h
 	

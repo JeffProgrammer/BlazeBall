@@ -30,6 +30,7 @@
 #include "game/gameInterior.h"
 #include "game/camera.h"
 #include "game/Shape.h"
+#include "game/skybox.h"
 #include "graphics/util.h"
 #include <chrono>
 #include <thread>
@@ -363,6 +364,18 @@ void Scene::run() {
 	});
 
 	// onStart
+	std::vector<CubeMapTexture::TextureInfo> textures;
+	textures.push_back(CubeMapTexture::TextureInfo(IO::loadTexture("cubemap/sky0.jpg"), CubeMapTexture::PositiveX));
+	textures.push_back(CubeMapTexture::TextureInfo(IO::loadTexture("cubemap/sky1.jpg"), CubeMapTexture::NegativeX));
+	textures.push_back(CubeMapTexture::TextureInfo(IO::loadTexture("cubemap/sky2.jpg"), CubeMapTexture::PositiveY));
+	textures.push_back(CubeMapTexture::TextureInfo(IO::loadTexture("cubemap/sky3.jpg"), CubeMapTexture::NegativeY));
+	textures.push_back(CubeMapTexture::TextureInfo(IO::loadTexture("cubemap/sky4.jpg"), CubeMapTexture::PositiveZ));
+	textures.push_back(CubeMapTexture::TextureInfo(IO::loadTexture("cubemap/sky5.jpg"), CubeMapTexture::NegativeZ));
+
+	CubeMapTexture *cubeMap = new CubeMapTexture(textures);
+	Skybox *sky = new Skybox(cubeMap);
+	addObject(sky);
+
 	Camera *camera = new Camera();
 	addObject(camera);
 	mCamera = camera;
