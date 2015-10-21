@@ -171,7 +171,8 @@ void GameInterior::render(Shader *shader) {
 			}
 		}
 	}
-	
+	GL_CHECKERRORS();
+
 	//Disable arrays
 	shader->disableAttribute("vertexPosition_model");
 	shader->disableAttribute("vertexUV");
