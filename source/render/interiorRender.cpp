@@ -144,6 +144,8 @@ void GameInterior::render(Shader *shader) {
 	if (!renderInfo.generated)
 		init();
 
+	glUniform1f(shader->getUniformLocation("reflectivity"), 0.f);
+
 	// bind vbo
 	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
 

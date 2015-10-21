@@ -27,6 +27,7 @@ uniform vec4 ambientColor;
 uniform vec3 sunPosition;
 uniform float specularExponent;
 uniform vec3 cameraPos;
+uniform float reflectivity;
 
 void main() {
 	//Texture
@@ -72,5 +73,5 @@ void main() {
 
 	reflection = (mat3(inverseRotMat) * reflection);
 
-	gl_FragColor = textureCube(skyboxSampler, reflection);
+	gl_FragColor += (reflectivity * textureCube(skyboxSampler, reflection));
 }
