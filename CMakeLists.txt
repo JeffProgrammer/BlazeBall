@@ -181,15 +181,15 @@ add_library(Mng STATIC ${MNG_SRC})
 target_link_libraries(Mng Jpeg Zlib)
 set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
 
-#------------------------------------------------------------------------------
-# GLEW Library
-#------------------------------------------------------------------------------
-
-add_library(GLEW STATIC thirdparty/glew/src/glew.c)
-set_property(TARGET GLEW APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include")
-target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
-
 if (MSVC)
+	#------------------------------------------------------------------------------
+	# GLEW Library
+	#------------------------------------------------------------------------------
+
+	add_library(GLEW STATIC thirdparty/glew/src/glew.c)
+	set_property(TARGET GLEW APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include")
+	target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
+
 	target_link_libraries(GLEW OpenGL32)
 endif()
 
@@ -367,9 +367,6 @@ set (DIFVIEWERGAME_LIBRARIES
 	BulletSoftBody
 	LinearMath
 
-	# GLEW
-	GLEW
-
 	# JPEG
 	Jpeg
 
@@ -386,6 +383,9 @@ set (DIFVIEWERGAME_LIBRARIES
 if (MSVC)
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
+
+	# GLEW
+	GLEW
 
 	Zlib
 	
