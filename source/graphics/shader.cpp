@@ -183,3 +183,14 @@ void Shader::activate() {
 void Shader::deactivate() {
 
 }
+
+void Shader::enableAttribute(const std::string &name, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) {
+	U32 location = getAttributeLocation(name);
+	glEnableVertexAttribArray(location);
+	glVertexAttribPointer(location, size, type, normalized, stride, pointer);
+}
+
+void Shader::disableAttribute(const std::string &name) {
+	U32 location = getAttributeLocation(name);
+	glDisableVertexAttribArray(location);
+}

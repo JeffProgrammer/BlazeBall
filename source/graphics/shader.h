@@ -110,6 +110,9 @@ public:
 	 * Deactivate and unbind the shader.
 	 */
 	void deactivate();
+
+	void enableAttribute(const std::string &name, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+	void disableAttribute(const std::string &name);
 };
 
 #endif

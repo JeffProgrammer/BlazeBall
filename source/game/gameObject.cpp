@@ -52,7 +52,7 @@ void GameObject::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &
 	modelMatrix = glm::scale(modelMatrix, scale);
 }
 
-void GameObject::render() {
+void GameObject::render(Shader *shader) {
 	
 }
 

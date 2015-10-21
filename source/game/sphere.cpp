@@ -116,7 +116,7 @@ void Sphere::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &view
 	modelMatrix = glm::scale(modelMatrix, glm::vec3(radius));
 }
 
-void Sphere::render() {
+void Sphere::render(Shader *shader) {
 	if (!firstDraw) {
 		generate();
 		firstDraw = true;
@@ -127,22 +127,20 @@ void Sphere::render() {
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
 	// enable attributes
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));     // vertices
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));        // uv
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));    // normal
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));   // tagent
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent))); // bitangent
+
+	shader->enableAttribute("vertexPosition_model", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
+	shader->enableAttribute("vertexUV",             2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
+	shader->enableAttribute("vertexNormal",         3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
+	shader->enableAttribute("vertexTangent",        3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
+	shader->enableAttribute("vertexBitangent",      3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
+
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(3);
-	glDisableVertexAttribArray(4);
+
+	shader->disableAttribute("vertexPosition_model");
+	shader->disableAttribute("vertexUV");
+	shader->disableAttribute("vertexNormal");
+	shader->disableAttribute("vertexTangent");
+	shader->disableAttribute("vertexBitangent");
 	if (material) {
 		material->deactivate();
 	}

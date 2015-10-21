@@ -71,7 +71,7 @@ public:
 	void gfxInit();
 
 	void init();
-	virtual void render();
+	virtual void render(Shader *shader);
 
 	virtual glm::vec3 getPosition();
 	virtual glm::quat getRotation();

@@ -97,7 +97,7 @@ void Scene::render() {
 		glm::mat4 modelMatrix(1);
 		object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
-		object->render();
+		object->render(mInteriorShader);
 	}
 	mInteriorShader->deactivate();
 
