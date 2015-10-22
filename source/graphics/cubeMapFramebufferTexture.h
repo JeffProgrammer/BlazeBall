@@ -10,6 +10,7 @@
 #define cubeMapFramebufferTexture_h
 
 #include "cubeMapTexture.h"
+#include <functional>
 
 class CubeMapFramebufferTexture : public CubeMapTexture {
 protected:
