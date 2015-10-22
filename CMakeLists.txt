@@ -299,8 +299,12 @@ set (DIFVIEWERGAME_SRC
 	source/game/sphere.h
 	
 	# Graphics folder
+	source/graphics/bitmapTexture.cpp
+	source/graphics/bitmapTexture.h
 	source/graphics/cubeMapTexture.cpp
 	source/graphics/cubeMapTexture.h
+	source/graphics/cubeMapFramebufferTexture.cpp
+	source/graphics/cubeMapFramebufferTexture.h
 	source/graphics/shader.cpp
 	source/graphics/shader.h
 	source/graphics/texture.cpp
