@@ -26,6 +26,24 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
+// special thanks to this dood (WTFPL)
+// http://www.opengl-tutorial.org/intermediate-tutorials/billboards-particles/particles-instancing/
+//
+// NOTE: this class uses hardware instancing which is not part of the OpenGL 2.1
+//       specification (Instancing is part of 3.3 core profile).
+//
+// Supported hardware and OS with this extension:
+//   Intel HD 3000+
+//   GeForce 8000+
+//   AMD Radeon HD 2000+
+//
+//   Windows XP+
+//   Mac OSX 10.6.8+
+//   Linux
+//
+// for more information, see this opengl database:
+// http://delphigl.de/glcapsviewer/gl_listreports.php?listreportsbyextension=GL_ARB_instanced_arrays
+
 #include "game/particleEmitter.h"
 #include <glm/gtc/matrix_transform.hpp>
 
