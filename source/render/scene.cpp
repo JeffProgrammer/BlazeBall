@@ -94,6 +94,13 @@ void Scene::render() {
 	//Send to OpenGL
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
 	for (auto object : objects) {
+		// THIS IS WHY WE NEED SCENE MANAGEMENT.
+		// SLOW!!!
+		//
+		// If this object is a particle emitter, do not render yet!
+		if (dynamic_cast<ParticleEmitter*>(object))
+			continue;
+
 		glm::mat4 modelMatrix(1);
 		object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
@@ -112,6 +119,19 @@ void Scene::render() {
 
 	MODELMGR->render(mShapeShader, viewMatrix, projectionMatrix);
 	mShapeShader->deactivate();
+
+
+	// render particles
+	// JESUS THIS CODE IS GETTING UGLY AS FUCK
+	mParticleShader->activate();
+	mParticleShader->setUniformLocation("textureSampler", 0);
+	glUniformMatrix4fv(mShapeShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
+	glUniformMatrix4fv(mShapeShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
+	glm::mat4 modelMatrix;
+	mEmitter->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+	mEmitter->render(mParticleShader);
+	mParticleShader->deactivate();
 
 	// check for opengl errors
 	GL_CHECKERRORS();
@@ -369,6 +389,9 @@ void Scene::run() {
 	Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
 	addObject(player);
 	mPlayer = player;
+
+	mEmitter = new ParticleEmitter();
+	addObject(mEmitter);
 	
 	controlObject = player;
 

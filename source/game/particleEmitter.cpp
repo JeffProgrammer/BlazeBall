@@ -90,7 +90,6 @@ void ParticleEmitter::loadMatrix(const glm::mat4 &projectionMatrix, const glm::m
 }
 
 void ParticleEmitter::render(Shader *shader) {
-	shader->activate();
 	mMaterial->activate();
 
 	// get our view matrix as this is used for rendering as a billboard
@@ -125,7 +124,6 @@ void ParticleEmitter::render(Shader *shader) {
 
 	shader->disableAttribute("vertex");
 	shader->disableAttribute("position");
-	shader->deactivate();
 	mMaterial->deactivate();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

@@ -47,6 +47,7 @@
 #include "game/movement.h"
 #include "game/camera.h"
 #include "render/modelManager.h"
+#include "game/particleEmitter.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -94,12 +95,14 @@ public:
 	GameObject *controlObject;
 	Camera *mCamera;
 	Sphere *mPlayer;
+	ParticleEmitter *mEmitter;
 
 	Window *window;
 	Timer *mTimer;
 
 	Shader *mInteriorShader;
 	Shader *mShapeShader;
+	Shader *mParticleShader;
 	
 	bool mShouldSleep;
 
