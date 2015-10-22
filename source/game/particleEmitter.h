@@ -19,10 +19,18 @@ struct Particle {
 	}
 };
 
+static GLfloat sParticleVertices[] = {
+	-0.5f, -0.5f,
+	0.5f, -0.5f,
+	-0.5f, 0.5f,
+	0.5f, 0.5f
+};
+
 class ParticleEmitter : public GameObject {
 protected:
 	std::vector<Particle> mParticles;
 
+	GLuint mVertVBO;
 	GLuint mVBO;
 
 public:

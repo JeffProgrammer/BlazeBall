@@ -45,9 +45,15 @@ ParticleEmitter::ParticleEmitter() {
 		mParticles.push_back(p);
 	}
 
+	// billboard data does not change
+	glGenBuffers(1, &mVertVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, mVertVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 8, sParticleVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 	glGenBuffers(1, &mVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Particle) * MAX_PARTICLE_COUNT, &mParticles[0], GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * MAX_PARTICLE_COUNT, nullptr, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -60,14 +66,29 @@ void ParticleEmitter::loadMatrix(const glm::mat4 &projectionMatrix, const glm::m
 }
 
 void ParticleEmitter::render(Shader *shader) {
-	// use this buffer
+	shader->activate();
+
+	// bind the vertices that we'll be instancing
+	glBindBuffer(GL_ARRAY_BUFFER, mVertVBO);
+	shader->enableAttribute("vertex", 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+	// let's use positions
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-
 	// upload opengl data to the gpu
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Particle) * MAX_PARTICLE_COUNT, &mParticles[0]);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLfloat) * 3 * MAX_PARTICLE_COUNT, &mParticles[0]);
+	shader->enableAttribute("position", 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	// draw each point
-	glDrawArrays(GL_POINTS, 0, MAX_PARTICLE_COUNT);
+	// let opengl know where to divide up the data for each instance
+	glVertexAttribDivisorARB(shader->getAttributeLocation("vertex"), 0); // use all 4 vertices per strip
+	glVertexAttribDivisorARB(shader->getAttributeLocation("position"), 1); // 1 position per strip
+
+	// draw each particle
+	glDrawArraysInstancedARB(GL_TRIANGLE_STRIP, 0, 4, MAX_PARTICLE_COUNT);
+
+	shader->disableAttribute("vertex");
+	shader->disableAttribute("position");
+	shader->deactivate();
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void ParticleEmitter::update(const F64 &deltaMS) {
