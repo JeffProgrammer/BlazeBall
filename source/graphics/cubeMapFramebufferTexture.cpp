@@ -59,8 +59,8 @@ void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, std::function<v
 		renderDirections[NegativeX] = std::make_pair(glm::vec3(-1, 0, 0), glm::vec3(0, 0, 1));
 		renderDirections[PositiveY] = std::make_pair(glm::vec3(0,  1, 0), glm::vec3(0, 0, 1));
 		renderDirections[NegativeY] = std::make_pair(glm::vec3(0, -1, 0), glm::vec3(0, 0, 1));
-		renderDirections[PositiveZ] = std::make_pair(glm::vec3(0, 0,  1), glm::vec3(0, 1, 0));
-		renderDirections[NegativeZ] = std::make_pair(glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
+		renderDirections[PositiveZ] = std::make_pair(glm::vec3(0, 0,  1), glm::vec3(-1, 0, 0));
+		renderDirections[NegativeZ] = std::make_pair(glm::vec3(0, 0, -1), glm::vec3(-1, 0, 0));
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
