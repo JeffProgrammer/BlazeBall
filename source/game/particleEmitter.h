@@ -16,7 +16,6 @@ struct Particle {
 
 	Particle() {
 		position = glm::vec3(0.0f, 0.0f, 0.0f);
-		color = glm::vec4(0.0f, 0.0, 0.0, 0.0f);
 		life = 0.0;
 	}
 };

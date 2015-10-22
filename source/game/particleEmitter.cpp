@@ -40,7 +40,6 @@ ParticleEmitter::ParticleEmitter() {
 	for (S32 i = 0; i < MAX_PARTICLE_COUNT; i++) {
 		Particle p;
 		p.position = getPosition();
-		p.color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 		p.life = PARTICLE_TIME;
 
 		mParticles.push_back(p);
