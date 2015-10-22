@@ -333,7 +333,7 @@ void Scene::handleEvent(Event *event) {
 					// mega / regular marble
 					if (mPlayer->getRadius() < 1.0f) {
 						mPlayer->setRadius(1.0f);
-						marbleCubemap->setExtent(glm::vec2(128, 128));
+						marbleCubemap->setExtent(glm::vec2(256, 256));
 					} else {
 						mPlayer->setRadius(0.2f);
 						marbleCubemap->setExtent(glm::vec2(64, 64));
