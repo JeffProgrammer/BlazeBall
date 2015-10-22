@@ -112,7 +112,7 @@ void Scene::render() {
 
 	marbleCubemap->generateBuffer(mPlayer->getPosition(), [&](glm::mat4 matrix){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glm::mat4 perspectiveMatrix = glm::perspective(90.f, 1.f, 1.f, 1000.f);
+		glm::mat4 perspectiveMatrix = glm::perspective(90.f, 1.f, 0.01f, 100.f);
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &perspectiveMatrix[0][0]);
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &matrix[0][0]);
 		for (auto object : objects) {
