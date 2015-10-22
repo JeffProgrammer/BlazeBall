@@ -128,10 +128,13 @@ void ParticleEmitter::render(Shader *shader) {
 	glDrawArraysInstancedARB(GL_TRIANGLE_STRIP, 0, 4, MAX_PARTICLE_COUNT);
 	GL_CHECKERRORS();
 
+	// reset everything.
 	shader->disableAttribute("vertex");
 	shader->disableAttribute("position");
 	mMaterial->deactivate();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glVertexAttribDivisorARB(shader->getAttributeLocation("vertex"), 0);
+	glVertexAttribDivisorARB(shader->getAttributeLocation("position"),  0);
 	GL_CHECKERRORS();
 }
 
