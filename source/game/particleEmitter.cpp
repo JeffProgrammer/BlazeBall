@@ -29,12 +29,28 @@
 #include "game/particleEmitter.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+#define MAX_PARTICLE_COUNT 200
+#define PARTICLE_TIME 2000.0
+
+// TODO: particles with pure alpha will be discared in the shader using discard;
+
 ParticleEmitter::ParticleEmitter() {
 
+	// create particles
+	for (S32 i = 0; i < MAX_PARTICLE_COUNT; i++) {
+		Particle p;
+		p.position = getPosition();
+		p.color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		p.life = PARTICLE_TIME;
+
+		mParticles.push_back(p);
+	}
+
+	glGenBuffers(1, &mVBO);
 }
 
 ParticleEmitter::~ParticleEmitter() {
-
+	glDeleteBuffers(1, &mVBO);
 }
 
 void ParticleEmitter::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix) {
@@ -46,5 +62,18 @@ void ParticleEmitter::render(Shader *shader) {
 }
 
 void ParticleEmitter::update(const F64 &deltaMS) {
+	const F32 t = static_cast<F32>(1000.0 / deltaMS);
 
+	for (Particle &particle : mParticles) {
+		particle.life -= deltaMS;
+		
+		// give it some movement
+		particle.position += glm::vec3(rand() % 3, rand() % 3, 2.5f) * t;
+
+		// if particle ran out of time, make it respawn
+		if (particle.life <= 0.0) {
+			particle.life = PARTICLE_TIME;
+			particle.position = getPosition();
+		}
+	}
 }

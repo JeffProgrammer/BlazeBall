@@ -12,18 +12,20 @@
 struct Particle {
 	glm::vec3 position;
 	glm::vec4 color;
-	S32 life;
+	F64 life;
 
 	Particle() {
 		position = glm::vec3(0.0f, 0.0f, 0.0f);
 		color = glm::vec4(0.0f, 0.0, 0.0, 0.0f);
-		life = 0;
+		life = 0.0;
 	}
 };
 
 class ParticleEmitter : public GameObject {
 protected:
 	std::vector<Particle> mParticles;
+
+	GLuint mVBO;
 
 public:
 	ParticleEmitter();
