@@ -60,29 +60,38 @@ void CubeMapFramebufferTexture::generateBuffer() {
 	mGenerated = true;
 }
 void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, std::function<void(glm::mat4)> renderMethod) {
+	//Need to set viewport size otherwise it will only get the corner part of the frame
 	glViewport(0, 0, extent.x, extent.y);
+
 	static std::map<int, glm::mat4> renderDirections;
 	if (renderDirections.size() == 0) {
+		//Obtained by strict trial+error. Should be the 6 ortho directions, rotated correctly.
 		renderDirections[PositiveX] = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3( 1, 0, 0), glm::vec3(0, -1, 0));
 		renderDirections[NegativeX] = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0));
-		renderDirections[PositiveY] = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0,  1, 0), glm::vec3(0, 0, 1));
+		renderDirections[PositiveY] = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0,  1, 0), glm::vec3(0, 0,  1));
 		renderDirections[NegativeY] = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, -1, 0), glm::vec3(0, 0, -1));
 		renderDirections[PositiveZ] = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0,  1), glm::vec3(0, -1, 0));
 		renderDirections[NegativeZ] = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, -1, 0));
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+#ifdef GRAPHICS_DEBUG
 	checkStatus();
+#endif
 
 	for (int i = PositiveX; i <= NegativeZ; i ++) {
 		glm::mat4 viewMat = renderDirections[i];
 		viewMat = glm::translate(viewMat, -center);
 
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, i, mBuffer, 0);
+
+#ifdef GRAPHICS_DEBUG
 		checkStatus();
-
 		GL_CHECKERRORS();
+#endif
 
+		//Let the scene render itself
 		renderMethod(viewMat);
 	}
 
