@@ -74,7 +74,7 @@ ParticleEmitter::ParticleEmitter() {
 
 	glGenBuffers(1, &mVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * MAX_PARTICLE_COUNT, nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * MAX_PARTICLE_COUNT, nullptr, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -96,8 +96,14 @@ void ParticleEmitter::render(Shader *shader) {
 
 	// let's use positions
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+
+	// copy positions
+	glm::vec3 data[MAX_PARTICLE_COUNT];
+	for (int i = 0; i < MAX_PARTICLE_COUNT; i++)
+		data[i] = mParticles[i].position;
+
 	// upload opengl data to the gpu
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLfloat) * 3 * MAX_PARTICLE_COUNT, &mParticles[0]);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * MAX_PARTICLE_COUNT, &data[0]);
 	shader->enableAttribute("position", 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	// let opengl know where to divide up the data for each instance
