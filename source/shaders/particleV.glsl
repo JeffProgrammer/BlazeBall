@@ -20,5 +20,5 @@ void main() {
 	gl_Position = modelViewProjectionMat * v;
 
 	//Send to fragment shader
-	UV = vertex;
+	UV = vertex * 2.0;
 }

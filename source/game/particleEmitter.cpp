@@ -48,8 +48,8 @@
 #include "graphics/util.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-#define MAX_PARTICLE_COUNT 50000
-#define PARTICLE_TIME 2000.0
+#define MAX_PARTICLE_COUNT 1000
+#define PARTICLE_TIME 3000.0
 
 // TODO: particles with pure alpha will be discared in the shader using discard;
 // TODO: make particles render in a particle manager, so that we only have to have
@@ -148,7 +148,7 @@ void ParticleEmitter::updateTick(const F64 &deltaMS) {
 		particle.life -= static_cast<F32>(deltaMS);
 		
 		// give it some movement
-		particle.position += (glm::vec3(rand() % 100, rand() % 100, rand() % 2) * t) / static_cast<F32>(PARTICLE_TIME);
+		particle.position += (glm::vec3(rand() % 100, rand() % 100, rand() % 2) * t) / static_cast<F32>(PARTICLE_TIME * 10);
 
 		// if particle ran out of time, make it respawn
 		if (particle.life <= 0.0f) {
