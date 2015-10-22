@@ -53,28 +53,21 @@ void CubeMapFramebufferTexture::generateBuffer() {
 	mGenerated = true;
 }
 void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, std::function<void(glm::mat4)> renderMethod) {
+	static std::map<CubeFace, std::pair<glm::vec3, glm::vec3>> renderDirections;
+	if (renderDirections.size() == 0) {
+		renderDirections[PositiveX] = std::make_pair(glm::vec3( 1, 0, 0), glm::vec3(0, 0, 1));
+		renderDirections[NegativeX] = std::make_pair(glm::vec3(-1, 0, 0), glm::vec3(0, 0, 1));
+		renderDirections[PositiveY] = std::make_pair(glm::vec3(0,  1, 0), glm::vec3(0, 1, 0));
+		renderDirections[NegativeY] = std::make_pair(glm::vec3(0, -1, 0), glm::vec3(0, 1, 0));
+		renderDirections[PositiveZ] = std::make_pair(glm::vec3(0, 0,  1), glm::vec3(0, 0, 1));
+		renderDirections[NegativeZ] = std::make_pair(glm::vec3(0, 0, -1), glm::vec3(0, 0, 1));
+	}
+
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	checkStatus();
 
 	for (int i = PositiveX; i <= NegativeZ; i ++) {
-		glm::mat4 viewMat = glm::mat4(1);
-		switch (i) {
-			case PositiveX:
-				viewMat = glm::rotate(viewMat, 0.f, glm::vec3(1, 0, 0));
-				break;
-			case NegativeX:
-				viewMat = glm::rotate(viewMat, 180.f, glm::vec3(0, 0, 1));
-				break;
-			case PositiveY:
-				viewMat = glm::rotate(viewMat, 90.f, glm::vec3(0, 0, 1));
-				break;
-			case NegativeY:
-				viewMat = glm::rotate(viewMat, -90.f, glm::vec3(0, 0, 1));
-				break;
-			default:
-				viewMat = glm::rotate(viewMat, 0.f, glm::vec3(1, 0, 0));
-				break;
-		}
+		glm::mat4 viewMat = glm::lookAt(glm::vec3(0, 0, 0), renderDirections[static_cast<CubeFace>(i)].first, renderDirections[static_cast<CubeFace>(i)].second);
 		viewMat = glm::translate(viewMat, -center);
 
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, i, mBuffer, 0);
