@@ -151,7 +151,7 @@ void Scene::render() {
 	marbleCubemap->activate(GL_TEXTURE5);
 
 	glm::ivec2 screenSize = window->getWindowSize();
-	glViewport(0, 0, screenSize.x * 2, screenSize.y * 2);
+	glViewport(0, 0, screenSize.x, screenSize.y);
 
 	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
