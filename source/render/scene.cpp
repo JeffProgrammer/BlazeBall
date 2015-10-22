@@ -110,9 +110,13 @@ void Scene::render() {
 		object->render(mInteriorShader);
 	}
 
+	mInteriorShader->deactivate();
+
 	marbleCubemap->generateBuffer(mPlayer->getPosition(), [&](glm::mat4 matrix){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glm::mat4 perspectiveMatrix = glm::perspective(90.f, 1.f, 0.1f, 500.f);
+
+		mInteriorShader->activate();
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &perspectiveMatrix[0][0]);
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &matrix[0][0]);
 		for (auto object : objects) {
@@ -123,9 +127,26 @@ void Scene::render() {
 			glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
 			object->render(mInteriorShader);
 		}
+		mInteriorShader->deactivate();
+
+		glDepthFunc(GL_LEQUAL);
+		mSkyboxShader->activate();
+		mSkyboxShader->setUniformLocation("cubemapSampler", 0);
+
+		//Strip any positional data from the camera, so we just have rotation
+		glm::mat4 skyboxView = glm::mat4(glm::mat3(matrix));
+		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &perspectiveMatrix[0][0]);
+		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
+
+		mSkybox->render(mSkyboxShader);
+		mSkyboxShader->deactivate();
+		glDepthFunc(GL_LESS);
 
 		GL_CHECKERRORS();
 	});
+
+	mInteriorShader->activate();
+
 	mInteriorShader->setUniformLocation("cubemapSampler", 5);
 	marbleCubemap->activate(GL_TEXTURE5);
 
