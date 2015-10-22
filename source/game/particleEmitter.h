@@ -43,7 +43,7 @@ public:
 	virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix);
 	virtual void render(Shader *shader);
 	
-	virtual void update(const F64 &deltaMS);
+	virtual void updateTick(const F64 &deltaMS);
 };
 
 #endif // _GAME_PARTICLEEMITTER_H_

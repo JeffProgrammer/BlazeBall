@@ -48,7 +48,7 @@
 #include "graphics/util.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-#define MAX_PARTICLE_COUNT 200
+#define MAX_PARTICLE_COUNT 50000
 #define PARTICLE_TIME 2000.0
 
 // TODO: particles with pure alpha will be discared in the shader using discard;
@@ -56,7 +56,7 @@
 //       one buffer for the particle vertex geometry.
 // TODO: GPU particles using GL_EXT_TRANSFORM_FEEDBACK
 
-ParticleEmitter::ParticleEmitter() {
+ParticleEmitter::ParticleEmitter() : GameObject() {
 
 	// create particles
 	for (S32 i = 0; i < MAX_PARTICLE_COUNT; i++) {
@@ -138,14 +138,17 @@ void ParticleEmitter::render(Shader *shader) {
 	GL_CHECKERRORS();
 }
 
-void ParticleEmitter::update(const F64 &deltaMS) {
-	const F32 t = static_cast<F32>(1000.0 / deltaMS);
+void ParticleEmitter::updateTick(const F64 &deltaMS) {
+	if (deltaMS == 0.0)
+		return;
+
+	const F32 t = static_cast<F32>(deltaMS);
 
 	for (Particle &particle : mParticles) {
 		particle.life -= static_cast<F32>(deltaMS);
 		
 		// give it some movement
-		particle.position += glm::vec3(rand() % 3, rand() % 3, 2.5f) * t;
+		particle.position += (glm::vec3(rand() % 100, rand() % 100, rand() % 2) * t) / static_cast<F32>(PARTICLE_TIME);
 
 		// if particle ran out of time, make it respawn
 		if (particle.life <= 0.0f) {
