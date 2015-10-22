@@ -392,6 +392,10 @@ void Scene::run() {
 		//Update the physics and game items
 		PhysicsEngine::getEngine()->simulate(lastDelta);
 
+		// call update on each object
+		for (auto obj : objects)
+			obj->update(lastDelta);
+
 		render();
 		
 		//Flip buffers

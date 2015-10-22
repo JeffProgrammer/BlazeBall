@@ -59,3 +59,7 @@ void GameObject::render(Shader *shader) {
 void GameObject::updateTick(const F64 &deltaMS) {
 	
 }
+
+void GameObject::update(const F64 &deltaMS) {
+
+}

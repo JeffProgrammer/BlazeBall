@@ -67,6 +67,13 @@ public:
 	virtual void getCameraPosition(glm::mat4x4 &mat);
 
 	virtual void updateTick(const F64 &deltaMS);
+
+	/**
+	 * Called before the frame is rendered.
+	 * @param deltaMS the time stamp between the last and current frame.
+	 * @note Called every frame.
+	 */
+	virtual void update(const F64 &deltaMS);
 };
 
 #endif
