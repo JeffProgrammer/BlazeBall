@@ -11,12 +11,11 @@
 
 struct Particle {
 	glm::vec3 position;
-	glm::vec4 color;
-	F64 life;
+	F32 life;
 
 	Particle() {
 		position = glm::vec3(0.0f, 0.0f, 0.0f);
-		life = 0.0;
+		life = 0.0f;
 	}
 };
 

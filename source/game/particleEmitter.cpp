@@ -46,6 +46,9 @@ ParticleEmitter::ParticleEmitter() {
 	}
 
 	glGenBuffers(1, &mVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Particle) * MAX_PARTICLE_COUNT, &mParticles[0], GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 ParticleEmitter::~ParticleEmitter() {
@@ -57,20 +60,27 @@ void ParticleEmitter::loadMatrix(const glm::mat4 &projectionMatrix, const glm::m
 }
 
 void ParticleEmitter::render(Shader *shader) {
+	// use this buffer
+	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 
+	// upload opengl data to the gpu
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Particle) * MAX_PARTICLE_COUNT, &mParticles[0]);
+
+	// draw each point
+	glDrawArrays(GL_POINTS, 0, MAX_PARTICLE_COUNT);
 }
 
 void ParticleEmitter::update(const F64 &deltaMS) {
 	const F32 t = static_cast<F32>(1000.0 / deltaMS);
 
 	for (Particle &particle : mParticles) {
-		particle.life -= deltaMS;
+		particle.life -= static_cast<F32>(deltaMS);
 		
 		// give it some movement
 		particle.position += glm::vec3(rand() % 3, rand() % 3, 2.5f) * t;
 
 		// if particle ran out of time, make it respawn
-		if (particle.life <= 0.0) {
+		if (particle.life <= 0.0f) {
 			particle.life = PARTICLE_TIME;
 			particle.position = getPosition();
 		}
