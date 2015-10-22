@@ -1,10 +1,30 @@
+//------------------------------------------------------------------------------
+// Copyright (c) 2015 Glenn Smith
+// Copyright (c) 2015 Jeff Hutchinson
+// All rights reserved.
 //
-//  cubeMapFramebufferTexture.cpp
-//  DifViewerGame
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of the project nor the
+//    names of its contributors may be used to endorse or promote products
+//    derived from this software without specific prior written permission.
 //
-//  Created by Glenn Smith on 10/21/15.
-//
-//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//------------------------------------------------------------------------------
 
 #include "cubeMapFramebufferTexture.h"
 #include "graphics/util.h"
@@ -38,16 +58,21 @@ void CubeMapFramebufferTexture::generateBuffer() {
 		glTexImage2D(i, 0, GL_RGBA8, extent.x, extent.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 	}
 
+	//Create a framebuffer for capturing the scene
 	glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
+	//Need a depth buffer so OpenGL knows what's in front. Otherwise the skybox
+	// will render in front of everything else.
 	glGenRenderbuffers(1, &depthBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, extent.x, extent.y);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
+	//Attach the depth buffer to the frame buffer
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, framebuffer);
 
+	//Make sure we attach at least one color attachment so it completes the framebuffer
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X, mBuffer, 0);
 	checkStatus();
 
@@ -80,10 +105,13 @@ void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, std::function<v
 	checkStatus();
 #endif
 
+	//Render each of the faces of the cubemap
 	for (int i = PositiveX; i <= NegativeZ; i ++) {
+		//Set up the view matrix to orient around the given center point
 		glm::mat4 viewMat = renderDirections[i];
 		viewMat = glm::translate(viewMat, -center);
 
+		//Make sure we draw to the correct texture
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, i, mBuffer, 0);
 
 #ifdef GRAPHICS_DEBUG
