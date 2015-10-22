@@ -80,6 +80,7 @@ ParticleEmitter::ParticleEmitter() {
 
 ParticleEmitter::~ParticleEmitter() {
 	glDeleteBuffers(1, &mVBO);
+	glDeleteBuffers(1, &mVertVBO);
 }
 
 void ParticleEmitter::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix) {
