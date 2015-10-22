@@ -40,9 +40,18 @@ protected:
 	GLenum depthBuffer;
 
 public:
-	CubeMapFramebufferTexture() : CubeMapTexture(std::vector<TextureInfo>()) {};
+	CubeMapFramebufferTexture(const glm::ivec2 &extent) : CubeMapTexture(std::vector<TextureInfo>()) {
+		setExtent(extent);
+	}
+	virtual ~CubeMapFramebufferTexture();
+
+	void setExtent(const glm::ivec2 &extent);
+	glm::ivec2 getExtent() {
+		return this->extent;
+	}
 
 	virtual void generateBuffer();
+	void destroyBuffer();
 	void generateBuffer(glm::vec3 center, glm::ivec2 screenSize, std::function<void(const glm::mat4&, const glm::mat4&)> renderMethod);
 };
 

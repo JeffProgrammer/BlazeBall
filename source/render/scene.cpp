@@ -242,7 +242,7 @@ bool Scene::initGL() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	marbleCubemap = new CubeMapFramebufferTexture();
+	marbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
 	marbleCubemap->generateBuffer();
 
 	GLenum err = glGetError();
@@ -331,10 +331,13 @@ void Scene::handleEvent(Event *event) {
 				case KeyEvent::KEY_G:
 				{
 					// mega / regular marble
-					if (mPlayer->getRadius() < 1.0f)
+					if (mPlayer->getRadius() < 1.0f) {
 						mPlayer->setRadius(1.0f);
-					else
+						marbleCubemap->setExtent(glm::vec2(128, 128));
+					} else {
 						mPlayer->setRadius(0.2f);
+						marbleCubemap->setExtent(glm::vec2(64, 64));
+					}
 					break;
 				}
 				default:

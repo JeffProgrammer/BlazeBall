@@ -33,19 +33,27 @@
 #include "graphics/util.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+CubeMapFramebufferTexture::~CubeMapFramebufferTexture() {
+	destroyBuffer();
+}
+
 void checkStatus() {
 	GLenum status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE)
 		printf("Status error: %08x\n", status);
 }
 
-void CubeMapFramebufferTexture::generateBuffer() {
+void CubeMapFramebufferTexture::setExtent(const glm::ivec2 &extent) {
 	//Hardcoded but very changeable. Please try to use powers of 2 and squares.
-	extent = glm::ivec2(128, 128);
+	this->extent = extent;
 
 	//Cache the projection matrix for later
 	projectionMat = glm::perspective(90.f, (F32)extent.x / (F32)extent.y, 0.1f, 500.f);
 
+	destroyBuffer();
+	generateBuffer();
+}
+void CubeMapFramebufferTexture::generateBuffer() {
 	//Set mode
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -90,6 +98,14 @@ void CubeMapFramebufferTexture::generateBuffer() {
 	GL_CHECKERRORS();
 
 	mGenerated = true;
+}
+void CubeMapFramebufferTexture::destroyBuffer() {
+	if (!mGenerated)
+		return;
+
+	glDeleteFramebuffers(1, &framebuffer);
+	glDeleteRenderbuffers(1, &depthBuffer);
+	glDeleteTextures(1, &mBuffer);
 }
 void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, glm::ivec2 screenSize, std::function<void(const glm::mat4&, const glm::mat4&)> renderMethod) {
 	//Need to set viewport size otherwise it will only get the corner part of the frame
