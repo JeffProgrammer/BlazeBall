@@ -112,7 +112,7 @@ void Scene::render() {
 
 	mInteriorShader->deactivate();
 
-	marbleCubemap->generateBuffer(mPlayer->getPosition(), window->getWindowSize(), [&](const glm::mat4 &projectionMat, const glm::mat4 &viewMat) {
+	marbleCubemap->generateBuffer(mPlayer->getPosition(), window->getWindowSize() * (S32)pixelDensity, [&](const glm::mat4 &projectionMat, const glm::mat4 &viewMat) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		mInteriorShader->activate();
@@ -232,6 +232,12 @@ bool Scene::initGL() {
 	//Window size for viewport
 	glm::ivec2 screenSize = window->getWindowSize();
 	updateWindowSize(screenSize);
+
+	GLint viewport[4]; //x y w h
+	glGetIntegerv(GL_VIEWPORT, viewport);
+
+	//Should be 2x if you have a retina display
+	pixelDensity = viewport[2] / screenSize.x;
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
