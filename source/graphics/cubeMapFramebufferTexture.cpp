@@ -41,6 +41,13 @@ void CubeMapFramebufferTexture::generateBuffer() {
 	glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
+	glGenRenderbuffers(1, &depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, extent.x, extent.y);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, framebuffer);
+
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X, mBuffer, 0);
 	checkStatus();
 
@@ -53,21 +60,24 @@ void CubeMapFramebufferTexture::generateBuffer() {
 	mGenerated = true;
 }
 void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, std::function<void(glm::mat4)> renderMethod) {
-	static std::map<CubeFace, std::pair<glm::vec3, glm::vec3>> renderDirections;
+	glViewport(0, 0, extent.x, extent.y);
+	static std::map<int, glm::mat4> renderDirections;
 	if (renderDirections.size() == 0) {
-		renderDirections[PositiveX] = std::make_pair(glm::vec3( 1, 0, 0), glm::vec3(0, 0, 1));
-		renderDirections[NegativeX] = std::make_pair(glm::vec3(-1, 0, 0), glm::vec3(0, 0, 1));
-		renderDirections[PositiveY] = std::make_pair(glm::vec3(0,  1, 0), glm::vec3(0, 0, 1));
-		renderDirections[NegativeY] = std::make_pair(glm::vec3(0, -1, 0), glm::vec3(0, 0, 1));
-		renderDirections[PositiveZ] = std::make_pair(glm::vec3(0, 0,  1), glm::vec3(-1, 0, 0));
-		renderDirections[NegativeZ] = std::make_pair(glm::vec3(0, 0, -1), glm::vec3(-1, 0, 0));
+		renderDirections[PositiveX] = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3( 1, 0, 0), glm::vec3(0, -1, 0));
+		renderDirections[NegativeX] = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0));
+		renderDirections[PositiveY] = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0,  1, 0), glm::vec3(0, 0, 1));
+		renderDirections[NegativeY] = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, -1, 0), glm::vec3(0, 0, -1));
+		renderDirections[PositiveZ] = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0,  1), glm::vec3(-1, 0, 0));
+		renderDirections[NegativeZ] = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(-1, 0, 0));
+
+		renderDirections[NegativeZ] = glm::rotate(renderDirections[NegativeZ], -90.f, glm::vec3(0, 0, 1));
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	checkStatus();
 
 	for (int i = PositiveX; i <= NegativeZ; i ++) {
-		glm::mat4 viewMat = glm::lookAt(glm::vec3(0, 0, 0), renderDirections[static_cast<CubeFace>(i)].first, renderDirections[static_cast<CubeFace>(i)].second);
+		glm::mat4 viewMat = renderDirections[i];
 		viewMat = glm::translate(viewMat, -center);
 
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, i, mBuffer, 0);

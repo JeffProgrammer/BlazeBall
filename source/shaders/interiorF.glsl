@@ -72,7 +72,7 @@ void main() {
 	vec3 direction_skybox = normalize(position_world - cameraPos);
 	vec3 reflection = reflect(direction_skybox, normalize(normal_skybox));
 
-	reflection = (mat3(inverseRotMat) * reflection);
+	//reflection = (mat3(inverseRotMat) * reflection);
 
 	gl_FragColor = (gl_FragColor * (1 - reflectivity)) + (reflectivity * textureCube(cubemapSampler, reflection));
 }
