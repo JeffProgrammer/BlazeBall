@@ -66,6 +66,8 @@ ParticleEmitter::ParticleEmitter() {
 		mParticles.push_back(p);
 	}
 
+	mMaterial = new Material("dustParticle.png");
+
 	// billboard data does not change
 	glGenBuffers(1, &mVertVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, mVertVBO);
@@ -84,11 +86,19 @@ ParticleEmitter::~ParticleEmitter() {
 }
 
 void ParticleEmitter::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix) {
-
+	GameObject::loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
 }
 
 void ParticleEmitter::render(Shader *shader) {
 	shader->activate();
+	mMaterial->activate();
+
+	// get our view matrix as this is used for rendering as a billboard
+	glm::mat4 unused;
+	glm::mat4 viewMatrix;
+	loadMatrix(unused, viewMatrix, unused);
+	glUniform3f(shader->getUniformLocation("cameraRight"), viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
+	glUniform3f(shader->getUniformLocation("cameraUp"), viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]);
 
 	// bind the vertices that we'll be instancing
 	glBindBuffer(GL_ARRAY_BUFFER, mVertVBO);
@@ -116,6 +126,7 @@ void ParticleEmitter::render(Shader *shader) {
 	shader->disableAttribute("vertex");
 	shader->disableAttribute("position");
 	shader->deactivate();
+	mMaterial->deactivate();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 

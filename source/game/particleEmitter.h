@@ -8,6 +8,7 @@
 #define _GAME_PARTICLEEMITTER_H_
 
 #include "game/gameObject.h"
+#include "render/material.h"
 
 struct Particle {
 	glm::vec3 position;
@@ -32,6 +33,8 @@ protected:
 
 	GLuint mVertVBO;
 	GLuint mVBO;
+
+	Material *mMaterial;
 
 public:
 	ParticleEmitter();
