@@ -33,7 +33,7 @@
 //       specification (Instancing is part of 3.3 core profile).
 //
 // Supported hardware and OS with this extension:
-//   Intel HD 3000+
+//   Intel HD Graphics+
 //   GeForce 8000+
 //   AMD Radeon HD 2000+
 //
