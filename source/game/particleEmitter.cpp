@@ -45,6 +45,7 @@
 // http://delphigl.de/glcapsviewer/gl_listreports.php?listreportsbyextension=GL_ARB_instanced_arrays
 
 #include "game/particleEmitter.h"
+#include "graphics/util.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 #define MAX_PARTICLE_COUNT 200
@@ -98,6 +99,7 @@ void ParticleEmitter::render(Shader *shader) {
 	loadMatrix(unused, viewMatrix, unused);
 	glUniform3f(shader->getUniformLocation("cameraRight"), viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
 	glUniform3f(shader->getUniformLocation("cameraUp"), viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]);
+	GL_CHECKERRORS();
 
 	// bind the vertices that we'll be instancing
 	glBindBuffer(GL_ARRAY_BUFFER, mVertVBO);
@@ -113,19 +115,24 @@ void ParticleEmitter::render(Shader *shader) {
 
 	// upload opengl data to the gpu
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * MAX_PARTICLE_COUNT, &data[0]);
+	GL_CHECKERRORS();
+
 	shader->enableAttribute("position", 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	// let opengl know where to divide up the data for each instance
 	glVertexAttribDivisorARB(shader->getAttributeLocation("vertex"), 0); // use all 4 vertices per strip
 	glVertexAttribDivisorARB(shader->getAttributeLocation("position"), 1); // 1 position per strip
+	GL_CHECKERRORS();
 
 	// draw each particle
 	glDrawArraysInstancedARB(GL_TRIANGLE_STRIP, 0, 4, MAX_PARTICLE_COUNT);
+	GL_CHECKERRORS();
 
 	shader->disableAttribute("vertex");
 	shader->disableAttribute("position");
 	mMaterial->deactivate();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	GL_CHECKERRORS();
 }
 
 void ParticleEmitter::update(const F64 &deltaMS) {

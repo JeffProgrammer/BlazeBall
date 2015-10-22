@@ -43,7 +43,11 @@
 Scene::Scene() {
 	mInteriorShader = nullptr;
 	mShapeShader = nullptr;
+	mParticleShader = nullptr;
 	controlObject = nullptr;
+	mEmitter = nullptr;
+	mPlayer = nullptr;
+	mCamera = nullptr;
 }
 
 Scene::~Scene() {
@@ -98,7 +102,8 @@ void Scene::render() {
 		// SLOW!!!
 		//
 		// If this object is a particle emitter, do not render yet!
-		if (dynamic_cast<ParticleEmitter*>(object))
+		//if (dynamic_cast<ParticleEmitter*>(object))
+		if (object == mEmitter)
 			continue;
 
 		glm::mat4 modelMatrix(1);
@@ -120,16 +125,17 @@ void Scene::render() {
 	MODELMGR->render(mShapeShader, viewMatrix, projectionMatrix);
 	mShapeShader->deactivate();
 
+	GL_CHECKERRORS();
 
 	// render particles
 	// JESUS THIS CODE IS GETTING UGLY AS FUCK
 	mParticleShader->activate();
 	mParticleShader->setUniformLocation("textureSampler", 0);
-	glUniformMatrix4fv(mShapeShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
-	glUniformMatrix4fv(mShapeShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
+	glUniformMatrix4fv(mParticleShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
+	glUniformMatrix4fv(mParticleShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
 	glm::mat4 modelMatrix;
 	mEmitter->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+	glUniformMatrix4fv(mParticleShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
 	mEmitter->render(mParticleShader);
 	mParticleShader->deactivate();
 
@@ -167,6 +173,7 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 bool Scene::initGL() {
 	mInteriorShader = new Shader("interiorV.glsl", "interiorF.glsl");
 	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
+	mParticleShader = new Shader("particleV.glsl", "particleF.glsl");
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
