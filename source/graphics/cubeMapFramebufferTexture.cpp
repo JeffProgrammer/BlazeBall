@@ -37,7 +37,11 @@ void checkStatus() {
 }
 
 void CubeMapFramebufferTexture::generateBuffer() {
+	//Hardcoded but very changeable. Please try to use powers of 2 and squares.
 	extent = glm::ivec2(128, 128);
+
+	//Cache the projection matrix for later
+	projectionMat = glm::perspective(90.f, (F32)extent.x / (F32)extent.y, 0.1f, 500.f);
 
 	//Set mode
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -84,7 +88,7 @@ void CubeMapFramebufferTexture::generateBuffer() {
 
 	mGenerated = true;
 }
-void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, std::function<void(glm::mat4)> renderMethod) {
+void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, glm::ivec2 screenSize, std::function<void(const glm::mat4&, const glm::mat4&)> renderMethod) {
 	//Need to set viewport size otherwise it will only get the corner part of the frame
 	glViewport(0, 0, extent.x, extent.y);
 
@@ -108,8 +112,7 @@ void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, std::function<v
 	//Render each of the faces of the cubemap
 	for (int i = PositiveX; i <= NegativeZ; i ++) {
 		//Set up the view matrix to orient around the given center point
-		glm::mat4 viewMat = renderDirections[i];
-		viewMat = glm::translate(viewMat, -center);
+		glm::mat4 viewMat = glm::translate(renderDirections[i], -center);
 
 		//Make sure we draw to the correct texture
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, i, mBuffer, 0);
@@ -120,8 +123,10 @@ void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, std::function<v
 #endif
 
 		//Let the scene render itself
-		renderMethod(viewMat);
+		renderMethod(viewMat, projectionMat);
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glViewport(0, 0, screenSize.x, screenSize.y);
 }

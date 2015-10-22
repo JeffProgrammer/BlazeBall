@@ -112,13 +112,12 @@ void Scene::render() {
 
 	mInteriorShader->deactivate();
 
-	marbleCubemap->generateBuffer(mPlayer->getPosition(), [&](glm::mat4 matrix){
+	marbleCubemap->generateBuffer(mPlayer->getPosition(), window->getWindowSize(), [&](const glm::mat4 &projectionMat, const glm::mat4 &viewMat) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glm::mat4 perspectiveMatrix = glm::perspective(90.f, 1.f, 0.1f, 500.f);
 
 		mInteriorShader->activate();
-		glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &perspectiveMatrix[0][0]);
-		glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &matrix[0][0]);
+		glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMat[0][0]);
+		glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMat[0][0]);
 		for (auto object : objects) {
 			glm::mat4 modelMatrix(1);
 			object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
@@ -134,8 +133,8 @@ void Scene::render() {
 		mSkyboxShader->setUniformLocation("cubemapSampler", 0);
 
 		//Strip any positional data from the camera, so we just have rotation
-		glm::mat4 skyboxView = glm::mat4(glm::mat3(matrix));
-		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &perspectiveMatrix[0][0]);
+		glm::mat4 skyboxView = glm::mat4(glm::mat3(viewMat));
+		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMat[0][0]);
 		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
 
 		mSkybox->render(mSkyboxShader);
@@ -149,9 +148,6 @@ void Scene::render() {
 
 	mInteriorShader->setUniformLocation("cubemapSampler", 5);
 	marbleCubemap->activate(GL_TEXTURE5);
-
-	glm::ivec2 screenSize = window->getWindowSize();
-	glViewport(0, 0, screenSize.x * 2, screenSize.y * 2);
 
 	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);

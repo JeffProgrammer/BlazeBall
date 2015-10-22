@@ -35,6 +35,7 @@
 class CubeMapFramebufferTexture : public CubeMapTexture {
 protected:
 	glm::ivec2 extent;
+	glm::mat4 projectionMat;
 	GLenum framebuffer;
 	GLenum depthBuffer;
 
@@ -42,7 +43,7 @@ public:
 	CubeMapFramebufferTexture() : CubeMapTexture(std::vector<TextureInfo>()) {};
 
 	virtual void generateBuffer();
-	void generateBuffer(glm::vec3 center, std::function<void(glm::mat4)> renderMethod);
+	void generateBuffer(glm::vec3 center, glm::ivec2 screenSize, std::function<void(const glm::mat4&, const glm::mat4&)> renderMethod);
 };
 
 #endif /* cubeMapFramebufferTexture_h */
