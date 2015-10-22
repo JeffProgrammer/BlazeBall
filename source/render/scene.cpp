@@ -398,6 +398,7 @@ void Scene::run() {
 	mPlayer = player;
 
 	mEmitter = new ParticleEmitter();
+	mEmitter->setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
 	addObject(mEmitter);
 	
 	controlObject = player;
