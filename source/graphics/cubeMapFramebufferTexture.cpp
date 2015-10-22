@@ -26,6 +26,9 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
+//Most of this class has been adapted from the following site in some way or another.
+//http://www.mbroecker.com/project_dynamic_cubemaps.html
+
 #include "cubeMapFramebufferTexture.h"
 #include "graphics/util.h"
 #include <glm/gtc/matrix_transform.hpp>
@@ -123,7 +126,7 @@ void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, glm::ivec2 scre
 #endif
 
 		//Let the scene render itself
-		renderMethod(viewMat, projectionMat);
+		renderMethod(projectionMat, viewMat);
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
