@@ -116,7 +116,7 @@ void Sphere::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &view
 	modelMatrix = glm::scale(modelMatrix, glm::vec3(radius));
 }
 
-void Sphere::render(Shader *shader) {
+void Sphere::render(Shader *shader, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix) {
 	if (!firstDraw) {
 		generate();
 		firstDraw = true;

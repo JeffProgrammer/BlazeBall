@@ -109,7 +109,7 @@ void Scene::render() {
 		glm::mat4 modelMatrix(1);
 		object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
-		object->render(mInteriorShader);
+		object->render(mInteriorShader, projectionMatrix, viewMatrix);
 	}
 	mInteriorShader->deactivate();
 
@@ -129,6 +129,7 @@ void Scene::render() {
 
 	// render particles
 	// JESUS THIS CODE IS GETTING UGLY AS FUCK
+	glDisable(GL_CULL_FACE);
 	mParticleShader->activate();
 	mParticleShader->setUniformLocation("textureSampler", 0);
 	glUniformMatrix4fv(mParticleShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
@@ -136,8 +137,9 @@ void Scene::render() {
 	glm::mat4 modelMatrix;
 	mEmitter->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
 	glUniformMatrix4fv(mParticleShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
-	mEmitter->render(mParticleShader);
+	mEmitter->render(mParticleShader, projectionMatrix, viewMatrix);
 	mParticleShader->deactivate();
+	glEnable(GL_CULL_FACE);
 
 	// check for opengl errors
 	GL_CHECKERRORS();

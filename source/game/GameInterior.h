@@ -71,7 +71,7 @@ public:
 	void gfxInit();
 
 	void init();
-	virtual void render(Shader *shader);
+	virtual void render(Shader *shader, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix);
 
 	virtual glm::vec3 getPosition();
 	virtual glm::quat getRotation();

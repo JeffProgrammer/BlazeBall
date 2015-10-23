@@ -141,7 +141,7 @@ void GameInterior::init() {
 	renderInfo.generated = true;
 }
 
-void GameInterior::render(Shader *shader) {
+void GameInterior::render(Shader *shader, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix) {
 	if (!renderInfo.generated)
 		init();
 

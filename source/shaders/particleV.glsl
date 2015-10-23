@@ -8,8 +8,7 @@ varying vec2 UV;
 uniform mat4 projectionMat;
 uniform mat4 modelMat;
 uniform mat4 viewMat;
-uniform vec3 cameraRight;
-uniform vec3 cameraUp;
+uniform mat4 inverseCameraMatrix;
 
 void main() {
 	mat4 modelViewProjectionMat = projectionMat * viewMat * modelMat;

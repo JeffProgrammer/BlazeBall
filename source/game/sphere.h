@@ -79,7 +79,7 @@ public:
 	virtual ~Sphere();
 
 	virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix);
-	virtual void render(Shader *shader);
+	virtual void render(Shader *shader, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix);
 
 	virtual glm::vec3 getPosition();
 	virtual glm::quat getRotation();

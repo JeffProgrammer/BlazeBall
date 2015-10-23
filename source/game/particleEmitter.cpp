@@ -48,8 +48,8 @@
 #include "graphics/util.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-#define MAX_PARTICLE_COUNT 1000
-#define PARTICLE_TIME 3000.0
+#define MAX_PARTICLE_COUNT 1
+#define PARTICLE_TIME 300000.0
 
 // TODO: particles with pure alpha will be discared in the shader using discard;
 // TODO: make particles render in a particle manager, so that we only have to have
@@ -90,15 +90,13 @@ void ParticleEmitter::loadMatrix(const glm::mat4 &projectionMatrix, const glm::m
 	GameObject::loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
 }
 
-void ParticleEmitter::render(Shader *shader) {
+void ParticleEmitter::render(Shader *shader, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix) {
 	mMaterial->activate();
 
 	// get our view matrix as this is used for rendering as a billboard
-	glm::mat4 unused;
-	glm::mat4 viewMatrix;
-	loadMatrix(unused, viewMatrix, unused);
-	glUniform3f(shader->getUniformLocation("cameraRight"), viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
-	glUniform3f(shader->getUniformLocation("cameraUp"), viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]);
+	glm::mat4 view = glm::mat4(glm::mat3(viewMatrix));
+	view = glm::inverse(view);
+	glUniformMatrix4fv(shader->getUniformLocation("inverseCameraMatrix"), 1, GL_FALSE, &view[0][0]);
 	GL_CHECKERRORS();
 
 	// bind the vertices that we'll be instancing
@@ -148,7 +146,7 @@ void ParticleEmitter::updateTick(const F64 &deltaMS) {
 		particle.life -= static_cast<F32>(deltaMS);
 		
 		// give it some movement
-		particle.position += (glm::vec3(rand() % 100, rand() % 100, rand() % 2) * t) / static_cast<F32>(PARTICLE_TIME * 10);
+		//particle.position += (glm::vec3(rand() % 100, rand() % 100, rand() % 2) * t) / static_cast<F32>(PARTICLE_TIME * 10);
 
 		// if particle ran out of time, make it respawn
 		if (particle.life <= 0.0f) {
