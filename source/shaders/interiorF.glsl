@@ -74,5 +74,5 @@ void main() {
 
 	//reflection = (mat3(inverseRotMat) * reflection);
 
-	gl_FragColor = (gl_FragColor * (1 - reflectivity)) + (reflectivity * textureCube(cubemapSampler, reflection));
+	gl_FragColor = mix(gl_FragColor, textureCube(cubemapSampler, reflection), reflectivity);
 }

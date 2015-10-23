@@ -134,6 +134,7 @@ void Scene::render() {
 
 		//Strip any positional data from the camera, so we just have rotation
 		glm::mat4 skyboxView = glm::mat4(glm::mat3(viewMat));
+		glUniform1f(mSkyboxShader->getUniformLocation("extent"), 1000.f);
 		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMat[0][0]);
 		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
 
@@ -183,6 +184,8 @@ void Scene::render() {
 
 	//Strip any positional data from the camera, so we just have rotation
 	glm::mat4 skyboxView = glm::mat4(glm::mat3(viewMatrix));
+	glUniform3fv(mSkyboxShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
+	glUniform1f(mSkyboxShader->getUniformLocation("extent"), 1000.f);
 	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
 
