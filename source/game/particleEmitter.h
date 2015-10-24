@@ -12,10 +12,12 @@
 
 struct Particle {
 	glm::vec3 position;
+	glm::vec3 velocity;
 	F32 life;
 
 	Particle() {
-		position = glm::vec3(0.0f, 0.0f, 0.0f);
+		position = glm::vec3(0.f);
+		velocity = glm::vec3(0.f);
 		life = 0.0f;
 	}
 };
