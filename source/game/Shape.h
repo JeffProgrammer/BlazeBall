@@ -30,8 +30,10 @@
 #define _GAME_SHAPE_H_
 
 #include "game/gameObject.h"
+#include "render/renderInfo.h"
+#include "IRenderedObject.h"
 
-class Shape : public GameObject {
+class Shape : public IRenderedObject {
 private:
 	typedef GameObject Parent;
 
@@ -42,6 +44,7 @@ public:
 	Shape(const std::string &shapeFile);
 	virtual ~Shape();
 	virtual void updateTick(const F64 &delta);
+	virtual void render(const RenderInfo &info);
 
 	void loadShape();
 

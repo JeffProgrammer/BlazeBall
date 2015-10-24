@@ -30,12 +30,29 @@
 #ifndef IRenderedObject_h
 #define IRenderedObject_h
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "gameObject.h"
 #include "graphics/shader.h"
 #include "render/renderInfo.h"
 
 class IRenderedObject : public GameObject {
 public:
+	virtual void render(const RenderInfo &info) = 0;
+	virtual bool isRenderable() { return true; }
+
+	inline virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix) {
+		glm::vec3 pos = getPosition();
+		glm::quat rot = getRotation();
+		glm::vec3 scale = getScale();
+
+		//Model
+		modelMatrix = glm::mat4x4(1);
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(pos.x, pos.y, pos.z));
+		modelMatrix = glm::rotate(modelMatrix, glm::angle(rot), glm::axis(rot));
+		modelMatrix = glm::scale(modelMatrix, scale);
+	}
 	inline void loadModelMatrix(const RenderInfo &info, Shader *shader) {
 		glm::mat4 modelMatrix(1);
 		loadMatrix(info.projectionMatrix, info.viewMatrix, modelMatrix);

@@ -107,7 +107,9 @@ void Scene::renderScene(const RenderInfo &info) {
 
 	//Send to OpenGL
 	for (auto object : objects) {
-		object->render(info);
+		if (object->isRenderable()) {
+			dynamic_cast<IRenderedObject *>(object)->render(info);
+		}
 	}
 
 	// render models.

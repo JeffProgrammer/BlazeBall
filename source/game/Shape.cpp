@@ -37,6 +37,11 @@ Shape::~Shape() {
 }
 
 void Shape::updateTick(const F64 &delta) {
+
+}
+
+void Shape::render(const RenderInfo &info) {
+	
 }
 
 void Shape::loadShape() {

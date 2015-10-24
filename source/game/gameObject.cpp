@@ -40,19 +40,3 @@ void GameObject::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
 	mat = glm::translate(mat, glm::vec3(-mOrigin.x, -mOrigin.y, -mOrigin.z));
 	pos = mOrigin;
 }
-
-void GameObject::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix) {
-	glm::vec3 pos = getPosition();
-	glm::quat rot = getRotation();
-	glm::vec3 scale = getScale();
-
-	//Model
-	modelMatrix = glm::mat4x4(1);
-	modelMatrix = glm::translate(modelMatrix, glm::vec3(pos.x, pos.y, pos.z));
-	modelMatrix = glm::rotate(modelMatrix, glm::angle(rot), glm::axis(rot));
-	modelMatrix = glm::scale(modelMatrix, scale);
-}
-
-void GameObject::render(const RenderInfo &info) {
-	
-}

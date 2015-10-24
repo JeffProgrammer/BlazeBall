@@ -33,11 +33,11 @@
 #include <string>
 #include <cfloat>
 
-GameInterior::GameInterior(DIF::Interior interior) : GameObject(), mInterior(interior) {
+GameInterior::GameInterior(DIF::Interior interior) : IRenderedObject(), mInterior(interior) {
 	gfxInit();
 }
 
-GameInterior::GameInterior() : GameObject() {
+GameInterior::GameInterior() : IRenderedObject() {
 	gfxInit();
 }
 

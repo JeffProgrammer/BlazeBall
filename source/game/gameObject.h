@@ -51,8 +51,7 @@ public:
 	GameObject() : mOrigin(glm::vec3(0)), mRotation(glm::quat()), mScale(glm::vec3(1)) {};
 	virtual ~GameObject() {};
 
-	virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix);
-	virtual void render(const RenderInfo &info);
+	virtual bool isRenderable() { return false; }
 	
 	virtual glm::vec3 getPosition() { return mOrigin; }
 	virtual void setPosition(const glm::vec3 &position) { mOrigin = position; }
