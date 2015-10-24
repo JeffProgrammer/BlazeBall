@@ -37,6 +37,8 @@
 #include <algorithm>
 #include <ctime>
 
+glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4x4(1), -90.0f, glm::vec3(1, 0, 0));
+
 /// The amount of time that has to pass before a tick happens.
 /// Default is 16.6667 ms which means we tick at 60 frames per second
 #define TICK_MS 16.6666666666666667
@@ -62,8 +64,14 @@ void Scene::render() {
 	if (controlObject)
 		controlObject->getCameraPosition(cameraTransform, cameraPosition);
 
+	//todo: make the lambda take renderinfo
 	marbleCubemap->generateBuffer(mPlayer->getPosition(), window->getWindowSize() * (S32)pixelDensity, [&](const glm::mat4 &projectionMat, const glm::mat4 &viewMat) {
-		this->renderScene(projectionMat, viewMat, cameraPosition);
+		RenderInfo info;
+		info.projectionMatrix = projectionMat;
+		info.viewMatrix = viewMat;
+		info.cameraPosition = mPlayer->getPosition();
+
+		this->renderScene(info);
 	});
 
 	//Camera
@@ -71,13 +79,16 @@ void Scene::render() {
 	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
 	viewMatrix *= cameraTransform;
 
+	RenderInfo info;
+	info.projectionMatrix = mScreenProjectionMatrix;
+	info.viewMatrix = viewMatrix;
+	info.cameraPosition = cameraPosition;
+
 	//Actually render everything
-	renderScene(mScreenProjectionMatrix, viewMatrix, cameraPosition);
+	renderScene(info);
 }
 
-void Scene::renderScene(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const glm::vec3 &cameraPos) {
-	glm::mat4 inverseRotMat = glm::rotate(glm::mat4x4(1), -90.0f, glm::vec3(1, 0, 0));
-
+void Scene::renderScene(const RenderInfo &info) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_CULL_FACE);
@@ -90,6 +101,7 @@ void Scene::renderScene(const glm::mat4 &projectionMatrix, const glm::mat4 &view
 	mInteriorShader->setUniformLocation("specularSampler", 2);
 	mInteriorShader->setUniformLocation("noiseSampler", 3);
 	mInteriorShader->setUniformLocation("skyboxSampler", 4);
+	mInteriorShader->setUniformLocation("cubemapSampler", 5);
 
 	//Light
 	glUniform4fv(mInteriorShader->getUniformLocation("lightColor"), 1, &lightColor.r);
@@ -100,13 +112,10 @@ void Scene::renderScene(const glm::mat4 &projectionMatrix, const glm::mat4 &view
 	glUniform1f(mInteriorShader->getUniformLocation("specularExponent"), static_cast<F32>(specularExponent));
 
 	//Send to OpenGL
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseRotMat"), 1, GL_FALSE, &inverseRotMat[0][0]);
-	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPos[0]);
+	info.loadShader(mInteriorShader);
 	for (auto object : objects) {
 		glm::mat4 modelMatrix(1);
-		object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
+		object->loadMatrix(info.projectionMatrix, info.viewMatrix, modelMatrix);
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
 		glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
@@ -115,49 +124,26 @@ void Scene::renderScene(const glm::mat4 &projectionMatrix, const glm::mat4 &view
 
 	mInteriorShader->deactivate();
 
-
-	mInteriorShader->activate();
-
-	mInteriorShader->setUniformLocation("cubemapSampler", 5);
-	marbleCubemap->activate(GL_TEXTURE5);
-
-	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPos[0]);
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
-	glm::mat4 modelMatrix(1);
-	mPlayer->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
-	glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
-	GL_CHECKERRORS();
-
-	mPlayer->render(mInteriorShader);
-	GL_CHECKERRORS();
-
-	marbleCubemap->deactivate();
-	mInteriorShader->deactivate();
-
 	// render models.
 	// yeah i know this is shitty rendering at the moment, we need to actually batch shit.
 	mShapeShader->activate();
 	mShapeShader->setUniformLocation("textureSampler", 0);
 	mShapeShader->setUniformLocation("normalSampler", 1);
 	mShapeShader->setUniformLocation("specularSampler", 2);
-	glUniformMatrix4fv(mShapeShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
-	glUniformMatrix4fv(mShapeShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
+	info.loadShader(mShapeShader);
 
-	MODELMGR->render(mShapeShader, viewMatrix, projectionMatrix);
+	MODELMGR->render(mShapeShader, info.viewMatrix, info.projectionMatrix);
 	mShapeShader->deactivate();
 
 	glDepthFunc(GL_LEQUAL);
 	mSkyboxShader->activate();
 	mSkyboxShader->setUniformLocation("cubemapSampler", 0);
 
+	info.loadShader(mSkyboxShader);
+
 	//Strip any positional data from the camera, so we just have rotation
-	glm::mat4 skyboxView = glm::mat4(glm::mat3(viewMatrix));
-	glUniform3fv(mSkyboxShader->getUniformLocation("cameraPos"), 1, &cameraPos[0]);
+	glm::mat4 skyboxView = glm::mat4(glm::mat3(info.viewMatrix));
 	glUniform1f(mSkyboxShader->getUniformLocation("extent"), 1000.f);
-	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
 
 	mSkybox->render(mSkyboxShader);
@@ -445,8 +431,12 @@ void Scene::run() {
 	Camera *camera = new Camera();
 	addObject(camera);
 	mCamera = camera;
+
 	Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
+	player->material = new Material("marble.skin");
+	player->material->setTexture(marbleCubemap, GL_TEXTURE5);
 	mPlayer = player;
+	addObject(player);
 	
 	controlObject = player;
 

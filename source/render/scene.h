@@ -62,6 +62,31 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/vec3.hpp>
 
+//todo: vector also per-shader
+#define PROJECTION_MATRIX_UNIFORM_NAME "projectionMat"
+#define VIEW_MATRIX_UNIFORM_NAME "viewMat"
+#define INVERSE_VIEW_MATRIX_UNIFORM_NAME "inverseViewMat"
+#define CAMERA_POSITION_UNIFORM_NAME "cameraPos"
+
+struct RenderInfo {
+	static glm::mat4 inverseRotMat;
+
+	glm::mat4 projectionMatrix;
+	glm::mat4 viewMatrix;
+	glm::vec3 cameraPosition;
+
+	inline void loadShader(Shader *shader) const {
+		if (shader->getUniformLocation(PROJECTION_MATRIX_UNIFORM_NAME) != -1)
+			glUniformMatrix4fv(shader->getUniformLocation(PROJECTION_MATRIX_UNIFORM_NAME),   1, GL_FALSE, &projectionMatrix[0][0]);
+		if (shader->getUniformLocation(VIEW_MATRIX_UNIFORM_NAME) != -1)
+			glUniformMatrix4fv(shader->getUniformLocation(VIEW_MATRIX_UNIFORM_NAME),         1, GL_FALSE, &viewMatrix[0][0]);
+		if (shader->getUniformLocation(INVERSE_VIEW_MATRIX_UNIFORM_NAME) != -1)
+			glUniformMatrix4fv(shader->getUniformLocation(INVERSE_VIEW_MATRIX_UNIFORM_NAME), 1, GL_FALSE, &inverseRotMat[0][0]);
+		if (shader->getUniformLocation(CAMERA_POSITION_UNIFORM_NAME) != -1)
+			glUniform3fv      (shader->getUniformLocation(CAMERA_POSITION_UNIFORM_NAME),     1,           &cameraPosition[0]);
+	}
+};
+
 class Scene {
 protected:
 	bool running;
@@ -124,7 +149,7 @@ public:
 
 	void updateWindowSize(const glm::ivec2 &size);
 
-	void renderScene(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const glm::vec3 &cameraPos);
+	void renderScene(const RenderInfo &info);
 	void render();
 
 	void loop(const F64 &deltaMS);
