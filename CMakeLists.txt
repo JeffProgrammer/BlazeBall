@@ -278,10 +278,10 @@ set (DIFVIEWERGAME_SRC
 	source/base/types.h
 
 	# Bitmap folder
-	source/render/bitmap/jpegsupport.cpp
-	source/render/bitmap/jpegsupport.h
-	source/render/bitmap/mngsupport.cpp
-	source/render/bitmap/mngsupport.h
+	source/render/bitmap/jpegSupport.cpp
+	source/render/bitmap/jpegSupport.h
+	source/render/bitmap/mngSupport.cpp
+	source/render/bitmap/mngSupport.h
 
 	# Game folder
 	source/game/camera.cpp
