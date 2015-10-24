@@ -94,6 +94,7 @@ public:
 	const U32 specularExponent   = 7;
 
 	std::vector<GameObject *>objects;
+	std::vector<RenderedObject *> mRenderedObjects;
 	GameObject *controlObject;
 	Camera *mCamera;
 	Sphere *mPlayer;
@@ -111,6 +112,8 @@ public:
 
 	void addObject(GameObject *object) {
 		objects.push_back(object);
+		if (dynamic_cast<RenderedObject*>(object))
+			mRenderedObjects.push_back(static_cast<RenderedObject*>(object));
 	}
 
 	Scene();

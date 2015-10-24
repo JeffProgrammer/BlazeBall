@@ -97,11 +97,11 @@ void Scene::renderScene(const RenderInfo &info) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Render all the objects in the scene
-	for (auto object : objects) {
+	for (auto object : mRenderedObjects) {
 		//Don't render non-renderable objects (like the camera)
 		//Also don't render some objects in reflections (like particles)
 		if (object->isRenderable() && (!info.isReflectionPass || object->isReflectable())) {
-			dynamic_cast<RenderedObject *>(object)->render(info);
+			object->render(info);
 		}
 	}
 
