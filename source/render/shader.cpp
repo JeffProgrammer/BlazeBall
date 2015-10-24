@@ -156,7 +156,7 @@ GLuint Shader::getProgramId() {
 	return programId;
 }
 
-GLuint Shader::getUniformLocation(const std::string &name) {
+GLint Shader::getUniformLocation(const std::string &name) {
 	// store location in hashmap to avoid gpu sync point everytime we call this method.
 	if (mUniformLocations.find(name) == mUniformLocations.end())
 		mUniformLocations[name] = glGetUniformLocation(getProgramId(), name.c_str());

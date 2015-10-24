@@ -35,7 +35,7 @@
 #ifdef _WIN32
 #include <GL/glew.h>
 #else
-#include <OpenGL/OpenGL.h>
+#include <OpenGL/gl.h>
 #endif
 
 #include <string>
@@ -99,7 +99,7 @@ public:
 	 * @param name The name of the uniform
 	 * @return The uniform's location.
 	 */
-	GLuint getUniformLocation(const std::string &name);
+	GLint getUniformLocation(const std::string &name);
 	/**
 	 * Set the location of a uniform for the shader.
 	 * @param name The name of the uniform
