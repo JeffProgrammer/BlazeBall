@@ -13,7 +13,7 @@
 
 class Shape : public RenderedObject {
 private:
-	typedef GameObject Parent;
+	typedef RenderedObject Parent;
 
 protected:
 	std::string mShapeFile;
