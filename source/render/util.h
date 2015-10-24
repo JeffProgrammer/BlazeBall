@@ -34,6 +34,12 @@ namespace GL {
 			printf("//--------------------------------------------------------\n");
 		}
 	}
+
+	inline void checkFrameBufferStatus() {
+		GLenum status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+		if (status != GL_FRAMEBUFFER_COMPLETE)
+			printf("Status error: %08x\n", status);
+	}
 }
 
 #endif // _GRAPHICS_UTIL_H_
