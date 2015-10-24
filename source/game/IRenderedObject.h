@@ -32,10 +32,11 @@
 
 #include "gameObject.h"
 #include "graphics/shader.h"
+#include "render/renderInfo.h"
 
 class IRenderedObject : public GameObject {
 public:
-	inline void loadModelMatrix(Shader *Shader) {
+	inline void loadModelMatrix(const RenderInfo &info, Shader *shader) {
 		glm::mat4 modelMatrix(1);
 		loadMatrix(info.projectionMatrix, info.viewMatrix, modelMatrix);
 		glUniformMatrix4fv(shader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);

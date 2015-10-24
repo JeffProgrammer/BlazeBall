@@ -129,7 +129,7 @@ void Sphere::render(const RenderInfo &info) {
 	material->activate();
 	info.loadShader(shader);
 
-	loadModelMatrix(shader);
+	loadModelMatrix(info, shader);
 
 	glUniform1f(shader->getUniformLocation("reflectivity"), 1.f);
 

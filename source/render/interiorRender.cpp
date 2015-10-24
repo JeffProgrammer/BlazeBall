@@ -153,7 +153,7 @@ void GameInterior::render(const ::RenderInfo &info) {
 	Shader *shader = mMaterial->getShader();
 	info.loadShader(shader);
 
-	loadModelMatrix(shader);
+	loadModelMatrix(info, shader);
 
 	// bind vbo
 	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
