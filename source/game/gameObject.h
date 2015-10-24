@@ -89,7 +89,7 @@ public:
 	virtual void setScale(const glm::vec3 &scale) { mScale = scale; }
 
 	/**
-	 * Updates the camera transformation based upon input and mspf.
+	 * Updates the camera.
 	 * @param movement The move struct that contains input for this frame.
 	 * @param deltaMS The delta between the last and current frame.
 	 */
