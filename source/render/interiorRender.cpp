@@ -145,9 +145,12 @@ void GameInterior::render(const ::RenderInfo &info) {
 	if (!renderInfo.generated)
 		init();
 
+	//TODO: Nasty hack because we init interiors before the shaders are loaded
 	if (mMaterial->getShader() == Shader::defaultShader || mMaterial->getShader() == nullptr)
 		mMaterial->setShader(Scene::getSingleton()->mInteriorShader);
 
+	//TODO: Don't load the materials like this, but instead per-material in the
+	// render loop
 	mMaterial->activate();
 
 	Shader *shader = mMaterial->getShader();

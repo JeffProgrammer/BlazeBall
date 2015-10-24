@@ -41,9 +41,17 @@ void RenderedObject::calculateModelMatrix(const RenderInfo &info, glm::mat4 &mod
 }
 
 void RenderedObject::loadModelMatrix(const RenderInfo &info, Shader *shader) {
+	//Load the model matrix
 	glm::mat4 modelMatrix(1);
+	//Separate function call here because this is virtual (and overridden)
 	calculateModelMatrix(info, modelMatrix);
-	glUniformMatrix4fv(shader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+
+	//Inverse (because some shaders need it)
 	glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
-	glUniformMatrix4fv(shader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
+
+	//Load it into the shader
+	if (shader->getUniformLocation("modelMat") != -1)
+		glUniformMatrix4fv(shader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+	if (shader->getUniformLocation("inverseModelMat") != -1)
+		glUniformMatrix4fv(shader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
 }
