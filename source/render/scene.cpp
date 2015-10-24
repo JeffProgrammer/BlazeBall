@@ -96,15 +96,16 @@ void Scene::renderScene(const RenderInfo &info) {
 	glEnable(GL_MULTISAMPLE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	//Send to OpenGL
+	//Render all the objects in the scene
 	for (auto object : objects) {
+		//Don't render non-renderable objects (like the camera)
+		//Also don't render some objects in reflections (like particles)
 		if (object->isRenderable() && (!info.isReflectionPass || object->isReflectable())) {
 			dynamic_cast<RenderedObject *>(object)->render(info);
 		}
 	}
 
-	// render models.
-	// yeah i know this is shitty rendering at the moment, we need to actually batch shit.
+	//TODO: Clean up shape rendering
 	mShapeShader->activate();
 	info.loadShader(mShapeShader);
 
@@ -168,8 +169,9 @@ bool Scene::initGL() {
 	mInteriorShader->addAttribute("vertexBitangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
 
 	mShapeShader->addUniformLocation("textureSampler", 0);
-	mShapeShader->addUniformLocation("normalSampler", 1);
-	mShapeShader->addUniformLocation("specularSampler", 2);
+	//TODO: Shapes
+//	mShapeShader->addUniformLocation("normalSampler", 1);
+//	mShapeShader->addUniformLocation("specularSampler", 2);
 
 	mSkyboxShader->addUniformLocation("cubemapSampler", 0);
 	mSkyboxShader->addAttribute("vertexPosition", 3, GL_FLOAT, GL_FALSE, 0, 0);
