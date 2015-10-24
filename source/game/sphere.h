@@ -60,7 +60,7 @@ public:
 	F32 maxAngVel;
 	Material *material;
 
-	bool firstDraw;
+	bool generated;
 
 	F32 cameraYaw;
 	F32 cameraPitch;

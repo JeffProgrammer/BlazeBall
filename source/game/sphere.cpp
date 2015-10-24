@@ -43,7 +43,7 @@ Sphere::Sphere(glm::vec3 origin, F32 radius) : RenderedObject(), radius(radius),
 	mActor->setMass(1.0f);
 	PhysicsEngine::getEngine()->addBody(mActor);
 	
-	firstDraw = false;
+	generated = false;
 
 	cameraYaw = 0.0f;
 	cameraPitch = 0.0f;
@@ -117,9 +117,9 @@ void Sphere::calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix
 }
 
 void Sphere::render(const RenderInfo &info) {
-	if (!firstDraw) {
+	if (!generated) {
 		generate();
-		firstDraw = true;
+		generated = true;
 	}
 
 	if (!material)
