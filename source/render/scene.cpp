@@ -70,6 +70,11 @@ void Scene::render() {
 		info.projectionMatrix = projectionMat;
 		info.viewMatrix = viewMat;
 		info.cameraPosition = mPlayer->getPosition();
+		
+		info.lightColor = lightColor;
+		info.ambientColor = ambientColor;
+		info.sunPosition = sunPosition;
+		info.specularExponent = specularExponent;
 
 		this->renderScene(info);
 	});
@@ -84,6 +89,11 @@ void Scene::render() {
 	info.viewMatrix = viewMatrix;
 	info.cameraPosition = cameraPosition;
 
+	info.lightColor = lightColor;
+	info.ambientColor = ambientColor;
+	info.sunPosition = sunPosition;
+	info.specularExponent = specularExponent;
+
 	//Actually render everything
 	renderScene(info);
 }
@@ -96,14 +106,6 @@ void Scene::renderScene(const RenderInfo &info) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	mInteriorShader->activate();
-
-	//Light
-	glUniform4fv(mInteriorShader->getUniformLocation("lightColor"), 1, &lightColor.r);
-	glUniform4fv(mInteriorShader->getUniformLocation("ambientColor"), 1, &ambientColor.r);
-
-	//Sun
-	glUniform3fv(mInteriorShader->getUniformLocation("sunPosition"), 1, &sunPosition.x);
-	glUniform1f(mInteriorShader->getUniformLocation("specularExponent"), static_cast<F32>(specularExponent));
 
 	//Send to OpenGL
 	info.loadShader(mInteriorShader);
