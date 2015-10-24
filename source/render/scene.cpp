@@ -55,19 +55,6 @@ Scene::~Scene() {
 	delete mTimer;
 }
 
-void Scene::loadShaderUniforms() {
-	//Light
-	glUniform4fv(mInteriorShader->getUniformLocation("lightColor"), 1, &lightColor.r);
-	glUniform4fv(mInteriorShader->getUniformLocation("ambientColor"), 1, &ambientColor.r);
-
-	//Sun
-	glUniform3fv(mInteriorShader->getUniformLocation("sunPosition"), 1, &sunPosition.x);
-	glUniform1f(mInteriorShader->getUniformLocation("specularExponent"), static_cast<F32>(specularExponent));
-
-	//Projection matrix
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
-}
-
 void Scene::render() {
 	//Get the camera transform from the marble
 	glm::mat4 cameraTransform;
@@ -75,11 +62,20 @@ void Scene::render() {
 	if (controlObject)
 		controlObject->getCameraPosition(cameraTransform, cameraPosition);
 
+	marbleCubemap->generateBuffer(mPlayer->getPosition(), window->getWindowSize() * (S32)pixelDensity, [&](const glm::mat4 &projectionMat, const glm::mat4 &viewMat) {
+		this->renderScene(projectionMat, viewMat, cameraPosition);
+	});
+
 	//Camera
-	viewMatrix = glm::mat4x4(1);
+	glm::mat4 viewMatrix = glm::mat4x4(1);
 	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
 	viewMatrix *= cameraTransform;
 
+	//Actually render everything
+	renderScene(mScreenProjectionMatrix, viewMatrix, cameraPosition);
+}
+
+void Scene::renderScene(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const glm::vec3 &cameraPos) {
 	glm::mat4 inverseRotMat = glm::rotate(glm::mat4x4(1), -90.0f, glm::vec3(1, 0, 0));
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -94,13 +90,20 @@ void Scene::render() {
 	mInteriorShader->setUniformLocation("specularSampler", 2);
 	mInteriorShader->setUniformLocation("noiseSampler", 3);
 	mInteriorShader->setUniformLocation("skyboxSampler", 4);
-	loadShaderUniforms();
+
+	//Light
+	glUniform4fv(mInteriorShader->getUniformLocation("lightColor"), 1, &lightColor.r);
+	glUniform4fv(mInteriorShader->getUniformLocation("ambientColor"), 1, &ambientColor.r);
+
+	//Sun
+	glUniform3fv(mInteriorShader->getUniformLocation("sunPosition"), 1, &sunPosition.x);
+	glUniform1f(mInteriorShader->getUniformLocation("specularExponent"), static_cast<F32>(specularExponent));
 
 	//Send to OpenGL
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseRotMat"), 1, GL_FALSE, &inverseRotMat[0][0]);
-	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
+	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPos[0]);
 	for (auto object : objects) {
 		glm::mat4 modelMatrix(1);
 		object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
@@ -112,46 +115,13 @@ void Scene::render() {
 
 	mInteriorShader->deactivate();
 
-	marbleCubemap->generateBuffer(mPlayer->getPosition(), window->getWindowSize() * (S32)pixelDensity, [&](const glm::mat4 &projectionMat, const glm::mat4 &viewMat) {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		mInteriorShader->activate();
-		glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMat[0][0]);
-		glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMat[0][0]);
-		for (auto object : objects) {
-			glm::mat4 modelMatrix(1);
-			object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
-			glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
-			glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
-			glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
-			object->render(mInteriorShader);
-		}
-		mInteriorShader->deactivate();
-
-		glDepthFunc(GL_LEQUAL);
-		mSkyboxShader->activate();
-		mSkyboxShader->setUniformLocation("cubemapSampler", 0);
-
-		//Strip any positional data from the camera, so we just have rotation
-		glm::mat4 skyboxView = glm::mat4(glm::mat3(viewMat));
-		glUniform1f(mSkyboxShader->getUniformLocation("extent"), 1000.f);
-		glUniform3fv(mSkyboxShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
-		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMat[0][0]);
-		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
-
-		mSkybox->render(mSkyboxShader);
-		mSkyboxShader->deactivate();
-		glDepthFunc(GL_LESS);
-
-		GL_CHECKERRORS();
-	});
 
 	mInteriorShader->activate();
 
 	mInteriorShader->setUniformLocation("cubemapSampler", 5);
 	marbleCubemap->activate(GL_TEXTURE5);
 
-	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
+	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPos[0]);
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
 	glm::mat4 modelMatrix(1);
@@ -185,7 +155,7 @@ void Scene::render() {
 
 	//Strip any positional data from the camera, so we just have rotation
 	glm::mat4 skyboxView = glm::mat4(glm::mat3(viewMatrix));
-	glUniform3fv(mSkyboxShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
+	glUniform3fv(mSkyboxShader->getUniformLocation("cameraPos"), 1, &cameraPos[0]);
 	glUniform1f(mSkyboxShader->getUniformLocation("extent"), 1000.f);
 	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
@@ -222,7 +192,7 @@ void Scene::tick(const F64 &deltaMS) {
 
 void Scene::updateWindowSize(const glm::ivec2 &size) {
 	GLfloat aspect = (GLfloat)size.x / (GLfloat)size.y;
-	projectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
+	mScreenProjectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
 }
 
 bool Scene::initGL() {
@@ -261,6 +231,7 @@ bool Scene::initGL() {
 }
 
 void Scene::performClick(S32 mouseX, S32 mouseY) {
+	/*
 	glm::ivec2 screenSize = window->getWindowSize();
 	//http://antongerdelan.net/opengl/raycasting.html
 	//(x, y) are in device coordinates. We need to convert that to model coords
@@ -282,6 +253,7 @@ void Scene::performClick(S32 mouseX, S32 mouseY) {
 	glm::vec3 world = glm::vec3(glm::inverse(viewMatrix) * eye);
 
 	selection.hasSelection = false;
+	*/
 }
 
 void Scene::handleEvent(Event *event) {

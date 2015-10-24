@@ -67,9 +67,7 @@ protected:
 	bool running;
 	bool printFPS = true;
 
-	//F32 maxFPS = 60.0f;
-
-	glm::mat4x4 projectionMatrix, modelMatrix, viewMatrix;
+	glm::mat4 mScreenProjectionMatrix;
 
 	struct {
 		bool hasSelection;
@@ -124,10 +122,11 @@ public:
 		return singleton;
 	}
 
-	void loadShaderUniforms();
 	void updateWindowSize(const glm::ivec2 &size);
 
+	void renderScene(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const glm::vec3 &cameraPos);
 	void render();
+
 	void loop(const F64 &deltaMS);
 	void tick(const F64 &deltaMS);
 	bool initGL();
