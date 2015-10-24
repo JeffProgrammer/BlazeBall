@@ -26,37 +26,23 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef skybox_h
-#define skybox_h
+#ifndef RenderedObject_h
+#define RenderedObject_h
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "gameObject.h"
-#include "texture/cubeMapTexture.h"
-#include "render/material.h"
-#include "renderedObject.h"
+#include "render/shader.h"
+#include "render/renderInfo.h"
 
-class Skybox : public RenderedObject {
-protected:
-	GLuint mBuffer;
-	bool mGenerated;
-
-	Material *mMaterial;
+class RenderedObject : public GameObject {
 public:
-	Skybox(Material *material);
-	virtual ~Skybox();
+	virtual void render(const RenderInfo &info) = 0;
+	virtual bool isRenderable() { return true; }
 
-	void generate();
-
-	void setMaterial(Material *material) {
-		mMaterial = material;
-	}
-	Material *getMaterial() {
-		return mMaterial;
-	}
-
-	virtual bool isReflectable() { return true; }
-
-	virtual void render(const RenderInfo &info);
-	virtual inline void updateTick(const F64 &deltaMS) {};
+	virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix);
+	void loadModelMatrix(const RenderInfo &info, Shader *shader);
 };
 
-#endif /* skybox_h */
+#endif

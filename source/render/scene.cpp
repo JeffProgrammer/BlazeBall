@@ -112,7 +112,7 @@ void Scene::renderScene(const RenderInfo &info) {
 	//Send to OpenGL
 	for (auto object : objects) {
 		if (object->isRenderable() && (!info.isReflectionPass || object->isReflectable())) {
-			dynamic_cast<IRenderedObject *>(object)->render(info);
+			dynamic_cast<RenderedObject *>(object)->render(info);
 		}
 	}
 

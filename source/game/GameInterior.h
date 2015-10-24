@@ -35,12 +35,12 @@
 #include "physics/physicsEngine.h"
 #include "game/gameObject.h"
 #include "base/ray.h"
-#include "IRenderedObject.h"
+#include "renderedObject.h"
 
 #include <dif/objects/dif.h>
 #include <vector>
 
-class GameInterior : public IRenderedObject {
+class GameInterior : public RenderedObject {
 private:
 	DIF::Interior mInterior;
 	std::vector<Material*> mMaterialList;

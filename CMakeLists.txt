@@ -291,6 +291,8 @@ set (DIFVIEWERGAME_SRC
 	source/game/gameInterior.cpp
 	source/game/gameInterior.h
 	source/game/movement.h
+	source/game/renderedObject.cpp
+	source/game/renderedObject.h
 	source/game/shape.cpp
 	source/game/shape.h
 	source/game/skybox.cpp

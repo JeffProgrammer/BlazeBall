@@ -31,9 +31,9 @@
 
 #include "game/gameObject.h"
 #include "render/renderInfo.h"
-#include "IRenderedObject.h"
+#include "renderedObject.h"
 
-class Shape : public IRenderedObject {
+class Shape : public RenderedObject {
 private:
 	typedef GameObject Parent;
 

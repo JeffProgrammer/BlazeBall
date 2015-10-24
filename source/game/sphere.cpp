@@ -37,7 +37,7 @@
 
 GLuint gSphereVBO = 0;
 
-Sphere::Sphere(glm::vec3 origin, F32 radius) : IRenderedObject(), radius(radius), maxAngVel(1000.0f), material(nullptr) {
+Sphere::Sphere(glm::vec3 origin, F32 radius) : RenderedObject(), radius(radius), maxAngVel(1000.0f), material(nullptr) {
 	mActor = PhysicsEngine::getEngine()->createSphere(radius);
 	mActor->setPosition(origin);
 	mActor->setMass(1.0f);
@@ -111,7 +111,7 @@ void Sphere::generate() {
 }
 
 void Sphere::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix) {
-	IRenderedObject::loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
+	RenderedObject::loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
 
 	modelMatrix = glm::scale(modelMatrix, glm::vec3(radius));
 }
