@@ -38,10 +38,30 @@
 
 class RenderedObject : public GameObject {
 public:
+	/**
+	 * Render the object using OpenGL.
+	 * @param info A RenderInfo struct containing all the render state information.
+	 */
 	virtual void render(const RenderInfo &info) = 0;
+	/**
+	 * If the object should be rendered.
+	 * @return True for rendered objects
+	 */
 	virtual bool isRenderable() { return true; }
 
+	/**
+	 * Load the object's model matrix into a mat4 reference.
+	 * @param projectionMatrix The current projection matrix
+	 * @param viewMatrix       The current view matrix
+	 * @param modelMatrix      A reference to a matrix into which the model matrix
+	 *                         will be loaded.
+	 */
 	virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix);
+	/**
+	 * Send the object's model matrix to OpenGL
+	 * @param info   A RenderInfo struct with all the render state information.
+	 * @param shader The shader which will be used for finding uniform locations.
+	 */
 	void loadModelMatrix(const RenderInfo &info, Shader *shader);
 };
 
