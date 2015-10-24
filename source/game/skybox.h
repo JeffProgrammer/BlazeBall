@@ -52,7 +52,7 @@ public:
 		return mTexture;
 	}
 
-	virtual void render(Shader *shader);
+	virtual void render(Shader *shader, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix);
 };
 
 #endif /* skybox_h */

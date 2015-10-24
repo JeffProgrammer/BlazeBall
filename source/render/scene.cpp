@@ -136,7 +136,7 @@ void Scene::render() {
 			glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
 			glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
 			glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
-			object->render(mInteriorShader);
+			object->render(mInteriorShader, projectionMatrix, viewMatrix);
 		}
 		mInteriorShader->deactivate();
 
@@ -151,7 +151,7 @@ void Scene::render() {
 		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMat[0][0]);
 		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
 
-		mSkybox->render(mSkyboxShader);
+		mSkybox->render(mSkyboxShader, projectionMatrix, viewMatrix);
 		mSkyboxShader->deactivate();
 		glDepthFunc(GL_LESS);
 
@@ -173,7 +173,7 @@ void Scene::render() {
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
 	GL_CHECKERRORS();
 
-	mPlayer->render(mInteriorShader);
+	mPlayer->render(mInteriorShader, projectionMatrix, viewMatrix);
 	GL_CHECKERRORS();
 
 	marbleCubemap->deactivate();
@@ -215,7 +215,7 @@ void Scene::render() {
 	mParticleShader->setUniformLocation("textureSampler", 0);
 	glUniformMatrix4fv(mParticleShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(mParticleShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
-	glm::mat4 modelMatrix;
+	modelMatrix = glm::mat4(1);
 	mEmitter->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
 	glUniformMatrix4fv(mParticleShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
 	mEmitter->render(mParticleShader, projectionMatrix, viewMatrix);

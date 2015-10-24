@@ -97,7 +97,7 @@ void Skybox::generate() {
 	mGenerated = true;
 }
 
-void Skybox::render(Shader *shader) {
+void Skybox::render(Shader *shader, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix) {
 	if (!mGenerated) {
 		generate();
 	}
