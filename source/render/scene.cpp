@@ -96,12 +96,6 @@ void Scene::renderScene(const RenderInfo &info) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	mInteriorShader->activate();
-	mInteriorShader->setUniformLocation("textureSampler", 0);
-	mInteriorShader->setUniformLocation("normalSampler", 1);
-	mInteriorShader->setUniformLocation("specularSampler", 2);
-	mInteriorShader->setUniformLocation("noiseSampler", 3);
-	mInteriorShader->setUniformLocation("skyboxSampler", 4);
-	mInteriorShader->setUniformLocation("cubemapSampler", 5);
 
 	//Light
 	glUniform4fv(mInteriorShader->getUniformLocation("lightColor"), 1, &lightColor.r);
@@ -127,9 +121,6 @@ void Scene::renderScene(const RenderInfo &info) {
 	// render models.
 	// yeah i know this is shitty rendering at the moment, we need to actually batch shit.
 	mShapeShader->activate();
-	mShapeShader->setUniformLocation("textureSampler", 0);
-	mShapeShader->setUniformLocation("normalSampler", 1);
-	mShapeShader->setUniformLocation("specularSampler", 2);
 	info.loadShader(mShapeShader);
 
 	MODELMGR->render(mShapeShader, info.viewMatrix, info.projectionMatrix);
@@ -137,7 +128,6 @@ void Scene::renderScene(const RenderInfo &info) {
 
 	glDepthFunc(GL_LEQUAL);
 	mSkyboxShader->activate();
-	mSkyboxShader->setUniformLocation("cubemapSampler", 0);
 
 	info.loadShader(mSkyboxShader);
 
@@ -185,6 +175,19 @@ bool Scene::initGL() {
 	mInteriorShader = new Shader("interiorV.glsl", "interiorF.glsl");
 	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
 	mSkyboxShader = new Shader("skyboxV.glsl", "skyboxF.glsl");
+
+	mInteriorShader->addUniformLocation("textureSampler", 0);
+	mInteriorShader->addUniformLocation("normalSampler", 1);
+	mInteriorShader->addUniformLocation("specularSampler", 2);
+	mInteriorShader->addUniformLocation("noiseSampler", 3);
+	mInteriorShader->addUniformLocation("skyboxSampler", 4);
+	mInteriorShader->addUniformLocation("cubemapSampler", 5);
+
+	mShapeShader->addUniformLocation("textureSampler", 0);
+	mShapeShader->addUniformLocation("normalSampler", 1);
+	mShapeShader->addUniformLocation("specularSampler", 2);
+
+	mSkyboxShader->addUniformLocation("cubemapSampler", 0);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);

@@ -49,6 +49,7 @@ protected:
 
 	std::unordered_map<std::string, GLuint> mUniformLocations;
 	std::unordered_map<std::string, GLuint> mAttribLocations;
+	std::unordered_map<std::string, GLuint> mSetUniformLocations;
 	
 	/**
 	 * Load a shader from a given path with a given type.
@@ -113,6 +114,8 @@ public:
 
 	void enableAttribute(const std::string &name, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
 	void disableAttribute(const std::string &name);
+
+	void addUniformLocation(const std::string &name, GLuint position);
 };
 
 #endif

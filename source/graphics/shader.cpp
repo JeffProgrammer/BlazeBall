@@ -178,6 +178,10 @@ GLuint Shader::getAttributeLocation(const std::string &name) {
 void Shader::activate() {
 	glUseProgram(this->getProgramId());
 	GL_CHECKERRORS();
+
+	for (auto &setUniform : mSetUniformLocations) {
+		setUniformLocation(setUniform.first, setUniform.second);
+	}
 }
 
 void Shader::deactivate() {
@@ -193,4 +197,8 @@ void Shader::enableAttribute(const std::string &name, GLint size, GLenum type, G
 void Shader::disableAttribute(const std::string &name) {
 	U32 location = getAttributeLocation(name);
 	glDisableVertexAttribArray(location);
+}
+
+void Shader::addUniformLocation(const std::string &name, GLuint position) {
+	mSetUniformLocations[name] = position;
 }
