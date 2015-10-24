@@ -13,11 +13,15 @@ uniform mat4 inverseCameraMatrix;
 void main() {
 	mat4 modelViewProjectionMat = projectionMat * viewMat * modelMat;
 
-	// world space position
-	vec3 pos = position + cameraRight * vertex.x + cameraUp * vertex.y;
-	vec4 v = vec4(pos, 1);
-	gl_Position = modelViewProjectionMat * v;
+	//Take the model and rotate it to face the camera. Since position is multiplied
+	// by camera, we need to undo that when we get the model position.
+	vec3 modelVert = (inverseCameraMatrix * vec4(vertex, 0, 0)).xyz;
 
-	//Send to fragment shader
-	UV = vertex * 2.0;
+	//World space position just uses particle position and model position
+	vec3 pos = position + modelVert;
+	gl_Position = modelViewProjectionMat * vec4(pos, 1);
+
+	//Send to fragment shader, particle UV is offset by 0.5 because verts are
+	// (-0.5, -0.5) -> (0.5, 0.5)
+	UV = vertex + vec2(0.5);
 }
