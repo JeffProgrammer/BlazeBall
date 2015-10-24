@@ -410,6 +410,8 @@ void Scene::run() {
 	});
 
 	// onStart
+
+	//Create skybox
 	{
 		std::vector<CubeMapTexture::TextureInfo> textures;
 		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky0.jpg", CubeMapTexture::PositiveX));
@@ -426,18 +428,24 @@ void Scene::run() {
 		addObject(mSkybox);
 	}
 
-	Camera *camera = new Camera();
-	addObject(camera);
-	mCamera = camera;
+	//Create camera
+	{
+		Camera *camera = new Camera();
+		addObject(camera);
+		mCamera = camera;
+	}
 
-	Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
-	player->material = new Material("marble.skin");
-	player->material->setTexture(marbleCubemap, GL_TEXTURE4);
-	player->material->setShader(mInteriorShader);
-	mPlayer = player;
-	addObject(player);
+	//Create player
+	{
+		Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
+		player->material = new Material("marble.skin");
+		player->material->setTexture(marbleCubemap, GL_TEXTURE4);
+		player->material->setShader(mInteriorShader);
+		mPlayer = player;
+		addObject(player);
+	}
 	
-	controlObject = player;
+	controlObject = mPlayer;
 
 	//Main loop
 	while (running) {
