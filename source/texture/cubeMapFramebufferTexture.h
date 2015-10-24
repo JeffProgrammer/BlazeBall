@@ -25,13 +25,14 @@ public:
 	virtual ~CubeMapFramebufferTexture();
 
 	void setExtent(const glm::ivec2 &extent);
-	glm::ivec2 getExtent() {
+
+	inline glm::ivec2 getExtent() const {
 		return this->extent;
 	}
 
 	virtual void generateBuffer();
 	void destroyBuffer();
-	void generateBuffer(glm::vec3 center, glm::ivec2 screenSize, std::function<void(const RenderInfo &info)> renderMethod, RenderInfo info);
+	void generateBuffer(const glm::vec3 &center, const glm::ivec2 &screenSize, std::function<void(const RenderInfo &info)> renderMethod, RenderInfo &info);
 };
 
 #endif /* cubeMapFramebufferTexture_h */
