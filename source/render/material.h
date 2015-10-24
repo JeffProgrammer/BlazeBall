@@ -38,10 +38,9 @@
 #define DEFAULT_NORMAL_TEXTURE   "DefaultNormal.png"
 #define DEFAULT_SPECULAR_TEXTURE "DefaultSpec.png"
 
-struct ShaderInfo;
 class Material {
 	std::unordered_map<GLuint, Texture *> textures;
-	ShaderInfo *shaderInfo;
+	Shader *shader;
 
 	std::string name;
 	std::string path;
@@ -73,7 +72,7 @@ public:
 	 * specular and normal map paths from the diffuse texture.
 	 * @param path The path for the material's diffuse texture.
 	 */
-	Material(const std::string &path) : shaderInfo(nullptr) {
+	Material(const std::string &path) : shader(nullptr) {
 		loadTextures(path);
 	}
 	
@@ -83,7 +82,7 @@ public:
 	 * @param normalPath The path for the material's normal texture.
 	 * @param specularPath The path for the material's specular texture.
 	 */
-	Material(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) : shaderInfo(nullptr) {
+	Material(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) : shader(nullptr) {
 		loadTextures(diffusePath, normalPath, specularPath);
 	}
 	
@@ -102,11 +101,11 @@ public:
 	}
 	
 	/**
-	 * Get the material's shader info
-	 * @return The material's shader info
+	 * Get the material's shader
+	 * @return The material's shader
 	 */
-	ShaderInfo *getShaderInfo() const {
-		return this->shaderInfo;
+	Shader *getShader() const {
+		return this->shader;
 	}
 	
 	/**
@@ -133,11 +132,11 @@ public:
 	void setTexture(Texture *texture, const GLuint &index);
 	
 	/**
-	 * Set the material's shader info
-	 * @param shaderInfo the new shader info for the material
+	 * Set the material's shade
+	 * @param shader the new shader for the material
 	 */
-	void setShaderInfo(ShaderInfo *shaderInfo) {
-		this->shaderInfo = shaderInfo;
+	void setShader(Shader *shader) {
+		this->shader = shader;
 	}
 
 	/**

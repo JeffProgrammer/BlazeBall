@@ -117,9 +117,9 @@ bool Material::tryLoadTexture(const std::string &path, const GLuint &index) {
 
 void Material::activate() {
 	//If this material has a shader, we should use it.
-//	if (shaderInfo && shaderInfo->shader) {
-//		shaderInfo->shader->activate();
-//	}
+	if (shader) {
+		shader->activate();
+	}
 	//Activate all of the textures on this shader.
 	for (auto iter : textures) {
 		if (iter.second) {
@@ -130,9 +130,9 @@ void Material::activate() {
 
 void Material::deactivate() {
 	//If this material has a shader, we need to deactivate it
-//	if (shaderInfo && shaderInfo->shader) {
-//		shaderInfo->shader->deactivate();
-//	}
+	if (shader) {
+		shader->deactivate();
+	}
 	//Deactivate all of the textures on this shader.
 	for (auto iter : textures) {
 		if (iter.second) {
