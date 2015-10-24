@@ -67,6 +67,10 @@ class Material {
 	 */
 	bool tryLoadTexture(const std::string &path, const GLuint &index);
 public:
+	Material(const std::string &name, Texture *texture, GLuint location) : shader(nullptr), name(name) {
+		textures[location] = texture;
+	}
+
 	/**
 	 * Construct a material from only a diffuse texture path, attempting to resolve
 	 * specular and normal map paths from the diffuse texture.
