@@ -183,8 +183,9 @@ public:
 
 	/**
 	 * Set a matrix uniform's value for the shader
-	 * @param name The name of the uniform to set
-	 * @param data The desired value
+	 * @param name      The name of the uniform to set
+	 * @param transpose If the matrix should be transposed
+	 * @param data      The desired value
 	 */
 	template <typename T>
 	void setUniformMatrix(const std::string &name, GLboolean transpose, const T &data);
