@@ -28,7 +28,6 @@
 
 #include "render/material.h"
 #include "base/io.h"
-#include "texture/cubeMapTexture.h"
 
 Material::~Material() {
 
@@ -79,21 +78,6 @@ void Material::loadTextures(const std::string &diffusePath, const std::string &n
 			printf("Could not load default specular texture!\n");
 		}
 	}
-
-	static CubeMapTexture *skyboxTex = nullptr;
-	if (skyboxTex == nullptr) {
-		std::vector<CubeMapTexture::TextureInfo> textures;
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "right.jpg", CubeMapTexture::PositiveX));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "left.jpg", CubeMapTexture::NegativeX));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "top.jpg", CubeMapTexture::PositiveY));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "bottom.jpg", CubeMapTexture::NegativeY));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "back.jpg", CubeMapTexture::PositiveZ));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "front.jpg", CubeMapTexture::NegativeZ));
-
-		skyboxTex = new CubeMapTexture(textures);
-	}
-
-	setTexture(skyboxTex, GL_TEXTURE4);
 }
 
 bool Material::tryLoadTexture(const std::string &path, const GLuint &index) {

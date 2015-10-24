@@ -18,7 +18,6 @@ uniform sampler2D textureSampler;
 uniform sampler2D normalSampler;
 uniform sampler2D specularSampler;
 uniform sampler2D noiseSampler;
-uniform samplerCube skyboxSampler;
 uniform samplerCube cubemapSampler;
 
 uniform mat4 inverseRotMat;
@@ -71,8 +70,6 @@ void main() {
 	//Skybox
 	vec3 direction_skybox = normalize(position_world - cameraPos);
 	vec3 reflection = reflect(direction_skybox, normalize(normal_skybox));
-
-	//reflection = (mat3(inverseRotMat) * reflection);
 
 	gl_FragColor = mix(gl_FragColor, textureCube(cubemapSampler, reflection), reflectivity);
 }

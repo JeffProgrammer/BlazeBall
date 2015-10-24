@@ -166,8 +166,7 @@ bool Scene::initGL() {
 	mInteriorShader->addUniformLocation("normalSampler", 1);
 	mInteriorShader->addUniformLocation("specularSampler", 2);
 	mInteriorShader->addUniformLocation("noiseSampler", 3);
-	mInteriorShader->addUniformLocation("skyboxSampler", 4);
-	mInteriorShader->addUniformLocation("cubemapSampler", 5);
+	mInteriorShader->addUniformLocation("cubemapSampler", 4);
 
 	mInteriorShader->addAttribute("vertexPosition",  3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
 	mInteriorShader->addAttribute("vertexUV",        2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
@@ -433,7 +432,7 @@ void Scene::run() {
 
 	Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
 	player->material = new Material("marble.skin");
-	player->material->setTexture(marbleCubemap, GL_TEXTURE5);
+	player->material->setTexture(marbleCubemap, GL_TEXTURE4);
 	player->material->setShader(mInteriorShader);
 	mPlayer = player;
 	addObject(player);
