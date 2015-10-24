@@ -29,10 +29,11 @@
 #ifndef gameObject_h
 #define gameObject_h
 
+#include <glm/matrix.hpp>
+
 #include "base/types.h"
 #include "game/movement.h"
-#include <glm/matrix.hpp>
-#include "graphics/shader.h"
+#include "render/renderInfo.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -51,7 +52,7 @@ public:
 	virtual ~GameObject() {};
 
 	virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix);
-	virtual void render(Shader *shader);
+	virtual void render(const RenderInfo &info);
 	
 	virtual glm::vec3 getPosition() { return mOrigin; }
 	virtual void setPosition(const glm::vec3 &position) { mOrigin = position; }

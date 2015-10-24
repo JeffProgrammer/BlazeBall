@@ -116,7 +116,7 @@ void Sphere::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &view
 	modelMatrix = glm::scale(modelMatrix, glm::vec3(radius));
 }
 
-void Sphere::render(Shader *shader) {
+void Sphere::render(const RenderInfo &info) {
 	if (!firstDraw) {
 		generate();
 		firstDraw = true;
@@ -125,7 +125,10 @@ void Sphere::render(Shader *shader) {
 	if (!material)
 		return;
 
+	Shader *shader = material->getShader();
 	material->activate();
+	info.loadShader(shader);
+
 	glUniform1f(shader->getUniformLocation("reflectivity"), 1.f);
 
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);

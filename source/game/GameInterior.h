@@ -56,6 +56,8 @@ private:
 	GLuint mVbo;
 
 public:
+	Material *mMaterial;
+
 	GameInterior();
 	GameInterior(DIF::Interior interior);
 	virtual ~GameInterior();
@@ -71,7 +73,7 @@ public:
 	void gfxInit();
 
 	void init();
-	virtual void render(Shader *shader);
+	virtual void render(const ::RenderInfo &info);
 
 	virtual glm::vec3 getPosition();
 	virtual glm::quat getRotation();

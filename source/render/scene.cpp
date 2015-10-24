@@ -115,7 +115,7 @@ void Scene::renderScene(const RenderInfo &info) {
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
 		glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
-		object->render(mInteriorShader);
+		object->render(info);
 	}
 
 	mInteriorShader->deactivate();
@@ -138,7 +138,7 @@ void Scene::renderScene(const RenderInfo &info) {
 	glUniform1f(mSkyboxShader->getUniformLocation("extent"), 1000.f);
 	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
 
-	mSkybox->render(mSkyboxShader);
+	mSkybox->render(info);
 	mSkyboxShader->deactivate();
 	glDepthFunc(GL_LESS);
 
@@ -431,6 +431,7 @@ void Scene::run() {
 
 		CubeMapTexture *cubeMap = new CubeMapTexture(textures);
 		Material *skyMaterial = new Material("skybox", cubeMap, GL_TEXTURE0);
+		skyMaterial->setShader(mSkyboxShader);
 		mSkybox = new Skybox(skyMaterial);
 	}
 
@@ -441,6 +442,7 @@ void Scene::run() {
 	Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
 	player->material = new Material("marble.skin");
 	player->material->setTexture(marbleCubemap, GL_TEXTURE5);
+	player->material->setShader(mInteriorShader);
 	mPlayer = player;
 	addObject(player);
 	

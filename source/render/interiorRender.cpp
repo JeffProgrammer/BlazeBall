@@ -140,11 +140,12 @@ void GameInterior::init() {
 	renderInfo.generated = true;
 }
 
-void GameInterior::render(Shader *shader) {
+void GameInterior::render(const ::RenderInfo &info) {
 	if (!renderInfo.generated)
 		init();
 
-	glUniform1f(shader->getUniformLocation("reflectivity"), 0.f);
+	Shader *shader = mMaterial->getShader();
+	info.loadShader(shader);
 
 	// bind vbo
 	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
@@ -155,6 +156,8 @@ void GameInterior::render(Shader *shader) {
 	shader->enableAttribute("vertexNormal",    3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
 	shader->enableAttribute("vertexTangent",   3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
 	shader->enableAttribute("vertexBitangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
+	glUniform1f(shader->getUniformLocation("reflectivity"), 0.f);
+
 	GL_CHECKERRORS();
 
 	U32 start = 0;

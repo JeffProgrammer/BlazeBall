@@ -97,11 +97,12 @@ void Skybox::generate() {
 	mGenerated = true;
 }
 
-void Skybox::render(Shader *shader) {
+void Skybox::render(const RenderInfo &info) {
 	if (!mGenerated) {
 		generate();
 	}
 
+	Shader *shader = mMaterial->getShader();
 	mMaterial->activate();
 
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);

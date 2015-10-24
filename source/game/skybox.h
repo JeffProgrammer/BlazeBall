@@ -52,7 +52,7 @@ public:
 		return mMaterial;
 	}
 
-	virtual void render(Shader *shader);
+	virtual void render(const RenderInfo &info);
 	virtual inline void updateTick(const F64 &deltaMS) {};
 };
 
