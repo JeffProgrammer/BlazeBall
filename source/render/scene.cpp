@@ -165,11 +165,18 @@ bool Scene::initGL() {
 	mInteriorShader->addUniformLocation("skyboxSampler", 4);
 	mInteriorShader->addUniformLocation("cubemapSampler", 5);
 
+	mInteriorShader->addAttribute("vertexPosition",  3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
+	mInteriorShader->addAttribute("vertexUV",        2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
+	mInteriorShader->addAttribute("vertexNormal",    3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
+	mInteriorShader->addAttribute("vertexTangent",   3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
+	mInteriorShader->addAttribute("vertexBitangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
+
 	mShapeShader->addUniformLocation("textureSampler", 0);
 	mShapeShader->addUniformLocation("normalSampler", 1);
 	mShapeShader->addUniformLocation("specularSampler", 2);
 
 	mSkyboxShader->addUniformLocation("cubemapSampler", 0);
+	mSkyboxShader->addAttribute("vertexPosition", 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);

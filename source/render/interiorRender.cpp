@@ -157,15 +157,8 @@ void GameInterior::render(const ::RenderInfo &info) {
 
 	// bind vbo
 	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
-
-	// enable attributes
-	shader->enableAttribute("vertexPosition",  3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
-	shader->enableAttribute("vertexUV",        2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
-	shader->enableAttribute("vertexNormal",    3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
-	shader->enableAttribute("vertexTangent",   3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
-	shader->enableAttribute("vertexBitangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
+	
 	glUniform1f(shader->getUniformLocation("reflectivity"), 0.f);
-
 	GL_CHECKERRORS();
 
 	U32 start = 0;
@@ -188,14 +181,6 @@ void GameInterior::render(const ::RenderInfo &info) {
 			}
 		}
 	}
-	GL_CHECKERRORS();
-
-	//Disable arrays
-	shader->disableAttribute("vertexPosition");
-	shader->disableAttribute("vertexUV");
-	shader->disableAttribute("vertexNormal");
-	shader->disableAttribute("vertexTangent");
-	shader->disableAttribute("vertexBitangent");
 	GL_CHECKERRORS();
 
 	mMaterial->deactivate();

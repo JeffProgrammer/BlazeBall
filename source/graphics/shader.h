@@ -43,6 +43,14 @@
 
 class Shader {
 protected:
+	struct AttributeInfo {
+		GLint size;
+		GLenum type;
+		GLboolean normalized;
+		GLsizei stride;
+		const GLvoid *pointer;
+	};
+
 	GLuint vertId;
 	GLuint fragId;
 	GLuint programId;
@@ -50,7 +58,8 @@ protected:
 	std::unordered_map<std::string, GLuint> mUniformLocations;
 	std::unordered_map<std::string, GLuint> mAttribLocations;
 	std::unordered_map<std::string, GLuint> mSetUniformLocations;
-	
+	std::unordered_map<std::string, AttributeInfo> mAttributes;
+
 	/**
 	 * Load a shader from a given path with a given type.
 	 * @param path The file path of the shader to load
@@ -118,6 +127,7 @@ public:
 	void disableAttribute(const std::string &name);
 
 	void addUniformLocation(const std::string &name, GLuint position);
+	void addAttribute(const std::string &name, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
 };
 
 #endif
