@@ -130,14 +130,15 @@ void Sphere::render(const RenderInfo &info) {
 	info.loadShader(shader);
 
 	loadModelMatrix(info, shader);
-
 	glUniform1f(shader->getUniformLocation("reflectivity"), 1.f);
 
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
-	// enable attributes
+	shader->enableAttributes();
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
 
+	shader->disableAttributes();
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	material->deactivate();
 }
 

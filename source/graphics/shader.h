@@ -128,6 +128,9 @@ public:
 
 	void addUniformLocation(const std::string &name, GLuint position);
 	void addAttribute(const std::string &name, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+
+	void enableAttributes();
+	void disableAttributes();
 };
 
 #endif

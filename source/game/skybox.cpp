@@ -114,12 +114,13 @@ void Skybox::render(const RenderInfo &info) {
 	glUniformMatrix4fv(shader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
+	shader->enableAttributes();
 
 	//Simple draw
 	glDrawArrays(GL_TRIANGLES, 0, sVertCount);
 
+	shader->disableAttributes();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 	mMaterial->deactivate();
 
 	glDepthFunc(GL_LESS);

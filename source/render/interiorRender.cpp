@@ -157,7 +157,8 @@ void GameInterior::render(const ::RenderInfo &info) {
 
 	// bind vbo
 	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
-	
+	shader->enableAttributes();
+
 	glUniform1f(shader->getUniformLocation("reflectivity"), 0.f);
 	GL_CHECKERRORS();
 
@@ -183,5 +184,6 @@ void GameInterior::render(const ::RenderInfo &info) {
 	}
 	GL_CHECKERRORS();
 
+	shader->disableAttributes();
 	mMaterial->deactivate();
 }

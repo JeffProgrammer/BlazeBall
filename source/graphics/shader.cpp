@@ -184,15 +184,10 @@ void Shader::activate() {
 	for (auto &setUniform : mSetUniformLocations) {
 		setUniformLocation(setUniform.first, setUniform.second);
 	}
-	for (auto &attribute : mAttributes) {
-		enableAttribute(attribute.first, attribute.second.size, attribute.second.type, attribute.second.normalized, attribute.second.stride, attribute.second.pointer);
-	}
 }
 
 void Shader::deactivate() {
-	for (auto &attribute : mAttributes) {
-		disableAttribute(attribute.first);
-	}
+
 }
 
 void Shader::enableAttribute(const std::string &name, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) {
@@ -218,4 +213,16 @@ void Shader::addAttribute(const std::string &name, GLint size, GLenum type, GLbo
 	info.pointer = pointer;
 
 	mAttributes[name] = info;
+}
+
+void Shader::enableAttributes() {
+	for (auto &attribute : mAttributes) {
+		enableAttribute(attribute.first, attribute.second.size, attribute.second.type, attribute.second.normalized, attribute.second.stride, attribute.second.pointer);
+	}
+}
+
+void Shader::disableAttributes() {
+	for (auto &attribute : mAttributes) {
+		disableAttribute(attribute.first);
+	}
 }
