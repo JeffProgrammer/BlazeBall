@@ -64,23 +64,6 @@ void Scene::render() {
 	if (controlObject)
 		controlObject->getCameraPosition(cameraTransform, cameraPosition);
 
-	//todo: make the lambda take renderinfo
-	marbleCubemap->generateBuffer(mPlayer->getPosition(), window->getWindowSize() * (S32)pixelDensity, [&](const glm::mat4 &projectionMat, const glm::mat4 &viewMat) {
-		RenderInfo info;
-		info.projectionMatrix = projectionMat;
-		info.viewMatrix = viewMat;
-		info.cameraPosition = mPlayer->getPosition();
-		
-		info.lightColor = lightColor;
-		info.ambientColor = ambientColor;
-		info.sunPosition = sunPosition;
-		info.specularExponent = specularExponent;
-
-		info.isReflectionPass = true;
-
-		this->renderScene(info);
-	});
-
 	//Camera
 	glm::mat4 viewMatrix = glm::mat4x4(1);
 	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
@@ -97,6 +80,10 @@ void Scene::render() {
 	info.specularExponent = specularExponent;
 
 	info.isReflectionPass = false;
+
+	marbleCubemap->generateBuffer(mPlayer->getPosition(), window->getWindowSize() * (S32)pixelDensity, [&](const RenderInfo &info) {
+		this->renderScene(info);
+	}, info);
 
 	//Actually render everything
 	renderScene(info);

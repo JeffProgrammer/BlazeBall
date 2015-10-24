@@ -30,6 +30,7 @@
 #define cubeMapFramebufferTexture_h
 
 #include "cubeMapTexture.h"
+#include "render/renderInfo.h"
 #include <functional>
 
 class CubeMapFramebufferTexture : public CubeMapTexture {
@@ -52,7 +53,7 @@ public:
 
 	virtual void generateBuffer();
 	void destroyBuffer();
-	void generateBuffer(glm::vec3 center, glm::ivec2 screenSize, std::function<void(const glm::mat4&, const glm::mat4&)> renderMethod);
+	void generateBuffer(glm::vec3 center, glm::ivec2 screenSize, std::function<void(const RenderInfo &info)> renderMethod, RenderInfo info);
 };
 
 #endif /* cubeMapFramebufferTexture_h */

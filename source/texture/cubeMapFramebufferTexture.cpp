@@ -107,7 +107,7 @@ void CubeMapFramebufferTexture::destroyBuffer() {
 	glDeleteRenderbuffers(1, &depthBuffer);
 	glDeleteTextures(1, &mBuffer);
 }
-void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, glm::ivec2 screenSize, std::function<void(const glm::mat4&, const glm::mat4&)> renderMethod) {
+void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, glm::ivec2 screenSize, std::function<void(const RenderInfo &info)> renderMethod, RenderInfo info) {
 	//Need to set viewport size otherwise it will only get the corner part of the frame
 	glViewport(0, 0, extent.x, extent.y);
 
@@ -128,6 +128,9 @@ void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, glm::ivec2 scre
 	checkStatus();
 #endif
 
+	//We've copied info so we should set this
+	info.isReflectionPass = true;
+
 	//Render each of the faces of the cubemap
 	for (int i = PositiveX; i <= NegativeZ; i ++) {
 		//Set up the view matrix to orient around the given center point
@@ -141,8 +144,13 @@ void CubeMapFramebufferTexture::generateBuffer(glm::vec3 center, glm::ivec2 scre
 		GL_CHECKERRORS();
 #endif
 
+		//Update the matrices on info (it's copied so this is ok)
+		info.projectionMatrix = projectionMat;
+		info.viewMatrix = viewMat;
+		info.cameraPosition = center;
+
 		//Let the scene render itself
-		renderMethod(projectionMat, viewMat);
+		renderMethod(info);
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
