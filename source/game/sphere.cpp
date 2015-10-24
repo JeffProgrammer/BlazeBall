@@ -122,6 +122,10 @@ void Sphere::render(Shader *shader) {
 		firstDraw = true;
 	}
 
+	if (!material)
+		return;
+
+	material->activate();
 	glUniform1f(shader->getUniformLocation("reflectivity"), 1.f);
 
 	if (material) {
@@ -143,9 +147,8 @@ void Sphere::render(Shader *shader) {
 	shader->disableAttribute("vertexNormal");
 	shader->disableAttribute("vertexTangent");
 	shader->disableAttribute("vertexBitangent");
-	if (material) {
-		material->deactivate();
-	}
+
+	material->deactivate();
 }
 
 void Sphere::applyTorque(const glm::vec3 &torque) {
