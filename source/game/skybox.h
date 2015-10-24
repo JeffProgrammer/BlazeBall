@@ -31,25 +31,25 @@
 
 #include "gameObject.h"
 #include "graphics/cubeMapTexture.h"
+#include "render/material.h"
 
 class Skybox : public GameObject {
 protected:
 	GLuint mBuffer;
 	bool mGenerated;
 
-	CubeMapTexture *mTexture;
-
+	Material *mMaterial;
 public:
-	Skybox(CubeMapTexture *texture);
+	Skybox(Material *material);
 	virtual ~Skybox();
 
 	void generate();
 
-	void setTexture(CubeMapTexture *texture) {
-		mTexture = texture;
+	void setMaterial(Material *material) {
+		mMaterial = material;
 	}
-	CubeMapTexture *getTexture() {
-		return mTexture;
+	Material *getMaterial() {
+		return mMaterial;
 	}
 
 	virtual void render(Shader *shader);

@@ -430,7 +430,8 @@ void Scene::run() {
 		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky5.jpg", CubeMapTexture::NegativeZ));
 
 		CubeMapTexture *cubeMap = new CubeMapTexture(textures);
-		mSkybox = new Skybox(cubeMap);
+		Material *skyMaterial = new Material("skybox", cubeMap, GL_TEXTURE0);
+		mSkybox = new Skybox(skyMaterial);
 	}
 
 	Camera *camera = new Camera();
