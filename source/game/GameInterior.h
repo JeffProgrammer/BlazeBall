@@ -69,8 +69,9 @@ public:
 	void setInterior(const DIF::Interior &interior) { mInterior = interior; }
 
 	void gfxInit();
-
 	void init();
+
+	virtual bool isReflectable() { return true; }
 	virtual void render(Shader *shader, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix);
 
 	virtual glm::vec3 getPosition();

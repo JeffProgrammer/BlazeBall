@@ -131,6 +131,9 @@ void Scene::render() {
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMat[0][0]);
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMat[0][0]);
 		for (auto object : objects) {
+			if (!object->isReflectable())
+				continue;
+			
 			glm::mat4 modelMatrix(1);
 			object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
 			glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
