@@ -49,6 +49,7 @@
 #include "game/skybox.h"
 #include "graphics/cubeMapFramebufferTexture.h"
 #include "render/modelManager.h"
+#include "renderInfo.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -61,49 +62,6 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/vec3.hpp>
-
-//todo: vector also per-shader
-#define PROJECTION_MATRIX_UNIFORM_NAME "projectionMat"
-#define VIEW_MATRIX_UNIFORM_NAME "viewMat"
-#define INVERSE_VIEW_MATRIX_UNIFORM_NAME "inverseViewMat"
-#define CAMERA_POSITION_UNIFORM_NAME "cameraPos"
-
-#define LIGHT_COLOR_UNIFORM_NAME "lightColor"
-#define AMBIENT_LIGHT_COLOR_UNIFORM_NAME "ambientColor"
-#define SUN_POSITION_UNIFORM_NAME "sunPosition"
-#define SPECULAR_EXPONENT_UNIFORM_NAME "specularExponent"
-
-struct RenderInfo {
-	static glm::mat4 inverseRotMat;
-
-	glm::mat4 projectionMatrix;
-	glm::mat4 viewMatrix;
-	glm::vec3 cameraPosition;
-
-	glm::vec4 lightColor;
-	glm::vec4 ambientColor;
-	glm::vec3 sunPosition;
-	U32 specularExponent;
-
-	inline void loadShader(Shader *shader) const {
-		if (shader->getUniformLocation(PROJECTION_MATRIX_UNIFORM_NAME) != -1)
-			glUniformMatrix4fv(shader->getUniformLocation(PROJECTION_MATRIX_UNIFORM_NAME),   1, GL_FALSE, &projectionMatrix[0][0]);
-		if (shader->getUniformLocation(VIEW_MATRIX_UNIFORM_NAME) != -1)
-			glUniformMatrix4fv(shader->getUniformLocation(VIEW_MATRIX_UNIFORM_NAME),         1, GL_FALSE, &viewMatrix[0][0]);
-		if (shader->getUniformLocation(INVERSE_VIEW_MATRIX_UNIFORM_NAME) != -1)
-			glUniformMatrix4fv(shader->getUniformLocation(INVERSE_VIEW_MATRIX_UNIFORM_NAME), 1, GL_FALSE, &inverseRotMat[0][0]);
-		if (shader->getUniformLocation(CAMERA_POSITION_UNIFORM_NAME) != -1)
-			glUniform3fv      (shader->getUniformLocation(CAMERA_POSITION_UNIFORM_NAME),     1,           &cameraPosition[0]);
-		if (shader->getUniformLocation(LIGHT_COLOR_UNIFORM_NAME) != -1)
-			glUniform4fv      (shader->getUniformLocation(LIGHT_COLOR_UNIFORM_NAME),         1,           &lightColor.r);
-		if (shader->getUniformLocation(AMBIENT_LIGHT_COLOR_UNIFORM_NAME) != -1)
-			glUniform4fv      (shader->getUniformLocation(AMBIENT_LIGHT_COLOR_UNIFORM_NAME), 1,           &ambientColor.r);
-		if (shader->getUniformLocation(SUN_POSITION_UNIFORM_NAME) != -1)
-			glUniform3fv      (shader->getUniformLocation(SUN_POSITION_UNIFORM_NAME),        1,           &sunPosition.x);
-		if (shader->getUniformLocation(SPECULAR_EXPONENT_UNIFORM_NAME) != -1)
-			glUniform1f       (shader->getUniformLocation(SPECULAR_EXPONENT_UNIFORM_NAME),                static_cast<F32>(specularExponent));
-	}
-};
 
 class Scene {
 protected:
