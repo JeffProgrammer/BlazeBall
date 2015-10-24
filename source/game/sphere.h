@@ -41,9 +41,10 @@
 #include "physics/physicsBody.h"
 #include "render/material.h"
 #include "game/movement.h"
+#include "IRenderedObject.h"
 #include <glm/matrix.hpp>
 
-class Sphere : public GameObject {
+class Sphere : public IRenderedObject {
 	const F32 AppliedAcceleration = 150.f; //Maximum, lowers when reaching max roll velocity
 	const F32 MaxRollVelocity     = 15.f; //In one direction (diagonal-supported)
 	const F32 MaxAirSpinVelocity  = 50.f; //Same as above but for angular, only when falling

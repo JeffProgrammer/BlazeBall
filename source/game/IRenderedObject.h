@@ -26,66 +26,22 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef gameInterior_h
-#define gameInterior_h
 
-#include "base/io.h"
-#include "base/types.h"
-#include "render/material.h"
-#include "physics/physicsEngine.h"
-#include "game/gameObject.h"
-#include "base/ray.h"
-#include "IRenderedObject.h"
+#ifndef IRenderedObject_h
+#define IRenderedObject_h
 
-#include <dif/objects/dif.h>
-#include <vector>
+#include "gameObject.h"
+#include "graphics/shader.h"
 
-class GameInterior : public IRenderedObject {
-private:
-	DIF::Interior mInterior;
-	std::vector<Material*> mMaterialList;
-	Texture *mNoiseTexture;
-
-	PhysicsBody *mActor;
-	
-	struct RenderInfo {
-		std::vector<U32> numMaterialTriangles;
-		bool generated;
-	};
-	RenderInfo renderInfo;
-	
-	GLuint mVbo;
-
+class IRenderedObject : public GameObject {
 public:
-	Material *mMaterial;
-
-	GameInterior();
-	GameInterior(DIF::Interior interior);
-	virtual ~GameInterior();
-	
-	void generateMaterials(std::string directory);
-	void generateMesh();
-	void exportObj(FILE *file);
-	U32 rayCast(RayF ray);
-
-	const DIF::Interior &getInterior() {return mInterior;}
-	void setInterior(const DIF::Interior &interior) { mInterior = interior; }
-
-	void gfxInit();
-
-	void init();
-	virtual void render(const ::RenderInfo &info);
-
-	virtual glm::vec3 getPosition();
-	virtual glm::quat getRotation();
-
-	virtual void setPosition(const glm::vec3 &pos);
-	virtual void setRotation(const glm::quat &rot);
-
-	virtual glm::vec3 getScale();
-	virtual void setScale(const glm::vec3 &scale);
-	
-	virtual inline void updateTick(const F64 &deltaMS) {};
+	inline void loadModelMatrix(Shader *Shader) {
+		glm::mat4 modelMatrix(1);
+		loadMatrix(info.projectionMatrix, info.viewMatrix, modelMatrix);
+		glUniformMatrix4fv(shader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+		glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
+		glUniformMatrix4fv(shader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
+	}
 };
 
 #endif
