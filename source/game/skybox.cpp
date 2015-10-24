@@ -104,6 +104,7 @@ void Skybox::render(const RenderInfo &info) {
 
 	Shader *shader = mMaterial->getShader();
 	mMaterial->activate();
+	info.loadShader(shader);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	shader->enableAttribute("vertexPosition", 3, GL_FLOAT, GL_FALSE, 0, 0);

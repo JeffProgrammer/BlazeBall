@@ -105,8 +105,6 @@ void Scene::renderScene(const RenderInfo &info) {
 	glEnable(GL_MULTISAMPLE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	mInteriorShader->activate();
-
 	//Send to OpenGL
 	info.loadShader(mInteriorShader);
 	for (auto object : objects) {
@@ -118,8 +116,6 @@ void Scene::renderScene(const RenderInfo &info) {
 		object->render(info);
 	}
 
-	mInteriorShader->deactivate();
-
 	// render models.
 	// yeah i know this is shitty rendering at the moment, we need to actually batch shit.
 	mShapeShader->activate();
@@ -129,9 +125,6 @@ void Scene::renderScene(const RenderInfo &info) {
 	mShapeShader->deactivate();
 
 	glDepthFunc(GL_LEQUAL);
-	mSkyboxShader->activate();
-
-	info.loadShader(mSkyboxShader);
 
 	//Strip any positional data from the camera, so we just have rotation
 	glm::mat4 skyboxView = glm::mat4(glm::mat3(info.viewMatrix));
@@ -139,7 +132,6 @@ void Scene::renderScene(const RenderInfo &info) {
 	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
 
 	mSkybox->render(info);
-	mSkyboxShader->deactivate();
 	glDepthFunc(GL_LESS);
 
 	// check for opengl errors
