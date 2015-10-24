@@ -130,7 +130,7 @@ void Sphere::render(const RenderInfo &info) {
 	info.loadShader(shader);
 
 	loadModelMatrix(info, shader);
-	glUniform1f(shader->getUniformLocation("reflectivity"), 1.f);
+	shader->setUniform("reflectivity", 1.f);
 
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
 	shader->enableAttributes();

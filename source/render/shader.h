@@ -164,6 +164,71 @@ public:
 	 * Disable all saved attributes that were added using addAttribute()
 	 */
 	void disableAttributes();
+
+	/**
+	 * Set a scalar uniform's value for the shader
+	 * @param name The name of the uniform to set
+	 * @param data The desired value
+	 */
+	template <typename T>
+	void setUniform(const std::string &name, const T &data);
+
+	/**
+	 * Set a vector uniform's value for the shader
+	 * @param name The name of the uniform to set
+	 * @param data The desired value
+	 */
+	template <typename T>
+	void setUniformVector(const std::string &name, const T &data);
+
+	/**
+	 * Set a matrix uniform's value for the shader
+	 * @param name The name of the uniform to set
+	 * @param data The desired value
+	 */
+	template <typename T>
+	void setUniformMatrix(const std::string &name, GLboolean transpose, const T &data);
 };
+
+#define ShaderUniformScalar(type, fn) \
+template<> inline void Shader::setUniform(const std::string &name, const type &data) { \
+	GLint location = getUniformLocation(name); \
+	if (location == -1) { \
+		return; \
+	} \
+	fn(location, data); \
+}
+
+ShaderUniformScalar(GLint, glUniform1i);
+ShaderUniformScalar(GLfloat, glUniform1f);
+
+#define ShaderUniformVector(type, fn) \
+template<> inline void Shader::setUniformVector(const std::string &name, const type &data) { \
+	GLint location = getUniformLocation(name); \
+	if (location == -1) { \
+		return; \
+	} \
+	fn(location, 1, &data[0]); \
+}
+
+ShaderUniformVector(glm::vec2, glUniform2fv);
+ShaderUniformVector(glm::vec3, glUniform3fv);
+ShaderUniformVector(glm::vec4, glUniform4fv);
+
+ShaderUniformVector(glm::ivec2, glUniform2iv);
+ShaderUniformVector(glm::ivec3, glUniform3iv);
+ShaderUniformVector(glm::ivec4, glUniform4iv);
+
+#define ShaderUniformMatrix(type, fn) \
+template<> inline void Shader::setUniformMatrix(const std::string &name, GLboolean transpose, const type &data) { \
+	GLint location = getUniformLocation(name); \
+	if (location == -1) { \
+		return; \
+	} \
+	fn(location, 1, transpose, &data[0][0]); \
+}
+
+ShaderUniformMatrix(glm::mat3, glUniformMatrix3fv);
+ShaderUniformMatrix(glm::mat4, glUniformMatrix4fv);
 
 #endif

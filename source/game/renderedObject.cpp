@@ -50,8 +50,6 @@ void RenderedObject::loadModelMatrix(const RenderInfo &info, Shader *shader) {
 	glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
 
 	//Load it into the shader
-	if (shader->getUniformLocation("modelMat") != -1)
-		glUniformMatrix4fv(shader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
-	if (shader->getUniformLocation("inverseModelMat") != -1)
-		glUniformMatrix4fv(shader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
+	shader->setUniformMatrix("modelMat", GL_FALSE, modelMatrix);
+	shader->setUniformMatrix("inverseModelMat", GL_FALSE, inverseModelMatrix);
 }

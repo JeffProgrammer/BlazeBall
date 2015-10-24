@@ -110,7 +110,7 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 
 		glm::mat4x4 modelMatrix = glm::mat4x4(1);
 		shape->calculateModelMatrix(info, modelMatrix);
-		glUniformMatrix4fv(shapeShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+		shapeShader->setUniformMatrix("modelMat", GL_FALSE, modelMatrix);
 
 		for (const auto &mesh : meshes) {
 			mesh.material->activate();

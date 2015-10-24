@@ -162,7 +162,7 @@ void GameInterior::render(const ::RenderInfo &info) {
 	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
 	shader->enableAttributes();
 
-	glUniform1f(shader->getUniformLocation("reflectivity"), 0.f);
+	shader->setUniform("reflectivity", 0.f);
 	GL_CHECKERRORS();
 
 	U32 start = 0;
