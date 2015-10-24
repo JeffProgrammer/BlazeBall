@@ -26,54 +26,91 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef gameObject_h
-#define gameObject_h
-
-#include "base/types.h"
-#include "game/movement.h"
+#include "skybox.h"
+#include <glm/glm.hpp>
 #include <glm/matrix.hpp>
-#include "graphics/shader.h"
+#include <glm/gtc/matrix_transform.hpp>
 
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/glew.h>
-#endif
+static GLfloat sVertices[] = {
+	-1.0f, 1.0f, -1.0f,
+	-1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+	1.0f, 1.0f, -1.0f,
+	-1.0f, 1.0f, -1.0f,
 
-class GameObject {
-protected:
-	glm::vec3 mOrigin;
-	glm::quat mRotation;
-	glm::vec3 mScale;
-	
-public:
-	GameObject() : mOrigin(glm::vec3(0)), mRotation(glm::quat()), mScale(glm::vec3(1)) {};
-	virtual ~GameObject() {};
+	-1.0f, -1.0f, 1.0f,
+	-1.0f, -1.0f, -1.0f,
+	-1.0f, 1.0f, -1.0f,
+	-1.0f, 1.0f, -1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, -1.0f, 1.0f,
 
-	virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix);
-	virtual void render(Shader *shader, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix);
-	
-	virtual glm::vec3 getPosition() { return mOrigin; }
-	virtual void setPosition(const glm::vec3 &position) { mOrigin = position; }
+	1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
 
-	virtual glm::quat getRotation() { return mRotation; }
-	virtual void setRotation(const glm::quat &rotation) { mRotation = rotation; }
+	-1.0f, -1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, -1.0f, 1.0f,
+	-1.0f, -1.0f, 1.0f,
 
-	virtual glm::vec3 getScale() { return mScale; }
-	virtual void setScale(const glm::vec3 &scale) { mScale = scale; }
+	-1.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, -1.0f,
 
-	virtual void updateCamera(const Movement &movement, const F64 &deltaMS);
-	virtual void updateMove(const Movement &movement, const F64 &deltaMS);
-	virtual void getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos);
-
-	virtual void updateTick(const F64 &deltaMS);
-
-	/**
-	 * Called before the frame is rendered.
-	 * @param deltaMS the time stamp between the last and current frame.
-	 * @note Called every frame.
-	 */
-	virtual void update(const F64 &deltaMS);
+	-1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f, 1.0f,
+	1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f, 1.0f,
+	1.0f, -1.0f, 1.0f
 };
+static U32 sVertCount = sizeof(sVertices) / sizeof(GLfloat);
 
-#endif
+Skybox::Skybox(CubeMapTexture *texture) : mTexture(texture), mGenerated(false) {
+
+}
+
+Skybox::~Skybox() {
+	if (mGenerated) {
+		glDeleteBuffers(1, &mBuffer);
+	}
+}
+
+void Skybox::generate() {
+	glGenBuffers(1, &mBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
+
+	//Just use the contents of sVertices
+	glBufferData(GL_ARRAY_BUFFER, sVertCount * sizeof(GLfloat), sVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	mGenerated = true;
+}
+
+void Skybox::render(Shader *shader) {
+	if (!mGenerated) {
+		generate();
+	}
+
+	mTexture->activate(GL_TEXTURE0);
+	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
+	shader->enableAttribute("vertexPosition", 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	//Simple draw
+	glDrawArrays(GL_TRIANGLES, 0, sVertCount);
+
+	shader->disableAttribute("vertexPosition");
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	mTexture->deactivate();
+}
+

@@ -29,7 +29,8 @@
 #ifndef _GRAPHICS_UTIL_H_
 #define _GRAPHICS_UTIL_H_
 
-#ifdef _DEBUG
+#ifndef NDEBUG
+#define GRAPHICS_DEBUG
 #define GL_CHECKERRORS() GL::checkErrors(__FILE__, __LINE__)
 #else
 #define GL_CHECKERRORS()

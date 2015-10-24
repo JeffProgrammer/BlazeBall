@@ -30,6 +30,7 @@
 #include "game/gameInterior.h"
 #include "game/camera.h"
 #include "game/Shape.h"
+#include "game/skybox.h"
 #include "graphics/util.h"
 #include <chrono>
 #include <thread>
@@ -74,16 +75,18 @@ void Scene::loadShaderUniforms() {
 void Scene::render() {
 	//Get the camera transform from the marble
 	glm::mat4 cameraTransform;
+	glm::vec3 cameraPosition;
 	if (controlObject)
-		controlObject->getCameraPosition(cameraTransform);
+		controlObject->getCameraPosition(cameraTransform, cameraPosition);
 
 	//Camera
 	viewMatrix = glm::mat4x4(1);
 	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
 	viewMatrix *= cameraTransform;
 
+	glm::mat4 inverseRotMat = glm::rotate(glm::mat4x4(1), -90.0f, glm::vec3(1, 0, 0));
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
@@ -94,9 +97,14 @@ void Scene::render() {
 	mInteriorShader->setUniformLocation("normalSampler", 1);
 	mInteriorShader->setUniformLocation("specularSampler", 2);
 	mInteriorShader->setUniformLocation("noiseSampler", 3);
+	mInteriorShader->setUniformLocation("skyboxSampler", 4);
 	loadShaderUniforms();
+
 	//Send to OpenGL
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
 	glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseRotMat"), 1, GL_FALSE, &inverseRotMat[0][0]);
+	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
 	for (auto object : objects) {
 		// THIS IS WHY WE NEED SCENE MANAGEMENT.
 		// SLOW!!!
@@ -109,8 +117,66 @@ void Scene::render() {
 		glm::mat4 modelMatrix(1);
 		object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
 		glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+		glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
+		glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
 		object->render(mInteriorShader, projectionMatrix, viewMatrix);
 	}
+
+	mInteriorShader->deactivate();
+
+	marbleCubemap->generateBuffer(mPlayer->getPosition(), window->getWindowSize() * (S32)pixelDensity, [&](const glm::mat4 &projectionMat, const glm::mat4 &viewMat) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		mInteriorShader->activate();
+		glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMat[0][0]);
+		glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMat[0][0]);
+		for (auto object : objects) {
+			glm::mat4 modelMatrix(1);
+			object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
+			glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+			glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
+			glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
+			object->render(mInteriorShader);
+		}
+		mInteriorShader->deactivate();
+
+		glDepthFunc(GL_LEQUAL);
+		mSkyboxShader->activate();
+		mSkyboxShader->setUniformLocation("cubemapSampler", 0);
+
+		//Strip any positional data from the camera, so we just have rotation
+		glm::mat4 skyboxView = glm::mat4(glm::mat3(viewMat));
+		glUniform1f(mSkyboxShader->getUniformLocation("extent"), 1000.f);
+		glUniform3fv(mSkyboxShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
+		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMat[0][0]);
+		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
+
+		mSkybox->render(mSkyboxShader);
+		mSkyboxShader->deactivate();
+		glDepthFunc(GL_LESS);
+
+		GL_CHECKERRORS();
+	});
+
+	mInteriorShader->activate();
+
+	mInteriorShader->setUniformLocation("cubemapSampler", 5);
+	marbleCubemap->activate(GL_TEXTURE5);
+
+	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
+	glm::mat4 modelMatrix(1);
+	mPlayer->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+	glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
+	glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
+	GL_CHECKERRORS();
+
+	mPlayer->render(mInteriorShader);
+	GL_CHECKERRORS();
+
+	marbleCubemap->deactivate();
 	mInteriorShader->deactivate();
 
 	// render models.
@@ -124,6 +190,21 @@ void Scene::render() {
 
 	MODELMGR->render(mShapeShader, viewMatrix, projectionMatrix);
 	mShapeShader->deactivate();
+
+	glDepthFunc(GL_LEQUAL);
+	mSkyboxShader->activate();
+	mSkyboxShader->setUniformLocation("cubemapSampler", 0);
+
+	//Strip any positional data from the camera, so we just have rotation
+	glm::mat4 skyboxView = glm::mat4(glm::mat3(viewMatrix));
+	glUniform3fv(mSkyboxShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
+	glUniform1f(mSkyboxShader->getUniformLocation("extent"), 1000.f);
+	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
+	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
+
+	mSkybox->render(mSkyboxShader, projectionMatrix, viewMatrix);
+	mSkyboxShader->deactivate();
+	glDepthFunc(GL_LESS);
 
 	GL_CHECKERRORS();
 
@@ -175,6 +256,7 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 bool Scene::initGL() {
 	mInteriorShader = new Shader("interiorV.glsl", "interiorF.glsl");
 	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
+	mSkyboxShader = new Shader("skyboxV.glsl", "skyboxF.glsl");
 	mParticleShader = new Shader("particleV.glsl", "particleF.glsl");
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -184,8 +266,17 @@ bool Scene::initGL() {
 	glm::ivec2 screenSize = window->getWindowSize();
 	updateWindowSize(screenSize);
 
+	GLint viewport[4]; //x y w h
+	glGetIntegerv(GL_VIEWPORT, viewport);
+
+	//Should be 2x if you have a retina display
+	pixelDensity = viewport[2] / screenSize.x;
+
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
+
+	marbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
+	marbleCubemap->generateBuffer();
 
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
@@ -273,10 +364,13 @@ void Scene::handleEvent(Event *event) {
 				case KeyEvent::KEY_G:
 				{
 					// mega / regular marble
-					if (mPlayer->getRadius() < 1.0f)
+					if (mPlayer->getRadius() < 1.0f) {
 						mPlayer->setRadius(1.0f);
-					else
+						marbleCubemap->setExtent(glm::vec2(256, 256));
+					} else {
 						mPlayer->setRadius(0.2f);
+						marbleCubemap->setExtent(glm::vec2(64, 64));
+					}
 					break;
 				}
 				default:
@@ -392,13 +486,25 @@ void Scene::run() {
 	});
 
 	// onStart
+	{
+		std::vector<CubeMapTexture::TextureInfo> textures;
+		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky0.jpg", CubeMapTexture::PositiveX));
+		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky1.jpg", CubeMapTexture::NegativeX));
+		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky2.jpg", CubeMapTexture::PositiveY));
+		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky3.jpg", CubeMapTexture::NegativeY));
+		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky4.jpg", CubeMapTexture::PositiveZ));
+		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky5.jpg", CubeMapTexture::NegativeZ));
+
+		CubeMapTexture *cubeMap = new CubeMapTexture(textures);
+		mSkybox = new Skybox(cubeMap);
+	}
+
 	Camera *camera = new Camera();
 	addObject(camera);
 	mCamera = camera;
 	Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
-	addObject(player);
 	mPlayer = player;
-
+	
 	mEmitter = new ParticleEmitter();
 	mEmitter->setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
 	addObject(mEmitter);

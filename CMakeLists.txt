@@ -181,15 +181,15 @@ add_library(Mng STATIC ${MNG_SRC})
 target_link_libraries(Mng Jpeg Zlib)
 set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
 
-#------------------------------------------------------------------------------
-# GLEW Library
-#------------------------------------------------------------------------------
-
-add_library(GLEW STATIC thirdparty/glew/src/glew.c)
-set_property(TARGET GLEW APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include")
-target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
-
 if (MSVC)
+	#------------------------------------------------------------------------------
+	# GLEW Library
+	#------------------------------------------------------------------------------
+
+	add_library(GLEW STATIC thirdparty/glew/src/glew.c)
+	set_property(TARGET GLEW APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include")
+	target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
+
 	target_link_libraries(GLEW OpenGL32)
 endif()
 
@@ -295,10 +295,18 @@ set (DIFVIEWERGAME_SRC
 	source/game/particleEmitter.h
 	source/game/shape.cpp
 	source/game/shape.h
+	source/game/skybox.cpp
+	source/game/skybox.h
 	source/game/sphere.cpp
 	source/game/sphere.h
 	
 	# Graphics folder
+	source/graphics/bitmapTexture.cpp
+	source/graphics/bitmapTexture.h
+	source/graphics/cubeMapTexture.cpp
+	source/graphics/cubeMapTexture.h
+	source/graphics/cubeMapFramebufferTexture.cpp
+	source/graphics/cubeMapFramebufferTexture.h
 	source/graphics/shader.cpp
 	source/graphics/shader.h
 	source/graphics/texture.cpp
@@ -344,6 +352,10 @@ set (DIFVIEWERGAME_SRC
 	# Shaders folder
 	source/shaders/interiorF.glsl
 	source/shaders/interiorV.glsl
+	source/shaders/modelF.glsl
+	source/shaders/modelV.glsl
+	source/shaders/skyboxF.glsl
+	source/shaders/skyboxV.glsl
 )
 
 #------------------------------------------------------------------------------
@@ -361,9 +373,6 @@ set (DIFVIEWERGAME_LIBRARIES
 	BulletSoftBody
 	LinearMath
 
-	# GLEW
-	GLEW
-
 	# JPEG
 	Jpeg
 
@@ -380,6 +389,9 @@ set (DIFVIEWERGAME_LIBRARIES
 if (MSVC)
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
+
+	# GLEW
+	GLEW
 
 	Zlib
 	

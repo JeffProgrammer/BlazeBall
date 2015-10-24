@@ -52,7 +52,6 @@ void GameInterior::init() {
 	for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
 		perMaterialTriangles[i] = std::vector<Triangle>(renderInfo.numMaterialTriangles[i]);
 	}
-	mNoiseTexture->generateBuffer();
 
 	std::vector<glm::vec3> tangentMap(mInterior.normal.size());
 	std::vector<glm::vec3> bitangentMap(mInterior.normal.size());
@@ -145,6 +144,8 @@ void GameInterior::render(Shader *shader, const glm::mat4 &projectionMatrix, con
 	if (!renderInfo.generated)
 		init();
 
+	glUniform1f(shader->getUniformLocation("reflectivity"), 0.f);
+
 	// bind vbo
 	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
 
@@ -154,25 +155,30 @@ void GameInterior::render(Shader *shader, const glm::mat4 &projectionMatrix, con
 	shader->enableAttribute("vertexNormal",         3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
 	shader->enableAttribute("vertexTangent",        3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
 	shader->enableAttribute("vertexBitangent",      3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
+	GL_CHECKERRORS();
 
 	U32 start = 0;
 	for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
 		if (renderInfo.numMaterialTriangles[i] > 0) {
 			if (mMaterialList[i]) {
 				mMaterialList[i]->activate();
-				mNoiseTexture->activate();
+				mNoiseTexture->activate(GL_TEXTURE3);
+				GL_CHECKERRORS();
 			} else {
 				printf("Trying to render with invalid material %d: %s\n", i, mInterior.materialName[i].c_str());
 			}
 			glDrawArrays(GL_TRIANGLES, start * 3, renderInfo.numMaterialTriangles[i] * 3);
+			GL_CHECKERRORS();
 			start += renderInfo.numMaterialTriangles[i];
 			if (mMaterialList[i]) {
 				mNoiseTexture->deactivate();
 				mMaterialList[i]->deactivate();
+				GL_CHECKERRORS();
 			}
 		}
 	}
-	
+	GL_CHECKERRORS();
+
 	//Disable arrays
 	shader->disableAttribute("vertexPosition_model");
 	shader->disableAttribute("vertexUV");

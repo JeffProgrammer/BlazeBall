@@ -46,6 +46,8 @@
 #include <vector>
 #include "game/movement.h"
 #include "game/camera.h"
+#include "game/skybox.h"
+#include "graphics/cubeMapFramebufferTexture.h"
 #include "render/modelManager.h"
 #include "game/particleEmitter.h"
 
@@ -84,6 +86,8 @@ protected:
 	} mouseButtons;
 	Movement movement;
 
+	F32 pixelDensity;
+
 public:
 	const glm::vec4 lightColor     = glm::vec4(1.000000f, 1.000000f, 1.000000f, 1.400000f);
 	const glm::vec4 ambientColor   = glm::vec4(0.700000f, 0.700000f, 0.700000f, 1.000000f);
@@ -95,6 +99,8 @@ public:
 	GameObject *controlObject;
 	Camera *mCamera;
 	Sphere *mPlayer;
+	Skybox *mSkybox;
+	CubeMapFramebufferTexture *marbleCubemap;
 	ParticleEmitter *mEmitter;
 
 	Window *window;
@@ -102,6 +108,7 @@ public:
 
 	Shader *mInteriorShader;
 	Shader *mShapeShader;
+	Shader *mSkyboxShader;
 	Shader *mParticleShader;
 	
 	bool mShouldSleep;

@@ -122,6 +122,8 @@ void Sphere::render(Shader *shader, const glm::mat4 &projectionMatrix, const glm
 		firstDraw = true;
 	}
 
+	glUniform1f(shader->getUniformLocation("reflectivity"), 1.f);
+
 	if (material) {
 		material->activate();
 	}
@@ -302,7 +304,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	}
 }
 
-void Sphere::getCameraPosition(glm::mat4x4 &mat) {
+void Sphere::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
 	//Reset the matrix
 	mat = glm::mat4x4(1);
 
@@ -315,8 +317,10 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat) {
 
 	//Offset the camera by the negative position to bring us into the center.
 	// This is not affected by pitch/yaw
-	glm::vec3 pos = getPosition();
-	mat = glm::translate(mat, glm::vec3(-pos.x, -pos.y, -pos.z));
+	mat = glm::translate(mat, -getPosition());
+
+	glm::vec3 rot = glm::mat3(glm::inverse(mat)) * glm::vec3(0, -2.5, 0);
+	pos = getPosition() + rot;
 }
 
 void Sphere::updateTick(const F64 &deltaMS) {

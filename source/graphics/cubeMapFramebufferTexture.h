@@ -26,26 +26,33 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef camera_h
-#define camera_h
+#ifndef cubeMapFramebufferTexture_h
+#define cubeMapFramebufferTexture_h
 
-#include "base/types.h"
-#include "game/gameObject.h"
+#include "cubeMapTexture.h"
+#include <functional>
 
-class Camera : public GameObject {
-	F32 yaw;
-	F32 pitch;
-
-	const F32 cameraSpeed = 0.3f;
-	const F32 keyCameraSpeed = 3.f;
+class CubeMapFramebufferTexture : public CubeMapTexture {
+protected:
+	glm::ivec2 extent;
+	glm::mat4 projectionMat;
+	GLenum framebuffer;
+	GLenum depthBuffer;
 
 public:
-	Camera();
-	virtual ~Camera() {};
+	CubeMapFramebufferTexture(const glm::ivec2 &extent) : CubeMapTexture(std::vector<TextureInfo>()) {
+		setExtent(extent);
+	}
+	virtual ~CubeMapFramebufferTexture();
 
-	virtual void updateCamera(const Movement &movement, const F64 &deltaMS);
-	virtual void updateMove(const Movement &movement, const F64 &deltaMS);
-	virtual void getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos);
+	void setExtent(const glm::ivec2 &extent);
+	glm::ivec2 getExtent() {
+		return this->extent;
+	}
+
+	virtual void generateBuffer();
+	void destroyBuffer();
+	void generateBuffer(glm::vec3 center, glm::ivec2 screenSize, std::function<void(const glm::mat4&, const glm::mat4&)> renderMethod);
 };
 
-#endif
+#endif /* cubeMapFramebufferTexture_h */

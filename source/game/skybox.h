@@ -26,26 +26,33 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef camera_h
-#define camera_h
+#ifndef skybox_h
+#define skybox_h
 
-#include "base/types.h"
-#include "game/gameObject.h"
+#include "gameObject.h"
+#include "graphics/cubeMapTexture.h"
 
-class Camera : public GameObject {
-	F32 yaw;
-	F32 pitch;
+class Skybox : public GameObject {
+protected:
+	GLuint mBuffer;
+	bool mGenerated;
 
-	const F32 cameraSpeed = 0.3f;
-	const F32 keyCameraSpeed = 3.f;
+	CubeMapTexture *mTexture;
 
 public:
-	Camera();
-	virtual ~Camera() {};
+	Skybox(CubeMapTexture *texture);
+	virtual ~Skybox();
 
-	virtual void updateCamera(const Movement &movement, const F64 &deltaMS);
-	virtual void updateMove(const Movement &movement, const F64 &deltaMS);
-	virtual void getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos);
+	void generate();
+
+	void setTexture(CubeMapTexture *texture) {
+		mTexture = texture;
+	}
+	CubeMapTexture *getTexture() {
+		return mTexture;
+	}
+
+	virtual void render(Shader *shader);
 };
 
-#endif
+#endif /* skybox_h */

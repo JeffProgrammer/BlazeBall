@@ -33,6 +33,7 @@
 #include "base/io.h"
 #include "render/bitmap/mngsupport.h"
 #include "render/bitmap/jpegsupport.h"
+#include "graphics/bitmapTexture.h"
 
 bool IO::isfile(const std::string &file) {
 	FILE *stream = fopen(file.c_str(), "rb");
@@ -99,10 +100,10 @@ const std::string IO::getBase(const std::string &file, const char &seperator) {
 Texture *IO::loadTexture(const std::string &file) {
 	U8 *bitmap;
 	glm::ivec2 dims;
-	Texture::BitmapFormat format;
+	BitmapTexture::Format format;
 	std::string extension = getExtension(file);
 
-	bool (*readFn)(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, Texture::BitmapFormat &format);
+	bool (*readFn)(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, BitmapTexture::Format &format);
 
 	//Try to read the image based on format
 	if (extension == "png" || extension == "jng")
@@ -115,7 +116,7 @@ Texture *IO::loadTexture(const std::string &file) {
 	}
 
 	if (readFn(file, bitmap, dims, format)) {
-		Texture *tex = new Texture(bitmap, dims, format);
+		Texture *tex = new BitmapTexture(bitmap, dims, format);
 		delete [] bitmap;
 
 		return tex;
