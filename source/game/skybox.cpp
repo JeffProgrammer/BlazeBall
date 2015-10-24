@@ -102,9 +102,16 @@ void Skybox::render(const RenderInfo &info) {
 		generate();
 	}
 
+	glDepthFunc(GL_LEQUAL);
+
 	Shader *shader = mMaterial->getShader();
 	mMaterial->activate();
 	info.loadShader(shader);
+
+	//Strip any positional data from the camera, so we just have rotation
+	glm::mat4 skyboxView = glm::mat4(glm::mat3(info.viewMatrix));
+	glUniform1f(shader->getUniformLocation("extent"), 1000.f);
+	glUniformMatrix4fv(shader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	shader->enableAttribute("vertexPosition", 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -116,5 +123,7 @@ void Skybox::render(const RenderInfo &info) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	mMaterial->deactivate();
+
+	glDepthFunc(GL_LESS);
 }
 

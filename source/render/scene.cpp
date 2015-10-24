@@ -106,13 +106,7 @@ void Scene::renderScene(const RenderInfo &info) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Send to OpenGL
-	info.loadShader(mInteriorShader);
 	for (auto object : objects) {
-		glm::mat4 modelMatrix(1);
-		object->loadMatrix(info.projectionMatrix, info.viewMatrix, modelMatrix);
-		glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
-		glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
-		glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
 		object->render(info);
 	}
 
@@ -124,15 +118,7 @@ void Scene::renderScene(const RenderInfo &info) {
 	MODELMGR->render(mShapeShader, info.viewMatrix, info.projectionMatrix);
 	mShapeShader->deactivate();
 
-	glDepthFunc(GL_LEQUAL);
-
-	//Strip any positional data from the camera, so we just have rotation
-	glm::mat4 skyboxView = glm::mat4(glm::mat3(info.viewMatrix));
-	glUniform1f(mSkyboxShader->getUniformLocation("extent"), 1000.f);
-	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
-
 	mSkybox->render(info);
-	glDepthFunc(GL_LESS);
 
 	// check for opengl errors
 	GL_CHECKERRORS();

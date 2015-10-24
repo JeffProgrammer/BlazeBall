@@ -129,6 +129,12 @@ void Sphere::render(const RenderInfo &info) {
 	material->activate();
 	info.loadShader(shader);
 
+	glm::mat4 modelMatrix(1);
+	loadMatrix(info.projectionMatrix, info.viewMatrix, modelMatrix);
+	glUniformMatrix4fv(shader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+	glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
+	glUniformMatrix4fv(shader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
+
 	glUniform1f(shader->getUniformLocation("reflectivity"), 1.f);
 
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
