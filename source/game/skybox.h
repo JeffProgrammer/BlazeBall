@@ -32,8 +32,9 @@
 #include "gameObject.h"
 #include "graphics/cubeMapTexture.h"
 #include "render/material.h"
+#include "IRenderedObject.h"
 
-class Skybox : public GameObject {
+class Skybox : public IRenderedObject {
 protected:
 	GLuint mBuffer;
 	bool mGenerated;
