@@ -167,7 +167,13 @@ void Shader::setUniformLocation(const std::string &name, const GLuint &location)
 	// store location in hashmap to avoid gpu sync point everytime we call this method.
 	if (mUniformLocations.find(name) == mUniformLocations.end())
 		mUniformLocations[name] = glGetUniformLocation(getProgramId(), name.c_str());
-	glUniform1i(mUniformLocations[name], location);
+	GLuint uniformLocation = mUniformLocations[name];
+	//Make sure we don't try to set an invalid uniform's location
+	if (uniformLocation == -1) {
+		fprintf(stderr, "Invalid uniform location (-1) for uniform %s\n", name.c_str());
+		return;
+	}
+	glUniform1i(uniformLocation, location);
 }
 
 GLuint Shader::getAttributeLocation(const std::string &name) {
@@ -196,12 +202,26 @@ void Shader::addUniformLocation(const std::string &name, GLuint position) {
 
 void Shader::enableAttribute(const std::string &name, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) {
 	U32 location = getAttributeLocation(name);
+
+	//Don't try to enable an attribute that we don't have
+	if (location == -1) {
+		fprintf(stderr, "Invalid attribute location (-1) for attribute %s\n", name.c_str());
+		return;
+	}
+
 	glEnableVertexAttribArray(location);
 	glVertexAttribPointer(location, size, type, normalized, stride, pointer);
 }
 
 void Shader::disableAttribute(const std::string &name) {
 	U32 location = getAttributeLocation(name);
+
+	//Don't try to disaable an attribute that we don't have
+	if (location == -1) {
+		fprintf(stderr, "Invalid attribute location (-1) for attribute %s\n", name.c_str());
+		return;
+	}
+
 	glDisableVertexAttribArray(location);
 }
 
