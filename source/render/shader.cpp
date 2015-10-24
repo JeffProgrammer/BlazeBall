@@ -190,6 +190,10 @@ void Shader::deactivate() {
 
 }
 
+void Shader::addUniformLocation(const std::string &name, GLuint position) {
+	mSetUniformLocations[name] = position;
+}
+
 void Shader::enableAttribute(const std::string &name, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) {
 	U32 location = getAttributeLocation(name);
 	glEnableVertexAttribArray(location);
@@ -201,9 +205,6 @@ void Shader::disableAttribute(const std::string &name) {
 	glDisableVertexAttribArray(location);
 }
 
-void Shader::addUniformLocation(const std::string &name, GLuint position) {
-	mSetUniformLocations[name] = position;
-}
 void Shader::addAttribute(const std::string &name, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) {
 	AttributeInfo info;
 	info.size = size;

@@ -123,13 +123,46 @@ public:
 	 */
 	void deactivate();
 
-	void enableAttribute(const std::string &name, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+	/**
+	 * Add a uniform location that will be set when the shader is activated
+	 * @param name     The name of the uniform
+	 * @param position The position where its location will be set
+	 */
+	void addUniformLocation(const std::string &name, GLuint position);
+
+	/**
+	 * Enable a vertex attribute array in OpenGL
+	 * @param name       The name of the attribute to enable
+	 * @param size       The number of components per vertex attribute
+	 * @param type       The data type of the components in the array
+	 * @param normalized If the data are normalized
+	 * @param stride     The offset from one vertex to the next in the data
+	 * @param pointer    A pointer to the offset of the first component of the first vertex
+	 */
+	void enableAttribute(const std::string &name, GLint size, GLenum type, GLboolean normalized, GLsizei stride = 0, const GLvoid *pointer = 0);
+	/**
+	 * Disable a vertex attribute array in OpenGL
+	 * @param name The name of the attribute to disable
+	 */
 	void disableAttribute(const std::string &name);
 
-	void addUniformLocation(const std::string &name, GLuint position);
-	void addAttribute(const std::string &name, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
-
+	/**
+	 * Store the information of an attribute to be enabled with calls to enableAttributes()
+	 * @param name       The name of the attribute to store
+	 * @param size       The number of components per vertex attribute
+	 * @param type       The data type of the components in the array
+	 * @param normalized If the data are normalized
+	 * @param stride     The offset from one vertex to the next in the data
+	 * @param pointer    A pointer to the offset of the first component of the first vertex
+	 */
+	void addAttribute(const std::string &name, GLint size, GLenum type, GLboolean normalized, GLsizei stride = 0, const GLvoid *pointer = 0);
+	/**
+	 * Enable all saved attributes that were added using addAttribute()
+	 */
 	void enableAttributes();
+	/**
+	 * Disable all saved attributes that were added using addAttribute()
+	 */
 	void disableAttributes();
 };
 
