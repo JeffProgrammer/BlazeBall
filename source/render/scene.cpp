@@ -90,6 +90,7 @@ void Scene::render() {
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	mInteriorShader->activate();
@@ -213,7 +214,7 @@ void Scene::render() {
 
 	// render particles
 	// JESUS THIS CODE IS GETTING UGLY AS FUCK
-	glDisable(GL_CULL_FACE);
+	glDepthMask(GL_FALSE);
 	mParticleShader->activate();
 	mParticleShader->setUniformLocation("textureSampler", 0);
 	glUniformMatrix4fv(mParticleShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
@@ -223,7 +224,7 @@ void Scene::render() {
 	glUniformMatrix4fv(mParticleShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
 	mEmitter->render(mParticleShader, projectionMatrix, viewMatrix);
 	mParticleShader->deactivate();
-	glEnable(GL_CULL_FACE);
+	glDepthMask(GL_TRUE);
 
 	// check for opengl errors
 	GL_CHECKERRORS();
@@ -528,7 +529,7 @@ void Scene::run() {
 	mPlayer = player;
 	
 	mEmitter = new ParticleEmitter();
-	mEmitter->setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+	mEmitter->setPosition(glm::vec3(0.0f, 0.0f, -30.0f));
 	addObject(mEmitter);
 	
 	controlObject = player;
