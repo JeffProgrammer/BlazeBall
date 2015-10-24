@@ -20,22 +20,22 @@ protected:
 	/**
 	 * The Camera's yaw value.
 	 */
-	F32 yaw;
+	F32 mYaw;
 	
 	/**
 	 * The Camera's pitch value.
 	 */
-	F32 pitch;
+	F32 mPitch;
 
 	/**
 	 * A speed factor of which the camera moves based on mouse movement.
 	 */
-	const F32 cameraSpeed = 0.3f;
+	const F32 mCameraSpeed = 0.3f;
 
 	/**
 	 * A speed factor of which the camera moves based on keyboard movement.
 	 */
-	const F32 keyCameraSpeed = 3.f;
+	const F32 mKeyCameraSpeed = 3.f;
 
 public:
 	Camera();
