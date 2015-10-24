@@ -37,7 +37,6 @@ Shape::~Shape() {
 }
 
 void Shape::updateTick(const F64 &delta) {
-	Parent::updateTick(delta);
 }
 
 void Shape::loadShape() {

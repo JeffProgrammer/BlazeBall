@@ -53,6 +53,7 @@ public:
 	}
 
 	virtual void render(Shader *shader);
+	virtual inline void updateTick(const F64 &deltaMS) {};
 };
 
 #endif /* skybox_h */

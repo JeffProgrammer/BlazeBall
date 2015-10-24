@@ -56,7 +56,3 @@ void GameObject::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &
 void GameObject::render(Shader *shader) {
 	
 }
-
-void GameObject::updateTick(const F64 &deltaMS) {
-	
-}
