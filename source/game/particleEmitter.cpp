@@ -51,10 +51,8 @@
 #define MAX_PARTICLE_COUNT 20
 #define PARTICLE_TIME 30000.0
 
-// TODO: particles with pure alpha will be discared in the shader using discard;
 // TODO: make particles render in a particle manager, so that we only have to have
 //       one buffer for the particle vertex geometry.
-// TODO: GPU particles using GL_EXT_TRANSFORM_FEEDBACK
 
 F64 Particle::start = 0;
 
