@@ -128,9 +128,6 @@ void Sphere::render(Shader *shader) {
 	material->activate();
 	glUniform1f(shader->getUniformLocation("reflectivity"), 1.f);
 
-	if (material) {
-		material->activate();
-	}
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
 	// enable attributes
 

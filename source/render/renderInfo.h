@@ -30,7 +30,26 @@
 #ifndef renderInfo_h
 #define renderInfo_h
 
+#include <glm/glm.hpp>
+
+#ifdef _WIN32
+#include <GL/glew.h>
+#else
+#include <OpenGL/gl.h>
+#endif
+
 #include "graphics/shader.h"
+
+//todo: vector also per-shader
+#define PROJECTION_MATRIX_UNIFORM_NAME "projectionMat"
+#define VIEW_MATRIX_UNIFORM_NAME "viewMat"
+#define INVERSE_VIEW_MATRIX_UNIFORM_NAME "inverseViewMat"
+#define CAMERA_POSITION_UNIFORM_NAME "cameraPos"
+
+#define LIGHT_COLOR_UNIFORM_NAME "lightColor"
+#define AMBIENT_LIGHT_COLOR_UNIFORM_NAME "ambientColor"
+#define SUN_POSITION_UNIFORM_NAME "sunPosition"
+#define SPECULAR_EXPONENT_UNIFORM_NAME "specularExponent"
 
 struct RenderInfo {
 	static glm::mat4 inverseRotMat;
