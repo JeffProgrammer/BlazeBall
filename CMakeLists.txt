@@ -338,7 +338,7 @@ set (DIFVIEWERGAME_SRC
 	source/platformSDL/SDLConfig.h
 
 	# Render folder
-	source/render/InteriorRender.cpp
+	source/render/interiorRender.cpp
 	source/render/material.cpp
 	source/render/material.h
 	source/render/modelManager.cpp
