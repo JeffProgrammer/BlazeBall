@@ -354,6 +354,8 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/interiorV.glsl
 	source/shaders/modelF.glsl
 	source/shaders/modelV.glsl
+	source/shaders/particleF.glsl
+	source/shaders/particleV.glsl
 	source/shaders/skyboxF.glsl
 	source/shaders/skyboxV.glsl
 )
