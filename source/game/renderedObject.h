@@ -51,12 +51,10 @@ public:
 
 	/**
 	 * Load the object's model matrix into a mat4 reference.
-	 * @param projectionMatrix The current projection matrix
-	 * @param viewMatrix       The current view matrix
-	 * @param modelMatrix      A reference to a matrix into which the model matrix
-	 *                         will be loaded.
+	 * @param info        A RenderInfo struct with all the render state information.
+	 * @param modelMatrix A reference to a matrix into which the model matrix will be loaded.
 	 */
-	virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix);
+	virtual void calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix);
 	/**
 	 * Send the object's model matrix to OpenGL
 	 * @param info   A RenderInfo struct with all the render state information.

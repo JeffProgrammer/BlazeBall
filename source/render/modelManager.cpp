@@ -104,8 +104,12 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 		auto model = mResourceCache[shape->getShapeFile()];
 		const auto &meshes = model->meshes;
 
+		RenderInfo info;
+		info.projectionMatrix = projectionMatrix;
+		info.viewMatrix = viewMatrix;
+
 		glm::mat4x4 modelMatrix = glm::mat4x4(1);
-		shape->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
+		shape->calculateModelMatrix(info, modelMatrix);
 		glUniformMatrix4fv(shapeShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
 
 		for (const auto &mesh : meshes) {

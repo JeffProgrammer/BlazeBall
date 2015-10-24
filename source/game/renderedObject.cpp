@@ -28,7 +28,7 @@
 
 #include "renderedObject.h"
 
-void RenderedObject::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix) {
+void RenderedObject::calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix) {
 	glm::vec3 pos = getPosition();
 	glm::quat rot = getRotation();
 	glm::vec3 scale = getScale();
@@ -42,7 +42,7 @@ void RenderedObject::loadMatrix(const glm::mat4 &projectionMatrix, const glm::ma
 
 void RenderedObject::loadModelMatrix(const RenderInfo &info, Shader *shader) {
 	glm::mat4 modelMatrix(1);
-	loadMatrix(info.projectionMatrix, info.viewMatrix, modelMatrix);
+	calculateModelMatrix(info, modelMatrix);
 	glUniformMatrix4fv(shader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
 	glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
 	glUniformMatrix4fv(shader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
