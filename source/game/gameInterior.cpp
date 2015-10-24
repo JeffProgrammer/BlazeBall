@@ -29,7 +29,7 @@
 #include "game/gameInterior.h"
 #include "base/io.h"
 #include "physics/physicsBody.h"
-#include "graphics/texture.h"
+#include "texture/texture.h"
 #include <string>
 #include <cfloat>
 

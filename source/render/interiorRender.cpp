@@ -32,7 +32,7 @@
 #include <glm/ext.hpp>
 #include "game/gameInterior.h"
 #include "base/math.h"
-#include "graphics/util.h"
+#include "render/util.h"
 #include "render/scene.h"
 
 void GameInterior::init() {

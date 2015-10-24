@@ -35,10 +35,10 @@
 #include "base/types.h"
 #include "base/io.h"
 #include <dif/objects/dif.h>
-#include "graphics/texture.h"
+#include "texture/texture.h"
 #include "game/sphere.h"
 #include "physics/physicsEngine.h"
-#include "graphics/shader.h"
+#include "render/shader.h"
 #include "render/scene.h"
 #include "platform/window.h"
 #include "platform/event.h"
@@ -47,7 +47,7 @@
 #include "game/movement.h"
 #include "game/camera.h"
 #include "game/skybox.h"
-#include "graphics/cubeMapFramebufferTexture.h"
+#include "texture/cubeMapFramebufferTexture.h"
 #include "render/modelManager.h"
 #include "renderInfo.h"
 

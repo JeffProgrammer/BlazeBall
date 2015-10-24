@@ -30,7 +30,7 @@
 //http://www.mbroecker.com/project_dynamic_cubemaps.html
 
 #include "cubeMapFramebufferTexture.h"
-#include "graphics/util.h"
+#include "render/util.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 CubeMapFramebufferTexture::~CubeMapFramebufferTexture() {

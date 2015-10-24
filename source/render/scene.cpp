@@ -31,7 +31,7 @@
 #include "game/camera.h"
 #include "game/Shape.h"
 #include "game/skybox.h"
-#include "graphics/util.h"
+#include "render/util.h"
 #include <chrono>
 #include <thread>
 #include <algorithm>

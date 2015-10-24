@@ -31,7 +31,7 @@
 
 #include <stdbool.h>
 #include "base/types.h"
-#include "graphics/bitmapTexture.h"
+#include "texture/bitmapTexture.h"
 
 /**
  Reads an image from a given file using JPEG

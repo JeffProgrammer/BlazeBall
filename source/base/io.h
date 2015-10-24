@@ -38,7 +38,7 @@
 #include <string>
 #include "base/types.h"
 #include "base/math.h"
-#include "graphics/texture.h"
+#include "texture/texture.h"
 
 class IO {
 public:

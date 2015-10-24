@@ -38,7 +38,7 @@
 #include <OpenGL/gl.h>
 #endif
 
-#include "graphics/shader.h"
+#include "render/shader.h"
 
 //todo: vector also per-shader
 #define PROJECTION_MATRIX_UNIFORM_NAME "projectionMat"

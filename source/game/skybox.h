@@ -30,7 +30,7 @@
 #define skybox_h
 
 #include "gameObject.h"
-#include "graphics/cubeMapTexture.h"
+#include "texture/cubeMapTexture.h"
 #include "render/material.h"
 #include "IRenderedObject.h"
 

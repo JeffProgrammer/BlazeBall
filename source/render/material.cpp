@@ -28,7 +28,7 @@
 
 #include "render/material.h"
 #include "base/io.h"
-#include "graphics/cubeMapTexture.h"
+#include "texture/cubeMapTexture.h"
 
 Material::~Material() {
 

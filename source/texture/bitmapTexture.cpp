@@ -39,7 +39,7 @@
 
 #include "base/io.h"
 #include "bitmapTexture.h"
-#include "graphics/util.h"
+#include "render/util.h"
 
 #define TEXTURE_MAX_SIZE 2048
 

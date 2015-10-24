@@ -32,8 +32,8 @@
 #include <stdio.h>
 #include <unordered_map>
 #include "base/types.h"
-#include "graphics/texture.h"
-#include "graphics/shader.h"
+#include "texture/texture.h"
+#include "render/shader.h"
 
 #define DEFAULT_NORMAL_TEXTURE   "DefaultNormal.png"
 #define DEFAULT_SPECULAR_TEXTURE "DefaultSpec.png"

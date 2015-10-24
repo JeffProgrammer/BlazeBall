@@ -38,8 +38,8 @@
 #endif
 
 #include "base/io.h"
-#include "graphics/cubeMapTexture.h"
-#include "graphics/util.h"
+#include "texture/cubeMapTexture.h"
+#include "render/util.h"
 
 #define TEXTURE_MAX_SIZE 2048
 

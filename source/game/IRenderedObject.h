@@ -34,7 +34,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "gameObject.h"
-#include "graphics/shader.h"
+#include "render/shader.h"
 #include "render/renderInfo.h"
 
 class IRenderedObject : public GameObject {

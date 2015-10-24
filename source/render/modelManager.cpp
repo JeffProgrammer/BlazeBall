@@ -32,7 +32,7 @@
 
 #include "render/modelManager.h"
 #include "base/io.h"
-#include "graphics/util.h"
+#include "render/util.h"
 #include "game/Shape.h"
 
 // For getcwd
