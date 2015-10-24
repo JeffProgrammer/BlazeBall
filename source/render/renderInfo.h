@@ -63,6 +63,8 @@ struct RenderInfo {
 	glm::vec3 sunPosition;
 	U32 specularExponent;
 
+	bool isReflectionPass;
+
 	inline void loadShader(Shader *shader) const {
 		if (shader == nullptr)
 			shader = Shader::defaultShader;

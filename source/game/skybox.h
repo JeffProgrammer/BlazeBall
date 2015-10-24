@@ -53,6 +53,8 @@ public:
 		return mMaterial;
 	}
 
+	virtual bool isReflectable() { return true; }
+
 	virtual void render(const RenderInfo &info);
 	virtual inline void updateTick(const F64 &deltaMS) {};
 };

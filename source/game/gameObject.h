@@ -52,6 +52,7 @@ public:
 	virtual ~GameObject() {};
 
 	virtual bool isRenderable() { return false; }
+	virtual bool isReflectable() { return false; }
 	
 	virtual glm::vec3 getPosition() { return mOrigin; }
 	virtual void setPosition(const glm::vec3 &position) { mOrigin = position; }

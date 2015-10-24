@@ -76,6 +76,8 @@ void Scene::render() {
 		info.sunPosition = sunPosition;
 		info.specularExponent = specularExponent;
 
+		info.isReflectionPass = true;
+
 		this->renderScene(info);
 	});
 
@@ -94,6 +96,8 @@ void Scene::render() {
 	info.sunPosition = sunPosition;
 	info.specularExponent = specularExponent;
 
+	info.isReflectionPass = false;
+
 	//Actually render everything
 	renderScene(info);
 }
@@ -107,7 +111,7 @@ void Scene::renderScene(const RenderInfo &info) {
 
 	//Send to OpenGL
 	for (auto object : objects) {
-		if (object->isRenderable()) {
+		if (object->isRenderable() && (!info.isReflectionPass || object->isReflectable())) {
 			dynamic_cast<IRenderedObject *>(object)->render(info);
 		}
 	}
