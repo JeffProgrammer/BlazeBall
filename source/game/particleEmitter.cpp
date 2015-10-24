@@ -48,7 +48,7 @@
 #include "graphics/util.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-#define MAX_PARTICLE_COUNT 2000
+#define MAX_PARTICLE_COUNT 20000
 #define PARTICLE_TIME 30000.0
 
 // TODO: particles with pure alpha will be discared in the shader using discard;
@@ -56,6 +56,7 @@
 //       one buffer for the particle vertex geometry.
 // TODO: GPU particles using GL_EXT_TRANSFORM_FEEDBACK
 
+F64 Particle::start = 0;
 
 ParticleEmitter::ParticleEmitter() : GameObject() {
 
@@ -82,7 +83,7 @@ ParticleEmitter::ParticleEmitter() : GameObject() {
 
 	glGenBuffers(1, &mVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * MAX_PARTICLE_COUNT, nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Particle) * MAX_PARTICLE_COUNT, &mParticles[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -110,21 +111,17 @@ void ParticleEmitter::render(Shader *shader, const glm::mat4 &projectionMatrix, 
 
 	// let's use positions
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+	shader->enableAttribute("position", 3, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *)offsetof(Particle, position));
+	shader->enableAttribute("velocity", 3, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *)offsetof(Particle, velocity));
+	shader->enableAttribute("creation", 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *)offsetof(Particle, creation));
 
-	// copy positions
-	glm::vec3 data[MAX_PARTICLE_COUNT];
-	for (int i = 0; i < MAX_PARTICLE_COUNT; i++)
-		data[i] = mParticles[i].position;
-
-	// upload opengl data to the gpu
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * MAX_PARTICLE_COUNT, &data[0]);
-	GL_CHECKERRORS();
-
-	shader->enableAttribute("position", 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glUniform1f(shader->getUniformLocation("currentTime"), getTime() - Particle::start);
 
 	// let opengl know where to divide up the data for each instance
 	glVertexAttribDivisorARB(shader->getAttributeLocation("vertex"), 0); // use all 4 vertices per strip
 	glVertexAttribDivisorARB(shader->getAttributeLocation("position"), 1); // 1 position per strip
+	glVertexAttribDivisorARB(shader->getAttributeLocation("velocity"), 1); // 1 position per strip
+	glVertexAttribDivisorARB(shader->getAttributeLocation("creation"), 1); // 1 position per strip
 	GL_CHECKERRORS();
 
 	// draw each particle
@@ -137,7 +134,9 @@ void ParticleEmitter::render(Shader *shader, const glm::mat4 &projectionMatrix, 
 	mMaterial->deactivate();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glVertexAttribDivisorARB(shader->getAttributeLocation("vertex"), 0);
-	glVertexAttribDivisorARB(shader->getAttributeLocation("position"),  0);
+	glVertexAttribDivisorARB(shader->getAttributeLocation("position"), 0);
+	glVertexAttribDivisorARB(shader->getAttributeLocation("velocity"), 0);
+	glVertexAttribDivisorARB(shader->getAttributeLocation("creation"), 0);
 	GL_CHECKERRORS();
 }
 
