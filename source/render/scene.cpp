@@ -153,6 +153,12 @@ void Scene::tick(const F64 &deltaMS) {
 void Scene::updateWindowSize(const glm::ivec2 &size) {
 	GLfloat aspect = (GLfloat)size.x / (GLfloat)size.y;
 	mScreenProjectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
+
+	GLint viewport[4]; //x y w h
+	glGetIntegerv(GL_VIEWPORT, viewport);
+
+	//Should be 2x if you have a retina display
+	pixelDensity = viewport[2] / size.x;
 }
 
 bool Scene::initGL() {
@@ -187,12 +193,6 @@ bool Scene::initGL() {
 	//Window size for viewport
 	glm::ivec2 screenSize = window->getWindowSize();
 	updateWindowSize(screenSize);
-
-	GLint viewport[4]; //x y w h
-	glGetIntegerv(GL_VIEWPORT, viewport);
-
-	//Should be 2x if you have a retina display
-	pixelDensity = viewport[2] / screenSize.x;
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
