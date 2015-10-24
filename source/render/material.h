@@ -67,13 +67,32 @@ class Material {
 	 */
 	bool tryLoadTexture(const std::string &path, const GLuint &index);
 public:
+	/**
+	 * Construct a material from only a name and texture. No files will be loaded.
+	 * @param name     The material's name
+	 * @param texture  A texture that will be used on the material
+	 * @param location The location for the given texture
+	 */
 	Material(const std::string &name, Texture *texture, GLuint location) : shader(nullptr), name(name) {
-		textures[location] = texture;
+		setTexture(texture, location);
+	}
+
+	/**
+	 * Construct a material using a name and a list of textures. No files will be loaded.
+	 * @param name     The material's name
+	 * @param textures A vector of <Texture *, GLuint> pairs specifying the textures
+	 *                 and their desired locations.
+	 */
+	Material(const std::string &name, const std::vector<std::pair<Texture *, GLuint>> &textures) : shader(nullptr), name(name) {
+		for (auto &texture : textures) {
+			setTexture(texture.first, texture.second);
+		}
 	}
 
 	/**
 	 * Construct a material from only a diffuse texture path, attempting to resolve
-	 * specular and normal map paths from the diffuse texture.
+	 * specular and normal map paths from the diffuse texture. The material's name
+	 * will be resolved from the file path.
 	 * @param path The path for the material's diffuse texture.
 	 */
 	Material(const std::string &path) : shader(nullptr) {
@@ -82,6 +101,7 @@ public:
 	
 	/**
 	 * Construct a material from a diffuse, normal, and specular texture path.
+	 * The material's name will be resolved from the file path.
 	 * @param diffusePath The path for the material's diffuse texture.
 	 * @param normalPath The path for the material's normal texture.
 	 * @param specularPath The path for the material's specular texture.
