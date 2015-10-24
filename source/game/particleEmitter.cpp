@@ -48,7 +48,7 @@
 #include "graphics/util.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-#define MAX_PARTICLE_COUNT 20000
+#define MAX_PARTICLE_COUNT 20
 #define PARTICLE_TIME 30000.0
 
 // TODO: particles with pure alpha will be discared in the shader using discard;

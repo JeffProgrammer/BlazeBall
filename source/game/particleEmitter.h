@@ -49,7 +49,7 @@ struct Particle {
 		velocity = glm::vec3(0.f);
 		life = 0.0f;
 
-		creation = getTime();
+		creation = getTime() - start;
 	}
 };
 
