@@ -109,6 +109,8 @@ public:
 	 * @return The material's shader
 	 */
 	Shader *getShader() const {
+		if (this->shader == nullptr)
+			return Shader::defaultShader;
 		return this->shader;
 	}
 	
@@ -140,6 +142,8 @@ public:
 	 * @param shader the new shader for the material
 	 */
 	void setShader(Shader *shader) {
+		if (shader == nullptr)
+			shader = Shader::defaultShader;
 		this->shader = shader;
 	}
 

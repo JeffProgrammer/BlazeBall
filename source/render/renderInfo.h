@@ -64,6 +64,9 @@ struct RenderInfo {
 	U32 specularExponent;
 
 	inline void loadShader(Shader *shader) const {
+		if (shader == nullptr)
+			shader = Shader::defaultShader;
+		
 		if (shader->getUniformLocation(PROJECTION_MATRIX_UNIFORM_NAME) != -1)
 			glUniformMatrix4fv(shader->getUniformLocation(PROJECTION_MATRIX_UNIFORM_NAME),   1, GL_FALSE, &projectionMatrix[0][0]);
 		if (shader->getUniformLocation(VIEW_MATRIX_UNIFORM_NAME) != -1)

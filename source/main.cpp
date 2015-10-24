@@ -71,6 +71,7 @@ void parseArgs(int argc, const char *argv[]) {
 
 		if (dif.read(file)) {
 			GameInterior *interior = new GameInterior();
+			interior->mMaterial = new Material("");
 
 			// load interior
 			for (auto dinterior : dif.interior) {

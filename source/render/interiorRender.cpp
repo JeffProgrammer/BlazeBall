@@ -33,6 +33,7 @@
 #include "game/gameInterior.h"
 #include "base/math.h"
 #include "graphics/util.h"
+#include "render/scene.h"
 
 void GameInterior::init() {
 	std::vector<std::vector<Triangle>> perMaterialTriangles(mInterior.materialName.size());
@@ -143,6 +144,9 @@ void GameInterior::init() {
 void GameInterior::render(const ::RenderInfo &info) {
 	if (!renderInfo.generated)
 		init();
+
+	if (mMaterial->getShader() == Shader::defaultShader || mMaterial->getShader() == nullptr)
+		mMaterial->setShader(Scene::getSingleton()->mInteriorShader);
 
 	Shader *shader = mMaterial->getShader();
 	info.loadShader(shader);

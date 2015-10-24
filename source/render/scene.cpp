@@ -166,6 +166,8 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 }
 
 bool Scene::initGL() {
+	Shader::defaultShader = new Shader("defaultV.glsl", "defaultF.glsl");
+
 	mInteriorShader = new Shader("interiorV.glsl", "interiorF.glsl");
 	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
 	mSkyboxShader = new Shader("skyboxV.glsl", "skyboxF.glsl");

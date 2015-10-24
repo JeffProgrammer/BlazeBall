@@ -66,6 +66,8 @@ protected:
 	 */
 	GLuint loadProgram(const std::string &vertPath, const std::string &fragPath);
 public:
+	static Shader *defaultShader;
+
 	/**
 	 * Construct a shader from given vertex and fragment shader files.
 	 * @param vertPath The path to the file containing the vertex shader

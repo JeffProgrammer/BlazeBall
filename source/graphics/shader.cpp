@@ -38,6 +38,8 @@
 #include <OpenGL/glu.h>
 #endif
 
+Shader *Shader::defaultShader = nullptr;
+
 Shader::Shader(const std::string &vertPath, const std::string &fragPath) {
 	//Try to generate the shader
 	programId = loadProgram(vertPath, fragPath);
