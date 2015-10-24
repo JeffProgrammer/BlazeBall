@@ -118,8 +118,6 @@ void Scene::renderScene(const RenderInfo &info) {
 	MODELMGR->render(mShapeShader, info.viewMatrix, info.projectionMatrix);
 	mShapeShader->deactivate();
 
-	mSkybox->render(info);
-
 	// check for opengl errors
 	GL_CHECKERRORS();
 }
@@ -413,6 +411,7 @@ void Scene::run() {
 		Material *skyMaterial = new Material("skybox", cubeMap, GL_TEXTURE0);
 		skyMaterial->setShader(mSkyboxShader);
 		mSkybox = new Skybox(skyMaterial);
+		addObject(mSkybox);
 	}
 
 	Camera *camera = new Camera();
