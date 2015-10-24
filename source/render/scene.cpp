@@ -187,8 +187,8 @@ bool Scene::initGL() {
 	mSkyboxShader->addUniformLocation("cubemapSampler", 0);
 	mSkyboxShader->addAttribute("vertexPosition", 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
+	marbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
+	marbleCubemap->generateBuffer();
 
 	//Window size for viewport
 	glm::ivec2 screenSize = window->getWindowSize();
@@ -196,9 +196,7 @@ bool Scene::initGL() {
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-
-	marbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
-	marbleCubemap->generateBuffer();
+	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
