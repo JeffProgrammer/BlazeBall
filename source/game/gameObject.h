@@ -19,6 +19,11 @@
 #include <GL/glew.h>
 #endif
 
+/**
+ * An abstract class that forms the foundation for all world objects within the
+ * game. This class is merely a shell for all subclasses of 3-dimentional
+ * classes.
+ */
 class GameObject {
 protected:
 	/**

@@ -10,6 +10,11 @@
 #include "base/types.h"
 #include "game/gameObject.h"
 
+/**
+ * This class represents a free-form camera that does not view at any specific
+ * object. It implements a camera so that the world can be viewed inside of
+ * the graphics rendering.
+ */
 class Camera : public GameObject {
 protected:
 	/**
@@ -56,7 +61,6 @@ public:
 	 * @param OUT pos The position of the Camera.
 	 */
 	virtual void getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos);
-
 
 	/**
 	 * An update callback that is called every physics tick.
