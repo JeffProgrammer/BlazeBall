@@ -148,6 +148,8 @@ void GameInterior::render(const ::RenderInfo &info) {
 	if (mMaterial->getShader() == Shader::defaultShader || mMaterial->getShader() == nullptr)
 		mMaterial->setShader(Scene::getSingleton()->mInteriorShader);
 
+	mMaterial->activate();
+
 	Shader *shader = mMaterial->getShader();
 	info.loadShader(shader);
 
@@ -193,4 +195,6 @@ void GameInterior::render(const ::RenderInfo &info) {
 	shader->disableAttribute("vertexTangent");
 	shader->disableAttribute("vertexBitangent");
 	GL_CHECKERRORS();
+
+	mMaterial->deactivate();
 }
