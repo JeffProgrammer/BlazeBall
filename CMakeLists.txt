@@ -348,6 +348,8 @@ set (DIFVIEWERGAME_SRC
 	source/render/scene.h
 
 	# Shaders folder
+	source/shaders/defaultF.glsl
+	source/shaders/defaultV.glsl
 	source/shaders/interiorF.glsl
 	source/shaders/interiorV.glsl
 	source/shaders/modelF.glsl

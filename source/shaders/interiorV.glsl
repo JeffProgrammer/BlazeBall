@@ -1,6 +1,6 @@
 #version 120
 
-attribute vec3 vertexPosition_model;
+attribute vec3 vertexPosition;
 attribute vec2 vertexUV;
 attribute vec3 vertexNormal;
 attribute vec3 vertexTangent;
@@ -37,7 +37,7 @@ void main() {
 	mat4 modelViewProjectionMat = projectionMat * viewMat * modelMat;
 
 	//Worldspace position
-	vec4 v = vec4(vertexPosition_model, 1);
+	vec4 v = vec4(vertexPosition, 1);
 	gl_Position = modelViewProjectionMat * v;
 
 	//Send to fragment shader
@@ -45,10 +45,10 @@ void main() {
 	normal = vertexNormal;
 
 	//Worldspace position
-	position_world = (modelMat * vec4(vertexPosition_model, 1)).xyz;
+	position_world = (modelMat * vec4(vertexPosition, 1)).xyz;
 
 	//Cameraspace of the vertex position and direction from vertex to camera (backwards but correct)
-	vec3 position_camera = (viewMat * modelMat * vec4(vertexPosition_model, 1)).xyz;
+	vec3 position_camera = (viewMat * modelMat * vec4(vertexPosition, 1)).xyz;
 	direction_camera = vec3(0, 0, 0) - position_camera;
 
 	//Vector from vertex to light, but in cameraspace this time
