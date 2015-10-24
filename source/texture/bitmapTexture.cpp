@@ -41,11 +41,9 @@
 #include "bitmapTexture.h"
 #include "render/util.h"
 
-#define TEXTURE_MAX_SIZE 2048
-
 BitmapTexture::BitmapTexture(U8 *pixels, const glm::ivec2 &extent, const Format &format) {
-	if (extent.x > TEXTURE_MAX_SIZE || extent.y > TEXTURE_MAX_SIZE) {
-		printf("Texture too large! (%d, %d) > (%d, %d). Bug HiGuy to make textures larger.", extent.x, extent.y, TEXTURE_MAX_SIZE, TEXTURE_MAX_SIZE);
+	if (extent.x > MaxTextureSize || extent.y > MaxTextureSize) {
+		printf("Texture too large! (%d, %d) > (%d, %d). Bug HiGuy to make textures larger.", extent.x, extent.y, MaxTextureSize, MaxTextureSize);
 		return;
 	}
 

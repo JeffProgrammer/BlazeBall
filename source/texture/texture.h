@@ -38,6 +38,8 @@
 
 class Texture {
 public:
+	static const U32 MaxTextureSize = 2048;
+
 	Texture() {};
 
 	/**
