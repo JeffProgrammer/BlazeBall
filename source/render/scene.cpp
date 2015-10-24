@@ -253,11 +253,23 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 	projectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
 }
 
-bool Scene::initGL() {
+void Scene::loadShaders() {
+	if (mLoadedShaders) {
+		delete mInteriorShader;
+		delete mShapeShader;
+		delete mSkyboxShader;
+		delete mParticleShader;
+	}
 	mInteriorShader = new Shader("interiorV.glsl", "interiorF.glsl");
 	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
 	mSkyboxShader = new Shader("skyboxV.glsl", "skyboxF.glsl");
 	mParticleShader = new Shader("particleV.glsl", "particleF.glsl");
+	mLoadedShaders = true;
+}
+
+bool Scene::initGL() {
+	mLoadedShaders = false;
+	loadShaders();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
@@ -371,6 +383,13 @@ void Scene::handleEvent(Event *event) {
 						mPlayer->setRadius(0.2f);
 						marbleCubemap->setExtent(glm::vec2(64, 64));
 					}
+					break;
+				}
+				case KeyEvent::KEY_R:
+				{
+					//Reload shaders
+					loadShaders();
+					GL_CHECKERRORS();
 					break;
 				}
 				default:

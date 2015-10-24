@@ -110,7 +110,8 @@ public:
 	Shader *mShapeShader;
 	Shader *mSkyboxShader;
 	Shader *mParticleShader;
-	
+	bool mLoadedShaders;
+
 	bool mShouldSleep;
 
 	void addObject(GameObject *object) {
@@ -129,6 +130,7 @@ public:
 
 	void loadShaderUniforms();
 	void updateWindowSize(const glm::ivec2 &size);
+	void loadShaders();
 
 	void render();
 	void loop(const F64 &deltaMS);
