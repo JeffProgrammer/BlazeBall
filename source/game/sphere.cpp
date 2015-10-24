@@ -130,15 +130,15 @@ void Sphere::render(Shader *shader) {
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
 	// enable attributes
 
-	shader->enableAttribute("vertexPosition_model", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
-	shader->enableAttribute("vertexUV",             2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
-	shader->enableAttribute("vertexNormal",         3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
-	shader->enableAttribute("vertexTangent",        3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
-	shader->enableAttribute("vertexBitangent",      3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
+	shader->enableAttribute("vertexPosition",  3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
+	shader->enableAttribute("vertexUV",        2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
+	shader->enableAttribute("vertexNormal",    3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
+	shader->enableAttribute("vertexTangent",   3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
+	shader->enableAttribute("vertexBitangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
 
-	shader->disableAttribute("vertexPosition_model");
+	shader->disableAttribute("vertexPosition");
 	shader->disableAttribute("vertexUV");
 	shader->disableAttribute("vertexNormal");
 	shader->disableAttribute("vertexTangent");

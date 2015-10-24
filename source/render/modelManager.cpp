@@ -117,9 +117,9 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 			// note: a VBO must be bound before the layout can be bound
 			if (firstRender) {
 				firstRender = false;
-				glEnableVertexAttribArray(shapeShader->getAttributeLocation("vertexPosition_model"));
+				glEnableVertexAttribArray(shapeShader->getAttributeLocation("vertexPosition"));
 				glEnableVertexAttribArray(shapeShader->getAttributeLocation("vertexUV"));
-				glVertexAttribPointer(shapeShader->getAttributeLocation("vertexPosition_model"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, position)));
+				glVertexAttribPointer(shapeShader->getAttributeLocation("vertexPosition"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, position)));
 				glVertexAttribPointer(shapeShader->getAttributeLocation("vertexUV"), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, textureCoords)));
 				GL_CHECKERRORS();
 			}
@@ -132,7 +132,7 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 
 	//Disable arrays if any models were drawn.
 	if (firstRender == false) {
-		glDisableVertexAttribArray(shapeShader->getAttributeLocation("vertexPosition_model"));
+		glDisableVertexAttribArray(shapeShader->getAttributeLocation("vertexPosition"));
 		glDisableVertexAttribArray(shapeShader->getAttributeLocation("vertexUV"));
 	}
 	GL_CHECKERRORS();
