@@ -29,7 +29,7 @@
 #include "render/scene.h"
 #include "game/gameInterior.h"
 #include "game/camera.h"
-#include "game/Shape.h"
+#include "game/shape.h"
 #include "game/skybox.h"
 #include "render/util.h"
 #include <chrono>
@@ -152,10 +152,13 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 bool Scene::initGL() {
 	Shader::defaultShader = new Shader("defaultV.glsl", "defaultF.glsl");
 
+	//TODO: Have a config somewhere load all of these and init these values
+
 	mInteriorShader = new Shader("interiorV.glsl", "interiorF.glsl");
 	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
 	mSkyboxShader = new Shader("skyboxV.glsl", "skyboxF.glsl");
 
+	//TODO: Interiors should have per-material shaders, not one for all materials
 	mInteriorShader->addUniformLocation("textureSampler", 0);
 	mInteriorShader->addUniformLocation("normalSampler", 1);
 	mInteriorShader->addUniformLocation("specularSampler", 2);
@@ -168,8 +171,8 @@ bool Scene::initGL() {
 	mInteriorShader->addAttribute("vertexTangent",   3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
 	mInteriorShader->addAttribute("vertexBitangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
 
-	mShapeShader->addUniformLocation("textureSampler", 0);
 	//TODO: Shapes
+	mShapeShader->addUniformLocation("textureSampler", 0);
 //	mShapeShader->addUniformLocation("normalSampler", 1);
 //	mShapeShader->addUniformLocation("specularSampler", 2);
 
