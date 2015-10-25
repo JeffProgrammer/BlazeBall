@@ -35,8 +35,6 @@ private:
 	GLuint mVbo;
 
 public:
-	Material *mMaterial;
-
 	GameInterior();
 	GameInterior(DIF::Interior interior);
 	virtual ~GameInterior();

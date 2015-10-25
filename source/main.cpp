@@ -26,6 +26,11 @@ int main(int argc, const char *argv[]) {
 	scene->window = new SDLWindow();
 	scene->mTimer = new SDLTimer();
 
+	//Init SDL
+	if (!scene->init()) {
+		return 1;
+	}
+
 	// parse command line arguments.
 	parseArgs(argc, argv);
 
@@ -49,7 +54,6 @@ void parseArgs(int argc, const char *argv[]) {
 
 		if (dif.read(file)) {
 			GameInterior *interior = new GameInterior();
-			interior->mMaterial = new Material("");
 
 			// load interior
 			for (auto dinterior : dif.interior) {

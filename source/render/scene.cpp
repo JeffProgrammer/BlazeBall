@@ -364,11 +364,6 @@ void Scene::cleanup() {
 }
 
 void Scene::run() {
-	//Init SDL
-	if (!init()) {
-		exit(-1);
-	}
-
 	Event *eventt;
 
 	F64 lastDelta = 0;
