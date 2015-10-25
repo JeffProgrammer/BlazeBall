@@ -123,48 +123,34 @@ void GameInterior::render(::RenderInfo &info) {
 	if (!renderInfo.generated)
 		init();
 
-	//TODO: Nasty hack because we init interiors before the shaders are loaded
-	if (mMaterial->getShader() == Shader::defaultShader || mMaterial->getShader() == nullptr)
-		mMaterial->setShader(Scene::getSingleton()->mInteriorShader);
-
-	//TODO: Don't load the materials like this, but instead per-material in the
-	// render loop
-	mMaterial->activate();
-
-	Shader *shader = mMaterial->getShader();
-	info.loadShader(shader);
-
-	loadModelMatrix(info, shader);
-
-	// bind vbo
-	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
-	shader->enableAttributes();
-
-	shader->setUniform("reflectivity", 0.f);
-	GL_CHECKERRORS();
-
-	U32 start = 0;
+	U32 last = 0;
 	for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
-		if (renderInfo.numMaterialTriangles[i] > 0) {
-			if (mMaterialList[i]) {
-				mMaterialList[i]->activate();
-				mNoiseTexture->activate(GL_TEXTURE3);
-				GL_CHECKERRORS();
-			} else {
+		U32 numTriangles = renderInfo.numMaterialTriangles[i];
+		if (numTriangles > 0) {
+			//Get this as a variable so we can access it in the render method
+			U32 start = last;
+			last += numTriangles;
+
+			if (!mMaterialList[i]) {
 				printf("Trying to render with invalid material %d: %s\n", i, mInterior.materialName[i].c_str());
+				continue;
 			}
-			glDrawArrays(GL_TRIANGLES, start * 3, renderInfo.numMaterialTriangles[i] * 3);
-			GL_CHECKERRORS();
-			start += renderInfo.numMaterialTriangles[i];
-			if (mMaterialList[i]) {
-				mNoiseTexture->deactivate();
-				mMaterialList[i]->deactivate();
-				GL_CHECKERRORS();
-			}
+
+			//Add a render method for this material's batch of triangles
+			info.addRenderMethod(mMaterialList[i], [this, start, numTriangles](Material *material, ::RenderInfo &info) {
+				Shader *shader = material->getShader();
+				loadModelMatrix(info, shader);
+
+				//Need to bind the VBO before we can enable attributes
+				glBindBuffer(GL_ARRAY_BUFFER, mVbo);
+				shader->enableAttributes();
+
+				//Actual drawing done here
+				glDrawArrays(GL_TRIANGLES, start * 3, numTriangles * 3);
+
+				//And clean up
+				shader->disableAttributes();
+			});
 		}
 	}
-	GL_CHECKERRORS();
-
-	shader->disableAttributes();
-	mMaterial->deactivate();
 }
