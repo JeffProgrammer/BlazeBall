@@ -262,6 +262,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	dif/include
 	thirdparty/v8/include
 	thirdparty/assimp/include
+	thirdparty/duktape
 )
 
 # Main project source
@@ -364,6 +365,20 @@ set (DIFVIEWERGAME_SRC
 )
 
 #------------------------------------------------------------------------------
+# duktape 1.3.0
+#------------------------------------------------------------------------------
+
+set (DUKTAPE_SRC
+	thirdparty/duktape/duk_config.h
+	thirdparty/duktape/duktape.h
+	thirdparty/duktape/duktape.c
+)
+
+# Create the library
+add_library(Duktape STATIC ${DUKTAPE_SRC})
+set_property(TARGET Duktape APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/duktape/")
+
+#------------------------------------------------------------------------------
 # SDL
 #------------------------------------------------------------------------------
 
@@ -389,6 +404,9 @@ set (DIFVIEWERGAME_LIBRARIES
 	
 	#SDL2
 	SDL2-static
+	
+	# Duktape javascript engine
+	Duktape
 )
 
 if (MSVC)
