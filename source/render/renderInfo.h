@@ -17,6 +17,7 @@
 
 #include "render/shader.h"
 #include "render/material.h"
+#include "render/util.h"
 
 #include <unordered_map>
 #include <vector>
@@ -91,11 +92,17 @@ struct RenderInfo {
 			//Load the material for the methods
 			Material *material = pair.first;
 			material->activate();
+
+			if (material->getShader() == nullptr)
+				material->setShader(Shader::defaultShader);
+
 			loadShader(material->getShader());
 
 			//And call every method that uses this material
 			for (auto &method : pair.second) {
 				method(material, *this);
+
+				GL_CHECKERRORS();
 			}
 
 			//Deactivate the material before loading the next one
