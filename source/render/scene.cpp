@@ -22,7 +22,6 @@ glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4x4(1), -90.0f, glm::v
 #define TICK_MS 16.6666666666666667
 
 Scene::Scene() {
-	mInteriorShader = nullptr;
 	mShapeShader = nullptr;
 	controlObject = nullptr;
 }
@@ -135,23 +134,8 @@ bool Scene::initGL() {
 	Shader::defaultShader = new Shader("defaultV.glsl", "defaultF.glsl");
 
 	//TODO: Have a config somewhere load all of these and init these values
-
-	mInteriorShader = new Shader("interiorV.glsl", "interiorF.glsl");
 	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
 	mSkyboxShader = new Shader("skyboxV.glsl", "skyboxF.glsl");
-
-	//TODO: Interiors should have per-material shaders, not one for all materials
-	mInteriorShader->addUniformLocation("textureSampler", 0);
-	mInteriorShader->addUniformLocation("normalSampler", 1);
-	mInteriorShader->addUniformLocation("specularSampler", 2);
-	mInteriorShader->addUniformLocation("noiseSampler", 3);
-	mInteriorShader->addUniformLocation("cubemapSampler", 4);
-
-	mInteriorShader->addAttribute("vertexPosition",  3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
-	mInteriorShader->addAttribute("vertexUV",        2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
-	mInteriorShader->addAttribute("vertexNormal",    3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
-	mInteriorShader->addAttribute("vertexTangent",   3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
-	mInteriorShader->addAttribute("vertexBitangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
 
 	//TODO: Shapes
 	mShapeShader->addUniformLocation("textureSampler", 0);
@@ -404,10 +388,22 @@ void Scene::run() {
 
 	//Create player
 	{
+		Shader *shader = new Shader("sphereV.glsl", "sphereF.glsl");
+		shader->addUniformLocation("textureSampler", 0);
+		shader->addUniformLocation("normalSampler", 1);
+		shader->addUniformLocation("specularSampler", 2);
+		shader->addUniformLocation("cubemapSampler", 3);
+
+		shader->addAttribute("vertexPosition",  3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
+		shader->addAttribute("vertexUV",        2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
+		shader->addAttribute("vertexNormal",    3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
+		shader->addAttribute("vertexTangent",   3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
+		shader->addAttribute("vertexBitangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
+
 		Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
 		player->material = new Material("marble.skin");
-		player->material->setTexture(marbleCubemap, GL_TEXTURE4);
-		player->material->setShader(mInteriorShader);
+		player->material->setTexture(marbleCubemap, GL_TEXTURE3);
+		player->material->setShader(shader);
 		mPlayer = player;
 		addObject(player);
 	}

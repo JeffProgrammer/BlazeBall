@@ -81,7 +81,6 @@ public:
 	Window *window;
 	Timer *mTimer;
 
-	Shader *mInteriorShader;
 	Shader *mShapeShader;
 	Shader *mSkyboxShader;
 	
