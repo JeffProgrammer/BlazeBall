@@ -83,6 +83,10 @@ void Scene::renderScene(RenderInfo &info) {
 		}
 	}
 
+	//Run all render methods
+	info.render();
+	info.clearRenderMethods();
+
 	//TODO: Clean up shape rendering
 	mShapeShader->activate();
 	info.loadShader(mShapeShader);

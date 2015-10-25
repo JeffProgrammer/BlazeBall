@@ -18,7 +18,7 @@
 #include "render/shader.h"
 #include "render/material.h"
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <functional>
 
@@ -47,10 +47,10 @@ struct RenderInfo {
 
 	bool isReflectionPass;
 
-	typedef std::function<void()> RenderMethod;
-	std::map<Material *, std::vector<RenderMethod>> renderMethods;
+	typedef std::function<void(Material *, RenderInfo &)> RenderMethod;
+	std::unordered_map<Material *, std::vector<RenderMethod>> renderMethods;
 
-	inline void loadShader(Shader *shader) const {
+	void loadShader(Shader *shader) const {
 		if (shader == nullptr)
 			shader = Shader::defaultShader;
 		
@@ -64,8 +64,43 @@ struct RenderInfo {
 		shader->setUniform      (SPECULAR_EXPONENT_UNIFORM_NAME,   static_cast<F32>(specularExponent));
 	}
 
+	/**
+	 * Add a method that will be rendered when the renderInfo is submitted. These
+	 * render methods are grouped by material.
+	 * @param material The material that this render method uses.
+	 * @param method   A function (or lambda expression) that will be called to
+	 *                 perform the rendering.
+	 */
 	inline void addRenderMethod(Material *material, RenderMethod method) {
 		renderMethods[material].push_back(method);
+	}
+
+	/**
+	 * Clear the current list of render methods
+	 */
+	inline void clearRenderMethods() {
+		renderMethods.clear();
+	}
+
+	/**
+	 * Submit all stored render methods in the renderInfo.
+	 */
+	void render() {
+		//Render methods are sorted by material
+		for (auto &pair : renderMethods) {
+			//Load the material for the methods
+			Material *material = pair.first;
+			material->activate();
+			loadShader(material->getShader());
+
+			//And call every method that uses this material
+			for (auto &method : pair.second) {
+				method(material, *this);
+			}
+
+			//Deactivate the material before loading the next one
+			material->deactivate();
+		}
 	}
 };
 
