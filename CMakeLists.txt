@@ -359,6 +359,8 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/modelV.glsl
 	source/shaders/skyboxF.glsl
 	source/shaders/skyboxV.glsl
+	source/shaders/sphereF.glsl
+	source/shaders/sphereV.glsl
 )
 
 #------------------------------------------------------------------------------
