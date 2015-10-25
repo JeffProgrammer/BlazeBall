@@ -82,7 +82,6 @@ public:
 	Timer *mTimer;
 
 	Shader *mShapeShader;
-	Shader *mSkyboxShader;
 	
 	bool mShouldSleep;
 

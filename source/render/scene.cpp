@@ -135,15 +135,11 @@ bool Scene::initGL() {
 
 	//TODO: Have a config somewhere load all of these and init these values
 	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
-	mSkyboxShader = new Shader("skyboxV.glsl", "skyboxF.glsl");
 
 	//TODO: Shapes
 	mShapeShader->addUniformLocation("textureSampler", 0);
 //	mShapeShader->addUniformLocation("normalSampler", 1);
 //	mShapeShader->addUniformLocation("specularSampler", 2);
-
-	mSkyboxShader->addUniformLocation("cubemapSampler", 0);
-	mSkyboxShader->addAttribute("vertexPosition", 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	marbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
 	marbleCubemap->generateBuffer();
@@ -364,6 +360,10 @@ void Scene::run() {
 
 	//Create skybox
 	{
+		Shader *shader = new Shader("skyboxV.glsl", "skyboxF.glsl");
+		shader->addUniformLocation("cubemapSampler", 0);
+		shader->addAttribute("vertexPosition", 3, GL_FLOAT, GL_FALSE, 0, 0);
+
 		std::vector<CubeMapTexture::TextureInfo> textures;
 		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky0.jpg", CubeMapTexture::PositiveX));
 		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky1.jpg", CubeMapTexture::NegativeX));
@@ -374,7 +374,7 @@ void Scene::run() {
 
 		CubeMapTexture *cubeMap = new CubeMapTexture(textures);
 		Material *skyMaterial = new Material("skybox", cubeMap, GL_TEXTURE0);
-		skyMaterial->setShader(mSkyboxShader);
+		skyMaterial->setShader(shader);
 		mSkybox = new Skybox(skyMaterial);
 		addObject(mSkybox);
 	}
