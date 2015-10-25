@@ -119,7 +119,7 @@ void GameInterior::init() {
 	renderInfo.generated = true;
 }
 
-void GameInterior::render(const ::RenderInfo &info) {
+void GameInterior::render(::RenderInfo &info) {
 	if (!renderInfo.generated)
 		init();
 

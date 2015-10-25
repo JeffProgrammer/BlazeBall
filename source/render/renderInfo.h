@@ -16,6 +16,11 @@
 #endif
 
 #include "render/shader.h"
+#include "render/material.h"
+
+#include <map>
+#include <vector>
+#include <functional>
 
 //todo: vector also per-shader
 #define PROJECTION_MATRIX_UNIFORM_NAME "projectionMat"
@@ -42,6 +47,9 @@ struct RenderInfo {
 
 	bool isReflectionPass;
 
+	typedef std::function<void()> RenderMethod;
+	std::map<Material *, std::vector<RenderMethod>> renderMethods;
+
 	inline void loadShader(Shader *shader) const {
 		if (shader == nullptr)
 			shader = Shader::defaultShader;
@@ -54,6 +62,10 @@ struct RenderInfo {
 		shader->setUniformVector(AMBIENT_LIGHT_COLOR_UNIFORM_NAME, ambientColor);
 		shader->setUniformVector(SUN_POSITION_UNIFORM_NAME,        sunPosition);
 		shader->setUniform      (SPECULAR_EXPONENT_UNIFORM_NAME,   static_cast<F32>(specularExponent));
+	}
+
+	inline void addRenderMethod(Material *material, RenderMethod method) {
+		renderMethods[material].push_back(method);
 	}
 };
 

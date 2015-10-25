@@ -53,7 +53,7 @@ public:
 	void init();
 
 	virtual bool isReflectable() { return true; }
-	virtual void render(const ::RenderInfo &info);
+	virtual void render(::RenderInfo &info);
 
 	virtual glm::vec3 getPosition();
 	virtual glm::quat getRotation();

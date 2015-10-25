@@ -82,7 +82,7 @@ void CubeMapFramebufferTexture::destroyBuffer() {
 	glDeleteRenderbuffers(1, &depthBuffer);
 	glDeleteTextures(1, &mBuffer);
 }
-void CubeMapFramebufferTexture::generateBuffer(const glm::vec3 &center, const glm::ivec2 &screenSize, std::function<void(const RenderInfo &info)> renderMethod, RenderInfo info) {
+void CubeMapFramebufferTexture::generateBuffer(const glm::vec3 &center, const glm::ivec2 &screenSize, std::function<void(RenderInfo &info)> renderMethod, RenderInfo info) {
 	//Need to set viewport size otherwise it will only get the corner part of the frame
 	glViewport(0, 0, extent.x, extent.y);
 

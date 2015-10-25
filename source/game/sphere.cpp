@@ -94,7 +94,7 @@ void Sphere::calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix
 	modelMatrix = glm::scale(modelMatrix, glm::vec3(radius));
 }
 
-void Sphere::render(const RenderInfo &info) {
+void Sphere::render(RenderInfo &info) {
 	if (!generated) {
 		generate();
 		generated = true;

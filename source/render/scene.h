@@ -105,7 +105,7 @@ public:
 
 	void updateWindowSize(const glm::ivec2 &size);
 
-	void renderScene(const RenderInfo &info);
+	void renderScene(RenderInfo &info);
 	void render();
 
 	void loop(const F64 &deltaMS);

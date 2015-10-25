@@ -22,7 +22,7 @@ public:
 	Shape(const std::string &shapeFile);
 	virtual ~Shape();
 	virtual void updateTick(const F64 &delta);
-	virtual void render(const RenderInfo &info);
+	virtual void render(RenderInfo &info);
 
 	void loadShape();
 

@@ -59,7 +59,7 @@ void Scene::render() {
 
 	info.isReflectionPass = false;
 
-	marbleCubemap->generateBuffer(mPlayer->getPosition(), window->getWindowSize() * (S32)pixelDensity, [&](const RenderInfo &info) {
+	marbleCubemap->generateBuffer(mPlayer->getPosition(), window->getWindowSize() * (S32)pixelDensity, [&](RenderInfo &info) {
 		this->renderScene(info);
 	}, info);
 
@@ -67,7 +67,7 @@ void Scene::render() {
 	renderScene(info);
 }
 
-void Scene::renderScene(const RenderInfo &info) {
+void Scene::renderScene(RenderInfo &info) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_CULL_FACE);

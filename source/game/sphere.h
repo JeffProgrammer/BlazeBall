@@ -58,7 +58,7 @@ public:
 	virtual ~Sphere();
 
 	virtual void calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix);
-	virtual void render(const RenderInfo &info);
+	virtual void render(RenderInfo &info);
 
 	virtual glm::vec3 getPosition();
 	virtual glm::quat getRotation();

@@ -75,7 +75,7 @@ void Skybox::generate() {
 	mGenerated = true;
 }
 
-void Skybox::render(const RenderInfo &info) {
+void Skybox::render(RenderInfo &info) {
 	if (!mGenerated) {
 		generate();
 	}

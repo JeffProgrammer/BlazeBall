@@ -32,7 +32,7 @@ public:
 
 	virtual bool isReflectable() { return true; }
 
-	virtual void render(const RenderInfo &info);
+	virtual void render(RenderInfo &info);
 	virtual inline void updateTick(const F64 &deltaMS) {};
 };
 
