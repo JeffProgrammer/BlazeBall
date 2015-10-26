@@ -35,6 +35,8 @@ int main(int argc, const char *argv[]) {
 	// Init script engine
 	SCRIPTENGINE->init();
 
+	SCRIPTENGINE->eval("new Point(1, 1);");
+
 	// parse command line arguments.
 	parseArgs(argc, argv);
 
