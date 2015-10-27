@@ -94,6 +94,19 @@ void Sphere::calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix
 	modelMatrix = glm::scale(modelMatrix, glm::vec3(radius));
 }
 
+void Sphere::draw(Material *material, RenderInfo &info, void *userInfo) {
+	loadModelMatrix(info, material->getShader());
+	material->getShader()->setUniform("reflectivity", 1.f);
+
+	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
+	material->getShader()->enableAttributes();
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
+
+	material->getShader()->disableAttributes();
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 void Sphere::render(RenderInfo &info) {
 	if (!generated) {
 		generate();
@@ -103,18 +116,7 @@ void Sphere::render(RenderInfo &info) {
 	if (!material)
 		return;
 
-	info.addRenderMethod(material, [&](Material *material, RenderInfo &info) {
-		loadModelMatrix(info, material->getShader());
-		material->getShader()->setUniform("reflectivity", 1.f);
-
-		glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
-		material->getShader()->enableAttributes();
-
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
-
-		material->getShader()->disableAttributes();
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	});
+	info.addRenderMethod(material, RenderInfo::RenderMethod::from_method<Sphere, &Sphere::draw>(this));
 }
 
 void Sphere::applyTorque(const glm::vec3 &torque) {

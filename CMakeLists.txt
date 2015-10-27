@@ -258,6 +258,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/mng
 	thirdparty/zlib
 	thirdparty/SDL2/include
+	thirdparty/srutil
 	thirdparty
 	dif/include
 	thirdparty/v8/include

@@ -31,6 +31,11 @@ private:
 		bool generated;
 	};
 	RenderInfo renderInfo;
+
+	struct RenderUserData {
+		U32 numTriangles;
+		U32 start;
+	};
 	
 	GLuint mVbo;
 
@@ -52,6 +57,7 @@ public:
 
 	virtual bool isReflectable() { return true; }
 	virtual void render(::RenderInfo &info);
+	void drawMaterial(Material *material, ::RenderInfo &info, void *userInfo);
 
 	virtual glm::vec3 getPosition();
 	virtual glm::quat getRotation();
