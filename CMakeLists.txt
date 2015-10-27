@@ -271,6 +271,8 @@ set (DIFVIEWERGAME_SRC
 	source/main.cpp
 
 	# Base folder
+	source/base/config.cpp
+	source/base/config.h
 	source/base/io.cpp
 	source/base/io.h
 	source/base/math.cpp

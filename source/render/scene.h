@@ -27,6 +27,7 @@
 #include "texture/cubeMapFramebufferTexture.h"
 #include "render/modelManager.h"
 #include "renderInfo.h"
+#include "base/config.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -80,6 +81,7 @@ public:
 
 	Window *window;
 	Timer *mTimer;
+	Config *mConfig;
 
 	Shader *mShapeShader;
 	
