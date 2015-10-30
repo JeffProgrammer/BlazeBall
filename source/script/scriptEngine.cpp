@@ -26,7 +26,11 @@ void ScriptEngine::init() {
 	duk_push_c_function(mContext, js_Point_constructor, 2);
 
 	duk_push_object(mContext);
-	duk_put_function_list(mContext, -1, jsPointMethods);
+
+	// make getX() accessible from script
+	duk_push_c_function(mContext, js_Point_getX, 0);
+	duk_put_prop_string(mContext, -2, "getX");
+
 	duk_put_prop_string(mContext, -2, "prototype");
 	duk_put_global_string(mContext, "Point");
 }
@@ -69,6 +73,13 @@ duk_ret_t js_Point_destructor(duk_context *context) {
 }
 
 duk_ret_t js_Point_constructor(duk_context *context) {
+	// ensure we called the function with new to create
+	// an object.
+	if (!duk_is_constructor_call(context)) {
+		printf("must call Point() with new");
+		return DUK_RET_TYPE_ERROR;
+	}
+
 	F32 x = duk_require_number(context, 0);
 	F32 y = duk_require_number(context, 1);
 
