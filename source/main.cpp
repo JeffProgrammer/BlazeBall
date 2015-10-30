@@ -35,7 +35,7 @@ int main(int argc, const char *argv[]) {
 	// Init script engine
 	SCRIPTENGINE->init();
 
-	SCRIPTENGINE->eval("new Point(1, 1);");
+	SCRIPTENGINE->eval("function x() { var p = new Point(2,3); print(p.getX()); } x();");
 
 	// parse command line arguments.
 	parseArgs(argc, argv);

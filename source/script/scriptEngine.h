@@ -22,6 +22,12 @@ public:
 
 duk_ret_t js_Point_destructor(duk_context *context); 
 duk_ret_t js_Point_constructor(duk_context *context);
+duk_ret_t js_Point_getX(duk_context *context);
+
+const duk_function_list_entry jsPointMethods[] = {
+	{"getX", js_Point_getX, 0},
+	{nullptr, nullptr, 0}
+};
 
 class ScriptEngine {
 private:

@@ -26,6 +26,7 @@ void ScriptEngine::init() {
 	duk_push_c_function(mContext, js_Point_constructor, 2);
 
 	duk_push_object(mContext);
+	duk_put_function_list(mContext, -1, jsPointMethods);
 	duk_put_prop_string(mContext, -2, "prototype");
 	duk_put_global_string(mContext, "Point");
 }
@@ -93,4 +94,16 @@ duk_ret_t js_Point_constructor(duk_context *context) {
 	printf("constructing point with address of: %x\n", p);
 
 	return 0;
+}
+
+duk_ret_t js_Point_getX(duk_context *context) {
+	duk_push_this(context);
+	duk_get_prop_string(context, -1, "___pointer");
+	Point *point = static_cast<Point*>(duk_to_pointer(context, -1));
+	duk_pop(context);
+	duk_push_sprintf(context, "%f", point->mX);
+
+	printf("c++: point.mX is: %f\n", point->mX);
+
+	return 1;
 }
