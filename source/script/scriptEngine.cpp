@@ -120,6 +120,8 @@ duk_ret_t js_Point_constructor(duk_context *context) {
 		return DUK_RET_TYPE_ERROR;
 	}
 
+	S32 num = duk_get_top(context);
+
 	F32 x = duk_require_number(context, 0);
 	F32 y = duk_require_number(context, 1);
 
