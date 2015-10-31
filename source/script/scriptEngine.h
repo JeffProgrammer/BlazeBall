@@ -43,14 +43,26 @@ duk_ret_t js_Point3_getZ(duk_context *context);
 
 class ScriptEngine {
 private:
+	/**
+	 * A pointer to the script engine interface context.
+	 */
 	duk_context *mContext;
 
 public:
 	ScriptEngine();
 	~ScriptEngine();
 
+	/**
+	 * Initializes the script engine.
+	 */
 	void init();
 
+	/**
+	 * Evaluates an arbitrary line of code.
+	 * @param str The code to evaluate.
+	 * @return the result of the script, or an empty string if there is no 
+	 *  return value or undefined.
+	 */
 	std::string eval(const char *str);
 
 	/**
@@ -61,11 +73,18 @@ public:
 	 */
 	std::string exec(const char *file);
 
+	/**
+	 * Gets the script engine instance.
+	 * @return a pointer to the singleton script engine.
+	 */
 	static ScriptEngine *getSingleton() {
 		static ScriptEngine *engine = new ScriptEngine();
 		return engine;
 	}
 
+	/**
+	 * Destroys the script engine.
+	 */
 	inline void destroy() {
 		delete this;
 	}
