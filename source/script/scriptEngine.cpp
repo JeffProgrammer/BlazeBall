@@ -36,7 +36,11 @@ void ScriptEngine::init() {
 }
 
 std::string ScriptEngine::eval(const char *str) {
-	duk_peval_string(mContext, str);
+	if (duk_peval_string(mContext, str) != 0) {
+		printf("Error evaluating script: %s\n", duk_safe_to_string(mContext, -1));
+		duk_pop(mContext);
+		return "Syntax Error";
+	}
 
 	std::string ret = "";
 	if (duk_is_string(mContext, -1)) {
