@@ -27,6 +27,7 @@ duk_ret_t js_Point_getX(duk_context *context);
 duk_ret_t js_Point_setX(duk_context *context);
 
 duk_ret_t js_Point_getY(duk_context *context);
+duk_ret_t js_Point_setY(duk_context *context);
 
 class Point3 : public Point {
 public:

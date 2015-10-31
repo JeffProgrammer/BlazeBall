@@ -45,8 +45,13 @@ void js_Point_initialize(duk_context *context) {
 	/* Point.prototype.getY */ duk_push_c_function(context, js_Point_getY, 0); // stack: [ function, object, function ]
 	duk_put_prop_string(context, -2, "getY"); // stack: [ function, object [ getX : function, getY : function ] ]
 
-	duk_put_prop_string(context, -2, "prototype"); // stack: [ function [ prototype : object [ getX : function, getY : function ] ] ]
-	duk_put_global_string(context, "Point"); // stack: [ ], global: [ Point : function [ prototype : object [ getX : function, getY : function ] ] ]
+	/* Point.y */ duk_push_string(context, "y"); // stack: [ ..., object: Point, string: "y" ]
+	/* Point.y.getter */ duk_push_c_function(context, js_Point_getY, 0); // stack: [ ..., object: Point, string: "y", function: "getY" ]
+	/* Point.y.setter */ duk_push_c_function(context, js_Point_setY, 1); // stack: [ ..., object: Point, string: "y", function: "getY", function: "setY" ] 
+	duk_def_prop(context, -4, DUK_DEFPROP_HAVE_GETTER | DUK_DEFPROP_HAVE_SETTER); // stack: [ ..., object: Point ]
+
+	duk_put_prop_string(context, -2, "prototype"); // stack: [ function [ prototype : object [ ... ] ] ]
+	duk_put_global_string(context, "Point"); // stack: [ ], global: [ Point : function [ prototype : object [ ... ] ] ]
 }
 
 void js_Point3_initialize(duk_context *context) {
@@ -179,6 +184,18 @@ duk_ret_t js_Point_getY(duk_context *context) {
 	printf("c++: point.mY is: %f\n", point->mY);
 
 	return 1;
+}
+
+duk_ret_t js_Point_setY(duk_context *context) {
+	duk_push_this(context);
+	duk_get_prop_string(context, -1, "___pointer");
+	Point *point = static_cast<Point*>(duk_to_pointer(context, -1));
+
+	F32 y = duk_require_number(context, 0);
+	point->mY = y;
+
+	duk_pop(context);
+	return 0; //Undefined
 }
 
 duk_ret_t js_Point3_constructor(duk_context *context) {
