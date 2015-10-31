@@ -35,6 +35,12 @@ void js_Point_initialize(duk_context *context) {
 	/* Point.prototype.getX */ duk_push_c_function(context, js_Point_getX, 0); // stack: [ function, object, function ]
 	duk_put_prop_string(context, -2, "getX"); // stack: [ function, object [ getX : function] ]
 
+	//Make .x accessible, need [ key, getter, setter] on the top of stack
+	/* Point.x */ duk_push_string(context, "x"); // stack: [ function, object [ getX : function ], string ]
+	/* Point.x.getter */ duk_push_c_function(context, js_Point_getX, 0); // stack: [ function, object [ getX : function ], string, function ]
+	/* Point.x.setter */ duk_push_c_function(context, js_Point_setX, 1); // stack: [ function, object [ getX : function ], string, function, function ]
+	duk_def_prop(context, -4, DUK_DEFPROP_HAVE_GETTER | DUK_DEFPROP_HAVE_SETTER); // stack: [ function, object [ getX : function, x : native ] ]
+
 	// make getY() accessible from script
 	/* Point.prototype.getY */ duk_push_c_function(context, js_Point_getY, 0); // stack: [ function, object, function ]
 	duk_put_prop_string(context, -2, "getY"); // stack: [ function, object [ getX : function, getY : function ] ]
@@ -149,6 +155,18 @@ duk_ret_t js_Point_getX(duk_context *context) {
 	printf("c++: point.mX is: %f\n", point->mX);
 
 	return 1;
+}
+
+duk_ret_t js_Point_setX(duk_context *context) {
+	duk_push_this(context);
+	duk_get_prop_string(context, -1, "___pointer");
+	Point *point = static_cast<Point*>(duk_to_pointer(context, -1));
+
+	F32 x = duk_require_number(context, 0);
+	point->mX = x;
+
+	duk_pop(context);
+	return 0; //Undefined
 }
 
 duk_ret_t js_Point_getY(duk_context *context) {
