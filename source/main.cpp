@@ -35,7 +35,8 @@ int main(int argc, const char *argv[]) {
 	// Init script engine
 	SCRIPTENGINE->init();
 
-	SCRIPTENGINE->eval("function x() { var p = new Point(1, 2); print(p.x); } x();");
+	SCRIPTENGINE->exec("main.js"); // execute file
+	SCRIPTENGINE->eval("test();"); // call function from file
 
 	// parse command line arguments.
 	parseArgs(argc, argv);
