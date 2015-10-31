@@ -93,6 +93,25 @@ std::string ScriptEngine::eval(const char *str) {
 	return ret;
 }
 
+std::string ScriptEngine::exec(const char *file) {
+	std::string result = "";
+
+	if (duk_peval_file(mContext, file) != 0) {
+		printf("file %s failed to execute!\n", file);
+		printf("Error: %s\n", duk_safe_to_string(mContext, -1));
+		result = "<Syntax Error>";
+	} else {
+		// get result if one exists. If there is no result, return
+		// empty string
+		bool set = !duk_is_undefined(mContext, -1);
+		std::string test = duk_safe_to_string(mContext, -1);
+		if (set)
+			result = test;
+	}
+	duk_pop(mContext);
+	return result;
+}
+
 duk_ret_t js_Point_constructor(duk_context *context) {
 	// ensure we called the function with new to create
 	// an object.

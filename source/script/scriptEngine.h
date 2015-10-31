@@ -53,6 +53,14 @@ public:
 
 	std::string eval(const char *str);
 
+	/**
+	 * Executes a file script file and loads it into the virtual machine.
+	 * @param file The script file to execute.
+	 * @return the result of the script, or an empty string if there is
+	 *  is no return value, or <Syntax Error> if there was a syntax error.
+	 */
+	std::string exec(const char *file);
+
 	static ScriptEngine *getSingleton() {
 		static ScriptEngine *engine = new ScriptEngine();
 		return engine;
