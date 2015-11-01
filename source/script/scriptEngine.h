@@ -14,6 +14,7 @@
 #include "base/types.h"
 #include "script/scriptUtil.h"
 #include "script/scriptTemplates.h"
+#include "script/scriptFunction.h"
 
 #define SCRIPTENGINE ScriptEngine::getSingleton()
 
@@ -154,39 +155,6 @@ private:
 	std::vector<Field> mFields;
 	Constructor mConstructor;
 };
-
-class ScriptFunctionConstructor {
-public:
-	ScriptFunctionConstructor(const std::string &name, S32 numArgs, duk_c_function function) : mName(name), mNumArgs(numArgs), mFunction(function) {
-		sScriptFunctionConstructorVector.push_back(this);
-	}
-
-	std::string getName() const {
-		return mName;
-	}
-
-	S32 getNumArgs() const {
-		return mNumArgs;
-	}
-
-	duk_c_function getFunction() const {
-		return mFunction;
-	}
-
-	static std::vector<ScriptFunctionConstructor*> sScriptFunctionConstructorVector;
-private:
-	std::string mName;
-	S32 mNumArgs;
-	duk_c_function mFunction;
-};
-
-#define ScriptFunction(name, rettype, numArgs)                                                                        \
-	rettype __sfimplmenetation##name(duk_context *context, S32 argc);                                                  \
-	static duk_ret_t __sf##name(duk_context *context) {                                                                \
-		return ScriptFunctionReturn<rettype>::perform(context, __sfimplmenetation##name, numArgs);                      \
-	}                                                                                                                  \
-	ScriptFunctionConstructor __sfcfunctionconstructor##name(#name, numArgs, __sf##name);                              \
-	rettype __sfimplmenetation##name(duk_context *context, S32 argc)
 
 /**
  * Implements a class and exposes it to script.
