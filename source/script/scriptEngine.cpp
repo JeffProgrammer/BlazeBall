@@ -9,6 +9,7 @@
 #include "script/scriptEngine.h"
 
 std::vector<ScriptClassConstructor*> ScriptClassConstructor::sScriptConstructorVector;
+std::vector<ScriptFunctionConstructor*> ScriptFunctionConstructor::sScriptFunctionConstructorVector;
 
 IMPLEMENT_SCRIPT_OBJECT(Point, 2);
 
@@ -44,6 +45,16 @@ ScriptMethod(Point3, getZ, float, 0) {
 	ScriptReturnNumber(object->mZ);
 }
 
+ScriptFunction(add, F32, 2) {
+	F32 a = static_cast<F32>(ScriptNumber(0));
+	F32 b = static_cast<F32>(ScriptNumber(1));
+	return a + b;
+}
+
+ScriptFunction(echo, void, 1) {
+	printf("%s\n", ScriptString(0));
+}
+
 ScriptEngine::ScriptEngine() {
 	mContext = nullptr;
 }
@@ -59,6 +70,12 @@ void ScriptEngine::init() {
 	// initializes duk
 	mContext = duk_create_heap_default();
 
+	// push all functions onto the duk heap
+	for (auto fn : ScriptFunctionConstructor::sScriptFunctionConstructorVector) {
+		duk_push_c_function(mContext, fn->getFunction(), fn->getNumArgs());
+		duk_put_global_string(mContext, fn->getName().c_str());
+	}
+
 	for (auto constructor : ScriptClassConstructor::sScriptConstructorVector) {
 		
 		// Push constructor
@@ -67,7 +84,7 @@ void ScriptEngine::init() {
 
 		// add the parent prototype if one exists
 		if (constructor->getParentName() != "") {
-			bool x = duk_get_global_string(mContext, constructor->getParentName().c_str());
+			bool x = static_cast<bool>(duk_get_global_string(mContext, constructor->getParentName().c_str()));
 			duk_get_prop_string(mContext, -1, "prototype");
 			duk_remove(mContext, -2);
 			duk_set_prototype(mContext, -2);

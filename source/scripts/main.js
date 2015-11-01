@@ -8,4 +8,9 @@ function test() {
 	
 	x.y = 100;
 	print(x.y);
+	
+	var added = add(2, 3);
+	print(added);
+	
+	echo("hello world");
 }

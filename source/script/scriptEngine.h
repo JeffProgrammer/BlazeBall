@@ -150,6 +150,31 @@ private:
 	Constructor mConstructor;
 };
 
+class ScriptFunctionConstructor {
+public:
+	ScriptFunctionConstructor(const std::string &name, S32 numArgs, duk_c_function function) : mName(name), mNumArgs(numArgs), mFunction(function) {
+		sScriptFunctionConstructorVector.push_back(this);
+	}
+
+	std::string getName() const {
+		return mName;
+	}
+
+	S32 getNumArgs() const {
+		return mNumArgs;
+	}
+
+	duk_c_function getFunction() const {
+		return mFunction;
+	}
+
+	static std::vector<ScriptFunctionConstructor*> sScriptFunctionConstructorVector;
+private:
+	std::string mName;
+	S32 mNumArgs;
+	duk_c_function mFunction;
+};
+
 template<typename>
 struct arstarst {
 	static int retCode() {
@@ -209,6 +234,66 @@ static void __finishConstructor(duk_context *context, duk_c_function function, v
 	duk_push_c_function(context, function, 1);
 	duk_set_finalizer(context, -2);
 }
+
+template<typename>
+struct aaa {
+	static void performReturn(duk_context *context, S32) {
+
+	}
+};
+
+template<>
+struct aaa<void> {
+	static void performReturn(duk_context *context, void data) {
+
+	}
+};
+
+template<>
+struct aaa<F32> {
+	static void performReturn(duk_context *context, F32 data) {
+		duk_push_number(context, static_cast<duk_double_t>(data));
+	}
+};
+
+template<>
+struct aaa<S32> {
+	static void performReturn(duk_context *context, S32 data) {
+		duk_push_number(context, static_cast<duk_double_t>(data));
+	}
+};
+
+template<>
+struct aaa<bool> {
+	static void performReturn(duk_context *context, bool data) {
+		duk_push_boolean(context, static_cast<duk_bool_t>(data));
+	}
+};
+
+template<>
+struct aaa<const char *> {
+	static void performReturn(duk_context *context, const char *data) {
+		duk_push_string(context, data);
+	}
+};
+
+#define ScriptFunction(name, rettype, numArgs) \
+	rettype __sfimplmenetation##name(duk_context *context, S32 argc); \
+	static duk_ret_t __sf##name(duk_context *context) { \
+		/* anything but void has to return, which calls duk functions */ \
+		S32 retcode = arstarst<rettype>::retCode(); \
+		if (retcode) { \
+			rettype var = __sfimplmenetation##name(context, numArgs); \
+			duk_pop(context); \
+			aaa<rettype>::performReturn(context, var); \
+		} else { \
+			__sfimplmenetation##name(context, numArgs); \
+			duk_pop(context); \
+		} \
+		return retcode; \
+	} \
+	ScriptFunctionConstructor __sfcfunctionthingy(#name, numArgs, __sf##name); \
+	rettype __sfimplmenetation##name(duk_context *context, S32 argc)
 
 /**
  * Implements a class and exposes it to script.
