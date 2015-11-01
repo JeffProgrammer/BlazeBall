@@ -85,7 +85,7 @@ void ScriptEngine::init() {
 
 		// add the parent prototype if one exists
 		if (constructor->getParentName() != "") {
-			bool x = static_cast<bool>(duk_get_global_string(mContext, constructor->getParentName().c_str()));
+			duk_get_global_string(mContext, constructor->getParentName().c_str());
 			duk_get_prop_string(mContext, -1, "prototype");
 			duk_remove(mContext, -2);
 			duk_set_prototype(mContext, -2);
