@@ -12,6 +12,8 @@
 
 #define SCRIPTENGINE ScriptEngine::getSingleton()
 
+class ScriptClassConstructor;
+
 class ScriptEngine {
 private:
 	/**
@@ -86,13 +88,18 @@ public:
 		Method() {}
 	};
 
+	struct Parent {
+		Parent(const std::string &parentName, ScriptClassConstructor *parentConstructor) {
+			parentConstructor->setParent(parentName);
+		}
+	};
+
 	ScriptClassConstructor(const std::string &name, const Constructor &constructor) {
 		mName = name;
 		mConstructor = constructor;
 		mParentName = "";
 
-		mNext = sLast;
-		sLast = this;
+		sScriptConstructorVector.push_back(this);
 	}
 
 	void addMethod(const Method &method) {
@@ -119,8 +126,7 @@ public:
 		return mConstructor;
 	}
 
-	ScriptClassConstructor *mNext;
-	static ScriptClassConstructor *sLast;
+	static std::vector<ScriptClassConstructor*> sScriptConstructorVector;
 private:
 	std::string mName;
 	std::string mParentName;
@@ -193,6 +199,9 @@ static void __finishConstructor(duk_context *context, duk_c_function function, v
  */
 #define IMPLEMENT_SCRIPT_OBJECT(klass, numArgs) \
 	ScriptClassConstructor *klass::__scc##klass = new ScriptClassConstructor(#klass, ScriptClassConstructor::Constructor(##klass::__constructor##klass, numArgs))
+
+#define IMPLEMENT_SCRIPT_PARENT(klass, parent) \
+	ScriptClassConstructor::Parent __spp##klass##parent(#parent, klass::__scc##klass);
 
  /**
   * The constructor that is run from javascript.
@@ -286,9 +295,14 @@ public:
 	Point3(F32 x, F32 y, F32 z) : Point(x, y), mZ(z) {};
 
 	F32 mZ;
-};
 
-void js_Point3_initialize(duk_context *context);
-duk_ret_t js_Point3_destructor(duk_context *context);
-duk_ret_t js_Point3_constructor(duk_context *context);
-duk_ret_t js_Point3_getZ(duk_context *context);
+	ScriptConstructor(Point3, (0.0f, 0.0f, 0.0f), 3) {
+		F32 x = static_cast<F32>(ScriptNumber(0));
+		F32 y = static_cast<F32>(ScriptNumber(1));
+		F32 z = static_cast<F32>(ScriptNumber(2));
+
+		object->mX = x;
+		object->mY = y;
+		object->mZ = z;
+	}
+};
