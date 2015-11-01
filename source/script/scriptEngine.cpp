@@ -74,8 +74,8 @@ void js_Point3_initialize(duk_context *context) {
 	duk_put_global_string(context, "Point3"); // stack: [ ], global: [ Point3 : function [ prototype : object [ prototype: Point.prototype, getZ : function ] ] ]
 }
 
-std::string ScriptEngine::eval(const char *str) {
-	if (duk_peval_string(mContext, str) != 0) {
+std::string ScriptEngine::eval(const std::string &str) {
+	if (duk_peval_string(mContext, str.c_str()) != 0) {
 		printf("Error evaluating script: %s\n", duk_safe_to_string(mContext, -1));
 		duk_pop(mContext);
 		return "Syntax Error";
@@ -93,11 +93,11 @@ std::string ScriptEngine::eval(const char *str) {
 	return ret;
 }
 
-std::string ScriptEngine::exec(const char *file) {
+std::string ScriptEngine::exec(const std::string &file) {
 	std::string result = "";
 
-	if (duk_peval_file(mContext, file) != 0) {
-		printf("file %s failed to execute!\n", file);
+	if (duk_peval_file(mContext, file.c_str()) != 0) {
+		printf("file %s failed to execute!\n", file.c_str());
 		printf("Error: %s\n", duk_safe_to_string(mContext, -1));
 		result = "<Syntax Error>";
 	} else {

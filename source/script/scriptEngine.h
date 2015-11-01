@@ -34,7 +34,7 @@ public:
 	 * @return the result of the script, or an empty string if there is no 
 	 *  return value or undefined.
 	 */
-	std::string eval(const char *str);
+	std::string eval(const std::string &str);
 
 	/**
 	 * Executes a file script file and loads it into the virtual machine.
@@ -42,7 +42,7 @@ public:
 	 * @return the result of the script, or an empty string if there is
 	 *  is no return value, or <Syntax Error> if there was a syntax error.
 	 */
-	std::string exec(const char *file);
+	std::string exec(const std::string &file);
 
 	/**
 	 * Gets the script engine instance.
