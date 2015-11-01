@@ -119,6 +119,25 @@ void GameInterior::init() {
 	renderInfo.generated = true;
 }
 
+void GameInterior::drawMaterial(Material *material, ::RenderInfo &info, void *userData) {
+	RenderUserData *data = static_cast<RenderUserData *>(userData);
+
+	Shader *shader = material->getShader();
+	loadModelMatrix(info, shader);
+
+	//Need to bind the VBO before we can enable attributes
+	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
+	shader->enableAttributes();
+
+	//Actual drawing done here
+	glDrawArrays(GL_TRIANGLES, data->start * 3, data->numTriangles * 3);
+
+	//And clean up
+	shader->disableAttributes();
+
+	delete data;
+}
+
 void GameInterior::render(::RenderInfo &info) {
 	if (!renderInfo.generated)
 		init();
@@ -137,20 +156,8 @@ void GameInterior::render(::RenderInfo &info) {
 			}
 
 			//Add a render method for this material's batch of triangles
-			info.addRenderMethod(mMaterialList[i], [this, start, numTriangles](Material *material, ::RenderInfo &info) {
-				Shader *shader = material->getShader();
-				loadModelMatrix(info, shader);
-
-				//Need to bind the VBO before we can enable attributes
-				glBindBuffer(GL_ARRAY_BUFFER, mVbo);
-				shader->enableAttributes();
-
-				//Actual drawing done here
-				glDrawArrays(GL_TRIANGLES, start * 3, numTriangles * 3);
-
-				//And clean up
-				shader->disableAttributes();
-			});
+			RenderUserData *d = new RenderUserData{numTriangles, start};
+			info.addRenderMethod(mMaterialList[i], ::RenderInfo::RenderMethod::from_method<GameInterior, &GameInterior::drawMaterial>(this), d);
 		}
 	}
 }

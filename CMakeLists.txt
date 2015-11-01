@@ -258,6 +258,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/mng
 	thirdparty/zlib
 	thirdparty/SDL2/include
+	thirdparty/srutil
 	thirdparty
 	dif/include
 	thirdparty/v8/include
@@ -271,6 +272,8 @@ set (DIFVIEWERGAME_SRC
 	source/main.cpp
 
 	# Base folder
+	source/base/config.cpp
+	source/base/config.h
 	source/base/io.cpp
 	source/base/io.h
 	source/base/math.cpp

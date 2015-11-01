@@ -19,9 +19,13 @@
 #include "render/material.h"
 #include "render/util.h"
 
+#define SRUTIL_DELEGATE_PREFERRED_SYNTAX
+
 #include <unordered_map>
 #include <vector>
-#include <functional>
+#include <delegate/delegate.hpp>
+
+using namespace srutil;
 
 //todo: vector also per-shader
 #define PROJECTION_MATRIX_UNIFORM_NAME "projectionMat"
@@ -48,8 +52,12 @@ struct RenderInfo {
 
 	bool isReflectionPass;
 
-	typedef std::function<void(Material *, RenderInfo &)> RenderMethod;
-	std::unordered_map<Material *, std::vector<RenderMethod>> renderMethods;
+#ifdef SRUTIL_DELEGATE_PREFERRED_SYNTAX
+	typedef delegate<void(Material *, RenderInfo &, void *)> RenderMethod;
+#else
+	typedef delegate<void, Material *, RenderInfo &> RenderMethod;
+#endif
+	std::unordered_map<Material *, std::vector<std::pair<RenderMethod, void *>>> renderMethods;
 
 	void loadShader(Shader *shader) const {
 		if (shader == nullptr)
@@ -72,8 +80,8 @@ struct RenderInfo {
 	 * @param method   A function (or lambda expression) that will be called to
 	 *                 perform the rendering.
 	 */
-	inline void addRenderMethod(Material *material, RenderMethod method) {
-		renderMethods[material].push_back(method);
+	inline void addRenderMethod(Material *material, RenderMethod method, void *userinfo = nullptr) {
+		renderMethods[material].push_back(std::make_pair(method, userinfo));
 	}
 
 	/**
@@ -99,8 +107,8 @@ struct RenderInfo {
 			loadShader(material->getShader());
 
 			//And call every method that uses this material
-			for (auto &method : pair.second) {
-				method(material, *this);
+			for (auto &methodPair : pair.second) {
+				methodPair.first(material, *this, methodPair.second);
 
 				GL_CHECKERRORS();
 			}

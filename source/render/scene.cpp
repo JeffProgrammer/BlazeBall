@@ -196,13 +196,13 @@ void Scene::handleEvent(Event *event) {
 		case Event::Quit:
 			running = false;
 			break;
-		case Event::KeyDown:
-			switch (((KeyDownEvent *)event)->key) {
-					//Same for Colemak...
-				case KeyEvent::KEY_W:     movement.forward   = true; break;
-				case KeyEvent::KEY_S:     movement.backward  = true; break;
-				case KeyEvent::KEY_A:     movement.left      = true; break;
-				case KeyEvent::KEY_D:     movement.right     = true; break;
+		case Event::KeyDown: {
+			KeyEvent::Key key = static_cast<KeyEvent::Key>(static_cast<KeyDownEvent *>(event)->key);
+			if (key == mConfig->getKey("forward"))  movement.forward  = true;
+			if (key == mConfig->getKey("backward")) movement.backward = true;
+			if (key == mConfig->getKey("left"))     movement.left     = true;
+			if (key == mConfig->getKey("right"))    movement.right    = true;
+			switch (key) {
 				case KeyEvent::KEY_UP:    movement.pitchUp   = true; break;
 				case KeyEvent::KEY_DOWN:  movement.pitchDown = true; break;
 				case KeyEvent::KEY_LEFT:  movement.yawLeft   = true; break;
@@ -253,12 +253,14 @@ void Scene::handleEvent(Event *event) {
 					break;
 			}
 			break;
-		case Event::KeyUp:
-			switch (((KeyUpEvent *)event)->key) {
-				case KeyEvent::KEY_W:     movement.forward   = false; break;
-				case KeyEvent::KEY_S:     movement.backward  = false; break;
-				case KeyEvent::KEY_A:     movement.left      = false; break;
-				case KeyEvent::KEY_D:     movement.right     = false; break;
+		}
+		case Event::KeyUp: {
+			KeyEvent::Key key = static_cast<KeyEvent::Key>(static_cast<KeyDownEvent *>(event)->key);
+			if (key == mConfig->getKey("forward"))  movement.forward  = false;
+			if (key == mConfig->getKey("backward")) movement.backward = false;
+			if (key == mConfig->getKey("left"))     movement.left     = false;
+			if (key == mConfig->getKey("right"))    movement.right    = false;
+			switch (key) {
 				case KeyEvent::KEY_UP:    movement.pitchUp   = false; break;
 				case KeyEvent::KEY_DOWN:  movement.pitchDown = false; break;
 				case KeyEvent::KEY_LEFT:  movement.yawLeft   = false; break;
@@ -269,6 +271,7 @@ void Scene::handleEvent(Event *event) {
 					break;
 			}
 			break;
+		}
 		//Mouse for rotation
 		case Event::MouseMove:
 			if (mouseButtons.right) {

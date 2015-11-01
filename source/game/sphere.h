@@ -59,6 +59,7 @@ public:
 
 	virtual void calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix);
 	virtual void render(RenderInfo &info);
+	void draw(Material *material, RenderInfo &info, void *userInfo);
 
 	virtual glm::vec3 getPosition();
 	virtual glm::quat getRotation();

@@ -26,6 +26,7 @@ int main(int argc, const char *argv[]) {
 	//Init SDL
 	scene->window = new SDLWindow();
 	scene->mTimer = new SDLTimer();
+	scene->mConfig = new Config("config.txt");
 
 	//Init SDL
 	if (!scene->init()) {
