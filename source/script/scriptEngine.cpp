@@ -8,6 +8,19 @@
 
 #include "script/scriptEngine.h"
 
+ScriptClassConstructor *ScriptClassConstructor::sLast = nullptr;
+
+IMPLEMENT_SCRIPT_OBJECT(Point, 2);
+
+ScriptMethod(Point, setX, void, 1) {
+	F32 x = static_cast<F32>(ScriptNumber(0));
+	object->mX = x;
+}
+
+ScriptMethod(Point, getX, float, 0) {
+	ScriptReturnNumber(object->mX);
+}
+
 ScriptEngine::ScriptEngine() {
 	mContext = nullptr;
 }
@@ -23,8 +36,27 @@ void ScriptEngine::init() {
 	// initializes duk
 	mContext = duk_create_heap_default();
 
-	js_Point_initialize(mContext);
-	js_Point3_initialize(mContext);
+	for (auto *constructor = ScriptClassConstructor::sLast; constructor != nullptr; constructor = constructor->mNext) {
+		
+		// Push constructor
+		duk_push_c_function(mContext, constructor->getConstructor().mConstructor, constructor->getConstructor().mNumArgs);
+		duk_push_object(mContext);
+
+		// push each method
+		const auto &methodList = constructor->getMethods();
+		for (const auto &method : methodList) {
+			// push method
+			duk_push_c_function(mContext, method.mFunction, method.mNumArgs);
+			duk_put_prop_string(mContext, -2, method.mName.c_str());
+		}
+
+		// set prototype
+		duk_put_prop_string(mContext, -2, "prototype");
+		duk_put_global_string(mContext, constructor->getName().c_str());
+	}
+
+	//js_Point_initialize(mContext);
+	//js_Point3_initialize(mContext);
 }
 
 void js_Point_initialize(duk_context *context) {

@@ -78,7 +78,9 @@ public:
 		duk_c_function mFunction;
 		S32 mNumArgs;
 
-		Method(const std::string &name, duk_c_function function, S32 argc) : mName(name), mFunction(function), mNumArgs(argc) {}
+		Method(const std::string &name, duk_c_function function, S32 argc, ScriptClassConstructor *constructor) : mName(name), mFunction(function), mNumArgs(argc) {
+			constructor->addMethod(*this);
+		}
 
 		// Don't use
 		Method() {}
@@ -88,6 +90,9 @@ public:
 		mName = name;
 		mConstructor = constructor;
 		mParentName = "";
+
+		mNext = sLast;
+		sLast = this;
 	}
 
 	void addMethod(const Method &method) {
@@ -98,6 +103,22 @@ public:
 		mParentName = parent;
 	}
 
+	const std::string& getName() const {
+		return mName;
+	}
+
+	const std::string& getParentName() const {
+		return mParentName;
+	}
+
+	const std::vector<Method>& getMethods() const {
+		return mMethods;
+	}
+
+	const Constructor& getConstructor() const {
+		return mConstructor;
+	}
+
 	ScriptClassConstructor *mNext;
 	static ScriptClassConstructor *sLast;
 private:
@@ -105,6 +126,20 @@ private:
 	std::string mParentName;
 	std::vector<Method> mMethods;
 	Constructor mConstructor;
+};
+
+template<typename>
+struct arstarst {
+	static int retCode() {
+		return 1;
+	}
+};
+
+template<>
+struct arstarst<void> {
+	static int retCode() {
+		return 0;
+	}
 };
 
 /**
@@ -124,7 +159,7 @@ static duk_ret_t __checkConstructor(duk_context *context, const char *className,
 		return DUK_RET_API_ERROR; 
 	}
 
-	// check for num args to make sure its right*
+	// check for num args to make sure its right
 	if (duk_get_top(context) != numArgs) {
 		printf("Call to constructor of class %s takes %i arguments. You passed %i arguments.\n", className, duk_get_top(context), numArgs);
 		return DUK_RET_RANGE_ERROR;
@@ -157,7 +192,7 @@ static void __finishConstructor(duk_context *context, duk_c_function function, v
  * Implements a class and exposes it to script.
  */
 #define IMPLEMENT_SCRIPT_OBJECT(klass, numArgs) \
-	ScriptClassConstructor *klass::__scc##klass = new ScriptClassConstructor(##klass, ScriptClassConstructor::Constructor(##klass::__constructor##klass, numArgs));
+	ScriptClassConstructor *klass::__scc##klass = new ScriptClassConstructor(#klass, ScriptClassConstructor::Constructor(##klass::__constructor##klass, numArgs))
 
  /**
   * The constructor that is run from javascript.
@@ -191,6 +226,19 @@ static void __finishConstructor(duk_context *context, duk_c_function function, v
 	\
 	static void __constructorImplementation##klass(duk_context *context, klass *object, S32 argc)
 
+#define ScriptMethod(klass, name, rettype, numArgs) \
+	void __methodImplementation##name##klass(duk_context *context, klass *object, S32 argc); \
+	static duk_ret_t __method##name##klass(duk_context *context) { \
+		duk_push_this(context); \
+		duk_get_prop_string(context, -1, "___pointer"); \
+		klass *object = static_cast<klass *>(duk_to_pointer(context, -1)); \
+		duk_pop(context);\
+		__methodImplementation##name##klass(context, object, numArgs); \
+		return arstarst<rettype>::retCode();\
+	} \
+	ScriptClassConstructor::Method mc##klass##name(#name, __method##name##klass, numArgs, klass::__scc##klass); \
+	void __methodImplementation##name##klass(duk_context *context, klass *object, S32 argc)
+
 /**
  * Gets a number parameter from a specified argument index.
  * @param index The array index of the parameter list.
@@ -206,6 +254,12 @@ static void __finishConstructor(duk_context *context, duk_c_function function, v
  */
 #define ScriptString(index) \
 	duk_require_string(context, index)
+
+#define ScriptReturnNumber(number) \
+	duk_push_number(context, number)
+
+#define ScriptReturnString(str) \
+	duk_push_string(context, str)
 
 //-----------------------------------------------------------------------------
 // testing
