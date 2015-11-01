@@ -281,15 +281,6 @@ public:
 	}
 };
 
-void js_Point_initialize(duk_context *context);
-duk_ret_t js_Point_destructor(duk_context *context); 
-duk_ret_t js_Point_constructor(duk_context *context);
-duk_ret_t js_Point_getX(duk_context *context);
-duk_ret_t js_Point_setX(duk_context *context);
-
-duk_ret_t js_Point_getY(duk_context *context);
-duk_ret_t js_Point_setY(duk_context *context);
-
 class Point3 : public Point {
 public:
 	Point3(F32 x, F32 y, F32 z) : Point(x, y), mZ(z) {};
