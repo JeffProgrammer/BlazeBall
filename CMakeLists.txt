@@ -354,6 +354,7 @@ set (DIFVIEWERGAME_SRC
 	# Script folder
 	source/script/scriptEngine.cpp
 	source/script/scriptEngine.h
+	source/script/scriptTemplates.h
 	source/script/scriptUtil.h
 
 	# Shaders folder
