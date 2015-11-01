@@ -79,6 +79,15 @@ void ScriptEngine::init() {
 			duk_put_prop_string(mContext, -2, method.mName.c_str());
 		}
 
+		// push each field
+		const auto &fieldList = constructor->getFields();
+		for (const auto &field : fieldList) {
+			duk_push_string(mContext, field.mName.c_str());
+			duk_push_c_function(mContext, field.mGetterFn, 0);
+			duk_push_c_function(mContext, field.mSetterFn, 1);
+			duk_def_prop(mContext, -4, DUK_DEFPROP_HAVE_GETTER | DUK_DEFPROP_HAVE_SETTER);
+		}
+
 		// set prototype
 		duk_put_prop_string(mContext, -2, "prototype");
 		duk_put_global_string(mContext, constructor->getName().c_str());

@@ -83,14 +83,21 @@ public:
 		Method(const std::string &name, duk_c_function function, S32 argc, ScriptClassConstructor *constructor) : mName(name), mFunction(function), mNumArgs(argc) {
 			constructor->addMethod(*this);
 		}
-
-		// Don't use
-		Method() {}
 	};
 
 	struct Parent {
 		Parent(const std::string &parentName, ScriptClassConstructor *parentConstructor) {
 			parentConstructor->setParent(parentName);
+		}
+	};
+
+	struct Field {
+		std::string mName;
+		duk_c_function mGetterFn;
+		duk_c_function mSetterFn;
+
+		Field(const std::string &name, duk_c_function getter, duk_c_function setter, ScriptClassConstructor *constructor) : mName(name), mGetterFn(getter), mSetterFn(setter) {
+			constructor->addField(*this);
 		}
 	};
 
@@ -104,6 +111,10 @@ public:
 
 	void addMethod(const Method &method) {
 		mMethods.push_back(method);
+	}
+
+	void addField(const Field &field) {
+		mFields.push_back(field);
 	}
 
 	void setParent(const std::string &parent) {
@@ -122,6 +133,10 @@ public:
 		return mMethods;
 	}
 
+	const std::vector<Field>& getFields() const {
+		return mFields;
+	}
+
 	const Constructor& getConstructor() const {
 		return mConstructor;
 	}
@@ -131,6 +146,7 @@ private:
 	std::string mName;
 	std::string mParentName;
 	std::vector<Method> mMethods;
+	std::vector<Field> mFields;
 	Constructor mConstructor;
 };
 
@@ -201,7 +217,7 @@ static void __finishConstructor(duk_context *context, duk_c_function function, v
 	ScriptClassConstructor *klass::__scc##klass = new ScriptClassConstructor(#klass, ScriptClassConstructor::Constructor(##klass::__constructor##klass, numArgs))
 
 #define IMPLEMENT_SCRIPT_PARENT(klass, parent) \
-	ScriptClassConstructor::Parent __spp##klass##parent(#parent, klass::__scc##klass);
+	ScriptClassConstructor::Parent __spp##klass##parent(#parent, klass::__scc##klass)
 
  /**
   * The constructor that is run from javascript.
@@ -247,6 +263,26 @@ static void __finishConstructor(duk_context *context, duk_c_function function, v
 	} \
 	ScriptClassConstructor::Method mc##klass##name(#name, __method##name##klass, numArgs, klass::__scc##klass); \
 	void __methodImplementation##name##klass(duk_context *context, klass *object, S32 argc)
+
+#define ScriptField(klass, type, scriptname, fieldname, duktype) \
+	static duk_ret_t __settermethod##scriptname##klass(duk_context *context) { \
+		duk_push_this(context); \
+		duk_get_prop_string(context, -1, "___pointer"); \
+		klass *object = static_cast<klass *>(duk_to_pointer(context, -1)); \
+		duk_pop(context);\
+		type x = static_cast<type>(duk_require_##duktype(mContext, 0); \
+		object->fieldname = x; \
+		return 0; \
+	} \
+	static duk_ret_t __gettermethod##scriptname##klass(duk_context *context) { \
+		duk_push_this(context); \
+		duk_get_prop_string(context, -1, "___pointer"); \
+		klass *object = static_cast<klass *>(duk_to_pointer(context, -1)); \
+		duk_pop(context);\
+		duk_push_##duktype(mContext, object->fieldname); \
+		return 1; \
+	} \
+	ScriptClassConstructor::Field __fgsc##scriptname##klass(#scriptname, __gettermethod##scriptname##klass, __settermethod##scriptname##klass)
 
 /**
  * Gets a number parameter from a specified argument index.
