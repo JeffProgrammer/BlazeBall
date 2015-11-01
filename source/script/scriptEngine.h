@@ -10,6 +10,14 @@
 #include <string>
 #include "base/types.h"
 
+#ifdef _MSC_VER
+#define FORCE_SCRIPT_INLINE __forceinline
+#elif defined(__llvm__) || defined(__GNUC__)
+#define FORCE_SCRIPT_INLINE __attribute__((always_inline))
+#else
+#define FORCE_SCRIPT_INLINE inline
+#endif
+
 #define SCRIPTENGINE ScriptEngine::getSingleton()
 
 class ScriptClassConstructor;
