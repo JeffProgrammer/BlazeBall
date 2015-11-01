@@ -16,7 +16,7 @@ IMPLEMENT_SCRIPT_OBJECT(Point, 2);
 ScriptField(Point, F32, x, mX, number);
 
 ScriptMethod(Point, setX, void, 1) {
-	F32 x = static_cast<F32>(ScriptNumber(0));
+	F32 x = ScriptParam::get<F32>(context, 0);
 	object->mX = x;
 }
 
@@ -25,7 +25,7 @@ ScriptMethod(Point, getX, F32, 0) {
 }
 
 ScriptMethod(Point, setY, void, 1) {
-	F32 y = static_cast<F32>(ScriptNumber(0));
+	F32 y = ScriptParam::get<F32>(context, 0);
 	object->mY = y;
 }
 
@@ -37,7 +37,7 @@ IMPLEMENT_SCRIPT_OBJECT(Point3, 3);
 IMPLEMENT_SCRIPT_PARENT(Point3, Point);
 
 ScriptMethod(Point3, setZ, void, 1) {
-	F32 z = static_cast<F32>(ScriptNumber(0));
+	F32 z = ScriptParam::get<F32>(context, 0);
 	object->mZ = z;
 }
 
@@ -47,13 +47,13 @@ ScriptMethod(Point3, getZ, F32, 0) {
 }
 
 ScriptFunction(add, F32, 2) {
-	F32 a = static_cast<F32>(ScriptNumber(0));
-	F32 b = static_cast<F32>(ScriptNumber(1));
+	F32 a = ScriptParam::get<F32>(context, 0);
+	F32 b = ScriptParam::get<F32>(context, 1);
 	return a + b;
 }
 
 ScriptFunction(echo, void, 1) {
-	printf("%s\n", ScriptString(0));
+	printf("%s\n", ScriptParam::get<const char *>(context, 0));
 }
 
 ScriptEngine::ScriptEngine() {

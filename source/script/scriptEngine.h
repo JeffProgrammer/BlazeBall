@@ -320,8 +320,12 @@ template<typename T>
 struct ScriptMethodReturn {
 	static const int code = 1;
 
-	template<typename K>
-	static int perform(duk_context *context, K *object, T(*method)(duk_context*, K*, S32), S32 numArgs) {
+	template <typename K>
+	static int perform(duk_context *context, T(*method)(duk_context*, K*, S32), S32 numArgs) {
+		duk_push_this(context);
+		duk_get_prop_string(context, -1, "___pointer");
+		K *object = static_cast<K *>(duk_to_pointer(context, -1));
+
 		T var = method(context, object, numArgs);
 		duk_pop(context);
 		pushVar(context, var);
@@ -336,7 +340,11 @@ struct ScriptMethodReturn<void> {
 	static const int code = 0;
 
 	template<typename K>
-	static int perform(duk_context *context, K *object, void(*method)(duk_context*, K*, S32), S32 numArgs) {
+	static int perform(duk_context *context, void(*method)(duk_context*, K*, S32), S32 numArgs) {
+		duk_push_this(context);
+		duk_get_prop_string(context, -1, "___pointer");
+		K *object = static_cast<K *>(duk_to_pointer(context, -1));
+
 		method(context, object, numArgs);
 		duk_pop(context);
 		return code;
@@ -364,10 +372,7 @@ inline void ScriptMethodReturn<const char *>::pushVar(duk_context *context, cons
 #define ScriptMethod(klass, name, rettype, numArgs)                                                                                                                     \
 	rettype __methodImplementation##name##klass(duk_context *context, klass *object, S32 argc);                           \
 	static duk_ret_t __method##name##klass(duk_context *context) {                                                     \
-		duk_push_this(context);                                                                                         \
-		duk_get_prop_string(context, -1, "___pointer");                                                                 \
-		klass *object = static_cast<klass *>(duk_to_pointer(context, -1));                                              \
-		return ScriptMethodReturn<rettype>::perform(context, object, __methodImplementation##name##klass, numArgs);     \
+		return ScriptMethodReturn<rettype>::perform<klass>(context, __methodImplementation##name##klass, numArgs);     \
 	}                                                                                                                  \
 	ScriptClassConstructor::Method mc##klass##name(#name, __method##name##klass, numArgs, klass::__scc##klass);        \
 	rettype __methodImplementation##name##klass(duk_context *context, klass *object, S32 argc)
@@ -392,27 +397,23 @@ inline void ScriptMethodReturn<const char *>::pushVar(duk_context *context, cons
 	}                                                                                                                  \
 	ScriptClassConstructor::Field __fgsc##scriptname##klass(#scriptname, __gettermethod##scriptname##klass, __settermethod##scriptname##klass, klass::__scc##klass)
 
-/**
- * Gets a number parameter from a specified argument index.
- * @param index The array index of the parameter list.
- * @note must be called in a script constructor.
- */
-#define ScriptNumber(index) \
-	duk_require_number(context, index)
+struct ScriptParam {
+	template <typename T>
+	static T get(duk_context *context, U32 index);
+};
 
- /**
- * Gets a string parameter from a specified argument index.
- * @param index The array index of the parameter list.
- * @note must be called in a script constructor.
- */
-#define ScriptString(index) \
-	duk_require_string(context, index)
-
-#define ScriptReturnNumber(number) \
-	duk_push_number(context, number)
-
-#define ScriptReturnString(str) \
-	duk_push_string(context, str)
+template<> inline U32 ScriptParam::get(duk_context *context, U32 index) {
+	return duk_require_int(context, index);
+}
+template<> inline F32 ScriptParam::get(duk_context *context, U32 index) {
+	return static_cast<F32>(duk_require_number(context, index));
+}
+template<> inline F64 ScriptParam::get(duk_context *context, U32 index) {
+	return duk_require_number(context, index);
+}
+template<> inline const char *ScriptParam::get(duk_context *context, U32 index) {
+	return duk_require_string(context, index);
+}
 
 //-----------------------------------------------------------------------------
 // testing
@@ -426,8 +427,8 @@ public:
 	F32 mY;
 
 	ScriptConstructor(Point, (0.0f, 0.0f), 2) {
-		F32 x = static_cast<F32>(ScriptNumber(0));
-		F32 y = static_cast<F32>(ScriptNumber(1));
+		F32 x = ScriptParam::get<F32>(context, 0);
+		F32 y = ScriptParam::get<F32>(context, 1);
 
 		object->mX = x;
 		object->mY = y;
@@ -441,9 +442,9 @@ public:
 	F32 mZ;
 
 	ScriptConstructor(Point3, (0.0f, 0.0f, 0.0f), 3) {
-		F32 x = static_cast<F32>(ScriptNumber(0));
-		F32 y = static_cast<F32>(ScriptNumber(1));
-		F32 z = static_cast<F32>(ScriptNumber(2));
+		F32 x = ScriptParam::get<F32>(context, 0);
+		F32 y = ScriptParam::get<F32>(context, 1);
+		F32 z = ScriptParam::get<F32>(context, 2);
 
 		object->mX = x;
 		object->mY = y;
