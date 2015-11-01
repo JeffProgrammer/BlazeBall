@@ -175,20 +175,6 @@ private:
 	duk_c_function mFunction;
 };
 
-template<typename>
-struct arstarst {
-	static int retCode() {
-		return 1;
-	}
-};
-
-template<>
-struct arstarst<void> {
-	static int retCode() {
-		return 0;
-	}
-};
-
 /**
  * Checks the constructor to make sure that the required number of parameters
  * where met, as well as making sure that the constructor was called with the
@@ -235,138 +221,123 @@ static void __finishConstructor(duk_context *context, duk_c_function function, v
 	duk_set_finalizer(context, -2);
 }
 
-template<typename>
-struct aaa {
-	static void performReturn(duk_context *context, S32) {
-
+//Generic return
+template<typename T>
+struct ScriptFunctionReturn {
+	static const int code = 1;
+	typedef T(*Method)(duk_context *, S32);
+	static int perform(duk_context *context, Method method, S32 numArgs) {
+		T var = method(context, numArgs);
+		duk_pop(context);
+		pushVar(context, var);
+		return code;
 	}
-};
 
+	static void pushVar(duk_context *context, T var);
+};
+//Void-only return, doesn't try to get the retval
 template<>
-struct aaa<void> {
-	static void performReturn(duk_context *context, void data) {
-
+struct ScriptFunctionReturn<void> {
+	static const int code = 0;
+	typedef void(*Method)(duk_context *, S32);
+	static int perform(duk_context *context, Method method, S32 numArgs) {
+		method(context, numArgs);
+		duk_pop(context);
+		return code;
 	}
 };
 
+//Specialized pushVar() implementations
 template<>
-struct aaa<F32> {
-	static void performReturn(duk_context *context, F32 data) {
-		duk_push_number(context, static_cast<duk_double_t>(data));
-	}
-};
-
+inline void ScriptFunctionReturn<S32>::pushVar(duk_context *context, S32 var) {
+	duk_push_int(context, var);
+}
 template<>
-struct aaa<S32> {
-	static void performReturn(duk_context *context, S32 data) {
-		duk_push_number(context, static_cast<duk_double_t>(data));
-	}
-};
-
+inline void ScriptFunctionReturn<F32>::pushVar(duk_context *context, F32 var) {
+	duk_push_number(context, var);
+}
 template<>
-struct aaa<bool> {
-	static void performReturn(duk_context *context, bool data) {
-		duk_push_boolean(context, static_cast<duk_bool_t>(data));
-	}
-};
-
+inline void ScriptFunctionReturn<bool>::pushVar(duk_context *context, bool var) {
+	duk_push_boolean(context, var);
+}
 template<>
-struct aaa<const char *> {
-	static void performReturn(duk_context *context, const char *data) {
-		duk_push_string(context, data);
-	}
-};
-
-#define ScriptFunction(name, rettype, numArgs) \
-	rettype __sfimplmenetation##name(duk_context *context, S32 argc); \
-	static duk_ret_t __sf##name(duk_context *context) { \
-		/* anything but void has to return, which calls duk functions */ \
-		S32 retcode = arstarst<rettype>::retCode(); \
-		if (retcode) { \
-			rettype var = __sfimplmenetation##name(context, numArgs); \
-			duk_pop(context); \
-			aaa<rettype>::performReturn(context, var); \
-		} else { \
-			__sfimplmenetation##name(context, numArgs); \
-			duk_pop(context); \
-		} \
-		return retcode; \
-	} \
-	ScriptFunctionConstructor __sfcfunctionthingy(#name, numArgs, __sf##name); \
+inline void ScriptFunctionReturn<const char *>::pushVar(duk_context *context, const char *var) {
+	duk_push_string(context, var);
+}
+#define ScriptFunction(name, rettype, numArgs)                                                                        \
+	rettype __sfimplmenetation##name(duk_context *context, S32 argc);                                                  \
+	static duk_ret_t __sf##name(duk_context *context) {                                                                \
+		return ScriptFunctionReturn<rettype>::perform(context, __sfimplmenetation##name, numArgs);                      \
+	}                                                                                                                  \
+	ScriptFunctionConstructor __sfcfunctionconstructor##name(#name, numArgs, __sf##name);                              \
 	rettype __sfimplmenetation##name(duk_context *context, S32 argc)
 
 /**
  * Implements a class and exposes it to script.
  */
-#define IMPLEMENT_SCRIPT_OBJECT(klass, numArgs) \
-	ScriptClassConstructor *klass::__scc##klass = new ScriptClassConstructor(#klass, ScriptClassConstructor::Constructor(##klass::__constructor##klass, numArgs))
+#define IMPLEMENT_SCRIPT_OBJECT(klass, numArgs)                                                                       \
+	ScriptClassConstructor *klass::__scc##klass = new ScriptClassConstructor(#klass, ScriptClassConstructor::Constructor(klass::__constructor##klass, numArgs))
 
-#define IMPLEMENT_SCRIPT_PARENT(klass, parent) \
+#define IMPLEMENT_SCRIPT_PARENT(klass, parent)                                                                        \
 	ScriptClassConstructor::Parent __spp##klass##parent(#parent, klass::__scc##klass)
 
  /**
   * The constructor that is run from javascript.
   * Put this inside of the public class definition.
   */
-#define ScriptConstructor(klass, theConstructor, numArgs) \
-	static ScriptClassConstructor *__scc##klass; \
-	\
-	static duk_ret_t __scriptDestruct##klass(duk_context *context) { \
-		/* delete the object */ \
-		duk_get_prop_string(context, 0, "___pointer"); \
-		delete static_cast<klass *>(duk_to_pointer(context, -1)); \
-		duk_pop(context); \
-		return 0; \
-	} \
-	\
-	/* Class constructor, called by javascript engine */ \
-	static duk_ret_t __constructor##klass(duk_context *context) { \
-		duk_ret_t check = __checkConstructor(context, #klass, numArgs); \
-		if (check != 0) \
-			return check; \
-		\
-		/* Handle our logic. */ \
-		klass *instance = new klass theConstructor; \
-		__constructorImplementation##klass(context, instance, numArgs); \
-		\
-		__finishConstructor(context, __scriptDestruct##klass, instance); \
-		\
-		return 0; \
-	} \
-	\
+#define ScriptConstructor(klass, theConstructor, numArgs)                                                             \
+	static ScriptClassConstructor *__scc##klass;                                                                       \
+	static duk_ret_t __scriptDestruct##klass(duk_context *context) {                                                   \
+		/* delete the object */                                                                                         \
+		duk_get_prop_string(context, 0, "___pointer");                                                                  \
+		delete static_cast<klass *>(duk_to_pointer(context, -1));                                                       \
+		duk_pop(context);                                                                                               \
+		return 0;                                                                                                       \
+	}                                                                                                                  \
+	/* Class constructor, called by javascript engine */                                                               \
+	static duk_ret_t __constructor##klass(duk_context *context) {                                                      \
+		duk_ret_t check = __checkConstructor(context, #klass, numArgs);                                                 \
+		if (check != 0)                                                                                                 \
+			return check;                                                                                                \
+		/* Handle our logic. */                                                                                         \
+		klass *instance = new klass theConstructor;                                                                     \
+		__constructorImplementation##klass(context, instance, numArgs);                                                 \
+		__finishConstructor(context, __scriptDestruct##klass, instance);                                                \
+		return 0;                                                                                                       \
+	}                                                                                                                  \
 	static void __constructorImplementation##klass(duk_context *context, klass *object, S32 argc)
 
-#define ScriptMethod(klass, name, rettype, numArgs) \
-	void __methodImplementation##name##klass(duk_context *context, klass *object, S32 argc); \
-	static duk_ret_t __method##name##klass(duk_context *context) { \
-		duk_push_this(context); \
-		duk_get_prop_string(context, -1, "___pointer"); \
-		klass *object = static_cast<klass *>(duk_to_pointer(context, -1)); \
-		duk_pop(context);\
-		__methodImplementation##name##klass(context, object, numArgs); \
-		return arstarst<rettype>::retCode();\
-	} \
-	ScriptClassConstructor::Method mc##klass##name(#name, __method##name##klass, numArgs, klass::__scc##klass); \
+#define ScriptMethod(klass, name, rettype, numArgs)                                                                                                                     \
+	void __methodImplementation##name##klass(duk_context *context, klass *object, S32 argc);                           \
+	static duk_ret_t __method##name##klass(duk_context *context) {                                                     \
+		duk_push_this(context);                                                                                         \
+		duk_get_prop_string(context, -1, "___pointer");                                                                 \
+		klass *object = static_cast<klass *>(duk_to_pointer(context, -1));                                              \
+		duk_pop(context);                                                                                               \
+		__methodImplementation##name##klass(context, object, numArgs);                                                  \
+		return ScriptFunctionReturn<rettype>::code;                                                                     \
+	}                                                                                                                  \
+	ScriptClassConstructor::Method mc##klass##name(#name, __method##name##klass, numArgs, klass::__scc##klass);        \
 	void __methodImplementation##name##klass(duk_context *context, klass *object, S32 argc)
 
-#define ScriptField(klass, type, scriptname, fieldname, duktype) \
-	static duk_ret_t __settermethod##scriptname##klass(duk_context *context) { \
-		duk_push_this(context); \
-		duk_get_prop_string(context, -1, "___pointer"); \
-		klass *object = static_cast<klass *>(duk_to_pointer(context, -1)); \
-		duk_pop(context);\
-		type x = static_cast<type>(duk_require_##duktype(context, 0)); \
-		object->fieldname = x; \
-		return 0; \
-	} \
-	static duk_ret_t __gettermethod##scriptname##klass(duk_context *context) { \
-		duk_push_this(context); \
-		duk_get_prop_string(context, -1, "___pointer"); \
-		klass *object = static_cast<klass *>(duk_to_pointer(context, -1)); \
-		duk_pop(context);\
-		duk_push_##duktype(context, object->fieldname); \
-		return 1; \
-	} \
+#define ScriptField(klass, type, scriptname, fieldname, duktype)                                                      \
+	static duk_ret_t __settermethod##scriptname##klass(duk_context *context) {                                         \
+		duk_push_this(context);                                                                                         \
+		duk_get_prop_string(context, -1, "___pointer");                                                                 \
+		klass *object = static_cast<klass *>(duk_to_pointer(context, -1));                                              \
+		duk_pop(context);                                                                                               \
+		type x = static_cast<type>(duk_require_##duktype(context, 0));                                                  \
+		object->fieldname = x;                                                                                          \
+		return 0;                                                                                                       \
+	}                                                                                                                  \
+	static duk_ret_t __gettermethod##scriptname##klass(duk_context *context) {                                         \
+		duk_push_this(context);                                                                                         \
+		duk_get_prop_string(context, -1, "___pointer");                                                                 \
+		klass *object = static_cast<klass *>(duk_to_pointer(context, -1));                                              \
+		duk_pop(context);                                                                                               \
+		duk_push_##duktype(context, object->fieldname);                                                                 \
+		return 1;                                                                                                       \
+	}                                                                                                                  \
 	ScriptClassConstructor::Field __fgsc##scriptname##klass(#scriptname, __gettermethod##scriptname##klass, __settermethod##scriptname##klass, klass::__scc##klass)
 
 /**
