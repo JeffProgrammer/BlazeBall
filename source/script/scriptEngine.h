@@ -13,7 +13,7 @@
 #ifdef _MSC_VER
 #define FORCE_SCRIPT_INLINE __forceinline
 #elif defined(__llvm__) || defined(__GNUC__)
-#define FORCE_SCRIPT_INLINE __attribute__((always_inline))
+#define FORCE_SCRIPT_INLINE inline __attribute__((always_inline))
 #else
 #define FORCE_SCRIPT_INLINE inline
 #endif
@@ -324,7 +324,7 @@ struct ScriptMethodReturn {
 	static int perform(duk_context *context, K *object, T(*method)(duk_context*, K*, S32), S32 numArgs) {
 		T var = method(context, object, numArgs);
 		duk_pop(context);
-		pushVar(var);
+		pushVar(context, var);
 		return code;
 	}
 
@@ -367,7 +367,7 @@ inline void ScriptMethodReturn<const char *>::pushVar(duk_context *context, cons
 		duk_push_this(context);                                                                                         \
 		duk_get_prop_string(context, -1, "___pointer");                                                                 \
 		klass *object = static_cast<klass *>(duk_to_pointer(context, -1));                                              \
-		return ScriptMethodReturn<rettype>::perform(context, object, __methodImplementation##name##klass, numArgs);     \                                                                   \
+		return ScriptMethodReturn<rettype>::perform(context, object, __methodImplementation##name##klass, numArgs);     \
 	}                                                                                                                  \
 	ScriptClassConstructor::Method mc##klass##name(#name, __method##name##klass, numArgs, klass::__scc##klass);        \
 	rettype __methodImplementation##name##klass(duk_context *context, klass *object, S32 argc)

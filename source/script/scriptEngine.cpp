@@ -13,15 +13,15 @@ std::vector<ScriptFunctionConstructor*> ScriptFunctionConstructor::sScriptFuncti
 
 IMPLEMENT_SCRIPT_OBJECT(Point, 2);
 
-ScriptField(Point, float, x, mX, number);
+ScriptField(Point, F32, x, mX, number);
 
 ScriptMethod(Point, setX, void, 1) {
 	F32 x = static_cast<F32>(ScriptNumber(0));
 	object->mX = x;
 }
 
-ScriptMethod(Point, getX, float, 0) {
-	ScriptReturnNumber(object->mX);
+ScriptMethod(Point, getX, F32, 0) {
+	return object->mX;
 }
 
 ScriptMethod(Point, setY, void, 1) {
@@ -30,7 +30,7 @@ ScriptMethod(Point, setY, void, 1) {
 }
 
 ScriptMethod(Point, getY, F32, 0) {
-	ScriptReturnNumber(object->mY);
+	return object->mY;
 }
 
 IMPLEMENT_SCRIPT_OBJECT(Point3, 3);
