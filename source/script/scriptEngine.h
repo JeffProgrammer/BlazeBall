@@ -194,7 +194,7 @@ private:
  *  DUK_RET_RANGE_ERROR if the number of arguments didn't match.
  * @note FOR INTERNAL MACRO USE ONLY.
  */
-static duk_ret_t __checkConstructor(duk_context *context, const char *className, S32 numArgs) {
+FORCE_SCRIPT_INLINE duk_ret_t __checkConstructor(duk_context *context, const char *className, S32 numArgs) {
 	if (!duk_is_constructor_call(context)) {
 		printf("You must call the constructor with new.\n"); 
 		return DUK_RET_API_ERROR; 
@@ -217,7 +217,7 @@ static duk_ret_t __checkConstructor(duk_context *context, const char *className,
  * @param instance The c++ pointer that the javascript object represents.
  * @note FOR INTERNAL MACRO USE ONLY.
  */
-static void __finishConstructor(duk_context *context, duk_c_function function, void *instance) {
+FORCE_SCRIPT_INLINE void __finishConstructor(duk_context *context, duk_c_function function, void *instance) {
 	duk_push_this(context);
 	// Store handle ID 
 	std::string handle = "___pointer";
