@@ -352,6 +352,7 @@ set (DIFVIEWERGAME_SRC
 	source/render/util.h
 	
 	# Script folder
+	source/script/scriptClass.h
 	source/script/scriptEngine.cpp
 	source/script/scriptEngine.h
 	source/script/scriptFunction.h
