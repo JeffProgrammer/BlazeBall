@@ -44,6 +44,19 @@ OpenGL 2.1+
   * 256MB VRAM
 * 2GB Ram
 
+Third Party Libraries
+-------------------
+
+* Assimp Model Importer
+* Bullet 3D Physics Library
+* DukTape Javascript Engine
+* GLEW OpenGL Extensions Loader
+* GLM Math Library
+* JPEG Image Library
+* MNG Image Library
+* SDL2 Window and Input System
+* ZLIB Compression Library
+
 Acknowledgements
 -------------------
 
