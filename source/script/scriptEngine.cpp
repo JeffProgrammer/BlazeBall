@@ -29,7 +29,7 @@ ScriptMethod(Point, setY, void, 1) {
 	object->mY = y;
 }
 
-ScriptMethod(Point, getY, float, 0) {
+ScriptMethod(Point, getY, F32, 0) {
 	ScriptReturnNumber(object->mY);
 }
 
@@ -41,8 +41,9 @@ ScriptMethod(Point3, setZ, void, 1) {
 	object->mZ = z;
 }
 
-ScriptMethod(Point3, getZ, float, 0) {
-	ScriptReturnNumber(object->mZ);
+ScriptMethod(Point3, getZ, F32, 0) {
+	//ScriptReturnNumber(object->mZ);
+	return object->mZ;
 }
 
 ScriptFunction(add, F32, 2) {

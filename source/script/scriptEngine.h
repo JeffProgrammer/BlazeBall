@@ -315,18 +315,62 @@ inline void ScriptFunctionReturn<const char *>::pushVar(duk_context *context, co
 	}                                                                                                                  \
 	static void __constructorImplementation##klass(duk_context *context, klass *object, S32 argc)
 
+// Generic return
+template<typename T>
+struct ScriptMethodReturn {
+	static const int code = 1;
+
+	template<typename K>
+	static int perform(duk_context *context, K *object, T(*method)(duk_context*, K*, S32), S32 numArgs) {
+		T var = method(context, object, numArgs);
+		duk_pop(context);
+		pushVar(var);
+		return code;
+	}
+
+	static void pushVar(duk_context *context, T var);
+};
+// Void-only return, doesn't try to get the retval
+template<>
+struct ScriptMethodReturn<void> {
+	static const int code = 0;
+
+	template<typename K>
+	static int perform(duk_context *context, K *object, void(*method)(duk_context*, K*, S32), S32 numArgs) {
+		method(context, object, numArgs);
+		duk_pop(context);
+		return code;
+	}
+};
+
+//Specialized pushVar() implementations
+template<>
+inline void ScriptMethodReturn<S32>::pushVar(duk_context *context, S32 var) {
+	duk_push_int(context, var);
+}
+template<>
+inline void ScriptMethodReturn<F32>::pushVar(duk_context *context, F32 var) {
+	duk_push_number(context, var);
+}
+template<>
+inline void ScriptMethodReturn<bool>::pushVar(duk_context *context, bool var) {
+	duk_push_boolean(context, var);
+}
+template<>
+inline void ScriptMethodReturn<const char *>::pushVar(duk_context *context, const char *var) {
+	duk_push_string(context, var);
+}
+
 #define ScriptMethod(klass, name, rettype, numArgs)                                                                                                                     \
-	void __methodImplementation##name##klass(duk_context *context, klass *object, S32 argc);                           \
+	rettype __methodImplementation##name##klass(duk_context *context, klass *object, S32 argc);                           \
 	static duk_ret_t __method##name##klass(duk_context *context) {                                                     \
 		duk_push_this(context);                                                                                         \
 		duk_get_prop_string(context, -1, "___pointer");                                                                 \
 		klass *object = static_cast<klass *>(duk_to_pointer(context, -1));                                              \
-		duk_pop(context);                                                                                               \
-		__methodImplementation##name##klass(context, object, numArgs);                                                  \
-		return ScriptFunctionReturn<rettype>::code;                                                                     \
+		return ScriptMethodReturn<rettype>::perform(context, object, __methodImplementation##name##klass, numArgs);     \                                                                   \
 	}                                                                                                                  \
 	ScriptClassConstructor::Method mc##klass##name(#name, __method##name##klass, numArgs, klass::__scc##klass);        \
-	void __methodImplementation##name##klass(duk_context *context, klass *object, S32 argc)
+	rettype __methodImplementation##name##klass(duk_context *context, klass *object, S32 argc)
 
 #define ScriptField(klass, type, scriptname, fieldname, duktype)                                                      \
 	static duk_ret_t __settermethod##scriptname##klass(duk_context *context) {                                         \
