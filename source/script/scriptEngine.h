@@ -270,7 +270,7 @@ static void __finishConstructor(duk_context *context, duk_c_function function, v
 		duk_get_prop_string(context, -1, "___pointer"); \
 		klass *object = static_cast<klass *>(duk_to_pointer(context, -1)); \
 		duk_pop(context);\
-		type x = static_cast<type>(duk_require_##duktype(mContext, 0); \
+		type x = static_cast<type>(duk_require_##duktype(context, 0)); \
 		object->fieldname = x; \
 		return 0; \
 	} \
@@ -279,10 +279,10 @@ static void __finishConstructor(duk_context *context, duk_c_function function, v
 		duk_get_prop_string(context, -1, "___pointer"); \
 		klass *object = static_cast<klass *>(duk_to_pointer(context, -1)); \
 		duk_pop(context);\
-		duk_push_##duktype(mContext, object->fieldname); \
+		duk_push_##duktype(context, object->fieldname); \
 		return 1; \
 	} \
-	ScriptClassConstructor::Field __fgsc##scriptname##klass(#scriptname, __gettermethod##scriptname##klass, __settermethod##scriptname##klass)
+	ScriptClassConstructor::Field __fgsc##scriptname##klass(#scriptname, __gettermethod##scriptname##klass, __settermethod##scriptname##klass, klass::__scc##klass)
 
 /**
  * Gets a number parameter from a specified argument index.

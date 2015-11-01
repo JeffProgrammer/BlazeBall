@@ -12,6 +12,8 @@ std::vector<ScriptClassConstructor*> ScriptClassConstructor::sScriptConstructorV
 
 IMPLEMENT_SCRIPT_OBJECT(Point, 2);
 
+ScriptField(Point, float, x, mX, number);
+
 ScriptMethod(Point, setX, void, 1) {
 	F32 x = static_cast<F32>(ScriptNumber(0));
 	object->mX = x;

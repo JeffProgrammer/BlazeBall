@@ -5,4 +5,7 @@ function test() {
 	var x = new Point3(3, 4, 5);
 	print(x.getZ());
 	print(x.getX());
+	
+	x.y = 100;
+	print(x.y);
 }
