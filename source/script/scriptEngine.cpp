@@ -8,8 +8,8 @@
 
 #include "script/scriptEngine.h"
 
-std::vector<ScriptClassConstructor*> ScriptClassConstructor::sScriptConstructorVector;
-std::vector<ScriptFunctionConstructor*> ScriptFunctionConstructor::sScriptFunctionConstructorVector;
+ScriptClassConstructor* ScriptClassConstructor::sLast = nullptr;
+ScriptFunctionConstructor* ScriptFunctionConstructor::sLast = nullptr;
 
 IMPLEMENT_SCRIPT_OBJECT(Point, 2);
 
@@ -46,12 +46,6 @@ ScriptMethod(Point3, getZ, F32, 0) {
 	return object->mZ;
 }
 
-ScriptFunction(add, F32, 2) {
-	F32 a = ScriptParam::get<F32>(context, 0);
-	F32 b = ScriptParam::get<F32>(context, 1);
-	return a + b;
-}
-
 ScriptFunction(echo, void, 1) {
 	printf("%s\n", ScriptParam::get<const char *>(context, 0));
 }
@@ -72,12 +66,19 @@ void ScriptEngine::init() {
 	mContext = duk_create_heap_default();
 
 	// push all functions onto the duk heap
-	for (auto fn : ScriptFunctionConstructor::sScriptFunctionConstructorVector) {
+   for (auto fn = ScriptFunctionConstructor::sLast; fn != nullptr; fn = fn->mNext) {
 		duk_push_c_function(mContext, fn->getFunction(), fn->getNumArgs());
 		duk_put_global_string(mContext, fn->getName().c_str());
 	}
 
-	for (auto constructor : ScriptClassConstructor::sScriptConstructorVector) {
+   // we have to go in reverse order so that we start from the beginning.as class order matters. i.e. bsae class
+   // must be defined before inheritend class, or duktape freaks out.
+   std::vector<ScriptClassConstructor*> constructors;
+   for (auto constructor = ScriptClassConstructor::sLast; constructor != nullptr; constructor = constructor->mNext)
+      constructors.push_back(constructor);
+   
+   for (S32 i = static_cast<S32>(constructors.size()) - 1; i >= 0; i--) {
+      auto constructor = constructors[i];
 		
 		// Push constructor
 		duk_push_c_function(mContext, constructor->getConstructor().mConstructor, constructor->getConstructor().mNumArgs);

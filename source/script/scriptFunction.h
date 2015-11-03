@@ -14,7 +14,9 @@
 class ScriptFunctionConstructor {
 public:
 	ScriptFunctionConstructor(const std::string &name, S32 numArgs, duk_c_function function) : mName(name), mNumArgs(numArgs), mFunction(function) {
-		sScriptFunctionConstructorVector.push_back(this);
+
+      mNext = sLast;
+      sLast = this;
 	}
 
 	std::string getName() const {
@@ -29,7 +31,8 @@ public:
 		return mFunction;
 	}
 
-	static std::vector<ScriptFunctionConstructor*> sScriptFunctionConstructorVector;
+   static ScriptFunctionConstructor *sLast;
+   ScriptFunctionConstructor *mNext;
 private:
 	std::string mName;
 	S32 mNumArgs;

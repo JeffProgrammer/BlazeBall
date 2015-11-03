@@ -54,7 +54,8 @@ public:
 		mConstructor = constructor;
 		mParentName = "";
 
-		sScriptConstructorVector.push_back(this);
+      mNext = sLast;
+      sLast = this;
 	}
 
 	void addMethod(const Method &method) {
@@ -89,7 +90,8 @@ public:
 		return mConstructor;
 	}
 
-	static std::vector<ScriptClassConstructor*> sScriptConstructorVector;
+   static ScriptClassConstructor *sLast;
+   ScriptClassConstructor *mNext;
 private:
 	std::string mName;
 	std::string mParentName;
