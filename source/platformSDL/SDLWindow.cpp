@@ -45,6 +45,7 @@ bool SDLWindow::createContext() {
 	SDL_GL_MakeCurrent(window, context);
 
 #ifdef _WIN32
+	glewExperimental = true;
 	GLenum error = glewInit();
 	if (error != GLEW_OK) {
 		fprintf(stderr, "GLEW failed to init. Error: %d\n", error);
