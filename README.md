@@ -55,6 +55,7 @@ Third Party Libraries
 * JPEG Image Library
 * MNG Image Library
 * SDL2 Window and Input System
+* srutil Fast C++ Delegates
 * ZLIB Compression Library
 
 Acknowledgements
