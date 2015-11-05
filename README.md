@@ -32,15 +32,16 @@ Requirements
 -------------------
 
 C++11 support  
-OpenGL 2.1+
+OpenGL 3.3+
 
 * Windows XP SP3+
-* Mac OSX 10.6+
+* Mac OSX 10.9+
 * Intel Core2Duo CPU @ 2.0ghz
 * GPU:
   * NVidia GeForce 8000 series
   * ATI Radeon HD 2000 series
-  * Intel HD 3000 Graphics
+  * Intel HD 3000 Graphics [OSX]
+  * Intel HD 4000 Graphics [Windows]
   * 256MB VRAM
 * 2GB Ram
 
@@ -55,6 +56,7 @@ Third Party Libraries
 * JPEG Image Library
 * MNG Image Library
 * SDL2 Window and Input System
+* srutil Fast C++ Delegates
 * ZLIB Compression Library
 
 Acknowledgements

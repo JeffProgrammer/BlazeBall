@@ -1,10 +1,11 @@
-#version 120
+#version 330 core
 
-varying vec3 UV;
+in vec3 UV;
+out vec4 fragColor;
 
 uniform samplerCube cubemapSampler;
 
 void main() {
-	vec3 materialColor = textureCube(cubemapSampler, UV).rgb;
-	gl_FragColor = vec4(materialColor, 1.0);
+	vec3 materialColor = texture(cubemapSampler, UV).rgb;
+	fragColor = vec4(materialColor, 1.0);
 }
