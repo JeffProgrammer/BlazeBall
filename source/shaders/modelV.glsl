@@ -1,9 +1,9 @@
-#version 120
+#version 330 core
 
-attribute vec3 vertexPosition;
-attribute vec2 vertexUV;
+layout(location = 0) in vec3 vertexPosition;
+layout(location = 1) in vec2 vertexUV;
 
-varying vec2 UV;
+out vec2 UV;
 
 uniform mat4 projectionMat;
 uniform mat4 modelMat;
