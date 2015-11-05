@@ -74,10 +74,17 @@ bool SDLWindow::createContext() {
 	//Lock cursor
 	lockCursor(true);
 
+	// we bind a blank VAO, as it's required for core profile
+	glGenVertexArrays(1, &mVAO);
+	glBindVertexArray(mVAO);
+
 	return true;
 }
 
 void SDLWindow::destroyContext() {
+	// clean up VAO
+	if (mVAO)
+		glDeleteVertexArrays(1, &mVAO);
 	SDL_Quit();
 }
 

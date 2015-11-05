@@ -16,9 +16,10 @@ protected:
 	SDL_Window *window;
 	SDL_GLContext context;
 	bool mVsync;
+	GLuint mVAO;
 	
 public:
-	SDLWindow() : window(nullptr), mVsync(false) { }
+	SDLWindow() : window(nullptr), mVsync(false), mVAO(0) { }
 	virtual ~SDLWindow() {};
 	
 	virtual bool createContext();
