@@ -127,7 +127,7 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 	glGetIntegerv(GL_VIEWPORT, viewport);
 
 	//Should be 2x if you have a retina display
-	pixelDensity = viewport[2] / size.x;
+	pixelDensity = static_cast<F32>(viewport[2] / size.x);
 }
 
 bool Scene::initGL() {
