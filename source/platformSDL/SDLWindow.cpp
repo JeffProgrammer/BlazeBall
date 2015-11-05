@@ -15,6 +15,11 @@ bool SDLWindow::createContext() {
 	}
 
 	// Try using the core profile first.
+	// SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG will prevent deprecated functions
+	// from working on on Windows and Linux [OSX already does this]
+	// SDL_GL_CONTEXT_PROFILE_CORE will force the OpenGL core profile.
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, SDL_CONFIG_MAJOR_GL_VERSION);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, SDL_CONFIG_MINOR_GL_VERSION);
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
@@ -51,10 +56,12 @@ bool SDLWindow::createContext() {
 	// pussies.
 	//
 	// Uncomment me if we are using the opengl core profile
-	//while (glGetError() != GL_NO_ERROR);
+	while (glGetError() != GL_NO_ERROR);
 #endif
 
-	printf("OpenGL Info\n");
+	printf("Please note that your GPU may support a higher GL version or newer extensions.\n");
+	printf("Extensions outside of the core may be used, but are not required.\n");
+	printf("OpenGL Core Profile Info\n");
 	printf("    Version: %s\n", glGetString(GL_VERSION));
 	printf("     Vendor: %s\n", glGetString(GL_VENDOR));
 	printf("   Renderer: %s\n", glGetString(GL_RENDERER));
