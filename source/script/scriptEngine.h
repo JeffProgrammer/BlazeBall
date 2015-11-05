@@ -24,8 +24,20 @@ private:
 	 */
 	duk_context *mContext;
 
+	/**
+	 * Initializes the class list, while recursivly checking for parent classes
+	 * to ensure that parents are initialized before children. 
+	 * @param alreadyInitialized a vector that holds all of the initialized
+	 *  classes on the duktape heap.
+	 * @param ssc The current ScriptClassConstructor to initialize on the heap.
+	 */
 	void initClasses(std::vector<ScriptClassConstructor*> &alreadyInitialized, ScriptClassConstructor *scc);
 
+	/**
+	 * Actually performs the initialization of the ScriptClassConstructor on the
+	 * duktape heap.
+	 * @param ssc The current ScriptClassConstructor to initialize on the heap.
+	 */
 	void initClassFinish(ScriptClassConstructor *constructor);
 
 public:
