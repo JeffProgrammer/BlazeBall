@@ -121,13 +121,13 @@ void ScriptEngine::init() {
 	mContext = duk_create_heap_default();
 
 	// push all functions onto the duk heap
-   for (auto fn = ScriptFunctionConstructor::sLast; fn != nullptr; fn = fn->mNext) {
+	for (auto fn = ScriptFunctionConstructor::sLast; fn != nullptr; fn = fn->mNext) {
 		duk_push_c_function(mContext, fn->getFunction(), fn->getNumArgs());
 		duk_put_global_string(mContext, fn->getName().c_str());
 	}
 
 
-   std::vector<ScriptClassConstructor*> usedConstructors;
+	std::vector<ScriptClassConstructor*> usedConstructors;
 	for (auto constructor = ScriptClassConstructor::sLast; constructor != nullptr; constructor = constructor->mNext)
 		initClasses(usedConstructors, constructor);
 }
