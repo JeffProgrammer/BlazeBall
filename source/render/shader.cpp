@@ -13,7 +13,6 @@
 #else
 #include <OpenGL/gl.h>
 #include <OpenGL/gl3.h>
-#include <OpenGL/glu.h>
 #endif
 
 Shader *Shader::defaultShader = nullptr;
@@ -83,12 +82,7 @@ GLuint Shader::loadProgram(const std::string &vertPath, const std::string &fragP
 	//If there was any error, then let us know.
 	GLenum error = glGetError();
 	if (error) {
-#ifdef _WIN32
-		const char *err = "gluErrorString is not implemented on win32. please check the OSX build for shader errors.";
-#else
-		const char *err = (const char *)gluErrorString(error);
-#endif
-		printf("Error loading shader: %s (code %d)\n", err, error);
+		printf("Error loading shader: code %d\n", error);
 		return 0;
 	}
 	
