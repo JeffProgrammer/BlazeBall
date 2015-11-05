@@ -24,6 +24,10 @@ private:
 	 */
 	duk_context *mContext;
 
+	void initClasses(std::vector<ScriptClassConstructor*> &alreadyInitialized, ScriptClassConstructor *scc);
+
+	void initClassFinish(ScriptClassConstructor *constructor);
+
 public:
 	ScriptEngine();
 	~ScriptEngine();

@@ -61,6 +61,61 @@ ScriptEngine::~ScriptEngine() {
 	}
 }
 
+void ScriptEngine::initClasses(std::vector<ScriptClassConstructor*> &alreadyInitialized, ScriptClassConstructor *scc) {
+	// check to see if we already initialized this class. If we did, then skip it
+	if (std::find(alreadyInitialized.begin(), alreadyInitialized.end(), scc) != alreadyInitialized.end())
+		return;
+
+	if (scc->getParentName() != "") {
+		// find the parent's constructor, and initialize it before this one so
+		// we can properly set the prototype.
+		for (auto start = ScriptClassConstructor::sLast; start != nullptr; start = start->mNext) {
+			if (start->getName() == scc->getParentName()) {
+				initClasses(alreadyInitialized, start);
+				break;
+			}
+		}
+	}
+
+	initClassFinish(scc);
+	alreadyInitialized.push_back(scc);
+}
+
+void ScriptEngine::initClassFinish(ScriptClassConstructor *constructor) {
+	// Push constructor
+	duk_push_c_function(mContext, constructor->getConstructor().mConstructor, constructor->getConstructor().mNumArgs);
+	duk_push_object(mContext);
+
+	// add the parent prototype if one exists
+	if (constructor->getParentName() != "") {
+		duk_get_global_string(mContext, constructor->getParentName().c_str());
+		duk_get_prop_string(mContext, -1, "prototype");
+		duk_remove(mContext, -2);
+		duk_set_prototype(mContext, -2);
+	}
+
+	// push each method
+	const auto &methodList = constructor->getMethods();
+	for (const auto &method : methodList) {
+		// push method
+		duk_push_c_function(mContext, method.mFunction, method.mNumArgs);
+		duk_put_prop_string(mContext, -2, method.mName.c_str());
+	}
+
+	// push each field
+	const auto &fieldList = constructor->getFields();
+	for (const auto &field : fieldList) {
+		duk_push_string(mContext, field.mName.c_str());
+		duk_push_c_function(mContext, field.mGetterFn, 0);
+		duk_push_c_function(mContext, field.mSetterFn, 1);
+		duk_def_prop(mContext, -4, DUK_DEFPROP_HAVE_GETTER | DUK_DEFPROP_HAVE_SETTER);
+	}
+
+	// set prototype
+	duk_put_prop_string(mContext, -2, "prototype");
+	duk_put_global_string(mContext, constructor->getName().c_str());
+}
+
 void ScriptEngine::init() {
 	// initializes duk
 	mContext = duk_create_heap_default();
@@ -71,48 +126,10 @@ void ScriptEngine::init() {
 		duk_put_global_string(mContext, fn->getName().c_str());
 	}
 
-   // we have to go in reverse order so that we start from the beginning.as class order matters. i.e. bsae class
-   // must be defined before inheritend class, or duktape freaks out.
-   std::vector<ScriptClassConstructor*> constructors;
-   for (auto constructor = ScriptClassConstructor::sLast; constructor != nullptr; constructor = constructor->mNext)
-      constructors.push_back(constructor);
-   
-   for (S32 i = static_cast<S32>(constructors.size()) - 1; i >= 0; i--) {
-      auto constructor = constructors[i];
-		
-		// Push constructor
-		duk_push_c_function(mContext, constructor->getConstructor().mConstructor, constructor->getConstructor().mNumArgs);
-		duk_push_object(mContext);
 
-		// add the parent prototype if one exists
-		if (constructor->getParentName() != "") {
-			duk_get_global_string(mContext, constructor->getParentName().c_str());
-			duk_get_prop_string(mContext, -1, "prototype");
-			duk_remove(mContext, -2);
-			duk_set_prototype(mContext, -2);
-		}
-
-		// push each method
-		const auto &methodList = constructor->getMethods();
-		for (const auto &method : methodList) {
-			// push method
-			duk_push_c_function(mContext, method.mFunction, method.mNumArgs);
-			duk_put_prop_string(mContext, -2, method.mName.c_str());
-		}
-
-		// push each field
-		const auto &fieldList = constructor->getFields();
-		for (const auto &field : fieldList) {
-			duk_push_string(mContext, field.mName.c_str());
-			duk_push_c_function(mContext, field.mGetterFn, 0);
-			duk_push_c_function(mContext, field.mSetterFn, 1);
-			duk_def_prop(mContext, -4, DUK_DEFPROP_HAVE_GETTER | DUK_DEFPROP_HAVE_SETTER);
-		}
-
-		// set prototype
-		duk_put_prop_string(mContext, -2, "prototype");
-		duk_put_global_string(mContext, constructor->getName().c_str());
-	}
+   std::vector<ScriptClassConstructor*> usedConstructors;
+	for (auto constructor = ScriptClassConstructor::sLast; constructor != nullptr; constructor = constructor->mNext)
+		initClasses(usedConstructors, constructor);
 }
 
 std::string ScriptEngine::eval(const std::string &str) {
