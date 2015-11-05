@@ -435,7 +435,8 @@ set (DIFVIEWERGAME_LIBRARIES
 	OpenGL32
 
 	# Assimp
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimpd.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimpd.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimp.lib
 )
 else()
 set (DIFVIEWERGAME_LIBRARIES
