@@ -486,6 +486,10 @@ set (DIFVIEWERGAME_SRC
 	source/render/shader.h
 	source/render/util.h
 
+	# ScriptEngine
+	source/scriptEngine/scriptEngine.cpp
+	source/scriptEngine/scriptEngine.h
+	
 	# Shaders folder
 	source/shaders/defaultF.glsl
 	source/shaders/defaultV.glsl
