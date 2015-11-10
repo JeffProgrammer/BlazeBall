@@ -7,7 +7,6 @@
 #include <fstream>
 #include "platformSDL/SDLWindow.h"
 #include "platformSDL/SDLTimer.h"
-#include "script/scriptEngine.h"
 #include "render/scene.h"
 #include "physics/bullet/btPhysicsEngine.h"
 #include "game/GameInterior.h"
@@ -33,12 +32,6 @@ int main(int argc, const char *argv[]) {
 		return 1;
 	}
 
-	// Init script engine
-	SCRIPTENGINE->init();
-
-	SCRIPTENGINE->exec("main.js"); // execute file
-	SCRIPTENGINE->eval("test();"); // call function from file
-
 	// parse command line arguments.
 	parseArgs(argc, argv);
 
@@ -48,8 +41,6 @@ int main(int argc, const char *argv[]) {
 	// much hack, very wow
 	if (gSphereVBO)
 		glDeleteBuffers(1, &gSphereVBO);
-
-	SCRIPTENGINE->destroy();
 
 	return 0;
 }
