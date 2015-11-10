@@ -353,15 +353,6 @@ set (DIFVIEWERGAME_SRC
 	source/render/shader.cpp
 	source/render/shader.h
 	source/render/util.h
-	
-	# Script folder
-	source/script/baseFunctions.cpp
-	source/script/scriptClass.h
-	source/script/scriptEngine.cpp
-	source/script/scriptEngine.h
-	source/script/scriptFunction.h
-	source/script/scriptTemplates.h
-	source/script/scriptUtil.h
 
 	# Shaders folder
 	source/shaders/defaultF.glsl
