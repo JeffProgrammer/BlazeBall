@@ -100,6 +100,43 @@ set(ANGELSCRIPT_SRC
 	thirdparty/angelscript/source/as_variablescope.cpp
 )
 
+set(ANGELSCRIPT_PLUGINS_SRC
+	thirdparty/angelscript/add_on/autowrapper/aswrappedcall.h
+	thirdparty/angelscript/add_on/contextmgr/contextmgr.h
+	thirdparty/angelscript/add_on/contextmgr/contextmgr.cpp
+	thirdparty/angelscript/add_on/debugger/debugger.h
+	thirdparty/angelscript/add_on/debugger/debugger.cpp
+	thirdparty/angelscript/add_on/scriptany/scriptany.h
+	thirdparty/angelscript/add_on/scriptany/scriptany.cpp
+	thirdparty/angelscript/add_on/scriptarray/scriptarray.h
+	thirdparty/angelscript/add_on/scriptarray/scriptarray.cpp
+	thirdparty/angelscript/add_on/scriptbuilder/scriptbuilder.h
+	thirdparty/angelscript/add_on/scriptbuilder/scriptbuilder.cpp
+	thirdparty/angelscript/add_on/scriptdictionary/scriptdictionary.h
+	thirdparty/angelscript/add_on/scriptdictionary/scriptdictionary.cpp
+	thirdparty/angelscript/add_on/scriptfile/scriptfile.h
+	thirdparty/angelscript/add_on/scriptfile/scriptfile.cpp
+	thirdparty/angelscript/add_on/scriptfile/scriptfilesystem.h
+	thirdparty/angelscript/add_on/scriptfile/scriptfilesystem.cpp
+	thirdparty/angelscript/add_on/scripthandle/scripthandle.h
+	thirdparty/angelscript/add_on/scripthandle/scripthandle.cpp
+	thirdparty/angelscript/add_on/scripthelper/scripthelper.h
+	thirdparty/angelscript/add_on/scripthelper/scripthelper.cpp
+	thirdparty/angelscript/add_on/scriptgrid/scriptgrid.h
+	thirdparty/angelscript/add_on/scriptgrid/scriptgrid.cpp
+	thirdparty/angelscript/add_on/scriptmath/scriptmath.h
+	thirdparty/angelscript/add_on/scriptmath/scriptmath.cpp
+	thirdparty/angelscript/add_on/scriptmath/scriptmathcomplex.h
+	thirdparty/angelscript/add_on/scriptmath/scriptmathcomplex.cpp
+	thirdparty/angelscript/add_on/scriptstdstring/scriptstdstring.h
+	thirdparty/angelscript/add_on/scriptstdstring/scriptstdstring.cpp
+	thirdparty/angelscript/add_on/scriptstdstring/scriptstdstring_utils.cpp
+	thirdparty/angelscript/add_on/serializer/serializer.h
+	thirdparty/angelscript/add_on/serializer/serializer.cpp
+	thirdparty/angelscript/add_on/weakref/weakref.h
+	thirdparty/angelscript/add_on/weakref/weakref.cpp
+)
+
 if(MSVC AND CMAKE_CL_64)
     enable_language(ASM_MASM)
     if(CMAKE_ASM_MASM_COMPILER_WORKS)
@@ -116,7 +153,7 @@ if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64" AND NOT APPLE)
     add_definitions(-fPIC)
 endif()
 
-add_library(AngelScript STATIC ${ANGELSCRIPT_SRC})
+add_library(AngelScript STATIC ${ANGELSCRIPT_SRC} ${ANGELSCRIPT_PLUGINS_SRC})
 target_link_libraries(AngelScript ${CMAKE_THREAD_LIBS_INIT})
 
 if(MSVC)
