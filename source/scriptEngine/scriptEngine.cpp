@@ -4,6 +4,7 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
+#include "base/io.h"
 #include "scriptEngine/scriptEngine.h"
 
 #include <angelscript/add_on/scriptstdstring/scriptstdstring.h>
@@ -50,6 +51,43 @@ void ScriptEngine::init() {
 	RegisterScriptWeakRef(mEngine);
 
 	mCurrentContext = mEngine->CreateContext();
+}
+
+bool ScriptEngine::compileScript(const std::string &scriptFile) {
+	// used for getting error codes from AngelScript
+	S32 ret;
+
+	if (!IO::isfile(scriptFile)) {
+		printf("Unable to find script file %s\n", scriptFile.c_str());
+		return false;
+	}
+
+	// read the contents of the file
+	U32 fileLength = 0;
+	U8 *fileContents = IO::readFile(scriptFile, fileLength);
+	if (fileContents == NULL) {
+		printf("Unable to read the script file %s\n", scriptFile.c_str());
+		return false;
+	}
+
+	// Add the script into a newly created module.
+	asIScriptModule *module = mEngine->GetModule(0, asGM_ALWAYS_CREATE);
+	ret = module->AddScriptSection("script", reinterpret_cast<const char*>(fileContents), fileLength);
+	if (ret < 0) {
+		printf("Unable to add the script to %s\n", scriptFile.c_str());
+		return false;
+	}
+
+	// compile the script inside of the AngelScript VM
+	ret = module->Build();
+	if (ret < 0) {
+		printf("Script failed to build! %s\n", scriptFile.c_str());
+		return false;
+	}
+
+	// free script contents
+	delete[] fileContents;
+	return true;
 }
 
 void ScriptEngine::prepareFunction(asIScriptFunction *function) {

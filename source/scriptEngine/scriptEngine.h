@@ -21,6 +21,8 @@ public:
 	void prepareFunction(asIScriptFunction *function);
 	void executeFunction();
 
+	bool compileScript(const std::string &scriptFile);
+
 	static ScriptEngine *getSingleton() {
 		ScriptEngine *singleton = new ScriptEngine();
 		return singleton;
