@@ -11,6 +11,20 @@
 #include <angelscript/add_on/scriptbuilder/scriptbuilder.h>
 #include <angelscript/add_on/weakref/weakref.h>
 
+
+static void ScriptMessageCallback(const asSMessageInfo *msg, void *param) {
+	if (msg->type == asMSGTYPE_ERROR)
+		printf("SCRIPT MESSAGE [ERROR]: %s, line: %d, %s\n", msg->section, msg->row, msg->message);
+	else if (msg->type == asMSGTYPE_WARNING)
+		printf("SCRIPT MESSAGE [WARN]: %s, line: %d, %s\n", msg->section, msg->row, msg->message);
+	else if (msg->type == asMSGTYPE_INFORMATION)
+		printf("SCRIPT MESSAGE [INFO]: %s, line: %d, %s\n", msg->section, msg->row, msg->message);
+	else {
+		printf("SCRIPT MESSAGE [UNKNOWN]\n");
+		assert(false);
+	}
+}
+
 ScriptEngine::ScriptEngine() {
 	mEngine = nullptr;
 	mCurrentContext = nullptr;
@@ -24,6 +38,7 @@ ScriptEngine::~ScriptEngine() {
 void ScriptEngine::init() {
 	// allocate the script engine
 	mEngine = asCreateScriptEngine();
+	mEngine->SetMessageCallback(asFUNCTION(ScriptMessageCallback), 0, asCALL_CDECL);
 
 	// make std::string the type
 	RegisterStdString(mEngine);
