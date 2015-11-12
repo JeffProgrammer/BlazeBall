@@ -70,6 +70,7 @@ bool ScriptEngine::compileScript(const std::string &scriptFile) {
 		return false;
 	}
 
+	// TODO: make this per script. atm this will only work for 1 script file
 	// Add the script into a newly created module.
 	asIScriptModule *module = mEngine->GetModule(0, asGM_ALWAYS_CREATE);
 	ret = module->AddScriptSection("script", reinterpret_cast<const char*>(fileContents), fileLength);
