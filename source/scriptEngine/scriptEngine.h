@@ -17,6 +17,8 @@ public:
 	~ScriptEngine();
 
 	void init();
+   
+   bool containsModule(const char *module);
 
 	void prepareFunction(asIScriptFunction *function);
 	void executeFunction();

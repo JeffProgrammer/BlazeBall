@@ -62,6 +62,11 @@ bool ScriptEngine::compileScript(const std::string &scriptFile) {
 		return false;
 	}
 
+   const std::string &fileBase = IO::getBase(scriptFile);
+   
+   if (containsModule(fileBase.c_str()))
+      printf("Attempting to recreate module %s\n", fileBase.c_str());
+   
 	// read the contents of the file
 	U32 fileLength = 0;
 	U8 *fileContents = IO::readFile(scriptFile, fileLength);
@@ -72,7 +77,7 @@ bool ScriptEngine::compileScript(const std::string &scriptFile) {
 
 	// TODO: make this per script. atm this will only work for 1 script file
 	// Add the script into a newly created module.
-	asIScriptModule *module = mEngine->GetModule(0, asGM_ALWAYS_CREATE);
+	asIScriptModule *module = mEngine->GetModule(fileBase.c_str(), asGM_ALWAYS_CREATE);
 	ret = module->AddScriptSection("script", reinterpret_cast<const char*>(fileContents), fileLength);
 	if (ret < 0) {
 		printf("Unable to add the script to %s\n", scriptFile.c_str());
@@ -109,4 +114,13 @@ void ScriptEngine::executeFunction() {
 
 void ScriptEngine::finishFunction(asIScriptContext *context) {
 	context->Unprepare();
+}
+
+bool ScriptEngine::containsModule(const char *module) {
+   U32 count = mEngine->GetModuleCount();
+   for (U32 i = 0; i < count; i++) {
+      if (strcmp(mEngine->GetModuleByIndex(i)->GetName(), module) == 0)
+         return true;
+   }
+   return false;
 }
