@@ -10,6 +10,7 @@
 #include <angelscript/add_on/scriptstdstring/scriptstdstring.h>
 #include <angelscript/add_on/scripthandle/scripthandle.h>
 #include <angelscript/add_on/scriptbuilder/scriptbuilder.h>
+#include <angelscript/add_on/scriptmath/scriptmath.h>
 #include <angelscript/add_on/weakref/weakref.h>
 
 
@@ -59,6 +60,9 @@ bool ScriptEngine::init() {
 
 	// register weak refernces
 	RegisterScriptWeakRef(mEngine);
+
+	// register basic math functions
+	RegisterScriptMath(mEngine);
 
 	// Here we register global functions, classes, properties, methods, global variables, ect.
 	{
