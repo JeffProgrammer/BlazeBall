@@ -501,6 +501,9 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/skyboxV.glsl
 	source/shaders/sphereF.glsl
 	source/shaders/sphereV.glsl
+	
+	# Scripts folder
+	source/scripts/main.as
 )
 
 #------------------------------------------------------------------------------
@@ -618,6 +621,8 @@ set (BUILD_DIR_FILES
 	source/shaders/interiorV.glsl
 	source/shaders/modelV.glsl
 	source/shaders/modelF.glsl
+	
+	source/scripts/main.as
 )
 
 add_custom_command(TARGET Game PRE_BUILD
