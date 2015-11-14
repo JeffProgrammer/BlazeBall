@@ -49,6 +49,7 @@ Third Party Libraries
 -------------------
 
 * Assimp Model Importer
+* AngelScript Scripting Language Library
 * Bullet 3D Physics Library
 * GLEW OpenGL Extensions Loader
 * GLM Math Library
