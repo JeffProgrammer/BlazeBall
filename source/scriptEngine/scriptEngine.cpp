@@ -95,8 +95,8 @@ bool ScriptEngine::compileScript(const std::string &scriptFile) {
 	std::string base = IO::getBase(scriptFile);
 	const char *fileBase = base.c_str();
    
-   if (containsModule(fileBase))
-      printf("Attempting to recreate module %s\n", fileBase);
+	if (containsModule(fileBase))
+		printf("Attempting to recreate module %s\n", fileBase);
    
 
 	// Create a new script module for this file.
@@ -144,10 +144,10 @@ void ScriptEngine::finishFunction(asIScriptContext *context) {
 }
 
 bool ScriptEngine::containsModule(const char *module) {
-   U32 count = mEngine->GetModuleCount();
-   for (U32 i = 0; i < count; i++) {
-      if (strcmp(mEngine->GetModuleByIndex(i)->GetName(), module) == 0)
-         return true;
-   }
-   return false;
+	U32 count = mEngine->GetModuleCount();
+	for (U32 i = 0; i < count; i++) {
+		if (strcmp(mEngine->GetModuleByIndex(i)->GetName(), module) == 0)
+			return true;
+	}
+	return false;
 }
