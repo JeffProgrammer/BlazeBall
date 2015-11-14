@@ -7,10 +7,10 @@
 #include <fstream>
 #include "platformSDL/SDLWindow.h"
 #include "platformSDL/SDLTimer.h"
-#include "script/scriptEngine.h"
 #include "render/scene.h"
 #include "physics/bullet/btPhysicsEngine.h"
 #include "game/GameInterior.h"
+#include "scriptEngine/scriptEngine.h"
 
 extern GLuint gSphereVBO;
 
@@ -33,11 +33,9 @@ int main(int argc, const char *argv[]) {
 		return 1;
 	}
 
-	// Init script engine
-	SCRIPTENGINE->init();
-
-	SCRIPTENGINE->exec("main.js"); // execute file
-	SCRIPTENGINE->eval("test();"); // call function from file
+	// Init script engine and call the main function
+	if (!ScriptEngine::getSingleton()->init())
+		return 1;
 
 	// parse command line arguments.
 	parseArgs(argc, argv);
@@ -48,8 +46,6 @@ int main(int argc, const char *argv[]) {
 	// much hack, very wow
 	if (gSphereVBO)
 		glDeleteBuffers(1, &gSphereVBO);
-
-	SCRIPTENGINE->destroy();
 
 	return 0;
 }

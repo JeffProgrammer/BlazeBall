@@ -23,10 +23,143 @@ macro(ADD_FRAMEWORK appname fwname)
 endmacro(ADD_FRAMEWORK)
 
 #------------------------------------------------------------------------------
-# Bullet Physics Library
+# AngelScript
+# Version 2.30.2
+# Based on their CMAKE file
 #------------------------------------------------------------------------------
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
+find_package(Threads)
+
+set(ANGELSCRIPT_SRC
+	thirdparty/angelscript/include/angelscript.h
+	thirdparty/angelscript/source/as_array.h
+	thirdparty/angelscript/source/as_builder.h
+	thirdparty/angelscript/source/as_bytecode.h
+	thirdparty/angelscript/source/as_callfunc.h
+	thirdparty/angelscript/source/as_compiler.h
+	thirdparty/angelscript/source/as_config.h
+	thirdparty/angelscript/source/as_configgroup.h
+	thirdparty/angelscript/source/as_context.h
+	thirdparty/angelscript/source/as_criticalsection.h
+	thirdparty/angelscript/source/as_datatype.h
+	thirdparty/angelscript/source/as_debug.h
+	thirdparty/angelscript/source/as_generic.h
+	thirdparty/angelscript/source/as_map.h
+	thirdparty/angelscript/source/as_memory.h
+	thirdparty/angelscript/source/as_module.h
+	thirdparty/angelscript/source/as_objecttype.h
+	thirdparty/angelscript/source/as_outputbuffer.h
+	thirdparty/angelscript/source/as_parser.h
+	thirdparty/angelscript/source/as_property.h
+	thirdparty/angelscript/source/as_restore.h
+	thirdparty/angelscript/source/as_scriptcode.h
+	thirdparty/angelscript/source/as_scriptengine.h
+	thirdparty/angelscript/source/as_scriptfunction.h
+	thirdparty/angelscript/source/as_scriptnode.h
+	thirdparty/angelscript/source/as_scriptobject.h
+	thirdparty/angelscript/source/as_string.h
+	thirdparty/angelscript/source/as_string_util.h
+	thirdparty/angelscript/source/as_texts.h
+	thirdparty/angelscript/source/as_thread.h
+	thirdparty/angelscript/source/as_tokendef.h
+	thirdparty/angelscript/source/as_tokenizer.h
+	thirdparty/angelscript/source/as_typeinfo.h
+	thirdparty/angelscript/source/as_variablescope.h
+
+	thirdparty/angelscript/source/as_atomic.cpp
+	thirdparty/angelscript/source/as_builder.cpp
+	thirdparty/angelscript/source/as_bytecode.cpp
+	thirdparty/angelscript/source/as_callfunc.cpp
+	thirdparty/angelscript/source/as_callfunc_x86.cpp
+	thirdparty/angelscript/source/as_callfunc_x64_gcc.cpp
+	thirdparty/angelscript/source/as_callfunc_x64_msvc.cpp
+	thirdparty/angelscript/source/as_callfunc_x64_mingw.cpp
+	thirdparty/angelscript/source/as_compiler.cpp
+	thirdparty/angelscript/source/as_configgroup.cpp
+	thirdparty/angelscript/source/as_context.cpp
+	thirdparty/angelscript/source/as_datatype.cpp
+	thirdparty/angelscript/source/as_gc.cpp
+	thirdparty/angelscript/source/as_generic.cpp
+	thirdparty/angelscript/source/as_globalproperty.cpp
+	thirdparty/angelscript/source/as_memory.cpp
+	thirdparty/angelscript/source/as_module.cpp
+	thirdparty/angelscript/source/as_objecttype.cpp
+	thirdparty/angelscript/source/as_outputbuffer.cpp
+	thirdparty/angelscript/source/as_parser.cpp
+	thirdparty/angelscript/source/as_restore.cpp
+	thirdparty/angelscript/source/as_scriptcode.cpp
+	thirdparty/angelscript/source/as_scriptengine.cpp
+	thirdparty/angelscript/source/as_scriptfunction.cpp
+	thirdparty/angelscript/source/as_scriptnode.cpp
+	thirdparty/angelscript/source/as_scriptobject.cpp
+	thirdparty/angelscript/source/as_string.cpp
+	thirdparty/angelscript/source/as_string_util.cpp
+	thirdparty/angelscript/source/as_thread.cpp
+	thirdparty/angelscript/source/as_tokenizer.cpp
+	thirdparty/angelscript/source/as_typeinfo.cpp
+	thirdparty/angelscript/source/as_variablescope.cpp
+)
+
+set(ANGELSCRIPT_PLUGINS_SRC
+	thirdparty/angelscript/add_on/autowrapper/aswrappedcall.h
+	thirdparty/angelscript/add_on/contextmgr/contextmgr.h
+	thirdparty/angelscript/add_on/contextmgr/contextmgr.cpp
+	thirdparty/angelscript/add_on/debugger/debugger.h
+	thirdparty/angelscript/add_on/debugger/debugger.cpp
+	thirdparty/angelscript/add_on/scriptany/scriptany.h
+	thirdparty/angelscript/add_on/scriptany/scriptany.cpp
+	thirdparty/angelscript/add_on/scriptarray/scriptarray.h
+	thirdparty/angelscript/add_on/scriptarray/scriptarray.cpp
+	thirdparty/angelscript/add_on/scriptbuilder/scriptbuilder.h
+	thirdparty/angelscript/add_on/scriptbuilder/scriptbuilder.cpp
+	thirdparty/angelscript/add_on/scriptdictionary/scriptdictionary.h
+	thirdparty/angelscript/add_on/scriptdictionary/scriptdictionary.cpp
+	thirdparty/angelscript/add_on/scriptfile/scriptfile.h
+	thirdparty/angelscript/add_on/scriptfile/scriptfile.cpp
+	thirdparty/angelscript/add_on/scriptfile/scriptfilesystem.h
+	thirdparty/angelscript/add_on/scriptfile/scriptfilesystem.cpp
+	thirdparty/angelscript/add_on/scripthandle/scripthandle.h
+	thirdparty/angelscript/add_on/scripthandle/scripthandle.cpp
+	thirdparty/angelscript/add_on/scripthelper/scripthelper.h
+	thirdparty/angelscript/add_on/scripthelper/scripthelper.cpp
+	thirdparty/angelscript/add_on/scriptgrid/scriptgrid.h
+	thirdparty/angelscript/add_on/scriptgrid/scriptgrid.cpp
+	thirdparty/angelscript/add_on/scriptmath/scriptmath.h
+	thirdparty/angelscript/add_on/scriptmath/scriptmath.cpp
+	thirdparty/angelscript/add_on/scriptmath/scriptmathcomplex.h
+	thirdparty/angelscript/add_on/scriptmath/scriptmathcomplex.cpp
+	thirdparty/angelscript/add_on/scriptstdstring/scriptstdstring.h
+	thirdparty/angelscript/add_on/scriptstdstring/scriptstdstring.cpp
+	thirdparty/angelscript/add_on/scriptstdstring/scriptstdstring_utils.cpp
+	thirdparty/angelscript/add_on/serializer/serializer.h
+	thirdparty/angelscript/add_on/serializer/serializer.cpp
+	thirdparty/angelscript/add_on/weakref/weakref.h
+	thirdparty/angelscript/add_on/weakref/weakref.cpp
+)
+
+if(MSVC AND CMAKE_CL_64)
+    enable_language(ASM_MASM)
+    if(CMAKE_ASM_MASM_COMPILER_WORKS)
+        set(ANGELSCRIPT_SRC ${ANGELSCRIPT_SRC} thirdparty/angelscript/source/as_callfunc_x64_msvc_asm.asm)
+    else()
+        message(FATAL ERROR "MSVC x86_64 target requires a working assembler")
+    endif()
+endif()
+
+add_definitions(-DANGELSCRIPT_EXPORT -D_LIB)
+
+# Fix x64 issues on Linux
+if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64" AND NOT APPLE)
+    add_definitions(-fPIC)
+endif()
+
+add_library(AngelScript STATIC ${ANGELSCRIPT_SRC} ${ANGELSCRIPT_PLUGINS_SRC})
+target_link_libraries(AngelScript ${CMAKE_THREAD_LIBS_INIT})
+
+if(MSVC)
+    set_target_properties(${ANGELSCRIPT_LIBRARY_NAME} PROPERTIES COMPILE_FLAGS "/MP")
+	 add_definitions(-D_CRT_SECURE_NO_WARNINGS) 
+endif()
 
 #------------------------------------------------------------------------------
 # Zlib
@@ -261,9 +394,8 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/srutil
 	thirdparty
 	dif/include
-	thirdparty/v8/include
 	thirdparty/assimp/include
-	thirdparty/duktape
+	thirdparty/angelscript/include
 )
 
 # Main project source
@@ -353,16 +485,11 @@ set (DIFVIEWERGAME_SRC
 	source/render/shader.cpp
 	source/render/shader.h
 	source/render/util.h
-	
-	# Script folder
-	source/script/baseFunctions.cpp
-	source/script/scriptClass.h
-	source/script/scriptEngine.cpp
-	source/script/scriptEngine.h
-	source/script/scriptFunction.h
-	source/script/scriptTemplates.h
-	source/script/scriptUtil.h
 
+	# ScriptEngine
+	source/scriptEngine/scriptEngine.cpp
+	source/scriptEngine/scriptEngine.h
+	
 	# Shaders folder
 	source/shaders/defaultF.glsl
 	source/shaders/defaultV.glsl
@@ -374,27 +501,22 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/skyboxV.glsl
 	source/shaders/sphereF.glsl
 	source/shaders/sphereV.glsl
+	
+	# Scripts folder
+	source/scripts/main.as
 )
-
-#------------------------------------------------------------------------------
-# duktape 1.3.0
-#------------------------------------------------------------------------------
-
-set (DUKTAPE_SRC
-	thirdparty/duktape/duk_config.h
-	thirdparty/duktape/duktape.h
-	thirdparty/duktape/duktape.c
-)
-
-# Create the library
-add_library(Duktape STATIC ${DUKTAPE_SRC})
-set_property(TARGET Duktape APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/duktape/")
 
 #------------------------------------------------------------------------------
 # SDL
 #------------------------------------------------------------------------------
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
+
+#------------------------------------------------------------------------------
+# Bullet Physics Library
+#------------------------------------------------------------------------------
+
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
 
 #------------------------------------------------------------------------------
 
@@ -417,8 +539,8 @@ set (DIFVIEWERGAME_LIBRARIES
 	#SDL2
 	SDL2-static
 	
-	# Duktape javascript engine
-	Duktape
+	# AngelScript
+	AngelScript
 )
 
 if (MSVC)
@@ -467,7 +589,7 @@ source_group("game\\physics"         REGULAR_EXPRESSION physics/.*)
 source_group("game\\physics\\bullet" REGULAR_EXPRESSION bullet/.*)
 source_group("platform"              REGULAR_EXPRESSION platform/.*)
 source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
-source_group("script"                REGULAR_EXPRESSION script/.*)
+source_group("scriptEngine"          REGULAR_EXPRESSION scriptEngine/.*)
 source_group("texture"               REGULAR_EXPRESSION texture/.*)
 source_group("assets\\shaders"       REGULAR_EXPRESSION shaders/.*)
 source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)
@@ -499,6 +621,8 @@ set (BUILD_DIR_FILES
 	source/shaders/interiorV.glsl
 	source/shaders/modelV.glsl
 	source/shaders/modelF.glsl
+	
+	source/scripts/main.as
 )
 
 add_custom_command(TARGET Game PRE_BUILD

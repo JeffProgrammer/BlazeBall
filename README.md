@@ -50,7 +50,6 @@ Third Party Libraries
 
 * Assimp Model Importer
 * Bullet 3D Physics Library
-* DukTape Javascript Engine
 * GLEW OpenGL Extensions Loader
 * GLM Math Library
 * JPEG Image Library
