@@ -59,16 +59,16 @@ bool ScriptEngine::compileScript(const std::string &scriptFile) {
 		return false;
 	}
 
-   const std::string &fileBase = IO::getBase(scriptFile);
+   const char *fileBase = IO::getBase(scriptFile).c_str();
    
-   if (containsModule(fileBase.c_str()))
-      printf("Attempting to recreate module %s\n", fileBase.c_str());
+   if (containsModule(fileBase))
+      printf("Attempting to recreate module %s\n", fileBase);
    
 
 	// Create a new script module for this file.
 	CScriptBuilder scriptBuilder;
-	if (!scriptBuilder.StartNewModule(mEngine, fileBase.c_str())) {
-		printf("Unable to create scriptModule %s\n", fileBase.c_str());
+	if (!scriptBuilder.StartNewModule(mEngine, fileBase)) {
+		printf("Unable to create scriptModule %s\n", fileBase);
 		return false;
 	}
 
@@ -80,12 +80,12 @@ bool ScriptEngine::compileScript(const std::string &scriptFile) {
 
 	// Build the script
 	if (!scriptBuilder.BuildModule()) {
-		printf("Unable to build module %s\n", fileBase.c_str());
+		printf("Unable to build module %s\n", fileBase);
 		return false;
 	}
 
 	// succeeded
-	printf("Loading module %s successfully!\n", fileBase.c_str());
+	printf("Loading module %s successfully!\n", fileBase));
 	return true;
 }
 
