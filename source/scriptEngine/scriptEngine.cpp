@@ -74,7 +74,7 @@ bool ScriptEngine::init() {
 
 	asIScriptFunction *mainFn = mEngine->GetModule("main")->GetFunctionByDecl("void main()");
 	if (mainFn == NULL) {
-		printf("Unable to find function main.");
+		printf("Unable to find function main.\n");
 		return false;
 	}
 
