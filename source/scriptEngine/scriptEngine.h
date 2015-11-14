@@ -16,11 +16,14 @@ public:
 	ScriptEngine();
 	~ScriptEngine();
 
-	void init();
+	bool init();
    
    bool containsModule(const char *module);
 
 	void prepareFunction(asIScriptFunction *function);
+
+	// TODO: Need to template execute to return a value or void
+	// and will also call finishFunction
 	void executeFunction();
 
 	bool compileScript(const std::string &scriptFile);

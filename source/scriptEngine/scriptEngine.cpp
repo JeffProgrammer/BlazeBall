@@ -26,6 +26,11 @@ static void ScriptMessageCallback(const asSMessageInfo *msg, void *param) {
 	}
 }
 
+// script function
+void echo(std::string &in) {
+	printf("%s\n", in.c_str());
+}
+
 ScriptEngine::ScriptEngine() {
 	mEngine = nullptr;
 	mCurrentContext = nullptr;
@@ -36,7 +41,12 @@ ScriptEngine::~ScriptEngine() {
 		mEngine->Release();
 }
 
-void ScriptEngine::init() {
+bool ScriptEngine::init() {
+	if (mEngine != nullptr) {
+		printf("ScriptEngine::init() - Already called init.\n");
+		return false;
+	}
+
 	// allocate the script engine
 	mEngine = asCreateScriptEngine();
 	mEngine->SetMessageCallback(asFUNCTION(ScriptMessageCallback), 0, asCALL_CDECL);
@@ -50,7 +60,30 @@ void ScriptEngine::init() {
 	// register weak refernces
 	RegisterScriptWeakRef(mEngine);
 
+	// Here we register global functions, classes, properties, methods, global variables, ect.
+	{
+		S32 r;
+		r = mEngine->RegisterGlobalFunction("void echo(string &in)", asFUNCTION(echo), asCALL_CDECL); assert(r >= 0);
+	}
+
 	mCurrentContext = mEngine->CreateContext();
+
+	// Load main.as and call the main function.
+	if (!compileScript("main.as"))
+		return false;
+
+	asIScriptFunction *mainFn = mEngine->GetModule("main")->GetFunctionByDecl("void main()");
+	if (mainFn == NULL) {
+		printf("Unable to find function main.");
+		return false;
+	}
+
+	// call the main function
+	prepareFunction(mainFn);
+	executeFunction();
+	finishFunction(mCurrentContext);
+
+	return true;
 }
 
 bool ScriptEngine::compileScript(const std::string &scriptFile) {

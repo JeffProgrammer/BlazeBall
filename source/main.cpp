@@ -10,6 +10,7 @@
 #include "render/scene.h"
 #include "physics/bullet/btPhysicsEngine.h"
 #include "game/GameInterior.h"
+#include "scriptEngine/scriptEngine.h"
 
 extern GLuint gSphereVBO;
 
@@ -31,6 +32,10 @@ int main(int argc, const char *argv[]) {
 	if (!scene->init()) {
 		return 1;
 	}
+
+	// Init script engine and call the main function
+	if (!ScriptEngine::getSingleton()->init())
+		return 1;
 
 	// parse command line arguments.
 	parseArgs(argc, argv);
