@@ -82,6 +82,16 @@ bool ScriptEngine::init() {
 	prepareFunction(mainFn);
 	executeFunction<void>(mCurrentContext);
 
+	// call test function to get a value
+	asIScriptFunction *fn = mEngine->GetModule("main")->GetFunctionByDecl("float get5()");
+	if (fn == NULL) {
+		printf("Unable to find function get5\n");
+		return false;
+	}
+	prepareFunction(fn);
+	F32 val = executeFunction<float>(mCurrentContext);
+	printf("get5() returned %f\n", val);
+
 	return true;
 }
 
