@@ -62,3 +62,38 @@ template<> inline void ScriptEngine::executeFunction() {
 	}
 	context->Unprepare();
 }
+
+//-----------------------------------------------------------------------------
+// Parameters for executing functions.
+//-----------------------------------------------------------------------------
+
+template<> inline void ScriptEngine::setParameter(S32 index, U64 arg) {
+	mCurrentContext->SetArgQWord(index, static_cast<asQWORD>(arg));
+}
+template<> inline void ScriptEngine::setParameter(S32 index, S64 arg) {
+	mCurrentContext->SetArgQWord(index, static_cast<asQWORD>(arg));
+}
+template<> inline void ScriptEngine::setParameter(S32 index, U32 arg) {
+	mCurrentContext->SetArgDWord(index, static_cast<asDWORD>(arg));
+}
+template<> inline void ScriptEngine::setParameter(S32 index, S32 arg) {
+	mCurrentContext->SetArgDWord(index, static_cast<asDWORD>(arg));
+}
+template<> inline void ScriptEngine::setParameter(S32 index, U16 arg) {
+	mCurrentContext->SetArgWord(index, static_cast<asWORD>(arg));
+}
+template<> inline void ScriptEngine::setParameter(S32 index, S16 arg) {
+	mCurrentContext->SetArgWord(index, static_cast<asWORD>(arg));
+}
+template<> inline void ScriptEngine::setParameter(S32 index, U8 arg) {
+	mCurrentContext->SetArgByte(index, static_cast<asBYTE>(arg));
+}
+template<> inline void ScriptEngine::setParameter(S32 index, S8 arg) {
+	mCurrentContext->SetArgByte(index, static_cast<asBYTE>(arg));
+}
+template<> inline void ScriptEngine::setParameter(S32 index, F32 arg) {
+	mCurrentContext->SetArgFloat(index, static_cast<float>(arg));
+}
+template<> inline void ScriptEngine::setParameter(S32 index, F64 arg) {
+	mCurrentContext->SetArgDouble(index, static_cast<double>(arg));
+}

@@ -25,6 +25,8 @@ public:
 	template<typename T>
 	T executeFunction();
 
+	template<typename T>
+	void setParameter(S32 index, T arg);
 
 	bool compileScript(const std::string &scriptFile);
 
