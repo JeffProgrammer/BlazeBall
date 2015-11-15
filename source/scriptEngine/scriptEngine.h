@@ -18,7 +18,7 @@ public:
 
 	bool init();
    
-   bool containsModule(const char *module);
+	bool containsModule(const char *module);
 
 	void prepareFunction(asIScriptFunction *function);
 
