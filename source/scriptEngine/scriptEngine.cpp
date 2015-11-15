@@ -92,6 +92,18 @@ bool ScriptEngine::init() {
 	F32 val = executeFunction<float>();
 	printf("get5() returned %f\n", val);
 
+	// test add function and get value
+	asIScriptFunction *addFn = mEngine->GetModule("main")->GetFunctionByDecl("float add(float a, float b)");
+	if (addFn == NULL) {
+		printf("Unable to find function add\n");
+		return false;
+	}
+	prepareFunction(addFn);
+	setParameter(0, 2.0f);
+	setParameter(1, 1.0f);
+	F32 addResult = executeFunction<float>();
+	printf("add() returned %f\n", addResult);
+
 	return true;
 }
 
