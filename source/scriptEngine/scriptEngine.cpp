@@ -84,8 +84,7 @@ bool ScriptEngine::init() {
 
 	// call the main function
 	prepareFunction(mainFn);
-	executeFunction();
-	finishFunction(mCurrentContext);
+	executeFunction<void>(mCurrentContext);
 
 	return true;
 }
@@ -129,22 +128,6 @@ bool ScriptEngine::compileScript(const std::string &scriptFile) {
 
 void ScriptEngine::prepareFunction(asIScriptFunction *function) {
 	mCurrentContext->Prepare(function);
-}
-
-void ScriptEngine::executeFunction() {
-	S32 code = mCurrentContext->Execute();
-	if (code != asEXECUTION_FINISHED) {
-		if (code == asEXECUTION_EXCEPTION) {
-			// we got an exception
-			printf("Exception: %s\n", mCurrentContext->GetExceptionString());
-			printf("Function: %s\n", mCurrentContext->GetExceptionFunction()->GetDeclaration());
-			printf("Line: %d\n", mCurrentContext->GetExceptionLineNumber());
-		}
-	}
-}
-
-void ScriptEngine::finishFunction(asIScriptContext *context) {
-	context->Unprepare();
 }
 
 bool ScriptEngine::containsModule(const char *module) {
