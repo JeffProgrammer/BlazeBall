@@ -6,6 +6,7 @@
 
 #include "base/io.h"
 #include "scriptEngine/scriptEngine.h"
+#include "scriptEngine/scriptFunctions.h"
 
 #include <angelscript/add_on/scriptstdstring/scriptstdstring.h>
 #include <angelscript/add_on/scripthandle/scripthandle.h>
@@ -25,11 +26,6 @@ static void ScriptMessageCallback(const asSMessageInfo *msg, void *param) {
 		printf("SCRIPT MESSAGE [UNKNOWN]\n");
 		assert(false);
 	}
-}
-
-// script function
-void echo(std::string &in) {
-	printf("%s\n", in.c_str());
 }
 
 ScriptEngine::ScriptEngine() {
