@@ -30,7 +30,9 @@ template<> inline F64 ScriptEngine::getReturnValue(asIScriptContext *context) {
 //-----------------------------------------------------------------------------
 // Execution functions for executing the script.
 //-----------------------------------------------------------------------------
-template<typename T> inline T ScriptEngine::executeFunction(asIScriptContext *context) {
+
+template<typename T> inline T ScriptEngine::executeFunction() {
+	asIScriptContext *context = mCurrentContext;
 	S32 code = context->Execute();
 	if (code != asEXECUTION_FINISHED) {
 		if (code == asEXECUTION_EXCEPTION) {
@@ -47,7 +49,8 @@ template<typename T> inline T ScriptEngine::executeFunction(asIScriptContext *co
 	return ret;
 }
 
-template<> inline void ScriptEngine::executeFunction(asIScriptContext *context) {
+template<> inline void ScriptEngine::executeFunction() {
+	asIScriptContext *context = mCurrentContext;
 	S32 code = context->Execute();
 	if (code != asEXECUTION_FINISHED) {
 		if (code == asEXECUTION_EXCEPTION) {

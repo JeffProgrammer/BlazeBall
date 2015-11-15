@@ -80,7 +80,7 @@ bool ScriptEngine::init() {
 
 	// call the main function
 	prepareFunction(mainFn);
-	executeFunction<void>(mCurrentContext);
+	executeFunction<void>();
 
 	// call test function to get a value
 	asIScriptFunction *fn = mEngine->GetModule("main")->GetFunctionByDecl("float get5()");
@@ -89,7 +89,7 @@ bool ScriptEngine::init() {
 		return false;
 	}
 	prepareFunction(fn);
-	F32 val = executeFunction<float>(mCurrentContext);
+	F32 val = executeFunction<float>();
 	printf("get5() returned %f\n", val);
 
 	return true;

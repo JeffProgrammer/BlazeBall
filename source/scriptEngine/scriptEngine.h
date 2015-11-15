@@ -22,10 +22,9 @@ public:
 
 	void prepareFunction(asIScriptFunction *function);
 
-	// TODO: Need to template execute to return a value or void
-	// and will also call finishFunction
 	template<typename T>
-	T executeFunction(asIScriptContext *context);
+	T executeFunction();
+
 
 	bool compileScript(const std::string &scriptFile);
 
