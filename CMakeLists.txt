@@ -392,6 +392,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/zlib
 	thirdparty/SDL2/include
 	thirdparty/srutil
+	thirdparty/physx/include
 	thirdparty
 	dif/include
 	thirdparty/assimp/include
@@ -453,6 +454,8 @@ set (DIFVIEWERGAME_SRC
 	source/physics/physicsEngine.h
 	source/physics/physicsSphere.cpp
 	source/physics/physicsSphere.h
+
+	# Bullet physics
 	source/physics/bullet/btPhysicsBody.cpp
 	source/physics/bullet/btPhysicsBody.h
 	source/physics/bullet/btPhysicsEngine.cpp
@@ -461,6 +464,16 @@ set (DIFVIEWERGAME_SRC
 	source/physics/bullet/btPhysicsInterior.h
 	source/physics/bullet/btPhysicsSphere.cpp
 	source/physics/bullet/btPhysicsSphere.h
+
+	# Physx physics
+	source/physics/physx/pxPhysicsBody.cpp
+	source/physics/physx/pxPhysicsBody.h
+	source/physics/physx/pxPhysicsEngine.cpp
+	source/physics/physx/pxPhysicsEngine.h
+	source/physics/physx/pxPhysicsInterior.cpp
+	source/physics/physx/pxPhysicsInterior.h
+	source/physics/physx/pxPhysicsSphere.cpp
+	source/physics/physx/pxPhysicsSphere.h
 
 	# Platform folder
 	source/platform/event.h
@@ -529,6 +542,33 @@ set (DIFVIEWERGAME_LIBRARIES
 	BulletSoftBody
 	LinearMath
 
+	# Physx
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libLowLevel.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libLowLevelCloth.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3Common.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3Cooking.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3Extensions.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysXProfileSDK.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysXVisualDebuggerSDK.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPvdRuntime.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPxTask.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libSceneQuery.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libSimulationController.a
+
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libLowLevel.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libLowLevelCloth.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3Common.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3Cooking.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3Extensions.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysXProfileSDK.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysXVisualDebuggerSDK.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPvdRuntime.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPxTask.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libSceneQuery.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libSimulationController.a
+
 	# JPEG
 	Jpeg
 
@@ -589,6 +629,7 @@ source_group("game"                  REGULAR_EXPRESSION game/.*)
 source_group("objects"               REGULAR_EXPRESSION objects/.*)
 source_group("game\\physics"         REGULAR_EXPRESSION physics/.*)
 source_group("game\\physics\\bullet" REGULAR_EXPRESSION bullet/.*)
+source_group("game\\physics\\physx"  REGULAR_EXPRESSION physx/.*)
 source_group("platform"              REGULAR_EXPRESSION platform/.*)
 source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
 source_group("scriptEngine"          REGULAR_EXPRESSION scriptEngine/.*)
