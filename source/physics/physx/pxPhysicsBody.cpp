@@ -75,21 +75,26 @@ bool PxPhysicsBody::getDynamic() {
 	return mActor->is<physx::PxRigidDynamic>();
 }
 
-//TODO
-
 void PxPhysicsBody::setScale(const glm::vec3 &scale) {
-	
+	//Not possible in PhysX
 }
 void PxPhysicsBody::setVelocity(const glm::vec3 &velocity) {
-
+	if (getDynamic()) {
+		physx::PxRigidDynamic *dyn = mActor->is<physx::PxRigidDynamic>();
+		dyn->setLinearVelocity(pxConvert(velocity));
+	}
 }
 void PxPhysicsBody::setAngularVelocity(const glm::vec3 &velocity) {
-
+	if (getDynamic()) {
+		physx::PxRigidDynamic *dyn = mActor->is<physx::PxRigidDynamic>();
+		dyn->setAngularVelocity(pxConvert(velocity));
+	}
 }
 const F32 PxPhysicsBody::getMass() {
 	return 1;
 }
 const glm::vec3 PxPhysicsBody::getScale() {
+	//Not possible in PhysX
 	return glm::vec3(1, 1, 1);
 }
 const glm::vec3 PxPhysicsBody::getLinearVelocity() {
