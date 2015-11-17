@@ -542,33 +542,6 @@ set (DIFVIEWERGAME_LIBRARIES
 	BulletSoftBody
 	LinearMath
 
-	# Physx
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libLowLevel.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libLowLevelCloth.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3Common.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3Cooking.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3Extensions.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysXProfileSDK.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysXVisualDebuggerSDK.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPvdRuntime.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPxTask.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libSceneQuery.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libSimulationController.a
-
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libLowLevel.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libLowLevelCloth.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3Common.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3Cooking.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3Extensions.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysXProfileSDK.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysXVisualDebuggerSDK.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPvdRuntime.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPxTask.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libSceneQuery.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libSimulationController.a
-
 	# JPEG
 	Jpeg
 
@@ -601,6 +574,34 @@ set (DIFVIEWERGAME_LIBRARIES
 	# Assimp
 	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimpd.lib
 	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimp.lib
+
+	# Physx
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libLowLevel.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libLowLevelCloth.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPhysX3.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPhysX3Common.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPhysX3Cooking.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPhysX3Extensions.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPhysXProfileSDK.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPhysXVisualDebuggerSDK.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPvdRuntime.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPxTask.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libSceneQuery.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libSimulationController.lib
+
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libLowLevel.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libLowLevelCloth.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPhysX3.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPhysX3Common.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPhysX3Cooking.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPhysX3Extensions.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPhysXProfileSDK.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPhysXVisualDebuggerSDK.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPvdRuntime.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPxTask.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libSceneQuery.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libSimulationController.lib
+
 )
 else()
 set (DIFVIEWERGAME_LIBRARIES
@@ -610,6 +611,33 @@ set (DIFVIEWERGAME_LIBRARIES
 	# Assimp
 	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x64/Debug/libassimpd.a
 	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x64/Release/libassimp.a
+
+	# Physx
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libLowLevel.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libLowLevelCloth.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3Common.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3Cooking.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3Extensions.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysXProfileSDK.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysXVisualDebuggerSDK.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPvdRuntime.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPxTask.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libSceneQuery.a
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libSimulationController.a
+
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libLowLevel.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libLowLevelCloth.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3Common.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3Cooking.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3Extensions.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysXProfileSDK.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysXVisualDebuggerSDK.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPvdRuntime.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPxTask.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libSceneQuery.a
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libSimulationController.a
 )
 endif()
 
