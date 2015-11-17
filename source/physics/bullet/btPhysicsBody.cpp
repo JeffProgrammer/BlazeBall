@@ -59,7 +59,7 @@ void btPhysicsBody::applyForce(const glm::vec3 &force, const glm::vec3 &origin) 
 	mActor->applyForce(btConvert(force), btConvert(origin));
 }
 
-void btPhysicsBody::setVelocity(const glm::vec3 &velocity) {
+void btPhysicsBody::setLinearVelocity(const glm::vec3 &velocity) {
     mActor->setLinearVelocity(btConvert(velocity));
 }
 void btPhysicsBody::setAngularVelocity(const glm::vec3 &velocity) {

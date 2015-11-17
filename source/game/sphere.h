@@ -84,7 +84,7 @@ public:
 	glm::vec3 getVelocity();
 	glm::vec3 getAngularVelocity();
 
-	void setVelocity(const glm::vec3 &vel);
+	void setLinearVelocity(const glm::vec3 &vel);
     void setAngularVelocity(const glm::vec3 &vel);
 
 	virtual void updateCamera(const Movement &movement, const F64 &delta);

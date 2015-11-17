@@ -163,8 +163,8 @@ void Sphere::setRotation(const glm::quat &rot) {
 	mActor->setRotation(rot);
 }
 
-void Sphere::setVelocity(const glm::vec3 &vel) {
-    mActor->setVelocity(vel);
+void Sphere::setLinearVelocity(const glm::vec3 &vel) {
+    mActor->setLinearVelocity(vel);
 }
 
 void Sphere::setAngularVelocity(const glm::vec3 &vel) {
@@ -296,7 +296,7 @@ void Sphere::updateTick(const F64 &delta) {
 	//Temporary OOB solution for now
 	if (getPosition().z < -40) {
 		setPosition(glm::vec3(0, 0, 60));
-		setVelocity(glm::vec3(0, 0, 0));
+		setLinearVelocity(glm::vec3(0, 0, 0));
 		setAngularVelocity(glm::vec3(0, 0, 0));
 	}
 }

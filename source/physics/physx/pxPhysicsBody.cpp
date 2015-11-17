@@ -80,7 +80,7 @@ bool PxPhysicsBody::getDynamic() {
 void PxPhysicsBody::setScale(const glm::vec3 &scale) {
 	//Not possible in PhysX
 }
-void PxPhysicsBody::setVelocity(const glm::vec3 &velocity) {
+void PxPhysicsBody::setLinearVelocity(const glm::vec3 &velocity) {
 	if (getDynamic()) {
 		physx::PxRigidDynamic *dyn = mActor->is<physx::PxRigidDynamic>();
 		dyn->setLinearVelocity(pxConvert(velocity));
