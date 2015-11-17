@@ -442,7 +442,7 @@ void Scene::run() {
 		if (printFPS) {
 			counter += lastDelta;
 			fpsCounter++;
-			if (counter >= 1000.0) {
+			if (counter >= 1.f) {
 				F32 mspf = 1000.0f / fpsCounter;
 				std::string title = "FPS: " + std::to_string(fpsCounter) + " mspf: " + std::to_string(mspf);
 				window->setWindowTitle(title.c_str());
