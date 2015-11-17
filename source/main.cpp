@@ -8,9 +8,11 @@
 #include "platformSDL/SDLWindow.h"
 #include "platformSDL/SDLTimer.h"
 #include "render/scene.h"
-#include "physics/bullet/btPhysicsEngine.h"
 #include "game/GameInterior.h"
 #include "scriptEngine/scriptEngine.h"
+
+#include "physics/bullet/btPhysicsEngine.h"
+#include "physics/physx/pxPhysicsEngine.h"
 
 extern GLuint gSphereVBO;
 
@@ -21,7 +23,7 @@ int main(int argc, const char *argv[]) {
 	Scene *scene = Scene::getSingleton();
 
 	//Load the physics engine
-	PhysicsEngine::setEngine(new btPhysicsEngine());
+	PhysicsEngine::setEngine(new PxPhysicsEngine());
 
 	//Init SDL
 	scene->window = new SDLWindow();
