@@ -67,8 +67,9 @@ void btPhysicsEngine::init() {
 void btPhysicsEngine::simulate(const F64 &delta) {
 	if (running) {
 		extraTime += delta / 1000.0;
-		for ( ; extraTime > PHYSICS_TICK; extraTime -= PHYSICS_TICK) {
+		while (extraTime > PHYSICS_TICK) {
 			step(PHYSICS_TICK);
+			extraTime -= PHYSICS_TICK;
 		}
 	}
 }
