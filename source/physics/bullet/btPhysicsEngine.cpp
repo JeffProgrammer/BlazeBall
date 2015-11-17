@@ -66,7 +66,7 @@ void btPhysicsEngine::init() {
 
 void btPhysicsEngine::simulate(const F64 &delta) {
 	if (running) {
-		extraTime += delta / 1000.0;
+		extraTime += delta;
 		while (extraTime > PHYSICS_TICK) {
 			step(PHYSICS_TICK);
 			extraTime -= PHYSICS_TICK;
@@ -74,7 +74,7 @@ void btPhysicsEngine::simulate(const F64 &delta) {
 	}
 }
 
-void btPhysicsEngine::step(F64 delta) {
+void btPhysicsEngine::step(const F64 &delta) {
 	PhysicsEngine::step(delta);
 	world->stepSimulation(static_cast<btScalar>(delta), 10);
 }

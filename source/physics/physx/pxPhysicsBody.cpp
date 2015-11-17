@@ -61,13 +61,15 @@ void PxPhysicsBody::applyTorque(const glm::vec3 &torque) {
 void PxPhysicsBody::applyImpulse(const glm::vec3 &impulse, const glm::vec3 &origin) {
 	if (getDynamic()) {
 		physx::PxRigidDynamic *dyn = mActor->is<physx::PxRigidDynamic>();
-		physx::PxRigidBodyExt::addForceAtPos(*dyn, pxConvert(impulse), pxConvert(origin));
+		dyn->addForce(pxConvert(impulse), physx::PxForceMode::eIMPULSE);
+//		physx::PxRigidBodyExt::addForceAtLocalPos(*dyn, pxConvert(impulse), pxConvert(origin));
 	}
 }
 void PxPhysicsBody::applyForce(const glm::vec3 &force, const glm::vec3 &origin) {
 	if (getDynamic()) {
 		physx::PxRigidDynamic *dyn = mActor->is<physx::PxRigidDynamic>();
-		physx::PxRigidBodyExt::addForceAtPos(*dyn, pxConvert(force), pxConvert(origin));
+		dyn->addForce(pxConvert(force));
+//		physx::PxRigidBodyExt::addForceAtLocalPos(*dyn, pxConvert(force), pxConvert(origin));
 	}
 }
 

@@ -97,14 +97,14 @@ void Scene::renderScene(RenderInfo &info) {
 	GL_CHECKERRORS();
 }
 
-void Scene::loop(const F64 &deltaMS) {
+void Scene::loop(const F64 &delta) {
 
 }
 
-void Scene::tick(const F64 &deltaMS) {
+void Scene::tick(const F64 &delta) {
 	if (controlObject) {
-		controlObject->updateCamera(movement, deltaMS);
-		controlObject->updateMove(movement, deltaMS);
+		controlObject->updateCamera(movement, delta);
+		controlObject->updateMove(movement, delta);
 	}
 
 	movement.pitch = 0;
@@ -115,7 +115,7 @@ void Scene::tick(const F64 &deltaMS) {
 	}
 
 	for (auto object : objects) {
-		object->updateTick(deltaMS);
+		object->updateTick(delta);
 	}
 }
 
@@ -355,8 +355,8 @@ void Scene::run() {
 	U32 fpsCounter = 0;
 
 	PhysicsEngine::getEngine()->setStepCallback([&](F64 delta){
-		this->loop(delta * 1000.0f);
-		this->tick(delta * 1000.0f);
+		this->loop(delta);
+		this->tick(delta);
 	});
 
 	// onStart

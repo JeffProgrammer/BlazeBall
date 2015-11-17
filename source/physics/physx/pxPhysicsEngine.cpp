@@ -89,7 +89,7 @@ void PxPhysicsEngine::destroy() {
 void PxPhysicsEngine::simulate(const F64 &delta) {
 	if (getRunning()) {
 		step(delta);
-		scene->simulate(delta / 1000.f);
+		scene->simulate(delta);
 		scene->fetchResults();
 	}
 }

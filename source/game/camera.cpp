@@ -12,7 +12,7 @@ Camera::Camera() {
 	mYaw = 0.0f;
 }
 
-void Camera::updateCamera(const Movement &movement, const F64 &deltaMS) {
+void Camera::updateCamera(const Movement &movement, const F64 &delta) {
 	//Keyboard movement
 	if (movement.pitchUp)   mPitch -= mKeyCameraSpeed;
 	if (movement.pitchDown) mPitch += mKeyCameraSpeed;
@@ -22,25 +22,25 @@ void Camera::updateCamera(const Movement &movement, const F64 &deltaMS) {
 	//Mouse movement
 	// we do not need to use a delta, because SDL resets the delta from the previous call.
 	// so it will be same speed regardless of framerate already!
-	mPitch += movement.pitch * mCameraSpeed; //*(deltaMS / 16.f);
-	mYaw   += movement.yaw   * mCameraSpeed; //*(deltaMS / 16.f);
+	mPitch += movement.pitch * mCameraSpeed; //*(delta / 0.016f);
+	mYaw   += movement.yaw   * mCameraSpeed; //*(delta / 0.016f);
 }
 
-void Camera::updateMove(const Movement &movement, const F64 &deltaMS) {
-	glm::mat4x4 delta = glm::mat4x4(1);
+void Camera::updateMove(const Movement &movement, const F64 &delta) {
+	glm::mat4x4 deltaMat = glm::mat4x4(1);
 
 	//Invert these because we are a free cam
-	delta = glm::rotate(delta, -mYaw, glm::vec3(0, 0, 1));
-	delta = glm::rotate(delta, -mPitch, glm::vec3(1, 0, 0));
+	deltaMat = glm::rotate(deltaMat, -mYaw, glm::vec3(0, 0, 1));
+	deltaMat = glm::rotate(deltaMat, -mPitch, glm::vec3(1, 0, 0));
 
 	//Move based on movement keys
-	if (movement.forward)  delta = glm::translate(delta, glm::vec3(0, 1, 0));
-	if (movement.backward) delta = glm::translate(delta, glm::vec3(0, -1, 0));
-	if (movement.left)     delta = glm::translate(delta, glm::vec3(-1, 0, 0));
-	if (movement.right)    delta = glm::translate(delta, glm::vec3(1, 0, 0));
+	if (movement.forward)  deltaMat = glm::translate(deltaMat, glm::vec3(0, 1, 0));
+	if (movement.backward) deltaMat = glm::translate(deltaMat, glm::vec3(0, -1, 0));
+	if (movement.left)     deltaMat = glm::translate(deltaMat, glm::vec3(-1, 0, 0));
+	if (movement.right)    deltaMat = glm::translate(deltaMat, glm::vec3(1, 0, 0));
 
 	//Move the origin
-	mOrigin += glm::vec3(delta[3]) * F32(deltaMS / 16.f);
+	mOrigin += glm::vec3(deltaMat[3]) * F32(delta / 0.016f);
 }
 
 void Camera::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {

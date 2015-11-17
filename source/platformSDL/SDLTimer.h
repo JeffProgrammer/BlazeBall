@@ -35,7 +35,7 @@ public:
 	/// Gets the time delta between the start() and end() calls.
 	/// @return the delta between the timer calls.
 	inline virtual F64 getDelta() const {
-		return static_cast<F64>((mEndTime * 1000) / static_cast<F64>(SDL_GetPerformanceFrequency()));
+		return (static_cast<F64>((mEndTime * 1000) / static_cast<F64>(SDL_GetPerformanceFrequency()))) / 1000.f;
 	}
 };
 

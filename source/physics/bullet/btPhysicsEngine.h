@@ -68,7 +68,7 @@ class btPhysicsEngine : public PhysicsEngine {
 	bool running;
 	F64 extraTime;
 
-	virtual void step(F64 delta);
+	virtual void step(const F64 &delta);
 public:
 	btPhysicsEngine();
 	

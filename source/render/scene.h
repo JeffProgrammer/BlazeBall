@@ -108,8 +108,8 @@ public:
 	void renderScene(RenderInfo &info);
 	void render();
 
-	void loop(const F64 &deltaMS);
-	void tick(const F64 &deltaMS);
+	void loop(const F64 &delta);
+	void tick(const F64 &delta);
 	bool initGL();
 	bool init();
 	void cleanup();

@@ -180,7 +180,7 @@ void Sphere::setRadius(const F32 &radius) {
 	dynamic_cast<PhysicsSphere *>(mActor)->setRadius(radius);
 }
 
-void Sphere::updateCamera(const Movement &movement, const F64 &deltaMS) {
+void Sphere::updateCamera(const Movement &movement, const F64 &delta) {
 	if (movement.pitchUp) cameraPitch -= keyCameraSpeed;
 	if (movement.pitchDown) cameraPitch += keyCameraSpeed;
 	if (movement.yawLeft) cameraYaw -= keyCameraSpeed;
@@ -190,12 +190,10 @@ void Sphere::updateCamera(const Movement &movement, const F64 &deltaMS) {
 	cameraYaw += movement.yaw * cameraSpeed;
 }
 
-void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
+void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 	//Apply the camera yaw to a matrix so our rolling is based on the camera direction
-	glm::mat4x4 delta = glm::mat4x4(1);
-	delta = glm::rotate(delta, -cameraYaw, glm::vec3(0, 0, 1));
-
-	F32 deltaSeconds = static_cast<F32>(deltaMS) / 1000.0f;
+	glm::mat4x4 deltaMat = glm::mat4x4(1);
+	deltaMat = glm::rotate(deltaMat, -cameraYaw, glm::vec3(0, 0, 1));
 
 	//Convert the movement into a vector
 	glm::vec3 move = glm::vec3();
@@ -205,9 +203,9 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	if (movement.right) move.x ++;
 
 	//Linear velocity relative to camera yaw (for capping)
-	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getLinearVelocity())[3]);
-	glm::vec3 angRel = glm::cross(glm::vec3(glm::translate(glm::inverse(delta), mActor->getAngularVelocity())[3]), glm::vec3(0, 0, 1));
-	glm::vec3 torque = move * AppliedAcceleration * deltaSeconds;
+	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(deltaMat), mActor->getLinearVelocity())[3]);
+	glm::vec3 angRel = glm::cross(glm::vec3(glm::translate(glm::inverse(deltaMat), mActor->getAngularVelocity())[3]), glm::vec3(0, 0, 1));
+	glm::vec3 torque = move * AppliedAcceleration * F32(delta);
 
 	if (getColliding()) {
 		//Don't let us go faster than the max velocity in any direction.
@@ -229,7 +227,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 //	printf("T:  %f %f\n", torque.x, torque.y);
 
 	//Torque is based on the movement and yaw
-	glm::vec3 torqueRel = glm::vec3(glm::translate(delta, torque)[3]);
+	glm::vec3 torqueRel = glm::vec3(glm::translate(deltaMat, torque)[3]);
 	//Cross to convert 3d coordinates into torque
 	applyTorque(glm::cross(glm::vec3(0, 0, 1), torqueRel));
 
@@ -262,11 +260,11 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 			jumpTicks --;
 		}
 	} else {
-		glm::vec3 moveRel = glm::vec3(glm::translate(delta, move)[3]);
-		moveRel *= AirAcceleration * deltaSeconds;
+		glm::vec3 moveRel = glm::vec3(glm::translate(deltaMat, move)[3]);
+		moveRel *= AirAcceleration * delta;
 
 		//If we're not touching the ground, apply slight air movement.
-		applyImpulse(moveRel, glm::vec3(0, 0, 0));
+		applyForce(moveRel, glm::vec3(0, 0, 0));
 	}
 	//Crappy damping
 	if (movement.forward + movement.backward + movement.left + movement.right == 0 && getColliding()) {
@@ -294,7 +292,7 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
 	pos = getPosition() + rot;
 }
 
-void Sphere::updateTick(const F64 &deltaMS) {
+void Sphere::updateTick(const F64 &delta) {
 	//Temporary OOB solution for now
 	if (getPosition().z < -40) {
 		setPosition(glm::vec3(0, 0, 60));

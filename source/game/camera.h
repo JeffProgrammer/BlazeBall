@@ -44,14 +44,14 @@ public:
 	/**
 	 * Updates the Camera.
 	 * @param movement The move struct that contains input for this frame.
-	 * @param deltaMS The delta between the last and current frame.
+	 * @param delta The delta, in seconds, between the last and current frame.
 	 */
 	virtual void updateCamera(const Movement &movement, const F64 &deltaMS);
 
 	/**
 	 * Updates the movement of the Camera based upon input and mspf.
 	 * @param movement The move struct that contains input for this frame.
-	 * @param deltaMS The delta between the last and current frame.
+	 * @param delta The delta, in seconds, between the last and current frame.
 	 */
 	virtual void updateMove(const Movement &movement, const F64 &deltaMS);
 
@@ -64,10 +64,10 @@ public:
 
 	/**
 	 * An update callback that is called every physics tick.
-	 * @param deltaMS The delta between physics ticks.
+	 * @param delta The delta, in seconds, between physics ticks.
 	 * @note Called at a fixed timestep.
 	 */
-	virtual inline void updateTick(const F64 &deltaMS) {};
+	virtual inline void updateTick(const F64 &delta) {};
 };
 
 #endif

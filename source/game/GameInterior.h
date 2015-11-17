@@ -68,7 +68,7 @@ public:
 	virtual glm::vec3 getScale();
 	virtual void setScale(const glm::vec3 &scale);
 	
-	virtual inline void updateTick(const F64 &deltaMS) {};
+	virtual inline void updateTick(const F64 &delta) {};
 };
 
 #endif
