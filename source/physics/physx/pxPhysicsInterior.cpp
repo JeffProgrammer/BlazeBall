@@ -35,6 +35,7 @@ void PxPhysicsInterior::construct() {
 	//Create body
 	physx::PxTriangleMeshGeometry geometry;
 	physx::PxTriangleMeshDesc meshDesc;
+	geometry.meshFlags = physx::PxMeshGeometryFlag::eDOUBLE_SIDED;
 
 	const DIF::Interior &interior = mInterior->getInterior();
 
