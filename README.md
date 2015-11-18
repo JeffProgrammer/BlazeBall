@@ -48,16 +48,16 @@ OpenGL 3.3+
 Third Party Libraries
 -------------------
 
-* Assimp Model Importer
-* AngelScript Scripting Language Library
-* Bullet 3D Physics Library
-* GLEW OpenGL Extensions Loader
-* GLM Math Library
-* JPEG Image Library
-* MNG Image Library
-* SDL2 Window and Input System
-* srutil Fast C++ Delegates
-* ZLIB Compression Library
+* Assimp - Model Importer
+* AngelScript - Scripting Language Library
+* Bullet3D - Physics Library
+* GLEW - OpenGL Extensions Loader
+* GLM - Math Library
+* JPEG - Image Library
+* MNG - Image Library
+* SDL2 - Window and Input System
+* srutil - Fast C++ Delegates
+* ZLIB - Compression Library
 
 Acknowledgements
 -------------------
