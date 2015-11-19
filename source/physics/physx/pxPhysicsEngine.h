@@ -28,9 +28,9 @@
 #ifndef pxPhysicsEngine_h
 #define pxPhysicsEngine_h
 
-#ifdef DEBUG
+#if defined(DEBUG)
 #define _DEBUG
-#else
+#elif !defined(_DEBUG)
 #define NDEBUG
 #endif
 
