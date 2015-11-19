@@ -88,9 +88,13 @@ void PxPhysicsEngine::destroy() {
 
 void PxPhysicsEngine::simulate(const F64 &delta) {
 	if (getRunning()) {
-		step(delta);
-		scene->simulate(delta);
-		scene->fetchResults();
+		mExtraTime += delta;
+		while (mExtraTime > PHYSICS_TICK) {
+			PhysicsEngine::step(PHYSICS_TICK);
+			scene->simulate(PHYSICS_TICK);
+			scene->fetchResults(true);
+			mExtraTime -= PHYSICS_TICK;
+		}
 	}
 }
 

@@ -48,7 +48,11 @@ class PxPhysicsEngine : public PhysicsEngine {
 	physx::PxScene *scene;
 	physx::PxCpuDispatcher *dispatcher;
 
+	F64 mExtraTime;
+
 public:
+	PxPhysicsEngine() : mExtraTime(0.0) {}
+
 	virtual void init();
 	virtual void destroy();
 	virtual void simulate(const F64 &delta);

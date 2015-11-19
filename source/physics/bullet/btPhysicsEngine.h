@@ -7,8 +7,6 @@
 #ifndef btPhysicsEngine_h
 #define btPhysicsEngine_h
 
-#define PHYSICS_TICK 0.01666
-
 #include <stdio.h>
 #include "base/types.h"
 #include "physics/physicsEngine.h"

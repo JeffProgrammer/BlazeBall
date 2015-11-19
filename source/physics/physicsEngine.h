@@ -11,6 +11,8 @@
 #include <functional>
 #include "base/types.h"
 
+#define PHYSICS_TICK 0.01666
+
 class PhysicsBody;
 class GameInterior;
 
