@@ -67,10 +67,18 @@ public:
 
 class AllocatorCallback : public physx::PxAllocatorCallback {
 	virtual void *allocate(size_t size, const char *typeName, const char *fileName, int line) {
+#ifdef _WIN32
+		return _aligned_malloc(size, 16);
+#else
 		return malloc(size);
+#endif
 	}
 	virtual void deallocate(void *ptr) {
+#ifdef _WIN32
+		_aligned_free(ptr);
+#else
 		free(ptr);
+#endif
 	}
 };
 
