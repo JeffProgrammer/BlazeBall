@@ -55,6 +55,7 @@ Third Party Libraries
 * GLM Math Library
 * JPEG Image Library
 * MNG Image Library
+* PhysX Physics Library
 * SDL2 Window and Input System
 * srutil Fast C++ Delegates
 * ZLIB Compression Library
