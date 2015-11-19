@@ -576,31 +576,31 @@ set (DIFVIEWERGAME_LIBRARIES
 	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimp.lib
 
 	# Physx
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libLowLevel.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libLowLevelCloth.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPhysX3.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPhysX3Common.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPhysX3Cooking.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPhysX3Extensions.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPhysXProfileSDK.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPhysXVisualDebuggerSDK.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPvdRuntime.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libPxTask.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libSceneQuery.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/libSimulationController.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/LowLevelDEBUG.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/LowLevelClothDEBUG.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PhysX3DEBUG_x86.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PhysX3CommonDEBUG_x86.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PhysX3CookingDEBUG_x86.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PhysX3ExtensionsDEBUG.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PhysXProfileSDKDEBUG.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PhysXVisualDebuggerSDKDEBUG.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PvdRuntimeDEBUG.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PxTaskDEBUG.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/SceneQueryDEBUG.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/SimulationControllerDEBUG.lib
 
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libLowLevel.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libLowLevelCloth.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPhysX3.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPhysX3Common.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPhysX3Cooking.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPhysX3Extensions.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPhysXProfileSDK.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPhysXVisualDebuggerSDK.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPvdRuntime.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libPxTask.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libSceneQuery.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/libSimulationController.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/LowLevel.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/LowLevelCloth.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PhysX3_x86.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PhysX3Common_x86.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PhysX3Cooking_x86.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PhysX3Extensions.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PhysXProfileSDK.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PhysXVisualDebuggerSDK.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PvdRuntime.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PxTask.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/SceneQuery.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/SimulationController.lib
 
 )
 else()
