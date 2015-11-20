@@ -41,6 +41,7 @@
 #include "cooking/PxCooking.h"
 
 class PxPhysicsEngine : public PhysicsEngine {
+protected:
 	physx::PxFoundation *foundation;
 	physx::PxProfileZoneManager *profileZoneManager;
 	physx::PxPhysics *physics;
@@ -70,6 +71,7 @@ public:
 };
 
 class AllocatorCallback : public physx::PxAllocatorCallback {
+public:
 	virtual void *allocate(size_t size, const char *typeName, const char *fileName, int line) {
 #ifdef _WIN32
 		return _aligned_malloc(size, 16);
@@ -87,6 +89,7 @@ class AllocatorCallback : public physx::PxAllocatorCallback {
 };
 
 class ErrorCallback : public physx::PxErrorCallback {
+public:
 	virtual void reportError(physx::PxErrorCode::Enum code, const char* message, const char* file, int line) {
 		printf("Physx Error: %d %s [File: %s (%d)]\n", code, message, file, line);
 	}
