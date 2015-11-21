@@ -93,7 +93,7 @@ void PxPhysicsInterior::construct() {
 	physx::PxTriangleMesh *mesh = physics->createTriangleMesh(readBuffer);
 	geometry.triangleMesh = mesh;
 
-	physx::PxMaterial *material = physics->createMaterial(1.0, 1.0, 0.7);
+	physx::PxMaterial *material = physics->createMaterial(1.0f, 1.0f, 0.7f);
 	material->setFrictionCombineMode(physx::PxCombineMode::eMULTIPLY);
 	material->setRestitutionCombineMode(physx::PxCombineMode::eMULTIPLY);
 

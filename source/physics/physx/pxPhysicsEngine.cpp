@@ -91,7 +91,7 @@ void PxPhysicsEngine::simulate(const F64 &delta) {
 		mExtraTime += delta;
 		while (mExtraTime > PHYSICS_TICK) {
 			PhysicsEngine::step(PHYSICS_TICK);
-			scene->simulate(PHYSICS_TICK);
+			scene->simulate(static_cast<F32>(PHYSICS_TICK));
 			scene->fetchResults(true);
 			mExtraTime -= PHYSICS_TICK;
 		}
