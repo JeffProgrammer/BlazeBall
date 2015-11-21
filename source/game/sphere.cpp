@@ -12,6 +12,7 @@
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/projection.hpp>
 
 GLuint gSphereVBO = 0;
 
@@ -233,31 +234,16 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 
 	//If we are colliding with the ground, we have the chance to jump
 	if (getColliding()) {
-		if (jumpTicks == 0) {
-			//Make sure we're not trying to jump off a wall. Anything with a dot product > 0.1 is considered "not a wall"
-			glm::vec3 normal = getCollisionNormal();
-			if (movement.jump && glm::dot(normal, glm::vec3(0, 0, 1)) > 0.1) {
-				//Jump takes the average of the collision normal and the up vector to provide a mostly upwards
-				// jump but still taking the surface into account.
-				glm::vec3 jumpNormal = (normal + glm::vec3(0, 0, 1)) / 2.f;
-				glm::vec3 vel = mActor->getLinearVelocity();
+		glm::vec3 normal = getCollisionNormal();
+		glm::vec3 vel = mActor->getLinearVelocity();
+		if (movement.jump && glm::dot(vel, normal) > 0.0f) {
+			glm::vec3 currentVelocity = glm::proj(vel, normal);
 
-				glm::vec3 proj = jumpNormal * (glm::dot(vel, jumpNormal) * glm::dot(jumpNormal, jumpNormal));
-				printf("jump normal: %f %f %f\nvel: %f %f %f\nproj: %f %f %f\n",
-					   jumpNormal.x, jumpNormal.y, jumpNormal.z,
-					   vel.x, vel.y, vel.z,
-					   proj.x, proj.y, proj.z
-					   );
-
-				if (glm::length(proj) < JumpImpulse) {
-					applyImpulse(jumpNormal * (JumpImpulse - glm::length(proj)), glm::vec3(0, 0, 0));
-				}
-
+			if (currentVelocity.length() < JumpImpulse) {
+				glm::vec3 finalVelocity = vel - currentVelocity + (normal * JumpImpulse);
+				setLinearVelocity(finalVelocity);
 				printf("Jump!\n");
 			}
-			jumpTicks = 2;
-		} else {
-			jumpTicks --;
 		}
 	} else {
 		glm::vec3 moveRel = glm::vec3(glm::translate(deltaMat, move)[3]);
@@ -300,3 +286,25 @@ void Sphere::updateTick(const F64 &delta) {
 		setAngularVelocity(glm::vec3(0, 0, 0));
 	}
 }
+
+// OLD JUMP CODE
+//Make sure we're not trying to jump off a wall. Anything with a dot product > 0.1 is considered "not a wall"
+//glm::vec3 normal = getCollisionNormal();
+//if (movement.jump && glm::dot(normal, glm::vec3(0, 0, 1)) > 0.1) {
+//Jump takes the average of the collision normal and the up vector to provide a mostly upwards
+// jump but still taking the surface into account.
+//glm::vec3 jumpNormal = (normal + glm::vec3(0, 0, 1)) / 2.f;
+//glm::vec3 vel = glm::vec3(0, 0, 0);//mActor->getLinearVelocity();
+
+//glm::vec3 proj = jumpNormal * (glm::dot(vel, jumpNormal) * glm::dot(jumpNormal, jumpNormal));
+//glm::vec3 imp = jumpNormal * (JumpImpulse - glm::length(proj));
+//printf("jump normal: %f %f %f\nvel: %f %f %f\nproj: %f %f %f\nimp: %f %f %f\n",
+// jumpNormal.x, jumpNormal.y, jumpNormal.z,
+//vel.x, vel.y, vel.z,
+// proj.x, proj.y, proj.z,
+//imp.x, imp.y, imp.z
+// );
+
+//if (glm::length(proj) < JumpImpulse) {
+//applyImpulse(imp, glm::vec3(0, 0, 0));
+//}
