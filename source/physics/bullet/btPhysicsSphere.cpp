@@ -121,11 +121,12 @@ bool btPhysicsSphere::getColliding() {
 	return false;
 }
 
-glm::vec3 btPhysicsSphere::getCollisionNormal() {
+glm::vec3 btPhysicsSphere::getCollisionNormal(glm::vec3 &toiVelocity) {
 	btDiscreteDynamicsWorld *world = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld();
 	U32 manifolds = world->getDispatcher()->getNumManifolds();
 
 	glm::vec3 best = glm::vec3(0.0f, 0.0f, 0.0f);
+	toiVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	F32 dot = 0;
 
 	for (U32 i = 0; i < manifolds; i ++) {
@@ -141,6 +142,7 @@ glm::vec3 btPhysicsSphere::getCollisionNormal() {
 					normal *= -1;
 				if (glm::dot(normal, glm::vec3(0, 0, 1)) > dot) {
 					best = normal;
+					toiVelocity = btConvert(manifold->getContactPoint(j).m_impactVelocity);
 					dot = glm::dot(normal, glm::vec3(0, 0, 1));
 				}
 			}
@@ -155,6 +157,13 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	btPhysicsInterior *inter = dynamic_cast<btPhysicsInterior *>(isBody0 ? info.body1 : info.body0);
 	if (inter == nullptr)
 		return false;
+
+	// get sphere
+	btPhysicsSphere *sphere = dynamic_cast<btPhysicsSphere *>(isBody0 ? info.body0 : info.body1);
+	if (sphere != nullptr) {
+		//printf("vel: %f %f %f\n", sphere->getLinearVelocity().x, sphere->getLinearVelocity().y, sphere->getLinearVelocity().z);
+		info.point.m_impactVelocity = btConvert(sphere->getLinearVelocity());
+	}
 
 	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
 
@@ -191,7 +200,7 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 
 	info.point.m_combinedFriction *= friction;
 	info.point.m_combinedRollingFriction *= friction;
-
+	info.point.m_combinedRestitution = 0.5f;
 	return true;
 }
 

@@ -49,8 +49,9 @@ bool PxPhysicsSphere::getColliding() {
 	//TODO collision detection
 	return false;
 }
-glm::vec3 PxPhysicsSphere::getCollisionNormal() {
+glm::vec3 PxPhysicsSphere::getCollisionNormal(glm::vec3 &toiVelocity) {
 	//TODO collision normals
+	toiVelocity = glm::vec3(0, 0, 0);
 	return glm::vec3(0, 0, 0);
 }
 

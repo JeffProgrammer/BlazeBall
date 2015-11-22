@@ -16,7 +16,7 @@ public:
 	btPhysicsSphere(const F32 &mRadius);
 
 	virtual bool getColliding();
-	virtual glm::vec3 getCollisionNormal();
+	virtual glm::vec3 getCollisionNormal(glm::vec3 &toiVelocity);
 
 	virtual F32 getRadius();
 	virtual void setRadius(const F32 &radius);

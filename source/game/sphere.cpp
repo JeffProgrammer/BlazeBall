@@ -136,8 +136,8 @@ bool Sphere::getColliding() {
 	return dynamic_cast<PhysicsSphere *>(mActor)->getColliding();
 }
 
-glm::vec3 Sphere::getCollisionNormal() {
-	return dynamic_cast<PhysicsSphere *>(mActor)->getCollisionNormal();
+glm::vec3 Sphere::getCollisionNormal(glm::vec3 &toiVelocity) {
+	return dynamic_cast<PhysicsSphere *>(mActor)->getCollisionNormal(toiVelocity);
 }
 
 glm::vec3 Sphere::getPosition() {
@@ -238,7 +238,8 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 
 	//If we are colliding with the ground, we have the chance to jump
 	if (getColliding()) {
-		glm::vec3 normal = getCollisionNormal();
+		glm::vec3 impactVelocity;
+		glm::vec3 normal = getCollisionNormal(impactVelocity);
 		glm::vec3 vel = mActor->getLinearVelocity();
 		if (movement.jump && glm::dot(vel, normal) > 0.0f) {
 			glm::vec3 currentVelocity = glm::proj(vel, normal);

@@ -77,7 +77,7 @@ public:
 	void applyForce(const glm::vec3 &force, const glm::vec3 &origin);
 
 	bool getColliding();
-	glm::vec3 getCollisionNormal();
+	glm::vec3 getCollisionNormal(glm::vec3 &toiVelocity);
     
 	glm::vec3 getVelocity();
 	glm::vec3 getAngularVelocity();
