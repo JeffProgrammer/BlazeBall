@@ -191,6 +191,10 @@ void Sphere::updateCamera(const Movement &movement, const F64 &delta) {
 	cameraYaw += movement.yaw * cameraSpeed;
 }
 
+F32 getDist(const glm::vec3 &vec) {
+	return sqrtf(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);
+}
+
 void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 	//Apply the camera yaw to a matrix so our rolling is based on the camera direction
 	glm::mat4x4 deltaMat = glm::mat4x4(1);
