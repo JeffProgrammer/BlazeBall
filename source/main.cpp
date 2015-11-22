@@ -23,7 +23,8 @@ int main(int argc, const char *argv[]) {
 	Scene *scene = Scene::getSingleton();
 
 	//Load the physics engine
-	PhysicsEngine::setEngine(new PxPhysicsEngine());
+	//PhysicsEngine::setEngine(new PxPhysicsEngine());
+	PhysicsEngine::setEngine(new btPhysicsEngine());
 
 	//Init SDL
 	scene->window = new SDLWindow();
