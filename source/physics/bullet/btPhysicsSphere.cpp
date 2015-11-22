@@ -81,13 +81,14 @@ btPhysicsSphere::btPhysicsSphere(const F32 &radius) : mRadius(radius) {
 	btRigidBody::btRigidBodyConstructionInfo info(1, state, shape, fallInertia);
 	info.m_restitution = 0.5f; // 0.5 * 0.7
 	info.m_friction = 1.0f;
-	info.m_rollingFriction = 1.1f;
+	info.m_rollingFriction = 0.3f;
 
 	//Create the actor and add it to the scene
 	mActor = new btRigidBody(info);
 	mActor->setActivationState(DISABLE_DEACTIVATION);
 	mActor->setCcdMotionThreshold(static_cast<btScalar>(1e-3));
 	mActor->setCcdSweptSphereRadius(radius / 10.0f);
+	mActor->setRollingFriction(0.3f);
 	mActor->setAnisotropicFriction(shape->getAnisotropicRollingFrictionDirection(), btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION);
 	mActor->setContactProcessingThreshold(0.0f);
 
@@ -125,9 +126,8 @@ glm::vec3 btPhysicsSphere::getCollisionNormal(glm::vec3 &toiVelocity) {
 	btDiscreteDynamicsWorld *world = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld();
 	U32 manifolds = world->getDispatcher()->getNumManifolds();
 
-	glm::vec3 best = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 total = glm::vec3(0.0f, 0.0f, 0.0f);
 	toiVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	F32 dot = 0;
 
 	for (U32 i = 0; i < manifolds; i ++) {
 		btPersistentManifold *manifold = world->getDispatcher()->getManifoldByIndexInternal(i);
@@ -140,16 +140,16 @@ glm::vec3 btPhysicsSphere::getCollisionNormal(glm::vec3 &toiVelocity) {
 				glm::vec3 normal = btConvert(manifold->getContactPoint(j).m_normalWorldOnB);
 				if (obj2 == mActor)
 					normal *= -1;
-				if (glm::dot(normal, glm::vec3(0, 0, 1)) > dot) {
-					best = normal;
-					toiVelocity = btConvert(manifold->getContactPoint(j).m_impactVelocity);
-					dot = glm::dot(normal, glm::vec3(0, 0, 1));
-				}
+				total += normal;
+				toiVelocity += btConvert(manifold->getContactPoint(j).m_impactVelocity);
 			}
 		}
 	}
 
-	return best;
+	total = glm::normalize(total);
+	toiVelocity = glm::normalize(toiVelocity);
+
+	return total;
 }
 
 bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
@@ -158,12 +158,8 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	if (inter == nullptr)
 		return false;
 
-	// get sphere
-	btPhysicsSphere *sphere = dynamic_cast<btPhysicsSphere *>(isBody0 ? info.body0 : info.body1);
-	if (sphere != nullptr) {
-		//printf("vel: %f %f %f\n", sphere->getLinearVelocity().x, sphere->getLinearVelocity().y, sphere->getLinearVelocity().z);
-		info.point.m_impactVelocity = btConvert(sphere->getLinearVelocity());
-	}
+	//printf("vel: %f %f %f\n", sphere->getLinearVelocity().x, sphere->getLinearVelocity().y, sphere->getLinearVelocity().z);
+	info.point.m_impactVelocity = btConvert(getLinearVelocity());
 
 	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
 
@@ -171,23 +167,12 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	U32 surfaceNum = inter->getSurfaceIndexFromTriangleIndex(isBody0 ? info.index1 : info.index0);
 	const DIF::Interior::Surface &surface = dint.surface[surfaceNum];
 
-	const DIF::Point3F &normal = dint.normal[dint.plane[surface.planeIndex].normalIndex];
-
-	glm::vec3 in(normal.x, normal.y, normal.z);
-	glm::vec3 bn = btConvert(info.point.m_normalWorldOnB);
-
-	//Doesn't really work
-//	if (glm::dot(in, bn) < 0.95) {
-//		//Remove it
-//		return false;
-//	}
-
-
 	//Texture names have properties
 	const std::string &surfName = dint.materialName[surface.textureIndex];
 
 	//Friction is relative to the slope of the incline
-	F32 friction = (1.0f + info.point.m_normalWorldOnB.dot(btVector3(0, 0, 1))) / 2.0f;
+	F32 wallDot = info.point.m_normalWorldOnB.dot(btVector3(0, 0, 1));
+	F32 friction = (1.0f + wallDot) / 2.0f;
 
 	//Frictions
 	if (stricmp(surfName.c_str(), "friction_low") == 0 ||
@@ -200,7 +185,6 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 
 	info.point.m_combinedFriction *= friction;
 	info.point.m_combinedRollingFriction *= friction;
-	info.point.m_combinedRestitution = 0.5f;
 	return true;
 }
 

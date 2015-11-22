@@ -97,7 +97,7 @@ void Sphere::calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix
 
 void Sphere::draw(Material *material, RenderInfo &info, void *userInfo) {
 	loadModelMatrix(info, material->getShader());
-	material->getShader()->setUniform("reflectivity", 1.f);
+	material->getShader()->setUniform("reflectivity", 0.2f);
 
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
 	material->getShader()->enableAttributes();
@@ -190,11 +190,6 @@ void Sphere::updateCamera(const Movement &movement, const F64 &delta) {
 	cameraPitch += movement.pitch * cameraSpeed;
 	cameraYaw += movement.yaw * cameraSpeed;
 }
-
-F32 getDist(const glm::vec3 &vec) {
-	return sqrtf(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);
-}
-
 void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 	//Apply the camera yaw to a matrix so our rolling is based on the camera direction
 	glm::mat4x4 deltaMat = glm::mat4x4(1);
@@ -238,16 +233,22 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 
 	//If we are colliding with the ground, we have the chance to jump
 	if (getColliding()) {
+		//Impact velocity is stored when we collide so we can use it here
 		glm::vec3 impactVelocity;
+		//Get collision information
 		glm::vec3 normal = getCollisionNormal(impactVelocity);
 		glm::vec3 vel = mActor->getLinearVelocity();
 		if (movement.jump && glm::dot(vel, normal) > 0.0f) {
 			glm::vec3 currentVelocity = glm::proj(vel, normal);
 
-			if (getDist(glm::proj(impactVelocity, normal)) < JumpImpulse) {
+			glm::vec3 projVel = glm::proj(vel, normal);
+
+			if (glm::length(projVel) < JumpImpulse) {
 				glm::vec3 finalVelocity = vel - currentVelocity + (normal * JumpImpulse);
 				setLinearVelocity(finalVelocity);
-				printf("Jump! Impact velocity: %f %f %f\n   final Velocity: %f %f %f\n    Impact speed: %f\n", impactVelocity.x, impactVelocity.y, impactVelocity.z, finalVelocity.x, finalVelocity.y, finalVelocity.z, getDist(impactVelocity));
+				printf("Jump! Impact velocity: %f %f %f\n   final Velocity: %f %f %f\n    Projection velocity: %f %f %f\n", vel.x, vel.y, vel.z, finalVelocity.x, finalVelocity.y, finalVelocity.z, projVel.x, projVel.y, projVel.z);
+			} else {
+				printf("No jump, projection velocity is %f %f %f\n", projVel.x, projVel.y, projVel.z);
 			}
 		}
 	} else {
