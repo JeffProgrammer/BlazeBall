@@ -27,7 +27,7 @@ class Sphere : public RenderedObject {
 	const F32 MaxRollVelocity     = 15.f; //In one direction (diagonal-supported)
 	const F32 MaxAirSpinVelocity  = 50.f; //Same as above but for angular, only when falling
 	const F32 JumpImpulse         = 7.5f; //Per jump, magnitude of the vector
-	const F32 AirAcceleration     = 5.f; //Applied every tick in the air
+	const F32 AirAcceleration     = 500.f; //Applied every tick in the air
 	const F32 LinearRollDamping   = 0.025f; // 97.5% of original
 
 protected:
