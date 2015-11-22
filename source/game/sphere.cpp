@@ -244,10 +244,10 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 		if (movement.jump && glm::dot(vel, normal) > 0.0f) {
 			glm::vec3 currentVelocity = glm::proj(vel, normal);
 
-			if (currentVelocity.length() < JumpImpulse) {
+			if (getDist(glm::proj(impactVelocity, normal)) < JumpImpulse) {
 				glm::vec3 finalVelocity = vel - currentVelocity + (normal * JumpImpulse);
 				setLinearVelocity(finalVelocity);
-				printf("Jump!\n");
+				printf("Jump! Impact velocity: %f %f %f\n   final Velocity: %f %f %f\n    Impact speed: %f\n", impactVelocity.x, impactVelocity.y, impactVelocity.z, finalVelocity.x, finalVelocity.y, finalVelocity.z, getDist(impactVelocity));
 			}
 		}
 	} else {
