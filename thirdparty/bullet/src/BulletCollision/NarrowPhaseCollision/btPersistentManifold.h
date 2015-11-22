@@ -31,8 +31,8 @@ class btPersistentManifold;
 ///maximum contact breaking and merging threshold
 extern btScalar gContactBreakingThreshold;
 
-typedef bool (*ContactDestroyedCallback)(void* userPersistentData);
-typedef bool (*ContactProcessedCallback)(btManifoldPoint& cp,void* body0,void* body1);
+typedef void(*ContactDestroyedCallback)(void* userPersistentData);
+typedef void(*ContactProcessedCallback)(btManifoldPoint& cp,const btCollisionObject* body0,const btCollisionObject* body1);
 typedef void(*ContactStartedCallback)(btPersistentManifold* const &manifold);
 typedef void(*ContactEndedCallback)(btPersistentManifold* const &manifold);
 extern ContactDestroyedCallback	gContactDestroyedCallback;

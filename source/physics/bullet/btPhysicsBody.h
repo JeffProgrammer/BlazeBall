@@ -36,6 +36,7 @@ public:
 	virtual void applyForce(const glm::vec3 &force, const glm::vec3 &origin);
 
 	virtual bool modifyContact(ContactCallbackInfo &info, bool isBody0);
+	virtual void notifyContact(ContactCallbackInfo &info, bool isBody0);
 
 	btRigidBody *getActor() {
 		return mActor;

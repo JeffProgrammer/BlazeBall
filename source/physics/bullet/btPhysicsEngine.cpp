@@ -20,7 +20,7 @@ std::vector<ShapeInfo> shapes;
 std::vector<BodyInfo> bodies;
 std::vector<BodyMovement> moves;
 
-bool contact_added_callback(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1) {
+bool contactAddedCallback(btManifoldPoint &cp, const btCollisionObjectWrapper *colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper *colObj1Wrap, int partId1, int index1) {
 	btAdjustInternalEdgeContacts(cp, colObj0Wrap, colObj1Wrap, partId1, index1, BT_TRIANGLE_CONVEX_DOUBLE_SIDED);
 	btAdjustInternalEdgeContacts(cp, colObj1Wrap, colObj0Wrap, partId0, index0, BT_TRIANGLE_CONVEX_DOUBLE_SIDED);
 
@@ -45,6 +45,20 @@ bool contact_added_callback(btManifoldPoint& cp, const btCollisionObjectWrapper*
 	return true;
 }
 
+void contactProcessedCallback(btManifoldPoint &cp, const btCollisionObject *colObj0, const btCollisionObject *colObj1) {
+	btPhysicsBody *body0 = static_cast<btPhysicsBody *>(colObj0->getUserPointer());
+	btPhysicsBody *body1 = static_cast<btPhysicsBody *>(colObj1->getUserPointer());
+
+	ContactCallbackInfo info(cp);
+	info.body0 = body0;
+	info.body1 = body1;
+
+	if (body0)
+		body0->notifyContact(info, true);
+	if (body1)
+		body1->notifyContact(info, false);
+}
+
 btPhysicsEngine::btPhysicsEngine() : PhysicsEngine() {
 	init();
 
@@ -60,7 +74,9 @@ void btPhysicsEngine::init() {
 	world = new btDiscreteDynamicsWorld(dispatcher, interface, solver, configuration);
 	world->setGravity(btVector3(0, 0, -20.0f));
 
-	gContactAddedCallback = contact_added_callback;
+	gContactAddedCallback = contactAddedCallback;
+	gContactProcessedCallback = contactProcessedCallback;
+
 	running = true;
 }
 

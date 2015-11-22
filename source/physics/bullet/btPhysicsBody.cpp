@@ -69,3 +69,6 @@ void btPhysicsBody::setAngularVelocity(const glm::vec3 &velocity) {
 bool btPhysicsBody::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	return true;
 }
+
+void btPhysicsBody::notifyContact(ContactCallbackInfo &info, bool isBody0) {
+}

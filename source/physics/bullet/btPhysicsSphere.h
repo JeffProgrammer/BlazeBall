@@ -22,6 +22,7 @@ public:
 	virtual void setRadius(const F32 &radius);
 
 	virtual bool modifyContact(ContactCallbackInfo &info, bool isBody0);
+	virtual void notifyContact(ContactCallbackInfo &info, bool isBody0);
 };
 
 #endif /* btPhysicsSphere_h */

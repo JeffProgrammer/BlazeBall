@@ -292,7 +292,7 @@ void btPersistentManifold::refreshContactPoints(const btTransform& trA,const btT
 			{
 				//contact point processed callback
 				if (gContactProcessedCallback)
-					(*gContactProcessedCallback)(manifoldPoint,(void*)m_body0,(void*)m_body1);
+					(*gContactProcessedCallback)(manifoldPoint,m_body0,m_body1);
 			}
 		}
 	}
