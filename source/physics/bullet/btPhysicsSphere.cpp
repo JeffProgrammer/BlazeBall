@@ -88,7 +88,7 @@ btPhysicsSphere::btPhysicsSphere(const F32 &radius) : mRadius(radius) {
 	mActor->setActivationState(DISABLE_DEACTIVATION);
 	mActor->setCcdMotionThreshold(static_cast<btScalar>(1e-3));
 	mActor->setCcdSweptSphereRadius(radius / 10.0f);
-	mActor->setRollingFriction(0.3f);
+	mActor->setRollingFriction(3.0f);
 	mActor->setAnisotropicFriction(shape->getAnisotropicRollingFrictionDirection(), btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION);
 	mActor->setContactProcessingThreshold(0.0f);
 
