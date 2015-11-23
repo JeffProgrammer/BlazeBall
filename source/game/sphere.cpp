@@ -238,7 +238,11 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 		//Get collision information
 		glm::vec3 normal = getCollisionNormal(impactVelocity);
 		glm::vec3 vel = mActor->getLinearVelocity();
-		if (movement.jump && glm::dot(vel, normal) > 0.0f) {
+
+		// dot against up vector to determine if we can jump
+		// TODO: take gravities into account
+		glm::vec3 up = glm::vec3(0, 0, 1);
+		if (movement.jump && glm::dot(up, normal) > 0.001f) {
 			glm::vec3 currentVelocity = glm::proj(vel, normal);
 
 			glm::vec3 projVel = glm::proj(vel, normal);
@@ -246,7 +250,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 			if (glm::length(projVel) < JumpImpulse) {
 				glm::vec3 finalVelocity = vel - currentVelocity + (normal * JumpImpulse);
 				setLinearVelocity(finalVelocity);
-				printf("Jump! Impact velocity: %f %f %f\n   final Velocity: %f %f %f\n    Projection velocity: %f %f %f\n", vel.x, vel.y, vel.z, finalVelocity.x, finalVelocity.y, finalVelocity.z, projVel.x, projVel.y, projVel.z);
+				printf("Jump! Impact velocity: %f %f %f\n   final Velocity: %f %f %f\n    Projection velocity: %f %f %f\n    Dot: %f\n", vel.x, vel.y, vel.z, finalVelocity.x, finalVelocity.y, finalVelocity.z, projVel.x, projVel.y, projVel.z, glm::dot(up, normal));
 			} else {
 				printf("No jump, projection velocity is %f %f %f\n", projVel.x, projVel.y, projVel.z);
 			}
