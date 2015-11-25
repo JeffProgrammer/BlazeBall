@@ -170,6 +170,8 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	//Texture names have properties
 	const std::string &surfName = dint.materialName[surface.textureIndex];
 
+	
+
 	//Friction is relative to the slope of the incline
 	F32 wallDot = info.point.m_normalWorldOnB.dot(btVector3(0, 0, 1));
 	F32 friction = (1.0f + wallDot) / 2.0f;
@@ -185,6 +187,10 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 
 	info.point.m_combinedFriction *= friction;
 	info.point.m_combinedRollingFriction *= friction;
+
+	//if (info.point.m_normalWorldOnB.z() < 0.96f)
+		//printf("Normal: %f %f %f\n", info.point.m_normalWorldOnB.x(), info.point.m_normalWorldOnB.y(), info.point.m_normalWorldOnB.z());
+
 	return true;
 }
 
@@ -194,7 +200,7 @@ void btPhysicsSphere::notifyContact(ContactCallbackInfo &info, bool isBody0) {
 
 	if ((wallDot * wallDot) < 0.0001f) {
 		F32 appliedForce = glm::length(glm::proj(btConvert(info.point.m_impactVelocity), btConvert(info.point.m_normalWorldOnB))) * info.point.m_combinedFriction;
-		printf("Wall contact applied force %f\n", appliedForce);
+		//printf("Wall contact applied force %f\n", appliedForce);
 		//Wall hit of some sort
 		applyImpulse(glm::vec3(0, 0, appliedForce), glm::vec3(0, 0, 0));
 	}
