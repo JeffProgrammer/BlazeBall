@@ -156,35 +156,37 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	//The interior with which we collided
 	btPhysicsInterior *inter = dynamic_cast<btPhysicsInterior *>(isBody0 ? info.body1 : info.body0);
 	if (inter == nullptr)
-		return false;
+		return true;
 
 	//printf("vel: %f %f %f\n", sphere->getLinearVelocity().x, sphere->getLinearVelocity().y, sphere->getLinearVelocity().z);
 	info.point.m_impactVelocity = btConvert(getLinearVelocity());
 
 	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
 
-	//Which surface was it?
-	U32 surfaceNum = inter->getSurfaceIndexFromTriangleIndex(isBody0 ? info.index1 : info.index0);
-	const DIF::Interior::Surface &surface = dint.surface[surfaceNum];
+	//TODO: Frictions
 
-	//Texture names have properties
-	const std::string &surfName = dint.materialName[surface.textureIndex];
-
-	//Friction is relative to the slope of the incline
-	F32 wallDot = info.point.m_normalWorldOnB.dot(btVector3(0, 0, 1));
-	F32 friction = (1.0f + wallDot) / 2.0f;
-
-	//Frictions
-	if (stricmp(surfName.c_str(), "friction_low") == 0 ||
-		stricmp(surfName.c_str(), "friction_low_shadow") == 0) {
-		friction *= 0.2f;
-	} else if (stricmp(surfName.c_str(), "friction_high") == 0 ||
-			   stricmp(surfName.c_str(), "friction_high_shadow") == 0) {
-		friction *= 2.5f;
-	}
-
-	info.point.m_combinedFriction *= friction;
-	info.point.m_combinedRollingFriction *= friction;
+//	//Which surface was it?
+//	U32 surfaceNum = inter->getSurfaceIndexFromTriangleIndex(isBody0 ? info.index1 : info.index0);
+//	const DIF::Interior::Surface &surface = dint.surface[surfaceNum];
+//
+//	//Texture names have properties
+//	const std::string &surfName = dint.materialName[surface.textureIndex];
+//
+//	//Friction is relative to the slope of the incline
+//	F32 wallDot = info.point.m_normalWorldOnB.dot(btVector3(0, 0, 1));
+//	F32 friction = (1.0f + wallDot) / 2.0f;
+//
+//	//Frictions
+//	if (stricmp(surfName.c_str(), "friction_low") == 0 ||
+//		stricmp(surfName.c_str(), "friction_low_shadow") == 0) {
+//		friction *= 0.2f;
+//	} else if (stricmp(surfName.c_str(), "friction_high") == 0 ||
+//			   stricmp(surfName.c_str(), "friction_high_shadow") == 0) {
+//		friction *= 2.5f;
+//	}
+//
+//	info.point.m_combinedFriction *= friction;
+//	info.point.m_combinedRollingFriction *= friction;
 	return true;
 }
 
@@ -193,7 +195,7 @@ void btPhysicsSphere::notifyContact(ContactCallbackInfo &info, bool isBody0) {
 	F32 wallDot = info.point.m_normalWorldOnB.dot(btVector3(0, 0, 1));
 
 	if ((wallDot * wallDot) < 0.0001f) {
-		F32 appliedForce = glm::length(glm::proj(btConvert(info.point.m_impactVelocity), btConvert(info.point.m_normalWorldOnB))) * info.point.m_combinedFriction;
+		F32 appliedForce = sqrtf(glm::length(glm::proj(btConvert(info.point.m_impactVelocity), btConvert(info.point.m_normalWorldOnB))) * info.point.m_combinedFriction);
 		printf("Wall contact applied force %f\n", appliedForce);
 		//Wall hit of some sort
 		applyImpulse(glm::vec3(0, 0, appliedForce), glm::vec3(0, 0, 0));

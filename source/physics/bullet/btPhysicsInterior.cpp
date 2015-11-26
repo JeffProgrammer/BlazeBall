@@ -24,39 +24,28 @@ btPhysicsInterior::btPhysicsInterior(GameInterior *interior) : btPhysicsBody(), 
 void btPhysicsInterior::construct() {
     //Create body
     btMotionState *state = new btDefaultMotionState();
-    btTriangleMesh *mesh = new btTriangleMesh;
+	btCompoundShape *shape = new btCompoundShape;
+
 	glm::vec3 point0;
 	glm::vec3 point1;
 	glm::vec3 point2;
 
 	const DIF::Interior &interior = mInterior->getInterior();
-	const U32 size = interior.surface.size();
+	const U32 size = interior.convexHull.size();
 
-	U32 triIndex = 0;
-    for (U32 i = 0; i < size; i++) {
-		const DIF::Interior::Surface &surface = interior.surface[i];
-		const U32 count = surface.windingCount - 2;
-		U32 windingStart = surface.windingStart;
-		
-        for (U32 j = 0; j < count; j++) {
-			if (j % 2 == 0) {
-				point0 = interior.point[interior.index[j + windingStart + 2]];
-				point1 = interior.point[interior.index[j + windingStart + 1]];
-				point2 = interior.point[interior.index[j + windingStart + 0]];
-			} else {
-				point0 = interior.point[interior.index[j + windingStart + 0]];
-				point1 = interior.point[interior.index[j + windingStart + 1]];
-				point2 = interior.point[interior.index[j + windingStart + 2]];
-			}
+	for (U32 i = 0; i < size; i ++) {
+		const DIF::Interior::ConvexHull &hull = interior.convexHull[i];
 
-            mesh->addTriangle(btConvert(point0), btConvert(point1), btConvert(point2), true);
-			mTriangleLookup[triIndex ++] = i;
-        }
-    }
+		btConvexHullShape *hullShape = new btConvexHullShape;
 
-    btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(mesh, true, true);
-	btTriangleInfoMap *map = new btTriangleInfoMap();
-	btGenerateInternalEdgeInfo(shape, map);
+		const U32 count = hull.hullCount;
+		for (U32 j = 0; j < count; j ++) {
+			DIF::Point3F point = interior.point[interior.hullIndex[hull.hullStart + j]];
+			hullShape->addPoint(btConvert(point));
+		}
+
+		shape->addChildShape(btTransform::getIdentity(), hullShape);
+	}
 
     shape->setMargin(0.01f);
     
