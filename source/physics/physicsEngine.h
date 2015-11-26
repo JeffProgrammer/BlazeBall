@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <functional>
 #include "base/types.h"
+#include "render/renderInfo.h"
 
 #define PHYSICS_TICK 0.01666
 
@@ -38,6 +39,8 @@ public:
 
 	virtual PhysicsBody *createInterior(GameInterior *interior) = 0;
 	virtual PhysicsBody *createSphere(const F32 &radius) = 0;
+
+	virtual void debugDraw(RenderInfo &info) = 0;
 
 	void setRunning(bool running) { this->running = running; }
 	bool getRunning() { return running; }

@@ -9,6 +9,7 @@
 #include "physics/bullet/btPhysicsBody.h"
 #include "physics/bullet/btPhysicsInterior.h"
 #include "physics/bullet/btPhysicsSphere.h"
+#include "physics/bullet/btDebugDrawer.h"
 #include <BulletCollision/CollisionShapes/btCollisionShape.h>
 #include <BulletCollision/CollisionShapes/btTriangleShape.h>
 #include <BulletCollision/NarrowPhaseCollision/btPersistentManifold.h>
@@ -71,8 +72,11 @@ void btPhysicsEngine::init() {
 	btBroadphaseInterface *interface = new btDbvtBroadphase();
 	btConstraintSolver *solver = new btSequentialImpulseConstraintSolver();
 
+	debugDrawer = new btDebugDrawer;
+
 	world = new btDiscreteDynamicsWorld(dispatcher, interface, solver, configuration);
 	world->setGravity(btVector3(0, 0, -20.0f));
+	world->setDebugDrawer(debugDrawer);
 
 	gContactAddedCallback = contactAddedCallback;
 	gContactProcessedCallback = contactProcessedCallback;
@@ -87,6 +91,7 @@ void btPhysicsEngine::simulate(const F64 &delta) {
 			step(PHYSICS_TICK);
 			extraTime -= PHYSICS_TICK;
 		}
+		world->debugDrawWorld();
 	}
 }
 
@@ -111,4 +116,8 @@ PhysicsBody *btPhysicsEngine::createInterior(GameInterior *interior) {
 
 PhysicsBody *btPhysicsEngine::createSphere(const F32 &radius) {
 	return new btPhysicsSphere(radius);
+}
+
+void btPhysicsEngine::debugDraw(RenderInfo &info) {
+	debugDrawer->draw(info);
 }

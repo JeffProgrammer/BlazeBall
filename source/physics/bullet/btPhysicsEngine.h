@@ -60,9 +60,13 @@ struct ContactCallbackInfo {
 	ContactCallbackInfo(btManifoldPoint &pt) : point(pt) {};
 };
 
+class btDebugDrawer;
+
 class btPhysicsEngine : public PhysicsEngine {
 	btDiscreteDynamicsWorld *world;
 	btCollisionDispatcher *dispatcher;
+	btDebugDrawer *debugDrawer;
+	
 	bool running;
 	F64 extraTime;
 
@@ -73,6 +77,7 @@ public:
 	virtual void init();
 	virtual void simulate(const F64 &delta);
 	virtual void addBody(PhysicsBody *body);
+	virtual void debugDraw(RenderInfo &info);
 	virtual PhysicsBody *createInterior(GameInterior *interior);
 	virtual PhysicsBody *createSphere(const F32 &radius);
 

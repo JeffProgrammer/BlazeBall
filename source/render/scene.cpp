@@ -64,6 +64,10 @@ void Scene::render() {
 
 	//Actually render everything
 	renderScene(info);
+
+	glDisable(GL_DEPTH_TEST);
+	PhysicsEngine::getEngine()->debugDraw(info);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void Scene::renderScene(RenderInfo &info) {
