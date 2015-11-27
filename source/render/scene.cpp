@@ -253,6 +253,19 @@ void Scene::handleEvent(Event *event) {
 					}
 					break;
 				}
+				case KeyEvent::KEY_U:
+				{
+					// mbu / regular marble
+					if (mPlayer->getRadius() < 0.3f) {
+						mPlayer->setRadius(0.3f);
+						marbleCubemap->setExtent(glm::vec2(128, 128));
+					}
+					else {
+						mPlayer->setRadius(0.2f);
+						marbleCubemap->setExtent(glm::vec2(64, 64));
+					}
+					break;
+				}
 				default:
 					break;
 			}
