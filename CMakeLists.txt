@@ -464,6 +464,8 @@ set (DIFVIEWERGAME_SRC
 	source/physics/bullet/btPhysicsInterior.h
 	source/physics/bullet/btPhysicsSphere.cpp
 	source/physics/bullet/btPhysicsSphere.h
+	source/physics/bullet/btDebugDrawer.cpp
+	source/physics/bullet/btDebugDrawer.h
 
 	# Physx physics
 	source/physics/physx/pxPhysicsBody.cpp
