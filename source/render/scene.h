@@ -63,6 +63,7 @@ protected:
 	Movement movement;
 
 	F32 pixelDensity;
+	F32 mSimulationSpeed;
 
 public:
 	const glm::vec4 lightColor     = glm::vec4(1.000000f, 1.000000f, 1.000000f, 1.400000f);

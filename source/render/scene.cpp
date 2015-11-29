@@ -253,6 +253,16 @@ void Scene::handleEvent(Event *event) {
 					}
 					break;
 				}
+				case KeyEvent::KEY_F:
+				{
+					mSimulationSpeed *= 0.5f;
+					break;
+				}
+				case KeyEvent::KEY_P:
+				{
+					mSimulationSpeed *= 2.0f;
+					break;
+				}
 				default:
 					break;
 			}
@@ -358,9 +368,13 @@ void Scene::run() {
 	F64 counter = 0;
 	U32 fpsCounter = 0;
 
+	mSimulationSpeed = 1.0f;
+
 	PhysicsEngine::getEngine()->setStepCallback([&](F64 delta){
-		this->loop(delta);
-		this->tick(delta);
+		if (mSimulationSpeed == 1.0f) {
+			this->loop(delta);
+			this->tick(delta);
+		}
 	});
 
 	// onStart
@@ -435,7 +449,12 @@ void Scene::run() {
 		}
 
 		//Update the physics and game items
-		PhysicsEngine::getEngine()->simulate(lastDelta);
+		PhysicsEngine::getEngine()->simulate(lastDelta * mSimulationSpeed);
+
+		if (mSimulationSpeed != 1.0f) {
+			this->loop(lastDelta * mSimulationSpeed);
+			this->tick(lastDelta * mSimulationSpeed);
+		}
 
 		render();
 		
