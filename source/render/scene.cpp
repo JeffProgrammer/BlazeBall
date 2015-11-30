@@ -66,12 +66,12 @@ void Scene::render() {
 	renderScene(info);
 
 	if (mDoDebugDraw) {
-		glDisable(GL_DEPTH_TEST);
-		PhysicsEngine::getEngine()->debugDraw(info);
-		glEnable(GL_DEPTH_TEST);
+	glDisable(GL_DEPTH_TEST);
+	PhysicsEngine::getEngine()->debugDraw(info);
+	glEnable(GL_DEPTH_TEST);
 	} else {
 		PhysicsEngine::getEngine()->debugDraw(info);
-	}
+}
 }
 
 void Scene::renderScene(RenderInfo &info) {
@@ -272,6 +272,19 @@ void Scene::handleEvent(Event *event) {
 					mDoDebugDraw = !mDoDebugDraw;
 					break;
 				}
+				case KeyEvent::KEY_U:
+				{
+					// mbu / regular marble
+					if (mPlayer->getRadius() < 0.3f) {
+						mPlayer->setRadius(0.3f);
+						marbleCubemap->setExtent(glm::vec2(128, 128));
+					}
+					else {
+						mPlayer->setRadius(0.2f);
+						marbleCubemap->setExtent(glm::vec2(64, 64));
+					}
+					break;
+				}
 				default:
 					break;
 			}
@@ -382,8 +395,8 @@ void Scene::run() {
 
 	PhysicsEngine::getEngine()->setStepCallback([&](F64 delta){
 		if (mSimulationSpeed == 1.0f) {
-			this->loop(delta);
-			this->tick(delta);
+		this->loop(delta);
+		this->tick(delta);
 		}
 	});
 
