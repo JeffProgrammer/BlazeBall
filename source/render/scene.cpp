@@ -65,9 +65,13 @@ void Scene::render() {
 	//Actually render everything
 	renderScene(info);
 
-	glDisable(GL_DEPTH_TEST);
-	PhysicsEngine::getEngine()->debugDraw(info);
-	glEnable(GL_DEPTH_TEST);
+	if (mDoDebugDraw) {
+		glDisable(GL_DEPTH_TEST);
+		PhysicsEngine::getEngine()->debugDraw(info);
+		glEnable(GL_DEPTH_TEST);
+	} else {
+		PhysicsEngine::getEngine()->debugDraw(info);
+	}
 }
 
 void Scene::renderScene(RenderInfo &info) {
@@ -263,6 +267,11 @@ void Scene::handleEvent(Event *event) {
 					mSimulationSpeed *= 2.0f;
 					break;
 				}
+				case KeyEvent::KEY_T:
+				{
+					mDoDebugDraw = !mDoDebugDraw;
+					break;
+				}
 				default:
 					break;
 			}
@@ -338,6 +347,7 @@ void Scene::handleEvent(Event *event) {
 bool Scene::init() {
 	running = true;
 	mShouldSleep = false;
+	mDoDebugDraw = true;
 
 	if (!window->createContext()) {
 		return false;
