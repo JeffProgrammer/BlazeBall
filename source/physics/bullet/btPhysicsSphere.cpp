@@ -161,7 +161,86 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	//printf("vel: %f %f %f\n", sphere->getLinearVelocity().x, sphere->getLinearVelocity().y, sphere->getLinearVelocity().z);
 	info.point.m_impactVelocity = btConvert(getLinearVelocity());
 
+	/*
+	 if ( collisionPoint.isOnTriSurface && !collisionPoint.isOnTriEdge )
+		for each ( collisionPoint2 != collisionPoint in Manifold )
+			if ( collisionPoint2.isOnTriEdge && collisionPoint2.triangle.isAdjacentTo( collisionPoint.triangle ) )
+				collisionPoint2.removeFromManifold
+	 */
+
+	const btPhysicsInterior::TriangleInfo &triangleInfo = inter->getTriangleInfo(isBody0 ? info.index1 : info.index0);
+
 	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
+	const DIF::Interior::Surface &surf = dint.surface[triangleInfo.surfaceIndex];
+
+	glm::vec3 normal = dint.normal[dint.plane[surf.planeIndex].normalIndex];
+	if (surf.planeFlipped)
+		normal *= -1.f;
+
+	glm::vec3 btnormal = btConvert(info.point.m_normalWorldOnB);
+	F32 distance = glm::distance(btnormal, normal);
+
+//	printf("Actual normal %f %f %f\n", btnormal.x(), btnormal.y(), btnormal.z());
+//	printf("Expected normal %f %f %f\n", normal.x, normal.y, normal.z);
+//	printf("Distance: %f\n", btnormal.distance2(btConvert(normal)));
+
+	if (distance > 0.001) {
+		glm::vec3 collisionPoint = btConvert(info.point.m_positionWorldOnB);
+
+		glm::vec3 vert0 = dint.point[triangleInfo.vertex[0]];
+		glm::vec3 vert1 = dint.point[triangleInfo.vertex[1]];
+		glm::vec3 vert2 = dint.point[triangleInfo.vertex[2]];
+
+		//If it's an edge then do some voodoo magic
+		//d(P, L) = |(PQ) x u|
+		//          ----------
+		//              |u|
+
+		F32 lineDist01 = glm::length(glm::cross(vert0 - collisionPoint, glm::normalize(vert1 - vert0)));
+		F32 lineDist12 = glm::length(glm::cross(vert1 - collisionPoint, glm::normalize(vert2 - vert1)));
+		F32 lineDist20 = glm::length(glm::cross(vert2 - collisionPoint, glm::normalize(vert0 - vert2)));
+
+		printf("Line dists: %f %f %f\n", lineDist01, lineDist12, lineDist20);
+
+		if (lineDist01 == 0) {
+			//TODO: Find point collision of sphere on the line and get normal from that
+			// CBF
+		}
+
+		return false;
+	}
+
+//	const DIF::Interior::ConvexHull &collHull = dint.convexHull[isBody0 ? info.index1 : info.index0];
+//
+//	bool found = false;
+//
+//	if (collHull.surfaceCount == 1)
+//		return true;
+//
+//	printf("Collision on normal %f %f %f, hull has %d surfaces\n", info.point.m_normalWorldOnB.x(), info.point.m_normalWorldOnB.y(), info.point.m_normalWorldOnB.z(), collHull.surfaceCount);
+//	//Check all surfaces on the hull
+//	for (U32 i = 0; i < collHull.surfaceCount; i ++) {
+//		U32 surfNum = collHull.surfaceStart + i;
+//		const DIF::Interior::Surface &surf = dint.surface[dint.hullSurfaceIndex[surfNum]];
+//		const DIF::Interior::Plane &plane = dint.plane[dint.hullPlaneIndex[collHull.planeStart + i]];
+//		const DIF::Point3F &normal = dint.normal[plane.normalIndex];
+//
+//		btScalar distance = info.point.m_normalWorldOnB.distance2(btConvert(normal));
+//		printf("   Potential distance: %f %f %f -> %f\n", normal.x, normal.y, normal.z, distance);
+//
+//		if (distance < 0.001) {
+//			found = true;
+//			info.point.m_normalWorldOnB = btConvert(normal);
+//			break;
+//		}
+//	}
+//
+//	if (!found) {
+//		printf("Nothing found, removing point\n");
+//		return false;
+//	}
+//
+//	printf("Found a suitable collision.\n");
 
 	//TODO: Frictions
 
@@ -196,9 +275,9 @@ void btPhysicsSphere::notifyContact(ContactCallbackInfo &info, bool isBody0) {
 
 	if ((wallDot * wallDot) < 0.0001f) {
 		F32 appliedForce = sqrtf(glm::length(glm::proj(btConvert(info.point.m_impactVelocity), btConvert(info.point.m_normalWorldOnB))) * info.point.m_combinedFriction);
-		printf("Wall contact applied force %f\n", appliedForce);
+//		printf("Wall contact applied force %f\n", appliedForce);
 		//Wall hit of some sort
-		applyImpulse(glm::vec3(0, 0, appliedForce), glm::vec3(0, 0, 0));
+//		applyImpulse(glm::vec3(0, 0, appliedForce), glm::vec3(0, 0, 0));
 	}
 }
 
