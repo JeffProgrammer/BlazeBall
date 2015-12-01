@@ -184,88 +184,75 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 //	printf("Expected normal %f %f %f\n", normal.x, normal.y, normal.z);
 //	printf("Distance: %f\n", btnormal.distance2(btConvert(normal)));
 
-	if (distance > 0.001) {
+	if (distance < 0.001) {
 		glm::vec3 collisionPoint = btConvert(info.point.m_positionWorldOnB);
 
-		glm::vec3 vert0 = dint.point[triangleInfo.vertex[0]];
-		glm::vec3 vert1 = dint.point[triangleInfo.vertex[1]];
-		glm::vec3 vert2 = dint.point[triangleInfo.vertex[2]];
+		TriangleF triangle(dint.point[triangleInfo.vertex[0]], dint.point[triangleInfo.vertex[1]], dint.point[triangleInfo.vertex[2]]);
+		if (triangle.isPointInside(collisionPoint) && !triangle.isPointOnEdge(collisionPoint)) {
+			btDispatcher *dispatcher = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld()->getCollisionWorld()->getDispatcher();
+			for (U32 i = 0; i < dispatcher->getNumManifolds(); i ++) {
+				btPersistentManifold *manifold = dispatcher->getManifoldByIndexInternal(i);
 
-		//If it's an edge then do some voodoo magic
-		//d(P, L) = |(PQ) x u|
-		//          ----------
-		//              |u|
+				std::vector<int> toRemove;
 
-		F32 lineDist01 = glm::length(glm::cross(vert0 - collisionPoint, glm::normalize(vert1 - vert0)));
-		F32 lineDist12 = glm::length(glm::cross(vert1 - collisionPoint, glm::normalize(vert2 - vert1)));
-		F32 lineDist20 = glm::length(glm::cross(vert2 - collisionPoint, glm::normalize(vert0 - vert2)));
+				if (manifold->getBody0() == mActor || manifold->getBody1() == mActor) {
+					if (manifold->getNumContacts() > 1) {
+						//Go through all the points for this manifold
+						for (U32 j = 0; j < manifold->getNumContacts(); j ++) {
+							btManifoldPoint &point = manifold->getContactPoint(j);
+							//Don't check our point
+							if (point.m_positionWorldOnB.distance2(info.point.m_positionWorldOnB) <= 0.0001f) {
+								//Same point
+								continue;
+							}
+							//Is the sphere 0 or 1?
+							bool pointIsBody0 = (manifold->getBody0() == mActor);
 
-		printf("Line dists: %f %f %f\n", lineDist01, lineDist12, lineDist20);
+							//See if their point qualifies
+							const btPhysicsInterior::TriangleInfo &pointInfo = inter->getTriangleInfo(pointIsBody0 ? point.m_index1 : point.m_index0);
 
-		if (lineDist01 == 0) {
-			//TODO: Find point collision of sphere on the line and get normal from that
-			// CBF
+							//Is their point an edge?
+							TriangleF pointTriangle(dint.point[pointInfo.vertex[0]], dint.point[pointInfo.vertex[1]], dint.point[pointInfo.vertex[2]]);
+							if (pointTriangle.isPointOnEdge(btConvert(point.m_positionWorldOnB))) {
+								//Todo: check adjacency
+
+								toRemove.push_back(j);
+							}
+						}
+						printf("Found one with %d contacts\n", manifold->getNumContacts());
+					}
+				}
+
+				//Remove the points backwards
+				for (auto it = toRemove.rbegin(); it != toRemove.rend(); it ++) {
+					manifold->removeContactPoint(*it);
+				}
+			}
 		}
 
+
+	} else {
 		return false;
 	}
 
-//	const DIF::Interior::ConvexHull &collHull = dint.convexHull[isBody0 ? info.index1 : info.index0];
-//
-//	bool found = false;
-//
-//	if (collHull.surfaceCount == 1)
-//		return true;
-//
-//	printf("Collision on normal %f %f %f, hull has %d surfaces\n", info.point.m_normalWorldOnB.x(), info.point.m_normalWorldOnB.y(), info.point.m_normalWorldOnB.z(), collHull.surfaceCount);
-//	//Check all surfaces on the hull
-//	for (U32 i = 0; i < collHull.surfaceCount; i ++) {
-//		U32 surfNum = collHull.surfaceStart + i;
-//		const DIF::Interior::Surface &surf = dint.surface[dint.hullSurfaceIndex[surfNum]];
-//		const DIF::Interior::Plane &plane = dint.plane[dint.hullPlaneIndex[collHull.planeStart + i]];
-//		const DIF::Point3F &normal = dint.normal[plane.normalIndex];
-//
-//		btScalar distance = info.point.m_normalWorldOnB.distance2(btConvert(normal));
-//		printf("   Potential distance: %f %f %f -> %f\n", normal.x, normal.y, normal.z, distance);
-//
-//		if (distance < 0.001) {
-//			found = true;
-//			info.point.m_normalWorldOnB = btConvert(normal);
-//			break;
-//		}
-//	}
-//
-//	if (!found) {
-//		printf("Nothing found, removing point\n");
-//		return false;
-//	}
-//
-//	printf("Found a suitable collision.\n");
+	//Texture names have properties
+	const std::string &surfName = dint.materialName[surf.textureIndex];
 
-	//TODO: Frictions
+	//Friction is relative to the slope of the incline
+	F32 wallDot = info.point.m_normalWorldOnB.dot(btVector3(0, 0, 1));
+	F32 friction = (1.0f + wallDot) / 2.0f;
 
-//	//Which surface was it?
-//	U32 surfaceNum = inter->getSurfaceIndexFromTriangleIndex(isBody0 ? info.index1 : info.index0);
-//	const DIF::Interior::Surface &surface = dint.surface[surfaceNum];
-//
-//	//Texture names have properties
-//	const std::string &surfName = dint.materialName[surface.textureIndex];
-//
-//	//Friction is relative to the slope of the incline
-//	F32 wallDot = info.point.m_normalWorldOnB.dot(btVector3(0, 0, 1));
-//	F32 friction = (1.0f + wallDot) / 2.0f;
-//
-//	//Frictions
-//	if (stricmp(surfName.c_str(), "friction_low") == 0 ||
-//		stricmp(surfName.c_str(), "friction_low_shadow") == 0) {
-//		friction *= 0.2f;
-//	} else if (stricmp(surfName.c_str(), "friction_high") == 0 ||
-//			   stricmp(surfName.c_str(), "friction_high_shadow") == 0) {
-//		friction *= 2.5f;
-//	}
-//
-//	info.point.m_combinedFriction *= friction;
-//	info.point.m_combinedRollingFriction *= friction;
+	//Frictions
+	if (stricmp(surfName.c_str(), "friction_low") == 0 ||
+		stricmp(surfName.c_str(), "friction_low_shadow") == 0) {
+		friction *= 0.2f;
+	} else if (stricmp(surfName.c_str(), "friction_high") == 0 ||
+			   stricmp(surfName.c_str(), "friction_high_shadow") == 0) {
+		friction *= 2.5f;
+	}
+
+	info.point.m_combinedFriction *= friction;
+	info.point.m_combinedRollingFriction *= friction;
 	return true;
 }
 
