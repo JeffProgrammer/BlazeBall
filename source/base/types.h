@@ -64,13 +64,6 @@ public:
 	}
 };
 
-class TriangleF {
-public:
-	glm::vec3 point0;
-	glm::vec3 point1;
-	glm::vec3 point2;
-};
-
 class TetrahetronF {
 public:
 	glm::vec3 point0;

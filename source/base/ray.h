@@ -9,6 +9,7 @@
 #define ray_h
 
 #include "base/types.h"
+#include "base/math/triangle.h"
 
 template <typename T>
 class Ray {
