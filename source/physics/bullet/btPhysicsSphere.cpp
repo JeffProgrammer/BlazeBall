@@ -148,13 +148,6 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	//printf("vel: %f %f %f\n", sphere->getLinearVelocity().x, sphere->getLinearVelocity().y, sphere->getLinearVelocity().z);
 	info.point.m_impactVelocity = btConvert(getLinearVelocity());
 
-	/*
-	 if ( collisionPoint.isOnTriSurface && !collisionPoint.isOnTriEdge )
-		for each ( collisionPoint2 != collisionPoint in Manifold )
-			if ( collisionPoint2.isOnTriEdge && collisionPoint2.triangle.isAdjacentTo( collisionPoint.triangle ) )
-				collisionPoint2.removeFromManifold
-	 */
-
 	const btPhysicsInterior::TriangleInfo &triangleInfo = inter->getTriangleInfo(index);
 
 	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
@@ -191,30 +184,50 @@ void btPhysicsSphere::notifyContact(ContactCallbackInfo &info, bool isBody0) {
 	if (inter == nullptr)
 		return;
 
+	/*
+	 via https://github.com/bulletphysics/bullet3/issues/288
+
+	 if ( collisionPoint.isOnTriSurface && !collisionPoint.isOnTriEdge )
+		for each ( collisionPoint2 != collisionPoint in Manifold )
+			 if ( collisionPoint2.isOnTriEdge && collisionPoint2.triangle.isAdjacentTo( collisionPoint.triangle ) )
+				 collisionPoint2.removeFromManifold
+	 */
+
+	//Easier access
 	U32 index = isBody0 ? info.index1 : info.index0;
 
+	//Get some information about the interior
 	const btPhysicsInterior::TriangleInfo &triangleInfo = inter->getTriangleInfo(index);
-	glm::vec3 collisionPoint = btConvert(info.point.m_positionWorldOnB);
-
 	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
 
+	glm::vec3 collisionPoint = btConvert(info.point.m_positionWorldOnB);
+
+	//Triangle info from the interior
 	TriangleF triangle(dint.point[triangleInfo.vertex[0]], dint.point[triangleInfo.vertex[1]], dint.point[triangleInfo.vertex[2]]);
+
+	//We need to remove points if this isn't an edge collision
 	if (triangle.isPointInside(collisionPoint) && !triangle.isPointOnEdge(collisionPoint)) {
+
+		//Test all other manifold points
 		btDispatcher *dispatcher = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld()->getCollisionWorld()->getDispatcher();
 		for (U32 i = 0; i < dispatcher->getNumManifolds(); i ++) {
 			btPersistentManifold *manifold = dispatcher->getManifoldByIndexInternal(i);
 
+			//Store a list of points to remove so we don't get weird memory errors
 			std::vector<int> toRemove;
+
+			//Is the sphere 0 or 1?
 			bool pointIsBody0 = (manifold->getBody0() == mActor);
 
+			//Don't care about manifolds that we aren't part of
 			if (manifold->getBody0() == mActor || manifold->getBody1() == mActor) {
+				//Don't bother checking if we're the only point in that manifold
 				if (manifold->getNumContacts() > 1) {
-					printf("Found one with %d contacts:\n", manifold->getNumContacts());
 					//Go through all the points for this manifold
 					for (U32 j = 0; j < manifold->getNumContacts(); j ++) {
 						btManifoldPoint &point = manifold->getContactPoint(j);
-						//Is the sphere 0 or 1?
 
+						//Access to index
 						U32 pointIndex = (pointIsBody0 ? point.m_index1 : point.m_index0);
 
 						//See if their point qualifies
@@ -223,30 +236,25 @@ void btPhysicsSphere::notifyContact(ContactCallbackInfo &info, bool isBody0) {
 						//Don't check our point
 						if (point.m_positionWorldOnB.distance2(info.point.m_positionWorldOnB) <= 0.0001f &&
 							point.m_normalWorldOnB.distance2(info.point.m_normalWorldOnB) <= 0.0001f) {
-							//Same point
-							printf("  Found the same point %d/%d == %d\n", pointIndex, j, triangleInfo.surfaceIndex);
+							//Same point; ignore
 							continue;
 						}
 
 						//Is their point an edge?
 						TriangleF pointTriangle(dint.point[pointInfo.vertex[0]], dint.point[pointInfo.vertex[1]], dint.point[pointInfo.vertex[2]]);
 						if (pointTriangle.isPointOnEdge(btConvert(point.m_positionWorldOnB))) {
-							//Todo: check adjacency
+							//Only remove their point if it's adjacent to ours
 							if (pointTriangle.isTriangleAdjacent(triangle)) {
-								printf("  Removing contact point %d/%d\n", pointIndex, j);
+								//Yep, remove it
 								toRemove.push_back(j);
 								continue;
-							} else {
-								printf("  Point not adjacent: %d/%d %s %s\n", pointIndex, j, pointTriangle.toString(), triangle.toString());
 							}
-						} else {
-							printf("  Point not on edge: %d/%d\n", pointIndex, j);
 						}
 					}
 				}
 			}
 
-			//Remove the points backwards
+			//Remove the points backwards so we don't get weird memory errors
 			for (auto it = toRemove.rbegin(); it != toRemove.rend(); it ++) {
 				manifold->removeContactPoint(*it);
 			}
