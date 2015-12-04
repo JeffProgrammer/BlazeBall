@@ -55,7 +55,6 @@ Third Party Libraries
 * GLM Math Library
 * JPEG Image Library
 * MNG Image Library
-* PhysX Physics Library
 * SDL2 Window and Input System
 * srutil Fast C++ Delegates
 * ZLIB Compression Library
@@ -63,7 +62,7 @@ Third Party Libraries
 Acknowledgements
 -------------------
 
-Credits to Whirligig231 for his sphere-trimesh edge adjacency solver.
+Credits to Whirligig231 for his math in ray.h
 
 License
 -------------------
