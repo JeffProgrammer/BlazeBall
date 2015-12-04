@@ -47,7 +47,7 @@ enum btContactManifoldTypes
 	BT_PERSISTENT_MANIFOLD_TYPE
 };
 
-#define MANIFOLD_CACHE_SIZE 4
+#define MANIFOLD_CACHE_SIZE 8
 
 ///btPersistentManifold is a contact point cache, it stays persistent as long as objects are overlapping in the broadphase.
 ///Those contact points are created by the collision narrow phase.
