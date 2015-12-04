@@ -41,14 +41,12 @@ glm::vec2 point_project_plane(const glm::vec3 &point, const glm::vec3 &normal, c
 	return glm::vec2(adjacent, opposite);
 }
 
-bool isCollinear(const glm::vec3 &lineA, const glm::vec3 &lineB) {
-	F32 lineALen = glm::length(lineA);
-	F32 lineBLen = glm::length(lineB);
-	F32 theta = glm::acos((lineA.x / lineALen) * (lineB.x / lineBLen) +
-								 (lineA.y / lineALen) * (lineB.y / lineBLen) +
-								 (lineA.z / lineALen) * (lineB.z / lineBLen));
-	theta = glm::abs(theta);
-	if (theta >= 0.9999f && theta <= 1.0001f)
-		return true;
-	return false;
+F32 point_distance_to_line(const glm::vec3 &p, const glm::vec3 &q, const glm::vec3 &point) {
+	return glm::length(glm::cross(q - p, p - point)) / glm::length(q - p);
+}
+
+bool isCollinear(const glm::vec3 &up, const glm::vec3 &uq, const glm::vec3 &vp, const glm::vec3 &vq) {
+	//If vp and vq are on line u
+	return (point_distance_to_line(up, uq, vp) < 0.1f &&
+			point_distance_to_line(up, uq, vq) < 0.1f);
 }
