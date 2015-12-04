@@ -2,53 +2,28 @@
 // Copyright (c) 2015 Glenn Smith
 // Copyright (c) 2015 Jeff Hutchinson
 // All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-//  * Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-//  * Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the
-//    documentation and/or other materials provided with the distribution.
-//  * Neither the name of the project nor the
-//    names of its contributors may be used to endorse or promote products
-//    derived from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-// DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
 #include "render/scene.h"
 #include "game/gameInterior.h"
 #include "game/camera.h"
-#include "game/Shape.h"
+#include "game/shape.h"
 #include "game/skybox.h"
-#include "graphics/util.h"
+#include "render/util.h"
 #include <chrono>
 #include <thread>
 #include <algorithm>
 #include <ctime>
+
+glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4x4(1), -90.0f, glm::vec3(1, 0, 0));
 
 /// The amount of time that has to pass before a tick happens.
 /// Default is 16.6667 ms which means we tick at 60 frames per second
 #define TICK_MS 16.6666666666666667
 
 Scene::Scene() {
-	mInteriorShader = nullptr;
 	mShapeShader = nullptr;
-	mParticleShader = nullptr;
 	controlObject = nullptr;
-	mEmitter = nullptr;
-	mPlayer = nullptr;
-	mCamera = nullptr;
 }
 
 Scene::~Scene() {
@@ -59,19 +34,6 @@ Scene::~Scene() {
 	delete mTimer;
 }
 
-void Scene::loadShaderUniforms() {
-	//Light
-	glUniform4fv(mInteriorShader->getUniformLocation("lightColor"), 1, &lightColor.r);
-	glUniform4fv(mInteriorShader->getUniformLocation("ambientColor"), 1, &ambientColor.r);
-
-	//Sun
-	glUniform3fv(mInteriorShader->getUniformLocation("sunPosition"), 1, &sunPosition.x);
-	glUniform1f(mInteriorShader->getUniformLocation("specularExponent"), static_cast<F32>(specularExponent));
-
-	//Projection matrix
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
-}
-
 void Scene::render() {
 	//Get the camera transform from the marble
 	glm::mat4 cameraTransform;
@@ -80,164 +42,77 @@ void Scene::render() {
 		controlObject->getCameraPosition(cameraTransform, cameraPosition);
 
 	//Camera
-	viewMatrix = glm::mat4x4(1);
+	glm::mat4 viewMatrix = glm::mat4x4(1);
 	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
 	viewMatrix *= cameraTransform;
 
-	glm::mat4 inverseRotMat = glm::rotate(glm::mat4x4(1), -90.0f, glm::vec3(1, 0, 0));
+	RenderInfo info;
+	info.projectionMatrix = mScreenProjectionMatrix;
+	info.viewMatrix = viewMatrix;
+	info.cameraPosition = cameraPosition;
 
+	info.lightColor = lightColor;
+	info.ambientColor = ambientColor;
+	info.sunPosition = sunPosition;
+	info.specularExponent = specularExponent;
+
+	info.isReflectionPass = false;
+
+	marbleCubemap->generateBuffer(mPlayer->getPosition(), window->getWindowSize() * (S32)pixelDensity, [&](RenderInfo &info) {
+		this->renderScene(info);
+	}, info);
+
+	//Actually render everything
+	renderScene(info);
+
+	if (mDoDebugDraw) {
+		glDisable(GL_DEPTH_TEST);
+		PhysicsEngine::getEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Everything);
+		glEnable(GL_DEPTH_TEST);
+	} else {
+		PhysicsEngine::getEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Nothing);
+	}
+}
+
+void Scene::renderScene(RenderInfo &info) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
-	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	mInteriorShader->activate();
-	mInteriorShader->setUniformLocation("textureSampler", 0);
-	mInteriorShader->setUniformLocation("normalSampler", 1);
-	mInteriorShader->setUniformLocation("specularSampler", 2);
-	mInteriorShader->setUniformLocation("noiseSampler", 3);
-	mInteriorShader->setUniformLocation("skyboxSampler", 4);
-	loadShaderUniforms();
-
-	//Send to OpenGL
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseRotMat"), 1, GL_FALSE, &inverseRotMat[0][0]);
-	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
-	for (auto object : objects) {
-		// THIS IS WHY WE NEED SCENE MANAGEMENT.
-		// SLOW!!!
-		//
-		// If this object is a particle emitter, do not render yet!
-		//if (dynamic_cast<ParticleEmitter*>(object))
-		if (object == mEmitter)
-			continue;
-
-		glm::mat4 modelMatrix(1);
-		object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
-		glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
-		glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
-		glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
-		object->render(mInteriorShader, projectionMatrix, viewMatrix);
+	//Render all the objects in the scene
+	for (auto object : mRenderedObjects) {
+		//Don't render non-renderable objects (like the camera)
+		//Also don't render some objects in reflections (like particles)
+		if (object->isRenderable() && (!info.isReflectionPass || object->isReflectable())) {
+			object->render(info);
+		}
 	}
 
-	mInteriorShader->deactivate();
+	//Run all render methods
+	info.render();
+	info.clearRenderMethods();
 
-	marbleCubemap->generateBuffer(mPlayer->getPosition(), window->getWindowSize() * (S32)pixelDensity, [&](const glm::mat4 &projectionMat, const glm::mat4 &viewMat) {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		mInteriorShader->activate();
-		glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMat[0][0]);
-		glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMat[0][0]);
-		for (auto object : objects) {
-			if (!object->isReflectable())
-				continue;
-			
-			glm::mat4 modelMatrix(1);
-			object->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
-			glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
-			glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
-			glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
-			object->render(mInteriorShader, projectionMatrix, viewMatrix);
-		}
-		mInteriorShader->deactivate();
-
-		glDepthFunc(GL_LEQUAL);
-		mSkyboxShader->activate();
-		mSkyboxShader->setUniformLocation("cubemapSampler", 0);
-
-		//Strip any positional data from the camera, so we just have rotation
-		glm::mat4 skyboxView = glm::mat4(glm::mat3(viewMat));
-		glUniform1f(mSkyboxShader->getUniformLocation("extent"), 1000.f);
-		glUniform3fv(mSkyboxShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
-		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMat[0][0]);
-		glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
-
-		mSkybox->render(mSkyboxShader, projectionMatrix, viewMatrix);
-		mSkyboxShader->deactivate();
-		glDepthFunc(GL_LESS);
-
-		GL_CHECKERRORS();
-	});
-
-	mInteriorShader->activate();
-
-	mInteriorShader->setUniformLocation("cubemapSampler", 5);
-	marbleCubemap->activate(GL_TEXTURE5);
-
-	glUniform3fv(mInteriorShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
-	glm::mat4 modelMatrix(1);
-	mPlayer->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
-	glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
-	glUniformMatrix4fv(mInteriorShader->getUniformLocation("inverseModelMat"), 1, GL_FALSE, &inverseModelMatrix[0][0]);
-	GL_CHECKERRORS();
-
-	mPlayer->render(mInteriorShader, projectionMatrix, viewMatrix);
-	GL_CHECKERRORS();
-
-	marbleCubemap->deactivate();
-	mInteriorShader->deactivate();
-
-	// render models.
-	// yeah i know this is shitty rendering at the moment, we need to actually batch shit.
+	//TODO: Clean up shape rendering
 	mShapeShader->activate();
-	mShapeShader->setUniformLocation("textureSampler", 0);
-	mShapeShader->setUniformLocation("normalSampler", 1);
-	mShapeShader->setUniformLocation("specularSampler", 2);
-	glUniformMatrix4fv(mShapeShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
-	glUniformMatrix4fv(mShapeShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
+	info.loadShader(mShapeShader);
 
-	MODELMGR->render(mShapeShader, viewMatrix, projectionMatrix);
+	MODELMGR->render(mShapeShader, info.viewMatrix, info.projectionMatrix);
 	mShapeShader->deactivate();
-
-	glDepthFunc(GL_LEQUAL);
-	mSkyboxShader->activate();
-	mSkyboxShader->setUniformLocation("cubemapSampler", 0);
-
-	//Strip any positional data from the camera, so we just have rotation
-	glm::mat4 skyboxView = glm::mat4(glm::mat3(viewMatrix));
-	glUniform3fv(mSkyboxShader->getUniformLocation("cameraPos"), 1, &cameraPosition[0]);
-	glUniform1f(mSkyboxShader->getUniformLocation("extent"), 1000.f);
-	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
-	glUniformMatrix4fv(mSkyboxShader->getUniformLocation("viewMat"), 1, GL_FALSE, &skyboxView[0][0]);
-
-	mSkybox->render(mSkyboxShader, projectionMatrix, viewMatrix);
-	mSkyboxShader->deactivate();
-	glDepthFunc(GL_LESS);
-
-	GL_CHECKERRORS();
-
-	// render particles
-	// JESUS THIS CODE IS GETTING UGLY AS FUCK
-	glDepthMask(GL_FALSE);
-	mParticleShader->activate();
-	mParticleShader->setUniformLocation("textureSampler", 0);
-	glUniformMatrix4fv(mParticleShader->getUniformLocation("projectionMat"), 1, GL_FALSE, &projectionMatrix[0][0]);
-	glUniformMatrix4fv(mParticleShader->getUniformLocation("viewMat"), 1, GL_FALSE, &viewMatrix[0][0]);
-	modelMatrix = glm::mat4(1);
-	mEmitter->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
-	glUniformMatrix4fv(mParticleShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
-	mEmitter->render(mParticleShader, projectionMatrix, viewMatrix);
-	mParticleShader->deactivate();
-	glDepthMask(GL_TRUE);
 
 	// check for opengl errors
 	GL_CHECKERRORS();
 }
 
-void Scene::loop(const F64 &deltaMS) {
+void Scene::loop(const F64 &delta) {
 
 }
 
-void Scene::tick(const F64 &deltaMS) {
+void Scene::tick(const F64 &delta) {
 	if (controlObject) {
-		controlObject->updateCamera(movement, deltaMS);
-		controlObject->updateMove(movement, deltaMS);
+		controlObject->updateCamera(movement, delta);
+		controlObject->updateMove(movement, delta);
 	}
 
 	movement.pitch = 0;
@@ -248,51 +123,42 @@ void Scene::tick(const F64 &deltaMS) {
 	}
 
 	for (auto object : objects) {
-		object->updateTick(deltaMS);
+		object->updateTick(delta);
 	}
 }
 
 void Scene::updateWindowSize(const glm::ivec2 &size) {
 	GLfloat aspect = (GLfloat)size.x / (GLfloat)size.y;
-	projectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
-}
-
-void Scene::loadShaders() {
-	if (mLoadedShaders) {
-		delete mInteriorShader;
-		delete mShapeShader;
-		delete mSkyboxShader;
-		delete mParticleShader;
-	}
-	mInteriorShader = new Shader("interiorV.glsl", "interiorF.glsl");
-	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
-	mSkyboxShader = new Shader("skyboxV.glsl", "skyboxF.glsl");
-	mParticleShader = new Shader("particleV.glsl", "particleF.glsl");
-	mLoadedShaders = true;
-}
-
-bool Scene::initGL() {
-	mLoadedShaders = false;
-	loadShaders();
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
-
-	//Window size for viewport
-	glm::ivec2 screenSize = window->getWindowSize();
-	updateWindowSize(screenSize);
+	mScreenProjectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
 
 	GLint viewport[4]; //x y w h
 	glGetIntegerv(GL_VIEWPORT, viewport);
 
 	//Should be 2x if you have a retina display
-	pixelDensity = viewport[2] / screenSize.x;
+	pixelDensity = static_cast<F32>(viewport[2] / size.x);
+}
 
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+bool Scene::initGL() {
+	Shader::defaultShader = new Shader("defaultV.glsl", "defaultF.glsl");
+
+	//TODO: Have a config somewhere load all of these and init these values
+	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
+
+	//TODO: Shapes
+	mShapeShader->addUniformLocation("textureSampler", 0);
+//	mShapeShader->addUniformLocation("normalSampler", 1);
+//	mShapeShader->addUniformLocation("specularSampler", 2);
 
 	marbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
 	marbleCubemap->generateBuffer();
+
+	//Window size for viewport
+	glm::ivec2 screenSize = window->getWindowSize();
+	updateWindowSize(screenSize);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
@@ -306,6 +172,7 @@ bool Scene::initGL() {
 }
 
 void Scene::performClick(S32 mouseX, S32 mouseY) {
+	/*
 	glm::ivec2 screenSize = window->getWindowSize();
 	//http://antongerdelan.net/opengl/raycasting.html
 	//(x, y) are in device coordinates. We need to convert that to model coords
@@ -327,6 +194,7 @@ void Scene::performClick(S32 mouseX, S32 mouseY) {
 	glm::vec3 world = glm::vec3(glm::inverse(viewMatrix) * eye);
 
 	selection.hasSelection = false;
+	*/
 }
 
 void Scene::handleEvent(Event *event) {
@@ -336,13 +204,13 @@ void Scene::handleEvent(Event *event) {
 		case Event::Quit:
 			running = false;
 			break;
-		case Event::KeyDown:
-			switch (((KeyDownEvent *)event)->key) {
-					//Same for Colemak...
-				case KeyEvent::KEY_W:     movement.forward   = true; break;
-				case KeyEvent::KEY_S:     movement.backward  = true; break;
-				case KeyEvent::KEY_A:     movement.left      = true; break;
-				case KeyEvent::KEY_D:     movement.right     = true; break;
+		case Event::KeyDown: {
+			KeyEvent::Key key = static_cast<KeyEvent::Key>(static_cast<KeyDownEvent *>(event)->key);
+			if (key == mConfig->getKey("forward"))  movement.forward  = true;
+			if (key == mConfig->getKey("backward")) movement.backward = true;
+			if (key == mConfig->getKey("left"))     movement.left     = true;
+			if (key == mConfig->getKey("right"))    movement.right    = true;
+			switch (key) {
 				case KeyEvent::KEY_UP:    movement.pitchUp   = true; break;
 				case KeyEvent::KEY_DOWN:  movement.pitchDown = true; break;
 				case KeyEvent::KEY_LEFT:  movement.yawLeft   = true; break;
@@ -389,6 +257,40 @@ void Scene::handleEvent(Event *event) {
 					}
 					break;
 				}
+				case KeyEvent::KEY_F:
+				{
+					mSimulationSpeed *= 0.5f;
+					break;
+				}
+				case KeyEvent::KEY_P:
+				{
+					mSimulationSpeed *= 2.0f;
+					break;
+				}
+				case KeyEvent::KEY_T:
+				{
+					mDoDebugDraw = !mDoDebugDraw;
+					break;
+				}
+				case KeyEvent::KEY_U:
+				{
+					// mbu / regular marble
+					if (mPlayer->getRadius() < 0.3f) {
+						mPlayer->setRadius(0.3f);
+						marbleCubemap->setExtent(glm::vec2(128, 128));
+					}
+					else {
+						mPlayer->setRadius(0.2f);
+						marbleCubemap->setExtent(glm::vec2(64, 64));
+					}
+					break;
+				}
+				case KeyEvent::KEY_ESCAPE:
+				{
+					window->lockCursor(false);
+					captureMouse = false;
+					break;
+				}
 				case KeyEvent::KEY_R:
 				{
 					//Reload shaders
@@ -400,12 +302,14 @@ void Scene::handleEvent(Event *event) {
 					break;
 			}
 			break;
-		case Event::KeyUp:
-			switch (((KeyUpEvent *)event)->key) {
-				case KeyEvent::KEY_W:     movement.forward   = false; break;
-				case KeyEvent::KEY_S:     movement.backward  = false; break;
-				case KeyEvent::KEY_A:     movement.left      = false; break;
-				case KeyEvent::KEY_D:     movement.right     = false; break;
+		}
+		case Event::KeyUp: {
+			KeyEvent::Key key = static_cast<KeyEvent::Key>(static_cast<KeyDownEvent *>(event)->key);
+			if (key == mConfig->getKey("forward"))  movement.forward  = false;
+			if (key == mConfig->getKey("backward")) movement.backward = false;
+			if (key == mConfig->getKey("left"))     movement.left     = false;
+			if (key == mConfig->getKey("right"))    movement.right    = false;
+			switch (key) {
 				case KeyEvent::KEY_UP:    movement.pitchUp   = false; break;
 				case KeyEvent::KEY_DOWN:  movement.pitchDown = false; break;
 				case KeyEvent::KEY_LEFT:  movement.yawLeft   = false; break;
@@ -416,9 +320,10 @@ void Scene::handleEvent(Event *event) {
 					break;
 			}
 			break;
+		}
 		//Mouse for rotation
 		case Event::MouseMove:
-			if (mouseButtons.right) {
+			if (captureMouse) {
 				movement.yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x;
 				movement.pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y;
 			}
@@ -431,11 +336,9 @@ void Scene::handleEvent(Event *event) {
 				default: break;
 			}
 
-			if (((MouseDownEvent *)event)->button == 3) { //Right mouse: lock cursor
-				window->lockCursor(true);
-			}
-
 			if (((MouseDownEvent *)event)->button == 1) { //Left mouse: click
+				window->lockCursor(true);
+				captureMouse = true;
 				performClick(((MouseDownEvent *)event)->position.x, ((MouseDownEvent *)event)->position.y);
 			}
 			break;
@@ -445,10 +348,6 @@ void Scene::handleEvent(Event *event) {
 				case 2: mouseButtons.middle = false; break;
 				case 3: mouseButtons.right  = false; break;
 				default: break;
-			}
-
-			if (((MouseUpEvent *)event)->button == 3) { //Right mouse: lock cursor
-				window->lockCursor(false);
 			}
 			break;
 		case Event::WindowFocus:
@@ -468,6 +367,7 @@ void Scene::handleEvent(Event *event) {
 bool Scene::init() {
 	running = true;
 	mShouldSleep = false;
+	mDoDebugDraw = false;
 
 	if (!window->createContext()) {
 		return false;
@@ -491,11 +391,6 @@ void Scene::cleanup() {
 }
 
 void Scene::run() {
-	//Init SDL
-	if (!init()) {
-		exit(-1);
-	}
-
 	Event *eventt;
 
 	F64 lastDelta = 0;
@@ -503,13 +398,23 @@ void Scene::run() {
 	F64 counter = 0;
 	U32 fpsCounter = 0;
 
+	mSimulationSpeed = 1.0f;
+
 	PhysicsEngine::getEngine()->setStepCallback([&](F64 delta){
-		this->loop(delta * 1000.0f);
-		this->tick(delta * 1000.0f);
+		if (mSimulationSpeed == 1.0f) {
+		this->loop(delta);
+		this->tick(delta);
+		}
 	});
 
 	// onStart
+
+	//Create skybox
 	{
+		Shader *shader = new Shader("skyboxV.glsl", "skyboxF.glsl");
+		shader->addUniformLocation("cubemapSampler", 0);
+		shader->addAttribute("vertexPosition", 3, GL_FLOAT, GL_FALSE, 0, 0);
+
 		std::vector<CubeMapTexture::TextureInfo> textures;
 		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky0.jpg", CubeMapTexture::PositiveX));
 		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky1.jpg", CubeMapTexture::NegativeX));
@@ -519,20 +424,48 @@ void Scene::run() {
 		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky5.jpg", CubeMapTexture::NegativeZ));
 
 		CubeMapTexture *cubeMap = new CubeMapTexture(textures);
-		mSkybox = new Skybox(cubeMap);
+		Material *skyMaterial = new Material("skybox", cubeMap, GL_TEXTURE0);
+		skyMaterial->setShader(shader);
+		mSkybox = new Skybox(skyMaterial);
+		addObject(mSkybox);
 	}
 
-	Camera *camera = new Camera();
-	addObject(camera);
-	mCamera = camera;
-	Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
-	mPlayer = player;
-	
-	mEmitter = new ParticleEmitter();
-	mEmitter->setPosition(glm::vec3(0.0f, 0.0f, -30.0f));
-	addObject(mEmitter);
-	
-	controlObject = player;
+	//Create camera
+	{
+		Camera *camera = new Camera();
+		addObject(camera);
+		mCamera = camera;
+	}
+
+	//Create player
+	{
+		Shader *shader = new Shader("sphereV.glsl", "sphereF.glsl");
+		shader->addUniformLocation("textureSampler", 0);
+		shader->addUniformLocation("normalSampler", 1);
+		shader->addUniformLocation("specularSampler", 2);
+		shader->addUniformLocation("cubemapSampler", 3);
+
+		shader->addAttribute("vertexPosition",  3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
+		shader->addAttribute("vertexUV",        2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
+		shader->addAttribute("vertexNormal",    3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
+		shader->addAttribute("vertexTangent",   3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
+		shader->addAttribute("vertexBitangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
+
+		Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
+		player->material = new Material("marble.skin");
+		player->material->setTexture(marbleCubemap, GL_TEXTURE3);
+		player->material->setShader(shader);
+		mPlayer = player;
+		addObject(player);
+	}
+
+	{
+		mEmitter = new ParticleEmitter();
+		mEmitter->setPosition(glm::vec3(0.0f, 0.0f, -30.0f));
+		addObject(mEmitter);
+	}	
+
+	controlObject = mPlayer;
 
 	//Main loop
 	while (running) {
@@ -552,11 +485,12 @@ void Scene::run() {
 		}
 
 		//Update the physics and game items
-		PhysicsEngine::getEngine()->simulate(lastDelta);
+		PhysicsEngine::getEngine()->simulate(lastDelta * mSimulationSpeed);
 
-		// call update on each object
-		for (auto obj : objects)
-			obj->update(lastDelta);
+		if (mSimulationSpeed != 1.0f) {
+			this->loop(lastDelta * mSimulationSpeed);
+			this->tick(lastDelta * mSimulationSpeed);
+		}
 
 		render();
 		
@@ -567,7 +501,7 @@ void Scene::run() {
 		if (printFPS) {
 			counter += lastDelta;
 			fpsCounter++;
-			if (counter >= 1000.0) {
+			if (counter >= 1.f) {
 				F32 mspf = 1000.0f / fpsCounter;
 				std::string title = "FPS: " + std::to_string(fpsCounter) + " mspf: " + std::to_string(mspf);
 				window->setWindowTitle(title.c_str());

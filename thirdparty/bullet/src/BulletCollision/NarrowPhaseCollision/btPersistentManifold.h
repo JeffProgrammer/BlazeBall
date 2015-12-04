@@ -31,8 +31,8 @@ class btPersistentManifold;
 ///maximum contact breaking and merging threshold
 extern btScalar gContactBreakingThreshold;
 
-typedef bool (*ContactDestroyedCallback)(void* userPersistentData);
-typedef bool (*ContactProcessedCallback)(btManifoldPoint& cp,void* body0,void* body1);
+typedef void(*ContactDestroyedCallback)(void* userPersistentData);
+typedef void(*ContactProcessedCallback)(btManifoldPoint& cp,const btCollisionObject* body0,const btCollisionObject* body1);
 typedef void(*ContactStartedCallback)(btPersistentManifold* const &manifold);
 typedef void(*ContactEndedCallback)(btPersistentManifold* const &manifold);
 extern ContactDestroyedCallback	gContactDestroyedCallback;
@@ -47,7 +47,7 @@ enum btContactManifoldTypes
 	BT_PERSISTENT_MANIFOLD_TYPE
 };
 
-#define MANIFOLD_CACHE_SIZE 4
+#define MANIFOLD_CACHE_SIZE 8
 
 ///btPersistentManifold is a contact point cache, it stays persistent as long as objects are overlapping in the broadphase.
 ///Those contact points are created by the collision narrow phase.

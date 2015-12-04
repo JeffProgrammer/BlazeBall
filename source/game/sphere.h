@@ -2,28 +2,6 @@
 // Copyright (c) 2015 Glenn Smith
 // Copyright (c) 2015 Jeff Hutchinson
 // All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-//  * Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-//  * Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the
-//    documentation and/or other materials provided with the distribution.
-//  * Neither the name of the project nor the
-//    names of its contributors may be used to endorse or promote products
-//    derived from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-// DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
 #ifndef sphere_h
@@ -41,9 +19,10 @@
 #include "physics/physicsBody.h"
 #include "render/material.h"
 #include "game/movement.h"
+#include "renderedObject.h"
 #include <glm/matrix.hpp>
 
-class Sphere : public GameObject {
+class Sphere : public RenderedObject {
 	const F32 AppliedAcceleration = 150.f; //Maximum, lowers when reaching max roll velocity
 	const F32 MaxRollVelocity     = 15.f; //In one direction (diagonal-supported)
 	const F32 MaxAirSpinVelocity  = 50.f; //Same as above but for angular, only when falling
@@ -59,12 +38,10 @@ public:
 	F32 maxAngVel;
 	Material *material;
 
-	bool firstDraw;
+	bool generated;
 
 	F32 cameraYaw;
 	F32 cameraPitch;
-
-	U32 jumpTicks;
 private:
 	void generate();
 
@@ -78,8 +55,9 @@ public:
 	Sphere(glm::vec3 origin, F32 radius);
 	virtual ~Sphere();
 
-	virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix);
-	virtual void render(Shader *shader, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix);
+	virtual void calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix);
+	virtual void render(RenderInfo &info);
+	void draw(Material *material, RenderInfo &info, void *userInfo);
 
 	virtual glm::vec3 getPosition();
 	virtual glm::quat getRotation();
@@ -99,19 +77,19 @@ public:
 	void applyForce(const glm::vec3 &force, const glm::vec3 &origin);
 
 	bool getColliding();
-	glm::vec3 getCollisionNormal();
+	glm::vec3 getCollisionNormal(glm::vec3 &toiVelocity);
     
 	glm::vec3 getVelocity();
 	glm::vec3 getAngularVelocity();
 
-	void setVelocity(const glm::vec3 &vel);
+	void setLinearVelocity(const glm::vec3 &vel);
     void setAngularVelocity(const glm::vec3 &vel);
 
-	virtual void updateCamera(const Movement &movement, const F64 &deltaMS);
-	virtual void updateMove(const Movement &movement, const F64 &deltaMS);
+	virtual void updateCamera(const Movement &movement, const F64 &delta);
+	virtual void updateMove(const Movement &movement, const F64 &delta);
 	virtual void getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos);
 
-	virtual void updateTick(const F64 &deltaMS);
+	virtual void updateTick(const F64 &delta);
 };
 
 #endif

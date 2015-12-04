@@ -1,12 +1,13 @@
-#version 120
+#version 330 core
 
-varying vec2 UV;
+in vec2 UV;
+out vec4 fragColor;
 
 uniform sampler2D textureSampler;
 uniform sampler2D normalSampler;
 uniform sampler2D specularSampler;
 
 void main() {
-	vec3 materialColor = texture2D(textureSampler, UV).rgb;
-	gl_FragColor = vec4(materialColor, 1.0);
+	vec3 materialColor = texture(textureSampler, UV).rgb;
+	fragColor = vec4(materialColor, 1.0);
 }

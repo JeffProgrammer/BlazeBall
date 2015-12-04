@@ -2,42 +2,20 @@
 // Copyright (c) 2015 Glenn Smith
 // Copyright (c) 2015 Jeff Hutchinson
 // All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-//  * Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-//  * Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the
-//    documentation and/or other materials provided with the distribution.
-//  * Neither the name of the project nor the
-//    names of its contributors may be used to endorse or promote products
-//    derived from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-// DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
 #include "game/gameInterior.h"
 #include "base/io.h"
 #include "physics/physicsBody.h"
-#include "graphics/texture.h"
+#include "texture/texture.h"
 #include <string>
 #include <cfloat>
 
-GameInterior::GameInterior(DIF::Interior interior) : GameObject(), mInterior(interior) {
+GameInterior::GameInterior(DIF::Interior interior) : RenderedObject(), mInterior(interior) {
 	gfxInit();
 }
 
-GameInterior::GameInterior() : GameObject() {
+GameInterior::GameInterior() : RenderedObject() {
 	gfxInit();
 }
 
@@ -50,6 +28,22 @@ void GameInterior::gfxInit() {
 }
 
 void GameInterior::generateMaterials(std::string directory) {
+	mNoiseTexture = IO::loadTexture("noise.jpg");
+
+	//TODO: Per-material shaders
+	Shader *shader = new Shader("interiorV.glsl", "interiorF.glsl");
+	shader->addUniformLocation("textureSampler", 0);
+	shader->addUniformLocation("normalSampler", 1);
+	shader->addUniformLocation("specularSampler", 2);
+	shader->addUniformLocation("noiseSampler", 3);
+	shader->addUniformLocation("cubemapSampler", 4);
+
+	shader->addAttribute("vertexPosition",  3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
+	shader->addAttribute("vertexUV",        2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
+	shader->addAttribute("vertexNormal",    3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
+	shader->addAttribute("vertexTangent",   3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
+	shader->addAttribute("vertexBitangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
+
 	//Allocate all textures for the interior
 	if (mInterior.materialName.size()) {
 		for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
@@ -68,12 +62,15 @@ void GameInterior::generateMaterials(std::string directory) {
 			std::string specularFile = Texture::find(directory + DIR_SEP + specularName);
 
 			Material *material = new Material(diffuseFile, normalFile, specularFile);
+			material->setTexture(mNoiseTexture, GL_TEXTURE3);
+
+			//TODO: Make this material-dependant when we get around to material properties
+			material->setShader(shader);
 
 			//Assign the texture
 			mMaterialList.push_back(material);
 		}
 	}
-	mNoiseTexture = IO::loadTexture("noise.jpg");
 }
 
 void GameInterior::generateMesh() {
@@ -139,10 +136,7 @@ U32 GameInterior::rayCast(RayF ray) {
 		const DIF::Interior::Surface &surface = mInterior.surface[i];
 
 		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
-			TriangleF triangle;
-			triangle.point0 = mInterior.point[mInterior.index[surface.windingStart + j]];
-			triangle.point1 = mInterior.point[mInterior.index[surface.windingStart + j + 1]];
-			triangle.point2 = mInterior.point[mInterior.index[surface.windingStart + j + 2]];
+			TriangleF triangle(mInterior.point[mInterior.index[surface.windingStart + j]], mInterior.point[mInterior.index[surface.windingStart + j + 1]], mInterior.point[mInterior.index[surface.windingStart + j + 2]]);
 
 			F32 distance = ray.distance(triangle);
 			if (distance > 0 && distance < closestDistance) {

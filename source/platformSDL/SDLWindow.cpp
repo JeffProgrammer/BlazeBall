@@ -2,28 +2,6 @@
 // Copyright (c) 2015 Glenn Smith
 // Copyright (c) 2015 Jeff Hutchinson
 // All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-//  * Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-//  * Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the
-//    documentation and/or other materials provided with the distribution.
-//  * Neither the name of the project nor the
-//    names of its contributors may be used to endorse or promote products
-//    derived from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-// DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
 #include "platformSDL/SDLWindow.h"
@@ -37,6 +15,11 @@ bool SDLWindow::createContext() {
 	}
 
 	// Try using the core profile first.
+	// SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG will prevent deprecated functions
+	// from working on on Windows and Linux [OSX already does this]
+	// SDL_GL_CONTEXT_PROFILE_CORE will force the OpenGL core profile.
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, SDL_CONFIG_MAJOR_GL_VERSION);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, SDL_CONFIG_MINOR_GL_VERSION);
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
@@ -62,6 +45,7 @@ bool SDLWindow::createContext() {
 	SDL_GL_MakeCurrent(window, context);
 
 #ifdef _WIN32
+	glewExperimental = true;
 	GLenum error = glewInit();
 	if (error != GLEW_OK) {
 		fprintf(stderr, "GLEW failed to init. Error: %d\n", error);
@@ -73,10 +57,12 @@ bool SDLWindow::createContext() {
 	// pussies.
 	//
 	// Uncomment me if we are using the opengl core profile
-	//while (glGetError() != GL_NO_ERROR);
+	while (glGetError() != GL_NO_ERROR);
 #endif
 
-	printf("OpenGL Info\n");
+	printf("Please note that your GPU may support a higher GL version or newer extensions.\n");
+	printf("Extensions outside of the core may be used, but are not required.\n");
+	printf("OpenGL Core Profile Info\n");
 	printf("    Version: %s\n", glGetString(GL_VERSION));
 	printf("     Vendor: %s\n", glGetString(GL_VENDOR));
 	printf("   Renderer: %s\n", glGetString(GL_RENDERER));
@@ -88,10 +74,17 @@ bool SDLWindow::createContext() {
 	//Lock cursor
 	lockCursor(true);
 
+	// we bind a blank VAO, as it's required for core profile
+	glGenVertexArrays(1, &mVAO);
+	glBindVertexArray(mVAO);
+
 	return true;
 }
 
 void SDLWindow::destroyContext() {
+	// clean up VAO
+	if (mVAO)
+		glDeleteVertexArrays(1, &mVAO);
 	SDL_Quit();
 }
 

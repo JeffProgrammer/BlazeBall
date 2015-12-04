@@ -1,7 +1,7 @@
-DifViewerGame
+Blaze Ball
 =============
 
-A small marble game project based upon DifViewer / DIF. Supports rendering DIFs and rudimentary marble movement and physics.
+A marble game that is meant to be the successor to Marble Blast.
 
 Building
 -------------------
@@ -32,21 +32,37 @@ Requirements
 -------------------
 
 C++11 support  
-OpenGL 2.1+
+OpenGL 3.3+
 
-* Windows 7+
-* Mac OSX 10.7+
-* Dual Core CPU @ 2.0ghz
+* Windows XP SP3+
+* Mac OSX 10.9+
+* Intel Core2Duo CPU @ 2.0ghz
 * GPU:
-  * GeForce 8000 series or better GPU with at least 256MB VRAM
-  * ATI Radeon HD 2000 series or better GPU with at least 256MB VRAM
-  * Intel HD Graphics or better with at least 256MB Shared VRAM
+  * NVidia GeForce 8000 series
+  * ATI Radeon HD 2000 series
+  * Intel HD 3000 Graphics [OSX]
+  * Intel HD 4000 Graphics [Windows]
+  * 256MB VRAM
 * 2GB Ram
+
+Third Party Libraries
+-------------------
+
+* Assimp - Model Importer
+* AngelScript - Scripting Language Library
+* Bullet3D - Physics Library
+* GLEW - OpenGL Extensions Loader
+* GLM - Math Library
+* JPEG - Image Library
+* MNG - Image Library
+* SDL2 - Window and Input System
+* srutil - Fast C++ Delegates
+* ZLIB - Compression Library
 
 Acknowledgements
 -------------------
 
-Credits to Whirligig231 for his sphere-trimesh edge adjacency solver.
+Credits to Whirligig231 for his math in ray.h
 
 License
 -------------------
@@ -55,26 +71,4 @@ License
 Copyright (c) 2014-2015, Glenn Smith
 Copyright (c) 2014-2015, Jeff Hutchinson
 All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the project nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```

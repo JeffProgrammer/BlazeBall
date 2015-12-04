@@ -2,28 +2,6 @@
 // Copyright (c) 2015 Glenn Smith
 // Copyright (c) 2015 Jeff Hutchinson
 // All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-//  * Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-//  * Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the
-//    documentation and/or other materials provided with the distribution.
-//  * Neither the name of the project nor the
-//    names of its contributors may be used to endorse or promote products
-//    derived from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-// DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
 #ifndef material_h
@@ -32,16 +10,15 @@
 #include <stdio.h>
 #include <unordered_map>
 #include "base/types.h"
-#include "graphics/texture.h"
-#include "graphics/shader.h"
+#include "texture/texture.h"
+#include "render/shader.h"
 
 #define DEFAULT_NORMAL_TEXTURE   "DefaultNormal.png"
 #define DEFAULT_SPECULAR_TEXTURE "DefaultSpec.png"
 
-struct ShaderInfo;
 class Material {
 	std::unordered_map<GLuint, Texture *> textures;
-	ShaderInfo *shaderInfo;
+	Shader *shader;
 
 	std::string name;
 	std::string path;
@@ -69,21 +46,45 @@ class Material {
 	bool tryLoadTexture(const std::string &path, const GLuint &index);
 public:
 	/**
+	 * Construct a material from only a name and texture. No files will be loaded.
+	 * @param name     The material's name
+	 * @param texture  A texture that will be used on the material
+	 * @param location The location for the given texture
+	 */
+	Material(const std::string &name, Texture *texture, GLuint location) : shader(nullptr), name(name) {
+		setTexture(texture, location);
+	}
+
+	/**
+	 * Construct a material using a name and a list of textures. No files will be loaded.
+	 * @param name     The material's name
+	 * @param textures A vector of <Texture *, GLuint> pairs specifying the textures
+	 *                 and their desired locations.
+	 */
+	Material(const std::string &name, const std::vector<std::pair<Texture *, GLuint>> &textures) : shader(nullptr), name(name) {
+		for (auto &texture : textures) {
+			setTexture(texture.first, texture.second);
+		}
+	}
+
+	/**
 	 * Construct a material from only a diffuse texture path, attempting to resolve
-	 * specular and normal map paths from the diffuse texture.
+	 * specular and normal map paths from the diffuse texture. The material's name
+	 * will be resolved from the file path.
 	 * @param path The path for the material's diffuse texture.
 	 */
-	Material(const std::string &path) : shaderInfo(nullptr) {
+	Material(const std::string &path) : shader(nullptr) {
 		loadTextures(path);
 	}
 	
 	/**
 	 * Construct a material from a diffuse, normal, and specular texture path.
+	 * The material's name will be resolved from the file path.
 	 * @param diffusePath The path for the material's diffuse texture.
 	 * @param normalPath The path for the material's normal texture.
 	 * @param specularPath The path for the material's specular texture.
 	 */
-	Material(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) : shaderInfo(nullptr) {
+	Material(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) : shader(nullptr) {
 		loadTextures(diffusePath, normalPath, specularPath);
 	}
 	
@@ -102,11 +103,11 @@ public:
 	}
 	
 	/**
-	 * Get the material's shader info
-	 * @return The material's shader info
+	 * Get the material's shader
+	 * @return The material's shader
 	 */
-	ShaderInfo *getShaderInfo() const {
-		return this->shaderInfo;
+	Shader *getShader() const {
+		return this->shader;
 	}
 	
 	/**
@@ -133,11 +134,11 @@ public:
 	void setTexture(Texture *texture, const GLuint &index);
 	
 	/**
-	 * Set the material's shader info
-	 * @param shaderInfo the new shader info for the material
+	 * Set the material's shade
+	 * @param shader the new shader for the material
 	 */
-	void setShaderInfo(ShaderInfo *shaderInfo) {
-		this->shaderInfo = shaderInfo;
+	void setShader(Shader *shader) {
+		this->shader = shader;
 	}
 
 	/**

@@ -2,30 +2,7 @@
 // Copyright (c) 2015 Glenn Smith
 // Copyright (c) 2015 Jeff Hutchinson
 // All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-//  * Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-//  * Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the
-//    documentation and/or other materials provided with the distribution.
-//  * Neither the name of the project nor the
-//    names of its contributors may be used to endorse or promote products
-//    derived from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-// DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
-
 
 #ifndef scene_h
 #define scene_h
@@ -35,10 +12,10 @@
 #include "base/types.h"
 #include "base/io.h"
 #include <dif/objects/dif.h>
-#include "graphics/texture.h"
+#include "texture/texture.h"
 #include "game/sphere.h"
 #include "physics/physicsEngine.h"
-#include "graphics/shader.h"
+#include "render/shader.h"
 #include "render/scene.h"
 #include "platform/window.h"
 #include "platform/event.h"
@@ -47,9 +24,11 @@
 #include "game/movement.h"
 #include "game/camera.h"
 #include "game/skybox.h"
-#include "graphics/cubeMapFramebufferTexture.h"
+#include "texture/cubeMapFramebufferTexture.h"
 #include "render/modelManager.h"
 #include "game/particleEmitter.h"
+#include "renderInfo.h"
+#include "base/config.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -68,9 +47,7 @@ protected:
 	bool running;
 	bool printFPS = true;
 
-	//F32 maxFPS = 60.0f;
-
-	glm::mat4x4 projectionMatrix, modelMatrix, viewMatrix;
+	glm::mat4 mScreenProjectionMatrix;
 
 	struct {
 		bool hasSelection;
@@ -87,6 +64,9 @@ protected:
 	Movement movement;
 
 	F32 pixelDensity;
+	F32 mSimulationSpeed;
+
+	bool mDoDebugDraw;
 
 public:
 	const glm::vec4 lightColor     = glm::vec4(1.000000f, 1.000000f, 1.000000f, 1.400000f);
@@ -96,6 +76,7 @@ public:
 	const U32 specularExponent   = 7;
 
 	std::vector<GameObject *>objects;
+	std::vector<RenderedObject *> mRenderedObjects;
 	GameObject *controlObject;
 	Camera *mCamera;
 	Sphere *mPlayer;
@@ -105,17 +86,16 @@ public:
 
 	Window *window;
 	Timer *mTimer;
+	Config *mConfig;
 
-	Shader *mInteriorShader;
 	Shader *mShapeShader;
-	Shader *mSkyboxShader;
-	Shader *mParticleShader;
-	bool mLoadedShaders;
-
+	
 	bool mShouldSleep;
 
 	void addObject(GameObject *object) {
 		objects.push_back(object);
+		if (dynamic_cast<RenderedObject*>(object))
+			mRenderedObjects.push_back(static_cast<RenderedObject*>(object));
 	}
 
 	Scene();
@@ -128,13 +108,13 @@ public:
 		return singleton;
 	}
 
-	void loadShaderUniforms();
 	void updateWindowSize(const glm::ivec2 &size);
-	void loadShaders();
 
+	void renderScene(RenderInfo &info);
 	void render();
-	void loop(const F64 &deltaMS);
-	void tick(const F64 &deltaMS);
+
+	void loop(const F64 &delta);
+	void tick(const F64 &delta);
 	bool initGL();
 	bool init();
 	void cleanup();

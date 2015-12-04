@@ -2,28 +2,6 @@
 // Copyright (c) 2015 Glenn Smith
 // Copyright (c) 2015 Jeff Hutchinson
 // All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-//  * Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-//  * Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the
-//    documentation and/or other materials provided with the distribution.
-//  * Neither the name of the project nor the
-//    names of its contributors may be used to endorse or promote products
-//    derived from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-// DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
 #include <stdio.h>
@@ -32,7 +10,8 @@
 #include <glm/ext.hpp>
 #include "game/gameInterior.h"
 #include "base/math.h"
-#include "graphics/util.h"
+#include "render/util.h"
+#include "render/scene.h"
 
 void GameInterior::init() {
 	std::vector<std::vector<Triangle>> perMaterialTriangles(mInterior.materialName.size());
@@ -140,50 +119,45 @@ void GameInterior::init() {
 	renderInfo.generated = true;
 }
 
-void GameInterior::render(Shader *shader, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix) {
+void GameInterior::drawMaterial(Material *material, ::RenderInfo &info, void *userData) {
+	RenderUserData *data = static_cast<RenderUserData *>(userData);
+
+	Shader *shader = material->getShader();
+	loadModelMatrix(info, shader);
+
+	//Need to bind the VBO before we can enable attributes
+	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
+	shader->enableAttributes();
+
+	//Actual drawing done here
+	glDrawArrays(GL_TRIANGLES, data->start * 3, data->numTriangles * 3);
+
+	//And clean up
+	shader->disableAttributes();
+
+	delete data;
+}
+
+void GameInterior::render(::RenderInfo &info) {
 	if (!renderInfo.generated)
 		init();
 
-	glUniform1f(shader->getUniformLocation("reflectivity"), 0.f);
-
-	// bind vbo
-	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
-
-	// enable attributes
-	shader->enableAttribute("vertexPosition_model", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
-	shader->enableAttribute("vertexUV",             2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
-	shader->enableAttribute("vertexNormal",         3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
-	shader->enableAttribute("vertexTangent",        3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
-	shader->enableAttribute("vertexBitangent",      3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
-	GL_CHECKERRORS();
-
-	U32 start = 0;
+	U32 last = 0;
 	for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
-		if (renderInfo.numMaterialTriangles[i] > 0) {
-			if (mMaterialList[i]) {
-				mMaterialList[i]->activate();
-				mNoiseTexture->activate(GL_TEXTURE3);
-				GL_CHECKERRORS();
-			} else {
+		U32 numTriangles = renderInfo.numMaterialTriangles[i];
+		if (numTriangles > 0) {
+			//Get this as a variable so we can access it in the render method
+			U32 start = last;
+			last += numTriangles;
+
+			if (!mMaterialList[i]) {
 				printf("Trying to render with invalid material %d: %s\n", i, mInterior.materialName[i].c_str());
+				continue;
 			}
-			glDrawArrays(GL_TRIANGLES, start * 3, renderInfo.numMaterialTriangles[i] * 3);
-			GL_CHECKERRORS();
-			start += renderInfo.numMaterialTriangles[i];
-			if (mMaterialList[i]) {
-				mNoiseTexture->deactivate();
-				mMaterialList[i]->deactivate();
-				GL_CHECKERRORS();
-			}
+
+			//Add a render method for this material's batch of triangles
+			RenderUserData *d = new RenderUserData{numTriangles, start};
+			info.addRenderMethod(mMaterialList[i], ::RenderInfo::RenderMethod::from_method<GameInterior, &GameInterior::drawMaterial>(this), d);
 		}
 	}
-	GL_CHECKERRORS();
-
-	//Disable arrays
-	shader->disableAttribute("vertexPosition_model");
-	shader->disableAttribute("vertexUV");
-	shader->disableAttribute("vertexNormal");
-	shader->disableAttribute("vertexTangent");
-	shader->disableAttribute("vertexBitangent");
-	GL_CHECKERRORS();
 }

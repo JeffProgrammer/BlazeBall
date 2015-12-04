@@ -2,28 +2,6 @@
 // Copyright (c) 2015 Glenn Smith
 // Copyright (c) 2015 Jeff Hutchinson
 // All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-//  * Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-//  * Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the
-//    documentation and/or other materials provided with the distribution.
-//  * Neither the name of the project nor the
-//    names of its contributors may be used to endorse or promote products
-//    derived from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-// DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
 #include "physics/bullet/btPhysicsEngine.h"
@@ -79,10 +57,6 @@ public:
 	}
 };
 
-extern std::vector<ShapeInfo> shapes;
-extern std::vector<BodyInfo> bodies;
-extern std::vector<BodyMovement> moves;
-
 btPhysicsSphere::btPhysicsSphere(const F32 &radius) : mRadius(radius) {
 	//Motion state and shape
 	btMotionState *state = new btDefaultMotionState();
@@ -103,26 +77,16 @@ btPhysicsSphere::btPhysicsSphere(const F32 &radius) : mRadius(radius) {
 	btRigidBody::btRigidBodyConstructionInfo info(1, state, shape, fallInertia);
 	info.m_restitution = 0.5f; // 0.5 * 0.7
 	info.m_friction = 1.0f;
-	info.m_rollingFriction = 1.1f;
+	info.m_rollingFriction = 0.3f;
 
 	//Create the actor and add it to the scene
 	mActor = new btRigidBody(info);
 	mActor->setActivationState(DISABLE_DEACTIVATION);
 	mActor->setCcdMotionThreshold(static_cast<btScalar>(1e-3));
 	mActor->setCcdSweptSphereRadius(radius / 10.0f);
+	mActor->setRollingFriction(3.0f);
 	mActor->setAnisotropicFriction(shape->getAnisotropicRollingFrictionDirection(), btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION);
 	mActor->setContactProcessingThreshold(0.0f);
-
-	ShapeInfo infooo;
-	infooo.shape = shape;
-	shapes.push_back(infooo);
-    
-	BodyInfo infoo;
-	infoo.body = mActor;
-	infoo.collisionNormal = btVector3(0.0f, 0.0f, 0.0f);
-	infoo.isDynamic = true;
-	infoo.shape = infooo;
-	bodies.push_back(infoo);
 }
 
 bool btPhysicsSphere::getColliding() {
@@ -143,12 +107,12 @@ bool btPhysicsSphere::getColliding() {
 	return false;
 }
 
-glm::vec3 btPhysicsSphere::getCollisionNormal() {
+glm::vec3 btPhysicsSphere::getCollisionNormal(glm::vec3 &toiVelocity) {
 	btDiscreteDynamicsWorld *world = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld();
 	U32 manifolds = world->getDispatcher()->getNumManifolds();
 
-	glm::vec3 best = glm::vec3(0.0f, 0.0f, 0.0f);
-	F32 dot = 0;
+	glm::vec3 total = glm::vec3(0.0f, 0.0f, 0.0f);
+	toiVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	for (U32 i = 0; i < manifolds; i ++) {
 		btPersistentManifold *manifold = world->getDispatcher()->getManifoldByIndexInternal(i);
@@ -161,46 +125,44 @@ glm::vec3 btPhysicsSphere::getCollisionNormal() {
 				glm::vec3 normal = btConvert(manifold->getContactPoint(j).m_normalWorldOnB);
 				if (obj2 == mActor)
 					normal *= -1;
-				if (glm::dot(normal, glm::vec3(0, 0, 1)) > dot) {
-					best = normal;
-					dot = glm::dot(normal, glm::vec3(0, 0, 1));
-				}
+				total += normal;
+				toiVelocity += btConvert(manifold->getContactPoint(j).m_impactVelocity);
 			}
 		}
 	}
 
-	return best;
+	total = glm::normalize(total);
+	toiVelocity = glm::normalize(toiVelocity);
+
+	return total;
 }
 
 bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	//The interior with which we collided
 	btPhysicsInterior *inter = dynamic_cast<btPhysicsInterior *>(isBody0 ? info.body1 : info.body0);
 	if (inter == nullptr)
-		return false;
+		return true;
+
+	U32 index = isBody0 ? info.index1 : info.index0;
+
+	//printf("vel: %f %f %f\n", sphere->getLinearVelocity().x, sphere->getLinearVelocity().y, sphere->getLinearVelocity().z);
+	info.point.m_impactVelocity = btConvert(getLinearVelocity());
+
+	const btPhysicsInterior::TriangleInfo &triangleInfo = inter->getTriangleInfo(index);
 
 	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
+	const DIF::Interior::Surface &surf = dint.surface[triangleInfo.surfaceIndex];
 
-	//Which surface was it?
-	U32 surfaceNum = inter->getSurfaceIndexFromTriangleIndex(isBody0 ? info.index1 : info.index0);
-	const DIF::Interior::Surface &surface = dint.surface[surfaceNum];
-
-	const DIF::Point3F &normal = dint.normal[dint.plane[surface.planeIndex].normalIndex];
-
-	glm::vec3 in(normal.x, normal.y, normal.z);
-	glm::vec3 bn = btConvert(info.point.m_normalWorldOnB);
-
-	//Doesn't really work
-//	if (glm::dot(in, bn) < 0.95) {
-//		//Remove it
-//		return false;
-//	}
-
+	glm::vec3 normal = dint.normal[dint.plane[surf.planeIndex].normalIndex];
+	if (surf.planeFlipped)
+		normal *= -1.f;
 
 	//Texture names have properties
-	const std::string &surfName = dint.materialName[surface.textureIndex];
+	const std::string &surfName = dint.materialName[surf.textureIndex];
 
 	//Friction is relative to the slope of the incline
-	F32 friction = (1.0f + info.point.m_normalWorldOnB.dot(btVector3(0, 0, 1))) / 2.0f;
+	F32 wallDot = info.point.m_normalWorldOnB.dot(btVector3(0, 0, 1));
+	F32 friction = (1.0f + wallDot) / 2.0f;
 
 	//Frictions
 	if (stricmp(surfName.c_str(), "friction_low") == 0 ||
@@ -213,9 +175,103 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 
 	info.point.m_combinedFriction *= friction;
 	info.point.m_combinedRollingFriction *= friction;
-
 	return true;
 }
+
+void btPhysicsSphere::notifyContact(ContactCallbackInfo &info, bool isBody0) {
+	//The interior with which we collided
+	btPhysicsInterior *inter = dynamic_cast<btPhysicsInterior *>(isBody0 ? info.body1 : info.body0);
+	if (inter == nullptr)
+		return;
+
+	/*
+	 via https://github.com/bulletphysics/bullet3/issues/288
+
+	 if ( collisionPoint.isOnTriSurface && !collisionPoint.isOnTriEdge )
+		for each ( collisionPoint2 != collisionPoint in Manifold )
+			 if ( collisionPoint2.isOnTriEdge && collisionPoint2.triangle.isAdjacentTo( collisionPoint.triangle ) )
+				 collisionPoint2.removeFromManifold
+	 */
+
+	//Easier access
+	U32 index = isBody0 ? info.index1 : info.index0;
+
+	//Get some information about the interior
+	const btPhysicsInterior::TriangleInfo &triangleInfo = inter->getTriangleInfo(index);
+	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
+
+	glm::vec3 collisionPoint = btConvert(info.point.m_positionWorldOnB);
+
+	//Triangle info from the interior
+	TriangleF triangle(dint.point[triangleInfo.vertex[0]], dint.point[triangleInfo.vertex[1]], dint.point[triangleInfo.vertex[2]]);
+
+	//We need to remove points if this isn't an edge collision
+	if (triangle.isPointInside(collisionPoint) && !triangle.isPointOnEdge(collisionPoint)) {
+
+		//Test all other manifold points
+		btDispatcher *dispatcher = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld()->getCollisionWorld()->getDispatcher();
+		for (U32 i = 0; i < dispatcher->getNumManifolds(); i ++) {
+			btPersistentManifold *manifold = dispatcher->getManifoldByIndexInternal(i);
+
+			//Store a list of points to remove so we don't get weird memory errors
+			std::vector<int> toRemove;
+
+			//Is the sphere 0 or 1?
+			bool pointIsBody0 = (manifold->getBody0() == mActor);
+
+			//Don't care about manifolds that we aren't part of
+			if (manifold->getBody0() == mActor || manifold->getBody1() == mActor) {
+				//Don't bother checking if we're the only point in that manifold
+				if (manifold->getNumContacts() > 1) {
+					//Go through all the points for this manifold
+					for (U32 j = 0; j < manifold->getNumContacts(); j ++) {
+						btManifoldPoint &point = manifold->getContactPoint(j);
+
+						//Access to index
+						U32 pointIndex = (pointIsBody0 ? point.m_index1 : point.m_index0);
+
+						//See if their point qualifies
+						const btPhysicsInterior::TriangleInfo &pointInfo = inter->getTriangleInfo(pointIndex);
+
+						//Don't check our point
+						if (point.m_positionWorldOnB.distance2(info.point.m_positionWorldOnB) <= 0.0001f &&
+							point.m_normalWorldOnB.distance2(info.point.m_normalWorldOnB) <= 0.0001f) {
+							//Same point; ignore
+							continue;
+						}
+
+						//Is their point an edge?
+						TriangleF pointTriangle(dint.point[pointInfo.vertex[0]], dint.point[pointInfo.vertex[1]], dint.point[pointInfo.vertex[2]]);
+						if (pointTriangle.isPointOnEdge(btConvert(point.m_positionWorldOnB))) {
+							//Only remove their point if it's adjacent to ours
+							if (pointTriangle.isTriangleAdjacent(triangle)) {
+								//Yep, remove it
+								toRemove.push_back(j);
+								continue;
+							}
+						}
+					}
+				}
+			}
+
+			//Remove the points backwards so we don't get weird memory errors
+			for (auto it = toRemove.rbegin(); it != toRemove.rend(); it ++) {
+				manifold->removeContactPoint(*it);
+			}
+		}
+	}
+
+	//How steep is the wall?
+	F32 wallDot = info.point.m_normalWorldOnB.dot(btVector3(0, 0, 1));
+
+	if ((wallDot * wallDot) < 0.0001f) {
+		F32 appliedForce = sqrtf(glm::length(glm::proj(btConvert(info.point.m_impactVelocity), btConvert(info.point.m_normalWorldOnB))) * info.point.m_combinedFriction);
+//		printf("Wall contact applied force %f\n", appliedForce);
+		//Wall hit of some sort
+//		applyImpulse(glm::vec3(0, 0, appliedForce), glm::vec3(0, 0, 0));
+	}
+}
+
 
 F32 btPhysicsSphere::getRadius() {
 	return static_cast<btSphereShape *>(mActor->getCollisionShape())->getRadius();

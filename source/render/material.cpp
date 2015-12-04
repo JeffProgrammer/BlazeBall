@@ -2,33 +2,10 @@
 // Copyright (c) 2015 Glenn Smith
 // Copyright (c) 2015 Jeff Hutchinson
 // All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-//  * Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-//  * Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the
-//    documentation and/or other materials provided with the distribution.
-//  * Neither the name of the project nor the
-//    names of its contributors may be used to endorse or promote products
-//    derived from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-// DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
 #include "render/material.h"
 #include "base/io.h"
-#include "graphics/cubeMapTexture.h"
 
 Material::~Material() {
 
@@ -79,21 +56,6 @@ void Material::loadTextures(const std::string &diffusePath, const std::string &n
 			printf("Could not load default specular texture!\n");
 		}
 	}
-
-	static CubeMapTexture *skyboxTex = nullptr;
-	if (skyboxTex == nullptr) {
-		std::vector<CubeMapTexture::TextureInfo> textures;
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "right.jpg", CubeMapTexture::PositiveX));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "left.jpg", CubeMapTexture::NegativeX));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "top.jpg", CubeMapTexture::PositiveY));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "bottom.jpg", CubeMapTexture::NegativeY));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "back.jpg", CubeMapTexture::PositiveZ));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "front.jpg", CubeMapTexture::NegativeZ));
-
-		skyboxTex = new CubeMapTexture(textures);
-	}
-
-	setTexture(skyboxTex, GL_TEXTURE4);
 }
 
 bool Material::tryLoadTexture(const std::string &path, const GLuint &index) {
@@ -117,9 +79,9 @@ bool Material::tryLoadTexture(const std::string &path, const GLuint &index) {
 
 void Material::activate() {
 	//If this material has a shader, we should use it.
-//	if (shaderInfo && shaderInfo->shader) {
-//		shaderInfo->shader->activate();
-//	}
+	if (shader) {
+		shader->activate();
+	}
 	//Activate all of the textures on this shader.
 	for (auto iter : textures) {
 		if (iter.second) {
@@ -130,9 +92,9 @@ void Material::activate() {
 
 void Material::deactivate() {
 	//If this material has a shader, we need to deactivate it
-//	if (shaderInfo && shaderInfo->shader) {
-//		shaderInfo->shader->deactivate();
-//	}
+	if (shader) {
+		shader->deactivate();
+	}
 	//Deactivate all of the textures on this shader.
 	for (auto iter : textures) {
 		if (iter.second) {

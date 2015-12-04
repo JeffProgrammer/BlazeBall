@@ -3,28 +3,6 @@
 // Copyright (c) 2015 Jeff Hutchinson
 // All rights reserved.
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-//  * Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-//  * Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the
-//    documentation and/or other materials provided with the distribution.
-//  * Neither the name of the project nor the
-//    names of its contributors may be used to endorse or promote products
-//    derived from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-// DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
 // Note: portions of this code is from the assimp sample code:
 // https://github.com/assimp/assimp/blob/master/samples/SimpleOpenGL/Sample_SimpleOpenGL.c
 // https://github.com/assimp/assimp/tree/master/samples/SimpleAssimpViewX
@@ -32,7 +10,7 @@
 
 #include "render/modelManager.h"
 #include "base/io.h"
-#include "graphics/util.h"
+#include "render/util.h"
 #include "game/Shape.h"
 
 // For getcwd
@@ -104,9 +82,13 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 		auto model = mResourceCache[shape->getShapeFile()];
 		const auto &meshes = model->meshes;
 
+		RenderInfo info;
+		info.projectionMatrix = projectionMatrix;
+		info.viewMatrix = viewMatrix;
+
 		glm::mat4x4 modelMatrix = glm::mat4x4(1);
-		shape->loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
-		glUniformMatrix4fv(shapeShader->getUniformLocation("modelMat"), 1, GL_FALSE, &modelMatrix[0][0]);
+		shape->calculateModelMatrix(info, modelMatrix);
+		shapeShader->setUniformMatrix("modelMat", GL_FALSE, modelMatrix);
 
 		for (const auto &mesh : meshes) {
 			mesh.material->activate();
@@ -117,9 +99,9 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 			// note: a VBO must be bound before the layout can be bound
 			if (firstRender) {
 				firstRender = false;
-				glEnableVertexAttribArray(shapeShader->getAttributeLocation("vertexPosition_model"));
+				glEnableVertexAttribArray(shapeShader->getAttributeLocation("vertexPosition"));
 				glEnableVertexAttribArray(shapeShader->getAttributeLocation("vertexUV"));
-				glVertexAttribPointer(shapeShader->getAttributeLocation("vertexPosition_model"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, position)));
+				glVertexAttribPointer(shapeShader->getAttributeLocation("vertexPosition"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, position)));
 				glVertexAttribPointer(shapeShader->getAttributeLocation("vertexUV"), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, textureCoords)));
 				GL_CHECKERRORS();
 			}
@@ -132,7 +114,7 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 
 	//Disable arrays if any models were drawn.
 	if (firstRender == false) {
-		glDisableVertexAttribArray(shapeShader->getAttributeLocation("vertexPosition_model"));
+		glDisableVertexAttribArray(shapeShader->getAttributeLocation("vertexPosition"));
 		glDisableVertexAttribArray(shapeShader->getAttributeLocation("vertexUV"));
 	}
 	GL_CHECKERRORS();

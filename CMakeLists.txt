@@ -23,10 +23,143 @@ macro(ADD_FRAMEWORK appname fwname)
 endmacro(ADD_FRAMEWORK)
 
 #------------------------------------------------------------------------------
-# Bullet Physics Library
+# AngelScript
+# Version 2.30.2
+# Based on their CMAKE file
 #------------------------------------------------------------------------------
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
+find_package(Threads)
+
+set(ANGELSCRIPT_SRC
+	thirdparty/angelscript/include/angelscript.h
+	thirdparty/angelscript/source/as_array.h
+	thirdparty/angelscript/source/as_builder.h
+	thirdparty/angelscript/source/as_bytecode.h
+	thirdparty/angelscript/source/as_callfunc.h
+	thirdparty/angelscript/source/as_compiler.h
+	thirdparty/angelscript/source/as_config.h
+	thirdparty/angelscript/source/as_configgroup.h
+	thirdparty/angelscript/source/as_context.h
+	thirdparty/angelscript/source/as_criticalsection.h
+	thirdparty/angelscript/source/as_datatype.h
+	thirdparty/angelscript/source/as_debug.h
+	thirdparty/angelscript/source/as_generic.h
+	thirdparty/angelscript/source/as_map.h
+	thirdparty/angelscript/source/as_memory.h
+	thirdparty/angelscript/source/as_module.h
+	thirdparty/angelscript/source/as_objecttype.h
+	thirdparty/angelscript/source/as_outputbuffer.h
+	thirdparty/angelscript/source/as_parser.h
+	thirdparty/angelscript/source/as_property.h
+	thirdparty/angelscript/source/as_restore.h
+	thirdparty/angelscript/source/as_scriptcode.h
+	thirdparty/angelscript/source/as_scriptengine.h
+	thirdparty/angelscript/source/as_scriptfunction.h
+	thirdparty/angelscript/source/as_scriptnode.h
+	thirdparty/angelscript/source/as_scriptobject.h
+	thirdparty/angelscript/source/as_string.h
+	thirdparty/angelscript/source/as_string_util.h
+	thirdparty/angelscript/source/as_texts.h
+	thirdparty/angelscript/source/as_thread.h
+	thirdparty/angelscript/source/as_tokendef.h
+	thirdparty/angelscript/source/as_tokenizer.h
+	thirdparty/angelscript/source/as_typeinfo.h
+	thirdparty/angelscript/source/as_variablescope.h
+
+	thirdparty/angelscript/source/as_atomic.cpp
+	thirdparty/angelscript/source/as_builder.cpp
+	thirdparty/angelscript/source/as_bytecode.cpp
+	thirdparty/angelscript/source/as_callfunc.cpp
+	thirdparty/angelscript/source/as_callfunc_x86.cpp
+	thirdparty/angelscript/source/as_callfunc_x64_gcc.cpp
+	thirdparty/angelscript/source/as_callfunc_x64_msvc.cpp
+	thirdparty/angelscript/source/as_callfunc_x64_mingw.cpp
+	thirdparty/angelscript/source/as_compiler.cpp
+	thirdparty/angelscript/source/as_configgroup.cpp
+	thirdparty/angelscript/source/as_context.cpp
+	thirdparty/angelscript/source/as_datatype.cpp
+	thirdparty/angelscript/source/as_gc.cpp
+	thirdparty/angelscript/source/as_generic.cpp
+	thirdparty/angelscript/source/as_globalproperty.cpp
+	thirdparty/angelscript/source/as_memory.cpp
+	thirdparty/angelscript/source/as_module.cpp
+	thirdparty/angelscript/source/as_objecttype.cpp
+	thirdparty/angelscript/source/as_outputbuffer.cpp
+	thirdparty/angelscript/source/as_parser.cpp
+	thirdparty/angelscript/source/as_restore.cpp
+	thirdparty/angelscript/source/as_scriptcode.cpp
+	thirdparty/angelscript/source/as_scriptengine.cpp
+	thirdparty/angelscript/source/as_scriptfunction.cpp
+	thirdparty/angelscript/source/as_scriptnode.cpp
+	thirdparty/angelscript/source/as_scriptobject.cpp
+	thirdparty/angelscript/source/as_string.cpp
+	thirdparty/angelscript/source/as_string_util.cpp
+	thirdparty/angelscript/source/as_thread.cpp
+	thirdparty/angelscript/source/as_tokenizer.cpp
+	thirdparty/angelscript/source/as_typeinfo.cpp
+	thirdparty/angelscript/source/as_variablescope.cpp
+)
+
+set(ANGELSCRIPT_PLUGINS_SRC
+	thirdparty/angelscript/add_on/autowrapper/aswrappedcall.h
+	thirdparty/angelscript/add_on/contextmgr/contextmgr.h
+	thirdparty/angelscript/add_on/contextmgr/contextmgr.cpp
+	thirdparty/angelscript/add_on/debugger/debugger.h
+	thirdparty/angelscript/add_on/debugger/debugger.cpp
+	thirdparty/angelscript/add_on/scriptany/scriptany.h
+	thirdparty/angelscript/add_on/scriptany/scriptany.cpp
+	thirdparty/angelscript/add_on/scriptarray/scriptarray.h
+	thirdparty/angelscript/add_on/scriptarray/scriptarray.cpp
+	thirdparty/angelscript/add_on/scriptbuilder/scriptbuilder.h
+	thirdparty/angelscript/add_on/scriptbuilder/scriptbuilder.cpp
+	thirdparty/angelscript/add_on/scriptdictionary/scriptdictionary.h
+	thirdparty/angelscript/add_on/scriptdictionary/scriptdictionary.cpp
+	thirdparty/angelscript/add_on/scriptfile/scriptfile.h
+	thirdparty/angelscript/add_on/scriptfile/scriptfile.cpp
+	thirdparty/angelscript/add_on/scriptfile/scriptfilesystem.h
+	thirdparty/angelscript/add_on/scriptfile/scriptfilesystem.cpp
+	thirdparty/angelscript/add_on/scripthandle/scripthandle.h
+	thirdparty/angelscript/add_on/scripthandle/scripthandle.cpp
+	thirdparty/angelscript/add_on/scripthelper/scripthelper.h
+	thirdparty/angelscript/add_on/scripthelper/scripthelper.cpp
+	thirdparty/angelscript/add_on/scriptgrid/scriptgrid.h
+	thirdparty/angelscript/add_on/scriptgrid/scriptgrid.cpp
+	thirdparty/angelscript/add_on/scriptmath/scriptmath.h
+	thirdparty/angelscript/add_on/scriptmath/scriptmath.cpp
+	thirdparty/angelscript/add_on/scriptmath/scriptmathcomplex.h
+	thirdparty/angelscript/add_on/scriptmath/scriptmathcomplex.cpp
+	thirdparty/angelscript/add_on/scriptstdstring/scriptstdstring.h
+	thirdparty/angelscript/add_on/scriptstdstring/scriptstdstring.cpp
+	thirdparty/angelscript/add_on/scriptstdstring/scriptstdstring_utils.cpp
+	thirdparty/angelscript/add_on/serializer/serializer.h
+	thirdparty/angelscript/add_on/serializer/serializer.cpp
+	thirdparty/angelscript/add_on/weakref/weakref.h
+	thirdparty/angelscript/add_on/weakref/weakref.cpp
+)
+
+if(MSVC AND CMAKE_CL_64)
+    enable_language(ASM_MASM)
+    if(CMAKE_ASM_MASM_COMPILER_WORKS)
+        set(ANGELSCRIPT_SRC ${ANGELSCRIPT_SRC} thirdparty/angelscript/source/as_callfunc_x64_msvc_asm.asm)
+    else()
+        message(FATAL ERROR "MSVC x86_64 target requires a working assembler")
+    endif()
+endif()
+
+add_definitions(-DANGELSCRIPT_EXPORT -D_LIB)
+
+# Fix x64 issues on Linux
+if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64" AND NOT APPLE)
+    add_definitions(-fPIC)
+endif()
+
+add_library(AngelScript STATIC ${ANGELSCRIPT_SRC} ${ANGELSCRIPT_PLUGINS_SRC})
+target_link_libraries(AngelScript ${CMAKE_THREAD_LIBS_INIT})
+
+if(MSVC)
+    set_target_properties(${ANGELSCRIPT_LIBRARY_NAME} PROPERTIES COMPILE_FLAGS "/MP")
+	 add_definitions(-D_CRT_SECURE_NO_WARNINGS) 
+endif()
 
 #------------------------------------------------------------------------------
 # Zlib
@@ -258,10 +391,11 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/mng
 	thirdparty/zlib
 	thirdparty/SDL2/include
+	thirdparty/srutil
 	thirdparty
 	dif/include
-	thirdparty/v8/include
 	thirdparty/assimp/include
+	thirdparty/angelscript/include
 )
 
 # Main project source
@@ -270,6 +404,8 @@ set (DIFVIEWERGAME_SRC
 	source/main.cpp
 
 	# Base folder
+	source/base/config.cpp
+	source/base/config.h
 	source/base/io.cpp
 	source/base/io.h
 	source/base/math.cpp
@@ -278,10 +414,10 @@ set (DIFVIEWERGAME_SRC
 	source/base/types.h
 
 	# Bitmap folder
-	source/render/bitmap/jpegsupport.cpp
-	source/render/bitmap/jpegsupport.h
-	source/render/bitmap/mngsupport.cpp
-	source/render/bitmap/mngsupport.h
+	source/render/bitmap/jpegSupport.cpp
+	source/render/bitmap/jpegSupport.h
+	source/render/bitmap/mngSupport.cpp
+	source/render/bitmap/mngSupport.h
 
 	# Game folder
 	source/game/camera.cpp
@@ -293,6 +429,8 @@ set (DIFVIEWERGAME_SRC
 	source/game/movement.h
 	source/game/particleEmitter.cpp
 	source/game/particleEmitter.h
+	source/game/renderedObject.cpp
+	source/game/renderedObject.h
 	source/game/shape.cpp
 	source/game/shape.h
 	source/game/skybox.cpp
@@ -300,18 +438,15 @@ set (DIFVIEWERGAME_SRC
 	source/game/sphere.cpp
 	source/game/sphere.h
 	
-	# Graphics folder
-	source/graphics/bitmapTexture.cpp
-	source/graphics/bitmapTexture.h
-	source/graphics/cubeMapTexture.cpp
-	source/graphics/cubeMapTexture.h
-	source/graphics/cubeMapFramebufferTexture.cpp
-	source/graphics/cubeMapFramebufferTexture.h
-	source/graphics/shader.cpp
-	source/graphics/shader.h
-	source/graphics/texture.cpp
-	source/graphics/texture.h
-	source/graphics/util.h
+	# Texture folder
+	source/texture/bitmapTexture.cpp
+	source/texture/bitmapTexture.h
+	source/texture/cubeMapTexture.cpp
+	source/texture/cubeMapTexture.h
+	source/texture/cubeMapFramebufferTexture.cpp
+	source/texture/cubeMapFramebufferTexture.h
+	source/texture/texture.cpp
+	source/texture/texture.h
 
 	# Physics folder
 	source/physics/physicsBody.cpp
@@ -320,6 +455,8 @@ set (DIFVIEWERGAME_SRC
 	source/physics/physicsEngine.h
 	source/physics/physicsSphere.cpp
 	source/physics/physicsSphere.h
+
+	# Bullet physics
 	source/physics/bullet/btPhysicsBody.cpp
 	source/physics/bullet/btPhysicsBody.h
 	source/physics/bullet/btPhysicsEngine.cpp
@@ -328,6 +465,8 @@ set (DIFVIEWERGAME_SRC
 	source/physics/bullet/btPhysicsInterior.h
 	source/physics/bullet/btPhysicsSphere.cpp
 	source/physics/bullet/btPhysicsSphere.h
+	source/physics/bullet/btDebugDrawer.cpp
+	source/physics/bullet/btDebugDrawer.h
 
 	# Platform folder
 	source/platform/event.h
@@ -339,17 +478,29 @@ set (DIFVIEWERGAME_SRC
 	source/platformSDL/SDLWindow.cpp
 	source/platformSDL/SDLWindow.h
 	source/platformSDL/SDLConfig.h
-
+	
 	# Render folder
-	source/render/InteriorRender.cpp
+	source/render/interiorRender.cpp
 	source/render/material.cpp
 	source/render/material.h
 	source/render/modelManager.cpp
 	source/render/modelManager.h
+	source/render/renderInfo.h
 	source/render/scene.cpp
 	source/render/scene.h
+	source/render/shader.cpp
+	source/render/shader.h
+	source/render/util.h
 
+	# ScriptEngine
+	source/scriptEngine/scriptEngine.cpp
+	source/scriptEngine/scriptEngine.h
+	source/scriptEngine/scriptEngine.inl
+	source/scriptEngine/scriptFunctions.h
+	
 	# Shaders folder
+	source/shaders/defaultF.glsl
+	source/shaders/defaultV.glsl
 	source/shaders/interiorF.glsl
 	source/shaders/interiorV.glsl
 	source/shaders/modelF.glsl
@@ -358,6 +509,11 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/particleV.glsl
 	source/shaders/skyboxF.glsl
 	source/shaders/skyboxV.glsl
+	source/shaders/sphereF.glsl
+	source/shaders/sphereV.glsl
+	
+	# Scripts folder
+	source/scripts/main.as
 )
 
 #------------------------------------------------------------------------------
@@ -365,6 +521,12 @@ set (DIFVIEWERGAME_SRC
 #------------------------------------------------------------------------------
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
+
+#------------------------------------------------------------------------------
+# Bullet Physics Library
+#------------------------------------------------------------------------------
+
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
 
 #------------------------------------------------------------------------------
 
@@ -386,6 +548,9 @@ set (DIFVIEWERGAME_LIBRARIES
 	
 	#SDL2
 	SDL2-static
+	
+	# AngelScript
+	AngelScript
 )
 
 if (MSVC)
@@ -402,7 +567,8 @@ set (DIFVIEWERGAME_LIBRARIES
 	OpenGL32
 
 	# Assimp
-	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimpd.lib
+	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimpd.lib
+	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimp.lib
 )
 else()
 set (DIFVIEWERGAME_LIBRARIES
@@ -433,8 +599,8 @@ source_group("game\\physics"         REGULAR_EXPRESSION physics/.*)
 source_group("game\\physics\\bullet" REGULAR_EXPRESSION bullet/.*)
 source_group("platform"              REGULAR_EXPRESSION platform/.*)
 source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
-source_group("graphics"              REGULAR_EXPRESSION graphics/.*)
-source_group("graphics\\gl"          REGULAR_EXPRESSION gl/.*)
+source_group("scriptEngine"          REGULAR_EXPRESSION scriptEngine/.*)
+source_group("texture"               REGULAR_EXPRESSION texture/.*)
 source_group("assets\\shaders"       REGULAR_EXPRESSION shaders/.*)
 source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)
 
@@ -465,6 +631,8 @@ set (BUILD_DIR_FILES
 	source/shaders/interiorV.glsl
 	source/shaders/modelV.glsl
 	source/shaders/modelF.glsl
+	
+	source/scripts/main.as
 )
 
 add_custom_command(TARGET Game PRE_BUILD
