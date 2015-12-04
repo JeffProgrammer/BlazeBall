@@ -158,6 +158,8 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	if (inter == nullptr)
 		return true;
 
+	U32 index = isBody0 ? info.index1 : info.index0;
+
 	//printf("vel: %f %f %f\n", sphere->getLinearVelocity().x, sphere->getLinearVelocity().y, sphere->getLinearVelocity().z);
 	info.point.m_impactVelocity = btConvert(getLinearVelocity());
 
@@ -168,7 +170,7 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 				collisionPoint2.removeFromManifold
 	 */
 
-	const btPhysicsInterior::TriangleInfo &triangleInfo = inter->getTriangleInfo(isBody0 ? info.index1 : info.index0);
+	const btPhysicsInterior::TriangleInfo &triangleInfo = inter->getTriangleInfo(index);
 
 	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
 	const DIF::Interior::Surface &surf = dint.surface[triangleInfo.surfaceIndex];
@@ -176,60 +178,6 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 	glm::vec3 normal = dint.normal[dint.plane[surf.planeIndex].normalIndex];
 	if (surf.planeFlipped)
 		normal *= -1.f;
-
-	glm::vec3 btnormal = btConvert(info.point.m_normalWorldOnB);
-	F32 distance = glm::distance(btnormal, normal);
-
-//	printf("Actual normal %f %f %f\n", btnormal.x(), btnormal.y(), btnormal.z());
-//	printf("Expected normal %f %f %f\n", normal.x, normal.y, normal.z);
-//	printf("Distance: %f\n", btnormal.distance2(btConvert(normal)));
-
-	if (distance < 0.001) {
-		glm::vec3 collisionPoint = btConvert(info.point.m_positionWorldOnB);
-
-		TriangleF triangle(dint.point[triangleInfo.vertex[0]], dint.point[triangleInfo.vertex[1]], dint.point[triangleInfo.vertex[2]]);
-		if (triangle.isPointInside(collisionPoint) && !triangle.isPointOnEdge(collisionPoint)) {
-			btDispatcher *dispatcher = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld()->getCollisionWorld()->getDispatcher();
-			for (U32 i = 0; i < dispatcher->getNumManifolds(); i ++) {
-				btPersistentManifold *manifold = dispatcher->getManifoldByIndexInternal(i);
-
-				std::vector<int> toRemove;
-
-				if (manifold->getBody0() == mActor || manifold->getBody1() == mActor) {
-					if (manifold->getNumContacts() > 1) {
-						//Go through all the points for this manifold
-						for (U32 j = 0; j < manifold->getNumContacts(); j ++) {
-							btManifoldPoint &point = manifold->getContactPoint(j);
-							//Don't check our point
-							if (point.m_positionWorldOnB.distance2(info.point.m_positionWorldOnB) <= 0.0001f) {
-								//Same point
-								continue;
-							}
-							//Is the sphere 0 or 1?
-							bool pointIsBody0 = (manifold->getBody0() == mActor);
-
-							//See if their point qualifies
-							const btPhysicsInterior::TriangleInfo &pointInfo = inter->getTriangleInfo(pointIsBody0 ? point.m_index1 : point.m_index0);
-
-							//Is their point an edge?
-							TriangleF pointTriangle(dint.point[pointInfo.vertex[0]], dint.point[pointInfo.vertex[1]], dint.point[pointInfo.vertex[2]]);
-							if (pointTriangle.isPointOnEdge(btConvert(point.m_positionWorldOnB))) {
-								//Todo: check adjacency
-								if (pointTriangle.isTriangleAdjacent(triangle))
-									toRemove.push_back(j);
-							}
-						}
-						printf("Found one with %d contacts\n", manifold->getNumContacts());
-					}
-				}
-
-				//Remove the points backwards
-				for (auto it = toRemove.rbegin(); it != toRemove.rend(); it ++) {
-					manifold->removeContactPoint(*it);
-				}
-			}
-		}
-	}
 
 	//Texture names have properties
 	const std::string &surfName = dint.materialName[surf.textureIndex];
@@ -253,6 +201,73 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 }
 
 void btPhysicsSphere::notifyContact(ContactCallbackInfo &info, bool isBody0) {
+	//The interior with which we collided
+	btPhysicsInterior *inter = dynamic_cast<btPhysicsInterior *>(isBody0 ? info.body1 : info.body0);
+	if (inter == nullptr)
+		return;
+
+	U32 index = isBody0 ? info.index1 : info.index0;
+
+	const btPhysicsInterior::TriangleInfo &triangleInfo = inter->getTriangleInfo(index);
+	glm::vec3 collisionPoint = btConvert(info.point.m_positionWorldOnB);
+
+	const DIF::Interior &dint = inter->getInterior()->getInterior(); //Encapsulation to the rescue
+
+	TriangleF triangle(dint.point[triangleInfo.vertex[0]], dint.point[triangleInfo.vertex[1]], dint.point[triangleInfo.vertex[2]]);
+	if (triangle.isPointInside(collisionPoint) && !triangle.isPointOnEdge(collisionPoint)) {
+		btDispatcher *dispatcher = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld()->getCollisionWorld()->getDispatcher();
+		for (U32 i = 0; i < dispatcher->getNumManifolds(); i ++) {
+			btPersistentManifold *manifold = dispatcher->getManifoldByIndexInternal(i);
+
+			std::vector<int> toRemove;
+			bool pointIsBody0 = (manifold->getBody0() == mActor);
+
+			if (manifold->getBody0() == mActor || manifold->getBody1() == mActor) {
+				if (manifold->getNumContacts() > 1) {
+					printf("Found one with %d contacts:\n", manifold->getNumContacts());
+					//Go through all the points for this manifold
+					for (U32 j = 0; j < manifold->getNumContacts(); j ++) {
+						btManifoldPoint &point = manifold->getContactPoint(j);
+						//Is the sphere 0 or 1?
+
+						U32 pointIndex = (pointIsBody0 ? point.m_index1 : point.m_index0);
+
+						//See if their point qualifies
+						const btPhysicsInterior::TriangleInfo &pointInfo = inter->getTriangleInfo(pointIndex);
+
+						//Don't check our point
+						if (point.m_positionWorldOnB.distance2(info.point.m_positionWorldOnB) <= 0.0001f &&
+							point.m_normalWorldOnB.distance2(info.point.m_normalWorldOnB) <= 0.0001f) {
+							//Same point
+							printf("  Found the same point %d/%d == %d\n", pointIndex, j, triangleInfo.surfaceIndex);
+							continue;
+						}
+
+						//Is their point an edge?
+						TriangleF pointTriangle(dint.point[pointInfo.vertex[0]], dint.point[pointInfo.vertex[1]], dint.point[pointInfo.vertex[2]]);
+						if (pointTriangle.isPointOnEdge(btConvert(point.m_positionWorldOnB))) {
+							//Todo: check adjacency
+							if (pointTriangle.isTriangleAdjacent(triangle)) {
+								printf("  Removing contact point %d/%d\n", pointIndex, j);
+								toRemove.push_back(j);
+								continue;
+							} else {
+								printf("  Point not adjacent: %d/%d %s %s\n", pointIndex, j, pointTriangle.toString(), triangle.toString());
+							}
+						} else {
+							printf("  Point not on edge: %d/%d\n", pointIndex, j);
+						}
+					}
+				}
+			}
+
+			//Remove the points backwards
+			for (auto it = toRemove.rbegin(); it != toRemove.rend(); it ++) {
+				manifold->removeContactPoint(*it);
+			}
+		}
+	}
+
 	//How steep is the wall?
 	F32 wallDot = info.point.m_normalWorldOnB.dot(btVector3(0, 0, 1));
 
