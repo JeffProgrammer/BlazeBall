@@ -119,14 +119,14 @@ void ParticleEmitter::render(RenderInfo &info) {
 	glUniform1f(shader->getUniformLocation("currentTime"), getTime() - Particle::start);
 
 	// let opengl know where to divide up the data for each instance
-	glVertexAttribDivisorARB(shader->getAttributeLocation("vertex"), 0); // use all 4 vertices per strip
-	glVertexAttribDivisorARB(shader->getAttributeLocation("position"), 1); // 1 position per strip
-	glVertexAttribDivisorARB(shader->getAttributeLocation("velocity"), 1); // 1 position per strip
-	glVertexAttribDivisorARB(shader->getAttributeLocation("creation"), 1); // 1 position per strip
+	glVertexAttribDivisor(shader->getAttributeLocation("vertex"), 0); // use all 4 vertices per strip
+	glVertexAttribDivisor(shader->getAttributeLocation("position"), 1); // 1 position per strip
+	glVertexAttribDivisor(shader->getAttributeLocation("velocity"), 1); // 1 position per strip
+	glVertexAttribDivisor(shader->getAttributeLocation("creation"), 1); // 1 position per strip
 	GL_CHECKERRORS();
 
 	// draw each particle
-	glDrawArraysInstancedARB(GL_TRIANGLE_STRIP, 0, 4, MAX_PARTICLE_COUNT);
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, MAX_PARTICLE_COUNT);
 	GL_CHECKERRORS();
 
 	// reset everything.
@@ -134,10 +134,10 @@ void ParticleEmitter::render(RenderInfo &info) {
 	shader->disableAttribute("position");
 	mMaterial->deactivate();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glVertexAttribDivisorARB(shader->getAttributeLocation("vertex"), 0);
-	glVertexAttribDivisorARB(shader->getAttributeLocation("position"), 0);
-	glVertexAttribDivisorARB(shader->getAttributeLocation("velocity"), 0);
-	glVertexAttribDivisorARB(shader->getAttributeLocation("creation"), 0);
+	glVertexAttribDivisor(shader->getAttributeLocation("vertex"), 0);
+	glVertexAttribDivisor(shader->getAttributeLocation("position"), 0);
+	glVertexAttribDivisor(shader->getAttributeLocation("velocity"), 0);
+	glVertexAttribDivisor(shader->getAttributeLocation("creation"), 0);
 	GL_CHECKERRORS();
 
 	glDepthMask(GL_TRUE);
