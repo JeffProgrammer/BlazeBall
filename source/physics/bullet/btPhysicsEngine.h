@@ -47,8 +47,14 @@ class btPhysicsBody;
 struct ContactCallbackInfo {
 	btManifoldPoint &point;
 	
-	const btCollisionObjectWrapper *colObj0Wrap;
-	const btCollisionObjectWrapper *colObj1Wrap;
+	union {
+		const btCollisionObjectWrapper *colObj0Wrap;
+		const btCollisionObject *colObj0;
+	};
+	union {
+		const btCollisionObjectWrapper *colObj1Wrap;
+		const btCollisionObject *colObj1;
+	};
 	int partId0;
 	int partId1;
 	int index0;
