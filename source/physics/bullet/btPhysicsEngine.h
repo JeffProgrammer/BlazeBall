@@ -83,6 +83,7 @@ public:
 	virtual void init();
 	virtual void simulate(const F64 &delta);
 	virtual void addBody(PhysicsBody *body);
+	virtual void raycast(RaycastInfo &info);
 	virtual void debugDraw(RenderInfo &info, const DebugDrawType &drawType);
 	virtual PhysicsBody *createInterior(GameInterior *interior);
 	virtual PhysicsBody *createSphere(const F32 &radius);

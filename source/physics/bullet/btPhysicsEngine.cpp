@@ -119,3 +119,19 @@ PhysicsBody *btPhysicsEngine::createSphere(const F32 &radius) {
 void btPhysicsEngine::debugDraw(RenderInfo &info, const DebugDrawType &drawType) {
 	debugDrawer->draw(info, drawType);
 }
+
+void btPhysicsEngine::raycast(RaycastInfo &info) {
+
+	btVector3 rayFrom = btConvert(info.from);
+	btVector3 rayTo   = btConvert(info.to);
+
+	btCollisionWorld::ClosestRayResultCallback resultCallback(rayFrom, rayTo);
+	world->rayTest(rayFrom, rayTo, resultCallback);
+
+	info.hit = resultCallback.hasHit();
+	if (info.hit) {
+		info.body = (void *)resultCallback.m_collisionObject;
+		info.point = btConvert(resultCallback.m_hitPointWorld);
+		info.normal = btConvert(resultCallback.m_hitNormalWorld);
+	}
+}
