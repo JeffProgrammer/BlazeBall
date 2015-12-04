@@ -1,7 +1,6 @@
 //------------------------------------------------------------------------------
 // Copyright (c) 2015 Glenn Smith
 // Copyright (c) 2015 Jeff Hutchinson
-// Copyright (c) 2015 Whirligig231
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -9,13 +8,6 @@
 #include "physics/bullet/btPhysicsInterior.h"
 #include "game/gameInterior.h"
 #include <vector>
-
-extern std::vector<ShapeInfo> shapes;
-extern std::vector<BodyInfo> bodies;
-extern std::vector<BodyMovement> moves;
-
-/// BEHOLD, THE MAGIC NUMBER
-#define ADJACENCY_NORMAL_THRESHOLD 0.01f
 
 btPhysicsInterior::btPhysicsInterior(GameInterior *interior) : btPhysicsBody(), mInterior(interior) {
 	construct();
@@ -77,15 +69,4 @@ void btPhysicsInterior::construct() {
 	mActor->setRestitution(1.f);
 	mActor->setFriction(1.f);
 	mActor->setCollisionFlags(mActor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
-
-	ShapeInfo info;
-	info.shape = shape;
-	shapes.push_back(info);
-
-	BodyInfo infoo;
-	infoo.body = mActor;
-	infoo.collisionNormal = btVector3(0.0f, 0.0f, 0.0f);
-	infoo.isDynamic = false;
-	infoo.shape = info;
-	bodies.push_back(infoo);
 }

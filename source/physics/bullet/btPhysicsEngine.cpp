@@ -1,7 +1,6 @@
 //------------------------------------------------------------------------------
 // Copyright (c) 2015 Glenn Smith
 // Copyright (c) 2015 Jeff Hutchinson
-// Copyright (c) 2015 Whirligig231
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -17,14 +16,7 @@
 #include <algorithm>
 #include <vector>
 
-std::vector<ShapeInfo> shapes;
-std::vector<BodyInfo> bodies;
-std::vector<BodyMovement> moves;
-
 bool contactAddedCallback(btManifoldPoint &cp, const btCollisionObjectWrapper *colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper *colObj1Wrap, int partId1, int index1) {
-//	btAdjustInternalEdgeContacts(cp, colObj0Wrap, colObj1Wrap, partId1, index1, BT_TRIANGLE_CONVEX_DOUBLE_SIDED);
-//	btAdjustInternalEdgeContacts(cp, colObj1Wrap, colObj0Wrap, partId0, index0, BT_TRIANGLE_CONVEX_DOUBLE_SIDED);
-
 	btPhysicsBody *body0 = static_cast<btPhysicsBody *>(colObj0Wrap->getCollisionObject()->getUserPointer());
 	btPhysicsBody *body1 = static_cast<btPhysicsBody *>(colObj1Wrap->getCollisionObject()->getUserPointer());
 

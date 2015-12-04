@@ -57,10 +57,6 @@ public:
 	}
 };
 
-extern std::vector<ShapeInfo> shapes;
-extern std::vector<BodyInfo> bodies;
-extern std::vector<BodyMovement> moves;
-
 btPhysicsSphere::btPhysicsSphere(const F32 &radius) : mRadius(radius) {
 	//Motion state and shape
 	btMotionState *state = new btDefaultMotionState();
@@ -91,17 +87,6 @@ btPhysicsSphere::btPhysicsSphere(const F32 &radius) : mRadius(radius) {
 	mActor->setRollingFriction(3.0f);
 	mActor->setAnisotropicFriction(shape->getAnisotropicRollingFrictionDirection(), btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION);
 	mActor->setContactProcessingThreshold(0.0f);
-
-	ShapeInfo infooo;
-	infooo.shape = shape;
-	shapes.push_back(infooo);
-    
-	BodyInfo infoo;
-	infoo.body = mActor;
-	infoo.collisionNormal = btVector3(0.0f, 0.0f, 0.0f);
-	infoo.isDynamic = true;
-	infoo.shape = infooo;
-	bodies.push_back(infoo);
 }
 
 bool btPhysicsSphere::getColliding() {
