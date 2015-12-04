@@ -1,11 +1,11 @@
-#version 120
+#version 330
 
-attribute vec2 vertex;
-attribute vec3 position;
-attribute vec3 velocity;
-attribute float creation;
+layout(location = 0) in vec2 vertex;
+layout(location = 1) in vec3 position;
+layout(location = 2) in vec3 velocity;
+layout(location = 3) in float creation;
 
-varying vec2 UV;
+out vec2 UV;
 
 uniform mat4 projectionMat;
 uniform mat4 modelMat;

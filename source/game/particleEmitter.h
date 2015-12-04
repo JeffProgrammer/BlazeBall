@@ -7,7 +7,7 @@
 #ifndef _GAME_PARTICLEEMITTER_H_
 #define _GAME_PARTICLEEMITTER_H_
 
-#include "game/gameObject.h"
+#include "game/renderedObject.h"
 #include "render/material.h"
 
 #ifdef __APPLE__
@@ -60,7 +60,7 @@ static GLfloat sParticleVertices[] = {
 	0.5f, 0.5f
 };
 
-class ParticleEmitter : public GameObject {
+class ParticleEmitter : public RenderedObject {
 protected:
 	std::vector<Particle> mParticles;
 
@@ -73,10 +73,15 @@ public:
 	ParticleEmitter();
 	virtual ~ParticleEmitter();
 
-	virtual void loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix);
-	virtual void render(Shader *shader, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix);
-	
+	virtual void render(RenderInfo &info);
 	virtual void updateTick(const F64 &deltaMS);
+
+	void setMaterial(Material *material) {
+		mMaterial = material;
+	}
+	Material *getMaterial() {
+		return mMaterial;
+	}
 };
 
 #endif // _GAME_PARTICLEEMITTER_H_

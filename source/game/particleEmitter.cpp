@@ -45,10 +45,10 @@
 // http://delphigl.de/glcapsviewer/gl_listreports.php?listreportsbyextension=GL_ARB_instanced_arrays
 
 #include "game/particleEmitter.h"
-#include "graphics/util.h"
+#include "render/util.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-#define MAX_PARTICLE_COUNT 20
+#define MAX_PARTICLE_COUNT 100
 #define PARTICLE_TIME 30000.0
 
 // TODO: make particles render in a particle manager, so that we only have to have
@@ -56,7 +56,7 @@
 
 F64 Particle::start = 0;
 
-ParticleEmitter::ParticleEmitter() : GameObject() {
+ParticleEmitter::ParticleEmitter() : RenderedObject() {
 
 	// create particles
 	for (S32 i = 0; i < MAX_PARTICLE_COUNT; i++) {
@@ -71,7 +71,7 @@ ParticleEmitter::ParticleEmitter() : GameObject() {
 		mParticles.push_back(p);
 	}
 
-	mMaterial = new Material("dustParticle.png");
+	mMaterial = NULL;
 
 	// billboard data does not change
 	glGenBuffers(1, &mVertVBO);
@@ -90,15 +90,18 @@ ParticleEmitter::~ParticleEmitter() {
 	glDeleteBuffers(1, &mVertVBO);
 }
 
-void ParticleEmitter::loadMatrix(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, glm::mat4 &modelMatrix) {
-	GameObject::loadMatrix(projectionMatrix, viewMatrix, modelMatrix);
-}
+void ParticleEmitter::render(RenderInfo &info) {
+	if (mMaterial == NULL)
+		return;
 
-void ParticleEmitter::render(Shader *shader, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix) {
+	glDepthMask(GL_FALSE);
+
 	mMaterial->activate();
+	Shader *shader = mMaterial->getShader();
+	info.loadShader(shader);
 
 	// get our view matrix as this is used for rendering as a billboard
-	glm::mat4 view = glm::mat4(glm::mat3(viewMatrix));
+	glm::mat4 view = glm::mat4(glm::mat3(info.viewMatrix));
 	view = glm::inverse(view);
 	glUniformMatrix4fv(shader->getUniformLocation("inverseCameraMatrix"), 1, GL_FALSE, &view[0][0]);
 	GL_CHECKERRORS();
@@ -136,6 +139,8 @@ void ParticleEmitter::render(Shader *shader, const glm::mat4 &projectionMatrix, 
 	glVertexAttribDivisorARB(shader->getAttributeLocation("velocity"), 0);
 	glVertexAttribDivisorARB(shader->getAttributeLocation("creation"), 0);
 	GL_CHECKERRORS();
+
+	glDepthMask(GL_TRUE);
 }
 
 void ParticleEmitter::updateTick(const F64 &deltaMS) {

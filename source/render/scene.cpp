@@ -291,13 +291,6 @@ void Scene::handleEvent(Event *event) {
 					captureMouse = false;
 					break;
 				}
-				case KeyEvent::KEY_R:
-				{
-					//Reload shaders
-					loadShaders();
-					GL_CHECKERRORS();
-					break;
-				}
 				default:
 					break;
 			}
@@ -460,9 +453,16 @@ void Scene::run() {
 	}
 
 	{
-		mEmitter = new ParticleEmitter();
-		mEmitter->setPosition(glm::vec3(0.0f, 0.0f, -30.0f));
-		addObject(mEmitter);
+		Shader *shader = new Shader("particleV.glsl", "particleF.glsl");
+		shader->addUniformLocation("textureSampler", 0);
+
+		Material *material = new Material("dustParticle.png");
+		material->setShader(shader);
+
+		ParticleEmitter *emitter = new ParticleEmitter();
+		emitter->setMaterial(material);
+		emitter->setPosition(glm::vec3(0.0f, 0.0f, -30.0f));
+		addObject(emitter);
 	}	
 
 	controlObject = mPlayer;

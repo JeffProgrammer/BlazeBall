@@ -82,7 +82,6 @@ public:
 	Sphere *mPlayer;
 	Skybox *mSkybox;
 	CubeMapFramebufferTexture *marbleCubemap;
-	ParticleEmitter *mEmitter;
 
 	Window *window;
 	Timer *mTimer;
