@@ -64,6 +64,14 @@ void Scene::render() {
 
 	//Actually render everything
 	renderScene(info);
+
+	if (mDoDebugDraw) {
+		glDisable(GL_DEPTH_TEST);
+		PhysicsEngine::getEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Everything);
+		glEnable(GL_DEPTH_TEST);
+	} else {
+		PhysicsEngine::getEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Nothing);
+	}
 }
 
 void Scene::renderScene(RenderInfo &info) {
@@ -97,14 +105,14 @@ void Scene::renderScene(RenderInfo &info) {
 	GL_CHECKERRORS();
 }
 
-void Scene::loop(const F64 &deltaMS) {
+void Scene::loop(const F64 &delta) {
 
 }
 
-void Scene::tick(const F64 &deltaMS) {
+void Scene::tick(const F64 &delta) {
 	if (controlObject) {
-		controlObject->updateCamera(movement, deltaMS);
-		controlObject->updateMove(movement, deltaMS);
+		controlObject->updateCamera(movement, delta);
+		controlObject->updateMove(movement, delta);
 	}
 
 	movement.pitch = 0;
@@ -115,7 +123,7 @@ void Scene::tick(const F64 &deltaMS) {
 	}
 
 	for (auto object : objects) {
-		object->updateTick(deltaMS);
+		object->updateTick(delta);
 	}
 }
 
@@ -249,6 +257,34 @@ void Scene::handleEvent(Event *event) {
 					}
 					break;
 				}
+				case KeyEvent::KEY_F:
+				{
+					mSimulationSpeed *= 0.5f;
+					break;
+				}
+				case KeyEvent::KEY_P:
+				{
+					mSimulationSpeed *= 2.0f;
+					break;
+				}
+				case KeyEvent::KEY_T:
+				{
+					mDoDebugDraw = !mDoDebugDraw;
+					break;
+				}
+				case KeyEvent::KEY_U:
+				{
+					// mbu / regular marble
+					if (mPlayer->getRadius() < 0.3f) {
+						mPlayer->setRadius(0.3f);
+						marbleCubemap->setExtent(glm::vec2(128, 128));
+					}
+					else {
+						mPlayer->setRadius(0.2f);
+						marbleCubemap->setExtent(glm::vec2(64, 64));
+					}
+					break;
+				}
 				default:
 					break;
 			}
@@ -324,6 +360,7 @@ void Scene::handleEvent(Event *event) {
 bool Scene::init() {
 	running = true;
 	mShouldSleep = false;
+	mDoDebugDraw = false;
 
 	if (!window->createContext()) {
 		return false;
@@ -354,9 +391,13 @@ void Scene::run() {
 	F64 counter = 0;
 	U32 fpsCounter = 0;
 
+	mSimulationSpeed = 1.0f;
+
 	PhysicsEngine::getEngine()->setStepCallback([&](F64 delta){
-		this->loop(delta * 1000.0f);
-		this->tick(delta * 1000.0f);
+		if (mSimulationSpeed == 1.0f) {
+		this->loop(delta);
+		this->tick(delta);
+		}
 	});
 
 	// onStart
@@ -431,7 +472,12 @@ void Scene::run() {
 		}
 
 		//Update the physics and game items
-		PhysicsEngine::getEngine()->simulate(lastDelta);
+		PhysicsEngine::getEngine()->simulate(lastDelta * mSimulationSpeed);
+
+		if (mSimulationSpeed != 1.0f) {
+			this->loop(lastDelta * mSimulationSpeed);
+			this->tick(lastDelta * mSimulationSpeed);
+		}
 
 		render();
 		
@@ -442,7 +488,7 @@ void Scene::run() {
 		if (printFPS) {
 			counter += lastDelta;
 			fpsCounter++;
-			if (counter >= 1000.0) {
+			if (counter >= 1.f) {
 				F32 mspf = 1000.0f / fpsCounter;
 				std::string title = "FPS: " + std::to_string(fpsCounter) + " mspf: " + std::to_string(mspf);
 				window->setWindowTitle(title.c_str());

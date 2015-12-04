@@ -10,6 +10,9 @@
 #include <stdio.h>
 #include <functional>
 #include "base/types.h"
+#include "render/renderInfo.h"
+
+#define PHYSICS_TICK 0.01666
 
 class PhysicsBody;
 class GameInterior;
@@ -44,6 +47,14 @@ public:
 
 	static void setEngine(PhysicsEngine *engine);
 	static PhysicsEngine *getEngine();
+
+	enum DebugDrawType {
+		Everything,
+		Nothing
+	};
+
+	virtual void debugDraw(RenderInfo &info, const DebugDrawType &drawType) = 0;
+
 };
 
 #endif

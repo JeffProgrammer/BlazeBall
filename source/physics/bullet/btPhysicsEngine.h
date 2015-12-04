@@ -7,8 +7,6 @@
 #ifndef btPhysicsEngine_h
 #define btPhysicsEngine_h
 
-#define PHYSICS_TICK 0.01666
-
 #include <stdio.h>
 #include "base/types.h"
 #include "physics/physicsEngine.h"
@@ -49,8 +47,14 @@ class btPhysicsBody;
 struct ContactCallbackInfo {
 	btManifoldPoint &point;
 	
-	const btCollisionObjectWrapper *colObj0Wrap;
-	const btCollisionObjectWrapper *colObj1Wrap;
+	union {
+		const btCollisionObjectWrapper *colObj0Wrap;
+		const btCollisionObject *colObj0;
+	};
+	union {
+		const btCollisionObjectWrapper *colObj1Wrap;
+		const btCollisionObject *colObj1;
+	};
 	int partId0;
 	int partId1;
 	int index0;
@@ -62,19 +66,24 @@ struct ContactCallbackInfo {
 	ContactCallbackInfo(btManifoldPoint &pt) : point(pt) {};
 };
 
+class btDebugDrawer;
+
 class btPhysicsEngine : public PhysicsEngine {
 	btDiscreteDynamicsWorld *world;
 	btCollisionDispatcher *dispatcher;
+	btDebugDrawer *debugDrawer;
+	
 	bool running;
 	F64 extraTime;
 
-	virtual void step(F64 delta);
+	virtual void step(const F64 &delta);
 public:
 	btPhysicsEngine();
 	
 	virtual void init();
 	virtual void simulate(const F64 &delta);
 	virtual void addBody(PhysicsBody *body);
+	virtual void debugDraw(RenderInfo &info, const DebugDrawType &drawType);
 	virtual PhysicsBody *createInterior(GameInterior *interior);
 	virtual PhysicsBody *createSphere(const F32 &radius);
 

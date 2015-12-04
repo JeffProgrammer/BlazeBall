@@ -75,7 +75,8 @@ class btManifoldPoint
 					m_contactMotion2(0.f),
 					m_contactCFM1(0.f),
 					m_contactCFM2(0.f),
-					m_lifeTime(0)
+					m_lifeTime(0),
+					m_impactVelocity(btScalar(0.), btScalar(0.), btScalar(0.))
 			{
 				
 			}
@@ -116,7 +117,7 @@ class btManifoldPoint
 			btVector3		m_lateralFrictionDir1;
 			btVector3		m_lateralFrictionDir2;
 
-
+			btVector3 m_impactVelocity;
 
 
 			btScalar getDistance() const

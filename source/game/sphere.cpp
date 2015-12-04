@@ -12,6 +12,7 @@
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/projection.hpp>
 
 GLuint gSphereVBO = 0;
 
@@ -96,7 +97,7 @@ void Sphere::calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix
 
 void Sphere::draw(Material *material, RenderInfo &info, void *userInfo) {
 	loadModelMatrix(info, material->getShader());
-	material->getShader()->setUniform("reflectivity", 1.f);
+	material->getShader()->setUniform("reflectivity", 0.2f);
 
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
 	material->getShader()->enableAttributes();
@@ -135,8 +136,8 @@ bool Sphere::getColliding() {
 	return dynamic_cast<PhysicsSphere *>(mActor)->getColliding();
 }
 
-glm::vec3 Sphere::getCollisionNormal() {
-	return dynamic_cast<PhysicsSphere *>(mActor)->getCollisionNormal();
+glm::vec3 Sphere::getCollisionNormal(glm::vec3 &toiVelocity) {
+	return dynamic_cast<PhysicsSphere *>(mActor)->getCollisionNormal(toiVelocity);
 }
 
 glm::vec3 Sphere::getPosition() {
@@ -163,8 +164,8 @@ void Sphere::setRotation(const glm::quat &rot) {
 	mActor->setRotation(rot);
 }
 
-void Sphere::setVelocity(const glm::vec3 &vel) {
-    mActor->setVelocity(vel);
+void Sphere::setLinearVelocity(const glm::vec3 &vel) {
+    mActor->setLinearVelocity(vel);
 }
 
 void Sphere::setAngularVelocity(const glm::vec3 &vel) {
@@ -180,7 +181,7 @@ void Sphere::setRadius(const F32 &radius) {
 	dynamic_cast<PhysicsSphere *>(mActor)->setRadius(radius);
 }
 
-void Sphere::updateCamera(const Movement &movement, const F64 &deltaMS) {
+void Sphere::updateCamera(const Movement &movement, const F64 &delta) {
 	if (movement.pitchUp) cameraPitch -= keyCameraSpeed;
 	if (movement.pitchDown) cameraPitch += keyCameraSpeed;
 	if (movement.yawLeft) cameraYaw -= keyCameraSpeed;
@@ -189,13 +190,10 @@ void Sphere::updateCamera(const Movement &movement, const F64 &deltaMS) {
 	cameraPitch += movement.pitch * cameraSpeed;
 	cameraYaw += movement.yaw * cameraSpeed;
 }
-
-void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
+void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 	//Apply the camera yaw to a matrix so our rolling is based on the camera direction
-	glm::mat4x4 delta = glm::mat4x4(1);
-	delta = glm::rotate(delta, -cameraYaw, glm::vec3(0, 0, 1));
-
-	F32 deltaSeconds = static_cast<F32>(deltaMS) / 1000.0f;
+	glm::mat4x4 deltaMat = glm::mat4x4(1);
+	deltaMat = glm::rotate(deltaMat, -cameraYaw, glm::vec3(0, 0, 1));
 
 	//Convert the movement into a vector
 	glm::vec3 move = glm::vec3();
@@ -205,9 +203,9 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 	if (movement.right) move.x ++;
 
 	//Linear velocity relative to camera yaw (for capping)
-	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(delta), mActor->getLinearVelocity())[3]);
-	glm::vec3 angRel = glm::cross(glm::vec3(glm::translate(glm::inverse(delta), mActor->getAngularVelocity())[3]), glm::vec3(0, 0, 1));
-	glm::vec3 torque = move * AppliedAcceleration * deltaSeconds;
+	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(deltaMat), mActor->getLinearVelocity())[3]);
+	glm::vec3 angRel = glm::cross(glm::vec3(glm::translate(glm::inverse(deltaMat), mActor->getAngularVelocity())[3]), glm::vec3(0, 0, 1));
+	glm::vec3 torque = move * AppliedAcceleration * F32(delta);
 
 	if (getColliding()) {
 		//Don't let us go faster than the max velocity in any direction.
@@ -229,41 +227,37 @@ void Sphere::updateMove(const Movement &movement, const F64 &deltaMS) {
 //	printf("T:  %f %f\n", torque.x, torque.y);
 
 	//Torque is based on the movement and yaw
-	glm::vec3 torqueRel = glm::vec3(glm::translate(delta, torque)[3]);
+	glm::vec3 torqueRel = glm::vec3(glm::translate(deltaMat, torque)[3]);
 	//Cross to convert 3d coordinates into torque
 	applyTorque(glm::cross(glm::vec3(0, 0, 1), torqueRel));
 
 	//If we are colliding with the ground, we have the chance to jump
 	if (getColliding()) {
-		if (jumpTicks == 0) {
-			//Make sure we're not trying to jump off a wall. Anything with a dot product > 0.1 is considered "not a wall"
-			glm::vec3 normal = getCollisionNormal();
-			if (movement.jump && glm::dot(normal, glm::vec3(0, 0, 1)) > 0.1) {
-				//Jump takes the average of the collision normal and the up vector to provide a mostly upwards
-				// jump but still taking the surface into account.
-				glm::vec3 jumpNormal = (normal + glm::vec3(0, 0, 1)) / 2.f;
-				glm::vec3 vel = mActor->getLinearVelocity();
+		//Impact velocity is stored when we collide so we can use it here
+		glm::vec3 impactVelocity;
+		//Get collision information
+		glm::vec3 normal = getCollisionNormal(impactVelocity);
+		glm::vec3 vel = mActor->getLinearVelocity();
 
-				glm::vec3 proj = jumpNormal * (glm::dot(vel, jumpNormal) * glm::dot(jumpNormal, jumpNormal));
-				printf("jump normal: %f %f %f\nvel: %f %f %f\nproj: %f %f %f\n",
-					   jumpNormal.x, jumpNormal.y, jumpNormal.z,
-					   vel.x, vel.y, vel.z,
-					   proj.x, proj.y, proj.z
-					   );
+		// dot against up vector to determine if we can jump
+		// TODO: take gravities into account
+		glm::vec3 up = glm::vec3(0, 0, 1);
+		if (movement.jump && glm::dot(up, normal) > 0.001f) {
+			glm::vec3 currentVelocity = glm::proj(vel, normal);
 
-				if (glm::length(proj) < JumpImpulse) {
-					applyImpulse(jumpNormal * (JumpImpulse - glm::length(proj)), glm::vec3(0, 0, 0));
-				}
+			glm::vec3 projVel = glm::proj(vel, normal);
 
-				printf("Jump!\n");
+			if (glm::length(projVel) < JumpImpulse) {
+				glm::vec3 finalVelocity = vel - currentVelocity + (normal * JumpImpulse);
+				setLinearVelocity(finalVelocity);
+				printf("Jump! Impact velocity: %f %f %f\n   final Velocity: %f %f %f\n    Projection velocity: %f %f %f\n    Dot: %f\n", vel.x, vel.y, vel.z, finalVelocity.x, finalVelocity.y, finalVelocity.z, projVel.x, projVel.y, projVel.z, glm::dot(up, normal));
+			} else {
+				printf("No jump, projection velocity is %f %f %f\n", projVel.x, projVel.y, projVel.z);
 			}
-			jumpTicks = 2;
-		} else {
-			jumpTicks --;
 		}
 	} else {
-		glm::vec3 moveRel = glm::vec3(glm::translate(delta, move)[3]);
-		moveRel *= AirAcceleration * deltaSeconds;
+		glm::vec3 moveRel = glm::vec3(glm::translate(deltaMat, move)[3]);
+		moveRel *= AirAcceleration * delta;
 
 		//If we're not touching the ground, apply slight air movement.
 		applyImpulse(moveRel, glm::vec3(0, 0, 0));
@@ -294,11 +288,33 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
 	pos = getPosition() + rot;
 }
 
-void Sphere::updateTick(const F64 &deltaMS) {
+void Sphere::updateTick(const F64 &delta) {
 	//Temporary OOB solution for now
 	if (getPosition().z < -40) {
 		setPosition(glm::vec3(0, 0, 60));
-		setVelocity(glm::vec3(0, 0, 0));
+		setLinearVelocity(glm::vec3(0, 0, 0));
 		setAngularVelocity(glm::vec3(0, 0, 0));
 	}
 }
+
+// OLD JUMP CODE
+//Make sure we're not trying to jump off a wall. Anything with a dot product > 0.1 is considered "not a wall"
+//glm::vec3 normal = getCollisionNormal();
+//if (movement.jump && glm::dot(normal, glm::vec3(0, 0, 1)) > 0.1) {
+//Jump takes the average of the collision normal and the up vector to provide a mostly upwards
+// jump but still taking the surface into account.
+//glm::vec3 jumpNormal = (normal + glm::vec3(0, 0, 1)) / 2.f;
+//glm::vec3 vel = glm::vec3(0, 0, 0);//mActor->getLinearVelocity();
+
+//glm::vec3 proj = jumpNormal * (glm::dot(vel, jumpNormal) * glm::dot(jumpNormal, jumpNormal));
+//glm::vec3 imp = jumpNormal * (JumpImpulse - glm::length(proj));
+//printf("jump normal: %f %f %f\nvel: %f %f %f\nproj: %f %f %f\nimp: %f %f %f\n",
+// jumpNormal.x, jumpNormal.y, jumpNormal.z,
+//vel.x, vel.y, vel.z,
+// proj.x, proj.y, proj.z,
+//imp.x, imp.y, imp.z
+// );
+
+//if (glm::length(proj) < JumpImpulse) {
+//applyImpulse(imp, glm::vec3(0, 0, 0));
+//}

@@ -28,7 +28,7 @@ public:
 	virtual void setPosition(const glm::vec3 &position);
 	virtual void setRotation(const glm::quat &rotation);
 	virtual void setScale(const glm::vec3 &scale);
-    virtual void setVelocity(const glm::vec3 &velocity);
+    virtual void setLinearVelocity(const glm::vec3 &velocity);
     virtual void setAngularVelocity(const glm::vec3 &velocity);
 
 	virtual void applyTorque(const glm::vec3 &torque);
@@ -36,6 +36,7 @@ public:
 	virtual void applyForce(const glm::vec3 &force, const glm::vec3 &origin);
 
 	virtual bool modifyContact(ContactCallbackInfo &info, bool isBody0);
+	virtual void notifyContact(ContactCallbackInfo &info, bool isBody0);
 
 	btRigidBody *getActor() {
 		return mActor;

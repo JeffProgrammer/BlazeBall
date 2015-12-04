@@ -8,9 +8,10 @@
 #include "platformSDL/SDLWindow.h"
 #include "platformSDL/SDLTimer.h"
 #include "render/scene.h"
-#include "physics/bullet/btPhysicsEngine.h"
 #include "game/GameInterior.h"
 #include "scriptEngine/scriptEngine.h"
+
+#include "physics/bullet/btPhysicsEngine.h"
 
 extern GLuint gSphereVBO;
 

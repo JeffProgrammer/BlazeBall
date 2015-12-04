@@ -63,6 +63,9 @@ protected:
 	Movement movement;
 
 	F32 pixelDensity;
+	F32 mSimulationSpeed;
+
+	bool mDoDebugDraw;
 
 public:
 	const glm::vec4 lightColor     = glm::vec4(1.000000f, 1.000000f, 1.000000f, 1.400000f);
@@ -108,8 +111,8 @@ public:
 	void renderScene(RenderInfo &info);
 	void render();
 
-	void loop(const F64 &deltaMS);
-	void tick(const F64 &deltaMS);
+	void loop(const F64 &delta);
+	void tick(const F64 &delta);
 	bool initGL();
 	bool init();
 	void cleanup();

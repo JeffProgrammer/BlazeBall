@@ -10,12 +10,18 @@
 #include "btPhysicsBody.h"
 
 class btPhysicsInterior : public btPhysicsBody {
+public:
+	struct TriangleInfo {
+		U32 surfaceIndex;
+		U32 vertex[3];
+	};
+protected:
 	GameInterior *mInterior;
-	std::map<U32, U32> mTriangleLookup;
+	std::map<U32, TriangleInfo> mTriangleLookup;
 public:
 	GameInterior *getInterior() { return mInterior; }
 
-	U32 getSurfaceIndexFromTriangleIndex(const U32 &triangleIndex) { return mTriangleLookup[triangleIndex]; }
+	const TriangleInfo &getTriangleInfo(const U32 &triangleIndex) { return mTriangleLookup[triangleIndex]; }
 	btPhysicsInterior(GameInterior *interior);
 	void construct();
 };

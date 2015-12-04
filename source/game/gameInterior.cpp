@@ -136,10 +136,7 @@ U32 GameInterior::rayCast(RayF ray) {
 		const DIF::Interior::Surface &surface = mInterior.surface[i];
 
 		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
-			TriangleF triangle;
-			triangle.point0 = mInterior.point[mInterior.index[surface.windingStart + j]];
-			triangle.point1 = mInterior.point[mInterior.index[surface.windingStart + j + 1]];
-			triangle.point2 = mInterior.point[mInterior.index[surface.windingStart + j + 2]];
+			TriangleF triangle(mInterior.point[mInterior.index[surface.windingStart + j]], mInterior.point[mInterior.index[surface.windingStart + j + 1]], mInterior.point[mInterior.index[surface.windingStart + j + 2]]);
 
 			F32 distance = ray.distance(triangle);
 			if (distance > 0 && distance < closestDistance) {

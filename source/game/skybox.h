@@ -33,7 +33,7 @@ public:
 	virtual bool isReflectable() { return true; }
 
 	virtual void render(RenderInfo &info);
-	virtual inline void updateTick(const F64 &deltaMS) {};
+	virtual inline void updateTick(const F64 &delta) {};
 };
 
 #endif /* skybox_h */
