@@ -392,7 +392,6 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/zlib
 	thirdparty/SDL2/include
 	thirdparty/srutil
-	thirdparty/physx/include
 	thirdparty
 	dif/include
 	thirdparty/assimp/include
@@ -466,16 +465,6 @@ set (DIFVIEWERGAME_SRC
 	source/physics/bullet/btPhysicsSphere.h
 	source/physics/bullet/btDebugDrawer.cpp
 	source/physics/bullet/btDebugDrawer.h
-
-	# Physx physics
-	source/physics/physx/pxPhysicsBody.cpp
-	source/physics/physx/pxPhysicsBody.h
-	source/physics/physx/pxPhysicsEngine.cpp
-	source/physics/physx/pxPhysicsEngine.h
-	source/physics/physx/pxPhysicsInterior.cpp
-	source/physics/physx/pxPhysicsInterior.h
-	source/physics/physx/pxPhysicsSphere.cpp
-	source/physics/physx/pxPhysicsSphere.h
 
 	# Platform folder
 	source/platform/event.h
@@ -576,34 +565,6 @@ set (DIFVIEWERGAME_LIBRARIES
 	# Assimp
 	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimpd.lib
 	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimp.lib
-
-	# Physx
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/LowLevelDEBUG.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/LowLevelClothDEBUG.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PhysX3DEBUG_x86.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PhysX3CommonDEBUG_x86.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PhysX3CookingDEBUG_x86.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PhysX3ExtensionsDEBUG.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PhysXProfileSDKDEBUG.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PhysXVisualDebuggerSDKDEBUG.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PvdRuntimeDEBUG.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/PxTaskDEBUG.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/SceneQueryDEBUG.lib
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Debug/SimulationControllerDEBUG.lib
-
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/LowLevel.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/LowLevelCloth.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PhysX3_x86.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PhysX3Common_x86.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PhysX3Cooking_x86.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PhysX3Extensions.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PhysXProfileSDK.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PhysXVisualDebuggerSDK.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PvdRuntime.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/PxTask.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/SceneQuery.lib
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x86/Release/SimulationController.lib
-
 )
 else()
 set (DIFVIEWERGAME_LIBRARIES
@@ -613,33 +574,6 @@ set (DIFVIEWERGAME_LIBRARIES
 	# Assimp
 	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x64/Debug/libassimpd.a
 	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x64/Release/libassimp.a
-
-	# Physx
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libLowLevel.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libLowLevelCloth.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3Common.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3Cooking.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysX3Extensions.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysXProfileSDK.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPhysXVisualDebuggerSDK.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPvdRuntime.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libPxTask.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libSceneQuery.a
-	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Debug/libSimulationController.a
-
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libLowLevel.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libLowLevelCloth.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3Common.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3Cooking.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysX3Extensions.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysXProfileSDK.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPhysXVisualDebuggerSDK.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPvdRuntime.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libPxTask.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libSceneQuery.a
-	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/physx/bin/x64/Release/libSimulationController.a
 )
 endif()
 
@@ -659,7 +593,6 @@ source_group("game"                  REGULAR_EXPRESSION game/.*)
 source_group("objects"               REGULAR_EXPRESSION objects/.*)
 source_group("game\\physics"         REGULAR_EXPRESSION physics/.*)
 source_group("game\\physics\\bullet" REGULAR_EXPRESSION bullet/.*)
-source_group("game\\physics\\physx"  REGULAR_EXPRESSION physx/.*)
 source_group("platform"              REGULAR_EXPRESSION platform/.*)
 source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
 source_group("scriptEngine"          REGULAR_EXPRESSION scriptEngine/.*)
