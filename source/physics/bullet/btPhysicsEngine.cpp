@@ -116,6 +116,6 @@ PhysicsBody *btPhysicsEngine::createSphere(const F32 &radius) {
 	return new btPhysicsSphere(radius);
 }
 
-void btPhysicsEngine::debugDraw(RenderInfo &info) {
-	debugDrawer->draw(info);
+void btPhysicsEngine::debugDraw(RenderInfo &info, const DebugDrawType &drawType) {
+	debugDrawer->draw(info, drawType);
 }

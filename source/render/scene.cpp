@@ -66,12 +66,12 @@ void Scene::render() {
 	renderScene(info);
 
 	if (mDoDebugDraw) {
-	glDisable(GL_DEPTH_TEST);
-	PhysicsEngine::getEngine()->debugDraw(info);
-	glEnable(GL_DEPTH_TEST);
+		glDisable(GL_DEPTH_TEST);
+		PhysicsEngine::getEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Everything);
+		glEnable(GL_DEPTH_TEST);
 	} else {
-		PhysicsEngine::getEngine()->debugDraw(info);
-}
+		PhysicsEngine::getEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Nothing);
+	}
 }
 
 void Scene::renderScene(RenderInfo &info) {
@@ -360,7 +360,7 @@ void Scene::handleEvent(Event *event) {
 bool Scene::init() {
 	running = true;
 	mShouldSleep = false;
-	mDoDebugDraw = true;
+	mDoDebugDraw = false;
 
 	if (!window->createContext()) {
 		return false;

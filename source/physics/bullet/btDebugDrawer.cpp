@@ -31,7 +31,13 @@ void btDebugDrawer::reportErrorWarning(const char *warningString) {
 
 }
 
-void btDebugDrawer::draw(RenderInfo &info) {
+void btDebugDrawer::draw(RenderInfo &info, const PhysicsEngine::DebugDrawType &drawType) {
+	if (drawType == PhysicsEngine::DebugDrawType::Nothing) {
+		//Dump data and return
+		mLinePoints.clear();
+		return;
+	}
+
 	if (mShader == NULL) {
 		mShader = new Shader("debugV.glsl", "debugF.glsl");
 		glGenBuffers(1, &mVertexBuffer);

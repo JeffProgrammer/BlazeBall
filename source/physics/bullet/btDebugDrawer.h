@@ -40,7 +40,7 @@ public:
 	virtual void drawContactPoint(const btVector3 &PointOnB, const btVector3 &normalOnB, btScalar distance, int lifeTime, const btVector3 &color);
 	virtual void reportErrorWarning(const char *warningString);
 
-	void draw(RenderInfo &info);
+	void draw(RenderInfo &info, const PhysicsEngine::DebugDrawType &drawType);
 };
 
 #endif /* btDebugDrawer_h */
