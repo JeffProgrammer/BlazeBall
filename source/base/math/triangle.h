@@ -16,12 +16,33 @@ public:
 
 	}
 
+	inline const char *toString() const {
+		return (std::string("Polygon[") +
+		"(" + std::to_string(point0.x) + "," + std::to_string(point0.y) + "," + std::to_string(point0.z) + ")" + ","
+		"(" + std::to_string(point1.x) + "," + std::to_string(point1.y) + "," + std::to_string(point1.z) + ")" + ","
+		"(" + std::to_string(point2.x) + "," + std::to_string(point2.y) + "," + std::to_string(point2.z) + ")" + "]").c_str();
+	}
+
+	inline bool operator==(const TriangleF &other) const {
+		U32 same = 0;
+		if (other.point0 == point0) same ++;
+		if (other.point0 == point1) same ++;
+		if (other.point0 == point2) same ++;
+		if (other.point1 == point0) same ++;
+		if (other.point1 == point1) same ++;
+		if (other.point1 == point2) same ++;
+		if (other.point2 == point0) same ++;
+		if (other.point2 == point1) same ++;
+		if (other.point2 == point2) same ++;
+		return (same >= 3); // If > 3 then we're technically a line/point, not a triangle
+	}
+
 	inline bool isPointOnEdge(const glm::vec3 &point) {
 		F32 lineDist01 = glm::length(glm::cross(point0 - point, glm::normalize(point1 - point0)));
 		F32 lineDist12 = glm::length(glm::cross(point1 - point, glm::normalize(point2 - point1)));
 		F32 lineDist20 = glm::length(glm::cross(point2 - point, glm::normalize(point0 - point2)));
 
-		return (lineDist01 == 0 || lineDist12 == 0 || lineDist20 == 0);
+		return (lineDist01 <= 0.001f || lineDist12 <= 0.001f || lineDist20 <= 0.001f);
 	}
 
 	inline bool isPointInside(const glm::vec3 &point) {
@@ -45,31 +66,42 @@ public:
 	}
 
 	inline bool isTriangleAdjacent(const TriangleF &other) {
-		// check normals first, then perform collinearity tests on each line segment.
-		// if they are not the same in the cross products of normals, then
-		// they are in fact NOT adjacent.
-		glm::vec3 crossA = glm::cross(point1 - point0, point2 - point1);
-		glm::vec3 crossB = glm::cross(other.point1 - other.point0, other.point2 - other.point1);
-		//if (crossA != crossB)
-			//return false;
+		//Check if the two are the same triangle
+		if (*this == other)
+			return true;
 
-		if (isCollinear(point1 - point0, other.point1 - other.point0))
+		U32 same = 0;
+		if (other.point0 == point0) same ++;
+		if (other.point0 == point1) same ++;
+		if (other.point0 == point2) same ++;
+		if (other.point1 == point0) same ++;
+		if (other.point1 == point1) same ++;
+		if (other.point1 == point2) same ++;
+		if (other.point2 == point0) same ++;
+		if (other.point2 == point1) same ++;
+		if (other.point2 == point2) same ++;
+
+		//Easy check
+		if (same >= 2)
 			return true;
-		if (isCollinear(point2 - point1, other.point1 - other.point0))
+
+		if (isCollinear(point1, point0, other.point1, other.point0))
 			return true;
-		if (isCollinear(point0 - point2, other.point1 - other.point0))
+		if (isCollinear(point2, point1, other.point1, other.point0))
 			return true;
-		if (isCollinear(point1 - point0, other.point2 - other.point1))
+		if (isCollinear(point0, point2, other.point1, other.point0))
 			return true;
-		if (isCollinear(point2 - point1, other.point2 - other.point1))
+		if (isCollinear(point1, point0, other.point2, other.point1))
 			return true;
-		if (isCollinear(point0 - point2, other.point2 - other.point1))
+		if (isCollinear(point2, point1, other.point2, other.point1))
 			return true;
-		if (isCollinear(point1 - point0, other.point0 - other.point2))
+		if (isCollinear(point0, point2, other.point2, other.point1))
 			return true;
-		if (isCollinear(point2 - point1, other.point0 - other.point2))
+		if (isCollinear(point1, point0, other.point0, other.point2))
 			return true;
-		if (isCollinear(point0 - point2, other.point0 - other.point2))
+		if (isCollinear(point2, point1, other.point0, other.point2))
+			return true;
+		if (isCollinear(point0, point2, other.point0, other.point2))
 			return true;
 		return false;
 	}
