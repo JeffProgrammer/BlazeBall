@@ -1232,7 +1232,8 @@ public:
           if (m_debugDrawer->getDebugMode() & btIDebugDraw::DBG_DrawNormals )
           {
 		    btVector3 normal = (wv1-wv0).cross(wv2-wv0);
-		    normal.normalize();
+		    //normal.normalize();
+			 normal.safeNormalize();
 		    btVector3 normalColor(1,1,0);
 		    m_debugDrawer->drawLine(center,center+normal,normalColor);
           }
