@@ -260,7 +260,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 		moveRel *= AirAcceleration * delta;
 
 		//If we're not touching the ground, apply slight air movement.
-		applyForce(moveRel, glm::vec3(0, 0, 0));
+		applyImpulse(moveRel, glm::vec3(0, 0, 0));
 	}
 	//Crappy damping
 	if (movement.forward + movement.backward + movement.left + movement.right == 0 && getColliding()) {
