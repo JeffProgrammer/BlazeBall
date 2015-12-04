@@ -40,3 +40,15 @@ glm::vec2 point_project_plane(const glm::vec3 &point, const glm::vec3 &normal, c
 
 	return glm::vec2(adjacent, opposite);
 }
+
+bool isCollinear(const glm::vec3 &lineA, const glm::vec3 &lineB) {
+	F32 lineALen = glm::length(lineA);
+	F32 lineBLen = glm::length(lineB);
+	F32 theta = glm::acos((lineA.x / lineALen) * (lineB.x / lineBLen) +
+								 (lineA.y / lineALen) * (lineB.y / lineBLen) +
+								 (lineA.z / lineALen) * (lineB.z / lineBLen));
+	theta = glm::abs(theta);
+	if (theta >= 0.9999f && theta <= 1.0001f)
+		return true;
+	return false;
+}
