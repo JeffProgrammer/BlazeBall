@@ -285,6 +285,12 @@ void Scene::handleEvent(Event *event) {
 					}
 					break;
 				}
+				case KeyEvent::KEY_ESCAPE:
+				{
+					window->lockCursor(false);
+					captureMouse = false;
+					break;
+				}
 				default:
 					break;
 			}
@@ -310,7 +316,7 @@ void Scene::handleEvent(Event *event) {
 		}
 		//Mouse for rotation
 		case Event::MouseMove:
-			if (mouseButtons.right) {
+			if (captureMouse) {
 				movement.yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x;
 				movement.pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y;
 			}
@@ -323,11 +329,9 @@ void Scene::handleEvent(Event *event) {
 				default: break;
 			}
 
-			if (((MouseDownEvent *)event)->button == 3) { //Right mouse: lock cursor
-				window->lockCursor(true);
-			}
-
 			if (((MouseDownEvent *)event)->button == 1) { //Left mouse: click
+				window->lockCursor(true);
+				captureMouse = true;
 				performClick(((MouseDownEvent *)event)->position.x, ((MouseDownEvent *)event)->position.y);
 			}
 			break;
@@ -337,10 +341,6 @@ void Scene::handleEvent(Event *event) {
 				case 2: mouseButtons.middle = false; break;
 				case 3: mouseButtons.right  = false; break;
 				default: break;
-			}
-
-			if (((MouseUpEvent *)event)->button == 3) { //Right mouse: lock cursor
-				window->lockCursor(false);
 			}
 			break;
 		case Event::WindowFocus:
