@@ -43,6 +43,36 @@ public:
 
 		return (u >= 0.f) && (v >= 0.f) && (u + v < 1.f);
 	}
+
+	inline bool isTriangleAdjacent(const TriangleF &other) {
+		// check normals first, then perform collinearity tests on each line segment.
+		// if they are not the same in the cross products of normals, then
+		// they are in fact NOT adjacent.
+		glm::vec3 crossA = glm::cross(point1 - point0, point2 - point1);
+		glm::vec3 crossB = glm::cross(other.point1 - other.point0, other.point2 - other.point1);
+		//if (crossA != crossB)
+			//return false;
+
+		if (isCollinear(point1 - point0, other.point1 - other.point0))
+			return true;
+		if (isCollinear(point2 - point1, other.point1 - other.point0))
+			return true;
+		if (isCollinear(point0 - point2, other.point1 - other.point0))
+			return true;
+		if (isCollinear(point1 - point0, other.point2 - other.point1))
+			return true;
+		if (isCollinear(point2 - point1, other.point2 - other.point1))
+			return true;
+		if (isCollinear(point0 - point2, other.point2 - other.point1))
+			return true;
+		if (isCollinear(point1 - point0, other.point0 - other.point2))
+			return true;
+		if (isCollinear(point2 - point1, other.point0 - other.point2))
+			return true;
+		if (isCollinear(point0 - point2, other.point0 - other.point2))
+			return true;
+		return false;
+	}
 };
 
 #endif
