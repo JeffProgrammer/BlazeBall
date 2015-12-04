@@ -215,8 +215,8 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 							TriangleF pointTriangle(dint.point[pointInfo.vertex[0]], dint.point[pointInfo.vertex[1]], dint.point[pointInfo.vertex[2]]);
 							if (pointTriangle.isPointOnEdge(btConvert(point.m_positionWorldOnB))) {
 								//Todo: check adjacency
-
-								toRemove.push_back(j);
+								if (pointTriangle.isTriangleAdjacent(triangle))
+									toRemove.push_back(j);
 							}
 						}
 						printf("Found one with %d contacts\n", manifold->getNumContacts());
@@ -229,10 +229,6 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 				}
 			}
 		}
-
-
-	} else {
-		return false;
 	}
 
 	//Texture names have properties
