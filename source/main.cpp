@@ -12,6 +12,7 @@
 #include "scriptEngine/scriptEngine.h"
 
 #include "physics/bullet/btPhysicsEngine.h"
+#include "game/levelLoader.h"
 
 extern GLuint gSphereVBO;
 
@@ -40,6 +41,8 @@ int main(int argc, const char *argv[]) {
 
 	// parse command line arguments.
 	parseArgs(argc, argv);
+
+	loadLevel("level.json");
 
 	//Let our scene go!
 	scene->run();
