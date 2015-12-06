@@ -396,6 +396,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	dif/include
 	thirdparty/assimp/include
 	thirdparty/angelscript/include
+	thirdparty/rapidjson/include
 )
 
 # Main project source
@@ -426,6 +427,8 @@ set (DIFVIEWERGAME_SRC
 	source/game/gameObject.h
 	source/game/gameInterior.cpp
 	source/game/gameInterior.h
+	source/game/levelLoader.cpp
+	source/game/levelLoader.h
 	source/game/movement.h
 	source/game/renderedObject.cpp
 	source/game/renderedObject.h
