@@ -32,17 +32,16 @@ class Sphere : public RenderedObject {
 
 protected:
 	std::vector<glm::vec3> geometry;
-public:
 	PhysicsBody *mActor;
-	F32 radius;
-	F32 maxAngVel;
-	Material *material;
+	F32 mRadius;
+	F32 mMaxAngVel;
+	Material *mMaterial;
 
-	bool generated;
+	bool mGenerated;
 
-	F32 cameraYaw;
-	F32 cameraPitch;
-private:
+	F32 mCameraYaw;
+	F32 mCameraPitch;
+
 	void generate();
 
 	const U32 segments = 36;
@@ -69,7 +68,7 @@ public:
 	void setRadius(const F32 &radius);
 
 	void setMaterial(Material *material) {
-		this->material = material;
+		this->mMaterial = material;
 	}
 
 	void applyTorque(const glm::vec3 &torque);

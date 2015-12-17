@@ -18,18 +18,18 @@ void GameInterior::init() {
 	std::vector<U32> materialTriangles(mInterior.materialName.size());
 
 	U32 numTriangles = 0;
-	renderInfo.numMaterialTriangles = std::vector<U32>(mInterior.surface.size());
+	mRenderInfo.numMaterialTriangles = std::vector<U32>(mInterior.surface.size());
 
 	//Generate our triangle mesh for rendering
 	for (U32 i = 0; i < mInterior.surface.size(); i ++) {
 		DIF::Interior::Surface surface = mInterior.surface[i];
-		renderInfo.numMaterialTriangles[surface.textureIndex] += surface.windingCount - 2;
+		mRenderInfo.numMaterialTriangles[surface.textureIndex] += surface.windingCount - 2;
 		numTriangles += surface.windingCount - 2;
 	}
 	
 	//Load all the textures
 	for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
-		perMaterialTriangles[i] = std::vector<Triangle>(renderInfo.numMaterialTriangles[i]);
+		perMaterialTriangles[i] = std::vector<Triangle>(mRenderInfo.numMaterialTriangles[i]);
 	}
 
 	std::vector<glm::vec3> tangentMap(mInterior.normal.size());
@@ -116,7 +116,7 @@ void GameInterior::init() {
 	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * numTriangles, &triangle[0], GL_STATIC_DRAW);
 	
-	renderInfo.generated = true;
+	mRenderInfo.generated = true;
 }
 
 void GameInterior::drawMaterial(Material *material, ::RenderInfo &info, void *userData) {
@@ -139,12 +139,12 @@ void GameInterior::drawMaterial(Material *material, ::RenderInfo &info, void *us
 }
 
 void GameInterior::render(::RenderInfo &info) {
-	if (!renderInfo.generated)
+	if (!mRenderInfo.generated)
 		init();
 
 	U32 last = 0;
 	for (U32 i = 0; i < mInterior.materialName.size(); i ++) {
-		U32 numTriangles = renderInfo.numMaterialTriangles[i];
+		U32 numTriangles = mRenderInfo.numMaterialTriangles[i];
 		if (numTriangles > 0) {
 			//Get this as a variable so we can access it in the render method
 			U32 start = last;

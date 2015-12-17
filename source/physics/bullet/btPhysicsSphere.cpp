@@ -57,7 +57,7 @@ public:
 	}
 };
 
-btPhysicsSphere::btPhysicsSphere(const F32 &radius) : mRadius(radius) {
+btPhysicsSphere::btPhysicsSphere(const F32 &radius) {
 	//Motion state and shape
 	btMotionState *state = new btDefaultMotionState();
 	btCollisionShape *shape = new btSphereShape(radius);

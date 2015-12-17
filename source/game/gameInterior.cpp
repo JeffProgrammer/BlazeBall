@@ -24,7 +24,7 @@ GameInterior::~GameInterior() {
 }
 
 void GameInterior::gfxInit() {
-	renderInfo.generated = false;
+	mRenderInfo.generated = false;
 }
 
 void GameInterior::generateMaterials(std::string directory) {

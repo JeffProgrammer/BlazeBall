@@ -19,7 +19,7 @@ Shader *Shader::defaultShader = nullptr;
 
 Shader::Shader(const std::string &vertPath, const std::string &fragPath) {
 	//Try to generate the shader
-	programId = loadProgram(vertPath, fragPath);
+	mProgramId = loadProgram(vertPath, fragPath);
 }
 
 Shader::~Shader() {
@@ -72,11 +72,11 @@ GLuint Shader::loadProgram(const std::string &vertPath, const std::string &fragP
 	while (glGetError() != GL_NO_ERROR);
 	
 	//Try to load both the vertex and fragment shaders
-	vertId = loadShader(vertPath, GL_VERTEX_SHADER);
-	fragId = loadShader(fragPath, GL_FRAGMENT_SHADER);
+	mVertId = loadShader(vertPath, GL_VERTEX_SHADER);
+	mFragId = loadShader(fragPath, GL_FRAGMENT_SHADER);
 	
 	//If either failed, we can't create a program.
-	if (vertId == 0 || fragId == 0)
+	if (mVertId == 0 || mFragId == 0)
 		return 0;
 	
 	//If there was any error, then let us know.
@@ -88,8 +88,8 @@ GLuint Shader::loadProgram(const std::string &vertPath, const std::string &fragP
 	
 	//Try to create a program from the shaders
 	GLuint progID = glCreateProgram();
-	glAttachShader(progID, vertId);
-	glAttachShader(progID, fragId);
+	glAttachShader(progID, mVertId);
+	glAttachShader(progID, mFragId);
 	glLinkProgram(progID);
 	
 	GLint result = GL_FALSE;
@@ -109,23 +109,23 @@ GLuint Shader::loadProgram(const std::string &vertPath, const std::string &fragP
 		delete[] log;
 
 		//Clean up the shaders
-		glDeleteShader(vertId);
-		glDeleteShader(fragId);
+		glDeleteShader(mVertId);
+		glDeleteShader(mFragId);
 		
 		//Can't return an id if we didn't succeed.
 		return 0;
 	}
 	
 	//Clean up the shaders
-	glDeleteShader(vertId);
-	glDeleteShader(fragId);
+	glDeleteShader(mVertId);
+	glDeleteShader(mFragId);
 	
 	delete[] log;
 	return progID;
 }
 
 GLuint Shader::getProgramId() {
-	return programId;
+	return mProgramId;
 }
 
 GLint Shader::getUniformLocation(const std::string &name) {

@@ -11,7 +11,6 @@
 #include "physics/physicsSphere.h"
 
 class btPhysicsSphere : public btPhysicsBody, public PhysicsSphere {
-	F32 mRadius;
 public:
 	btPhysicsSphere(const F32 &mRadius);
 

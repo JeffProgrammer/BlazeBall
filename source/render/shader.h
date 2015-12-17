@@ -29,9 +29,9 @@ protected:
 		const GLvoid *pointer;
 	};
 
-	GLuint vertId;
-	GLuint fragId;
-	GLuint programId;
+	GLuint mVertId;
+	GLuint mFragId;
+	GLuint mProgramId;
 
 	std::unordered_map<std::string, GLuint> mUniformLocations;
 	std::unordered_map<std::string, GLuint> mAttribLocations;

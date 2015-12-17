@@ -19,7 +19,7 @@ class GameInterior;
 
 class PhysicsEngine {
 public:
-	typedef std::function<void(F64)> StepCallback;
+	typedef std::function<void(const F64 &)> StepCallback;
 protected:
 	static PhysicsEngine *gEngine;
 
@@ -27,7 +27,7 @@ protected:
 
 	StepCallback stepCallback;
 
-	inline virtual void step(F64 delta) {
+	inline virtual void step(const F64 &delta) {
 		this->stepCallback(delta);
 	}
 public:

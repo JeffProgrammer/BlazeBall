@@ -16,16 +16,16 @@
 
 GLuint gSphereVBO = 0;
 
-Sphere::Sphere(glm::vec3 origin, F32 radius) : RenderedObject(), radius(radius), maxAngVel(1000.0f), material(nullptr) {
-	mActor = PhysicsEngine::getEngine()->createSphere(radius);
+Sphere::Sphere(glm::vec3 origin, F32 radius) : RenderedObject(), mRadius(radius), mMaxAngVel(1000.0f), mMaterial(nullptr) {
+	mActor = PhysicsEngine::getEngine()->createSphere(mRadius);
 	mActor->setPosition(origin);
 	mActor->setMass(1.0f);
 	PhysicsEngine::getEngine()->addBody(mActor);
 	
-	generated = false;
+	mGenerated = false;
 
-	cameraYaw = 0.0f;
-	cameraPitch = 0.0f;
+	mCameraYaw = 0.0f;
+	mCameraPitch = 0.0f;
 }
 
 Sphere::~Sphere() {
@@ -92,7 +92,7 @@ void Sphere::generate() {
 void Sphere::calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix) {
 	RenderedObject::calculateModelMatrix(info, modelMatrix);
 
-	modelMatrix = glm::scale(modelMatrix, glm::vec3(radius));
+	modelMatrix = glm::scale(modelMatrix, glm::vec3(mRadius));
 }
 
 void Sphere::draw(Material *material, RenderInfo &info, void *userInfo) {
@@ -109,15 +109,15 @@ void Sphere::draw(Material *material, RenderInfo &info, void *userInfo) {
 }
 
 void Sphere::render(RenderInfo &info) {
-	if (!generated) {
+	if (!mGenerated) {
 		generate();
-		generated = true;
+		mGenerated = true;
 	}
 
-	if (!material)
+	if (!mMaterial)
 		return;
 
-	info.addRenderMethod(material, RenderInfo::RenderMethod::from_method<Sphere, &Sphere::draw>(this));
+	info.addRenderMethod(mMaterial, RenderInfo::RenderMethod::from_method<Sphere, &Sphere::draw>(this));
 }
 
 void Sphere::applyTorque(const glm::vec3 &torque) {
@@ -177,23 +177,23 @@ F32 Sphere::getRadius() {
 }
 
 void Sphere::setRadius(const F32 &radius) {
-	this->radius = radius;
+	this->mRadius = radius;
 	dynamic_cast<PhysicsSphere *>(mActor)->setRadius(radius);
 }
 
 void Sphere::updateCamera(const Movement &movement, const F64 &delta) {
-	if (movement.pitchUp) cameraPitch -= keyCameraSpeed;
-	if (movement.pitchDown) cameraPitch += keyCameraSpeed;
-	if (movement.yawLeft) cameraYaw -= keyCameraSpeed;
-	if (movement.yawRight) cameraYaw += keyCameraSpeed;
+	if (movement.pitchUp) mCameraPitch -= keyCameraSpeed;
+	if (movement.pitchDown) mCameraPitch += keyCameraSpeed;
+	if (movement.yawLeft) mCameraYaw -= keyCameraSpeed;
+	if (movement.yawRight) mCameraYaw += keyCameraSpeed;
 
-	cameraPitch += movement.pitch * cameraSpeed;
-	cameraYaw += movement.yaw * cameraSpeed;
+	mCameraPitch += movement.pitch * cameraSpeed;
+	mCameraYaw += movement.yaw * cameraSpeed;
 }
 void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 	//Apply the camera yaw to a matrix so our rolling is based on the camera direction
 	glm::mat4x4 deltaMat = glm::mat4x4(1);
-	deltaMat = glm::rotate(deltaMat, -cameraYaw, glm::vec3(0, 0, 1));
+	deltaMat = glm::rotate(deltaMat, -mCameraYaw, glm::vec3(0, 0, 1));
 
 	//Convert the movement into a vector
 	glm::vec3 move = glm::vec3();
@@ -274,8 +274,8 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
 	glm::mat4x4 rotation(1);
 
 	//Rotate camera around the marble, also rotating the offset above
-	rotation = glm::rotate(rotation, cameraPitch, glm::vec3(1, 0, 0));
-	rotation = glm::rotate(rotation, cameraYaw, glm::vec3(0, 0, 1));
+	rotation = glm::rotate(rotation, mCameraPitch, glm::vec3(1, 0, 0));
+	rotation = glm::rotate(rotation, mCameraYaw, glm::vec3(0, 0, 1));
 
 	//Reset
 	mat = glm::mat4x4(1);
