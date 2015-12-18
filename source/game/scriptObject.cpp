@@ -25,8 +25,8 @@ void ScriptObject::addDynamicField(const std::string &name, const std::string &v
 	// TODO: create a stringtable to manage memory.
 	const char *k = strlwr(strdup(name.c_str()));
 
-	// if we already have this field, don't add it!
-	// instead, just override it and give a warning.
+	// if we already have this field
+	// just override it and give a warning.
 	if (containsField(name))
 		printf("object %p already contains the field %s. Replacing value %s with %s\n.", this, name.c_str(), mDynamicFieldList[k], value.c_str());
 
