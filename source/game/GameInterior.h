@@ -19,7 +19,7 @@
 #include <vector>
 
 class GameInterior : public RenderedObject {
-private:
+protected:
 	DIF::Interior mInterior;
 	std::vector<Material*> mMaterialList;
 	Texture *mNoiseTexture;
@@ -30,7 +30,7 @@ private:
 		std::vector<U32> numMaterialTriangles;
 		bool generated;
 	};
-	RenderInfo renderInfo;
+	RenderInfo mRenderInfo;
 
 	struct RenderUserData {
 		U32 numTriangles;

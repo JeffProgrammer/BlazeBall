@@ -19,7 +19,7 @@ class GameInterior;
 
 class PhysicsEngine {
 public:
-	typedef std::function<void(F64)> StepCallback;
+	typedef std::function<void(const F64 &)> StepCallback;
 protected:
 	static PhysicsEngine *gEngine;
 
@@ -27,7 +27,7 @@ protected:
 
 	StepCallback stepCallback;
 
-	inline virtual void step(F64 delta) {
+	inline virtual void step(const F64 &delta) {
 		this->stepCallback(delta);
 	}
 public:
@@ -47,6 +47,18 @@ public:
 
 	static void setEngine(PhysicsEngine *engine);
 	static PhysicsEngine *getEngine();
+
+	struct RaycastInfo {
+		glm::vec3 from;
+		glm::vec3 to;
+		bool hit;
+
+		glm::vec3 point;
+		glm::vec3 normal;		
+		void *body;
+	};
+
+	virtual void raycast(RaycastInfo &info) = 0;
 
 	enum DebugDrawType {
 		Everything,

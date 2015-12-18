@@ -17,8 +17,8 @@ void Material::loadTextures(const std::string &path) {
 		return;
 
 	//Some basic fields for identifying the material
-	this->name = IO::getName(path);
-	this->path = path;
+	mName = IO::getName(path);
+	mPath = path;
 
 	//Normal and specular maps are .normal.png and .spec.png
 	std::string norm = path + ".normal.png";
@@ -30,8 +30,8 @@ void Material::loadTextures(const std::string &path) {
 
 void Material::loadTextures(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) {
 	//Some basic fields for identifying the material in case we don't call the above method
-	this->name = IO::getName(diffusePath);
-	this->path = diffusePath;
+	mName = IO::getName(diffusePath);
+	mPath = diffusePath;
 
 	//Diffuse texture- needs to be loaded or else we can't have a material.
 	if (!tryLoadTexture(diffusePath, GL_TEXTURE0)) {
@@ -79,11 +79,11 @@ bool Material::tryLoadTexture(const std::string &path, const GLuint &index) {
 
 void Material::activate() {
 	//If this material has a shader, we should use it.
-	if (shader) {
-		shader->activate();
+	if (mShader) {
+		mShader->activate();
 	}
 	//Activate all of the textures on this shader.
-	for (auto iter : textures) {
+	for (auto iter : mTextures) {
 		if (iter.second) {
 			iter.second->activate(iter.first);
 		}
@@ -92,11 +92,11 @@ void Material::activate() {
 
 void Material::deactivate() {
 	//If this material has a shader, we need to deactivate it
-	if (shader) {
-		shader->deactivate();
+	if (mShader) {
+		mShader->deactivate();
 	}
 	//Deactivate all of the textures on this shader.
-	for (auto iter : textures) {
+	for (auto iter : mTextures) {
 		if (iter.second) {
 			iter.second->deactivate();
 		}
@@ -104,5 +104,5 @@ void Material::deactivate() {
 }
 
 void Material::setTexture(Texture *texture, const GLuint &index) {
-	this->textures[index] = texture;
+	this->mTextures[index] = texture;
 }

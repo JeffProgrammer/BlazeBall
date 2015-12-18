@@ -445,9 +445,10 @@ void Scene::run() {
 		shader->addAttribute("vertexBitangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
 
 		Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
-		player->material = new Material("marble.skin");
-		player->material->setTexture(marbleCubemap, GL_TEXTURE3);
-		player->material->setShader(shader);
+		Material *material = new Material("marble.skin");
+		material->setTexture(marbleCubemap, GL_TEXTURE3);
+		material->setShader(shader);
+		player->setMaterial(material);
 		mPlayer = player;
 		addObject(player);
 	}

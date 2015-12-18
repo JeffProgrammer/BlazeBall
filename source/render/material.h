@@ -17,11 +17,11 @@
 #define DEFAULT_SPECULAR_TEXTURE "DefaultSpec.png"
 
 class Material {
-	std::unordered_map<GLuint, Texture *> textures;
-	Shader *shader;
+	std::unordered_map<GLuint, Texture *> mTextures;
+	Shader *mShader;
 
-	std::string name;
-	std::string path;
+	std::string mName;
+	std::string mPath;
 
 	/**
 	 * Attempt to load textures for the material from a given diffuse path, resolving
@@ -51,7 +51,7 @@ public:
 	 * @param texture  A texture that will be used on the material
 	 * @param location The location for the given texture
 	 */
-	Material(const std::string &name, Texture *texture, GLuint location) : shader(nullptr), name(name) {
+	Material(const std::string &name, Texture *texture, GLuint location) : mShader(nullptr), mName(name) {
 		setTexture(texture, location);
 	}
 
@@ -61,7 +61,7 @@ public:
 	 * @param textures A vector of <Texture *, GLuint> pairs specifying the textures
 	 *                 and their desired locations.
 	 */
-	Material(const std::string &name, const std::vector<std::pair<Texture *, GLuint>> &textures) : shader(nullptr), name(name) {
+	Material(const std::string &name, const std::vector<std::pair<Texture *, GLuint>> &textures) : mShader(nullptr), mName(name) {
 		for (auto &texture : textures) {
 			setTexture(texture.first, texture.second);
 		}
@@ -73,7 +73,7 @@ public:
 	 * will be resolved from the file path.
 	 * @param path The path for the material's diffuse texture.
 	 */
-	Material(const std::string &path) : shader(nullptr) {
+	Material(const std::string &path) : mShader(nullptr) {
 		loadTextures(path);
 	}
 	
@@ -84,7 +84,7 @@ public:
 	 * @param normalPath The path for the material's normal texture.
 	 * @param specularPath The path for the material's specular texture.
 	 */
-	Material(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) : shader(nullptr) {
+	Material(const std::string &diffusePath, const std::string &normalPath, const std::string &specularPath) : mShader(nullptr) {
 		loadTextures(diffusePath, normalPath, specularPath);
 	}
 	
@@ -99,7 +99,7 @@ public:
 	 * @return The currently assigned texture at that index
 	 */
 	Texture *getTexture(const GLuint &index) {
-		return this->textures[index];
+		return this->mTextures[index];
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public:
 	 * @return The material's shader
 	 */
 	Shader *getShader() const {
-		return this->shader;
+		return this->mShader;
 	}
 	
 	/**
@@ -115,7 +115,7 @@ public:
 	 * @return The material's texture path
 	 */
 	std::string getPath() const {
-		return this->path;
+		return this->mPath;
 	}
 	
 	/**
@@ -123,7 +123,7 @@ public:
 	 * @return The material's name
 	 */
 	std::string getName() const {
-		return this->name;
+		return this->mName;
 	}
 
 	/**
@@ -138,7 +138,7 @@ public:
 	 * @param shader the new shader for the material
 	 */
 	void setShader(Shader *shader) {
-		this->shader = shader;
+		this->mShader = shader;
 	}
 
 	/**

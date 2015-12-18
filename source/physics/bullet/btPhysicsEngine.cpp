@@ -61,20 +61,20 @@ void contactProcessedCallback(btManifoldPoint &cp, const btCollisionObject *colO
 btPhysicsEngine::btPhysicsEngine() : PhysicsEngine() {
 	init();
 
-	extraTime = 0.0f;
+	mExtraTime = 0.0f;
 }
 
 void btPhysicsEngine::init() {
 	btDefaultCollisionConfiguration *configuration = new btDefaultCollisionConfiguration();
-	dispatcher = new btCollisionDispatcher(configuration);
+	mDispatcher = new btCollisionDispatcher(configuration);
 	btBroadphaseInterface *interface = new btDbvtBroadphase();
 	btConstraintSolver *solver = new btSequentialImpulseConstraintSolver();
 
-	debugDrawer = new btDebugDrawer;
+	mDebugDrawer = new btDebugDrawer;
 
-	world = new btDiscreteDynamicsWorld(dispatcher, interface, solver, configuration);
-	world->setGravity(btVector3(0, 0, -20.0f));
-	world->setDebugDrawer(debugDrawer);
+	mWorld = new btDiscreteDynamicsWorld(mDispatcher, interface, solver, configuration);
+	mWorld->setGravity(btVector3(0, 0, -20.0f));
+	mWorld->setDebugDrawer(mDebugDrawer);
 
 	gContactAddedCallback = contactAddedCallback;
 	gContactProcessedCallback = contactProcessedCallback;
@@ -83,19 +83,19 @@ void btPhysicsEngine::init() {
 }
 
 void btPhysicsEngine::simulate(const F64 &delta) {
-	if (running) {
-		extraTime += delta;
-		while (extraTime > PHYSICS_TICK) {
+	if (mRunning) {
+		mExtraTime += delta;
+		while (mExtraTime > PHYSICS_TICK) {
 			step(PHYSICS_TICK);
-			extraTime -= PHYSICS_TICK;
+			mExtraTime -= PHYSICS_TICK;
 		}
-		world->debugDrawWorld();
+		mWorld->debugDrawWorld();
 	}
 }
 
 void btPhysicsEngine::step(const F64 &delta) {
 	PhysicsEngine::step(delta);
-	world->stepSimulation(static_cast<btScalar>(delta), 10);
+	mWorld->stepSimulation(static_cast<btScalar>(delta), 10);
 }
 
 void btPhysicsEngine::addBody(PhysicsBody *body) {
@@ -105,7 +105,7 @@ void btPhysicsEngine::addBody(PhysicsBody *body) {
 	rigid->setUserPointer(body);
 
 	rigid->setCollisionFlags(rigid->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
-	world->addRigidBody(rigid);
+	mWorld->addRigidBody(rigid);
 }
 
 PhysicsBody *btPhysicsEngine::createInterior(GameInterior *interior) {
@@ -117,5 +117,21 @@ PhysicsBody *btPhysicsEngine::createSphere(const F32 &radius) {
 }
 
 void btPhysicsEngine::debugDraw(RenderInfo &info, const DebugDrawType &drawType) {
-	debugDrawer->draw(info, drawType);
+	mDebugDrawer->draw(info, drawType);
+}
+
+void btPhysicsEngine::raycast(RaycastInfo &info) {
+
+	btVector3 rayFrom = btConvert(info.from);
+	btVector3 rayTo   = btConvert(info.to);
+
+	btCollisionWorld::ClosestRayResultCallback resultCallback(rayFrom, rayTo);
+	mWorld->rayTest(rayFrom, rayTo, resultCallback);
+
+	info.hit = resultCallback.hasHit();
+	if (info.hit) {
+		info.body = (void *)resultCallback.m_collisionObject;
+		info.point = btConvert(resultCallback.m_hitPointWorld);
+		info.normal = btConvert(resultCallback.m_hitNormalWorld);
+	}
 }

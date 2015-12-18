@@ -21,27 +21,6 @@ struct BulletTriangle {
     btVector3 point2;
 };
 
-struct ShapeInfo {
-    btCollisionShape *shape;
-};
-
-struct BodyInfo {
-    btRigidBody* body;
-    ShapeInfo shape;
-    btVector3 collisionNormal;
-    btVector3 collisionNormalTemp;
-    bool isDynamic;
-    float timeout;
-
-	 BodyInfo() : isDynamic(false), timeout(0.0f) {}
-};
-
-struct BodyMovement {
-    btRigidBody *body;
-    btVector3 velocity;
-    btVector3 angularVelocity;
-};
-
 class btPhysicsBody;
 
 struct ContactCallbackInfo {
@@ -69,12 +48,12 @@ struct ContactCallbackInfo {
 class btDebugDrawer;
 
 class btPhysicsEngine : public PhysicsEngine {
-	btDiscreteDynamicsWorld *world;
-	btCollisionDispatcher *dispatcher;
-	btDebugDrawer *debugDrawer;
+	btDiscreteDynamicsWorld *mWorld;
+	btCollisionDispatcher *mDispatcher;
+	btDebugDrawer *mDebugDrawer;
 	
-	bool running;
-	F64 extraTime;
+	bool mRunning;
+	F64 mExtraTime;
 
 	virtual void step(const F64 &delta);
 public:
@@ -83,12 +62,13 @@ public:
 	virtual void init();
 	virtual void simulate(const F64 &delta);
 	virtual void addBody(PhysicsBody *body);
+	virtual void raycast(RaycastInfo &info);
 	virtual void debugDraw(RenderInfo &info, const DebugDrawType &drawType);
 	virtual PhysicsBody *createInterior(GameInterior *interior);
 	virtual PhysicsBody *createSphere(const F32 &radius);
 
-	btDiscreteDynamicsWorld *getWorld() { return world; };
-	btCollisionDispatcher *getDispatcher() { return dispatcher; }
+	btDiscreteDynamicsWorld *getWorld() { return mWorld; };
+	btCollisionDispatcher *getDispatcher() { return mDispatcher; }
 };
 
 template <typename from, typename to>
