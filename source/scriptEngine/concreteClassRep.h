@@ -9,23 +9,30 @@
 
 #include "scriptEngine/abstractClassRep.h"
 
+/**
+ * The main purpose of a ConcreteClassRep is to be able to instantiate the
+ * actual instance of the object from the string provided to the
+ * AbstractClassRep.
+ */
 template<typename T>
 class ConcreteClassRep : public AbstractClassRep {
 public:
+	/**
+	 * Constructor of the ConcreteClassRep instance.
+	 * @param name The name of the class that the ConcreteClassRep is 
+	 *  instantiating.
+	 */
 	ConcreteClassRep(const std::string &name) {
 		mName = name;
 	}
 
-	virtual ~ConcreteClassRep() {
-
-	}
-
+	/**
+	 * Create an instance of the type.
+	 * @return an instance of the type specified to the AbstractClassRep.
+	 */
 	virtual ScriptObject* create() {
 		return new T();
 	}
-
-private:
-
 };
 
 #endif // _SCRIPTENGINE_CONCRETECLASSREP_H_
