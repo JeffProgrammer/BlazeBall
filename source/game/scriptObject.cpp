@@ -5,9 +5,13 @@
 //------------------------------------------------------------------------------
 
 #include "game/scriptObject.h"
+#include "scriptEngine/abstractClassRep.h"
+#include "scriptEngine/concreteClassRep.h"
+
+ConcreteClassRep<ScriptObject> ScriptObject::sConcreteClassRep("ScriptObject");
 
 ScriptObject::ScriptObject() {
-
+	mClassRep = nullptr;
 }
 
 ScriptObject::~ScriptObject() {
@@ -40,4 +44,8 @@ bool ScriptObject::containsField(const std::string &key) {
 			return true;
 	}
 	return false;
+}
+
+void ScriptObject::initFields() {
+
 }

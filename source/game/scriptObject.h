@@ -11,6 +11,9 @@
 #include <string>
 #include <unordered_map>
 
+class AbstractClassRep;
+template<typename T> class ConcreteClassRep;
+
 class ScriptObject {
 public:
 	ScriptObject();
@@ -30,6 +33,12 @@ public:
 	 */
 	bool containsField(const std::string &key);
 
+	static void initFields();
+
+	virtual AbstractClassRep* getClassRep() {
+		return mClassRep;
+	}
+
 protected:
 
 	/*
@@ -38,7 +47,9 @@ protected:
 	 */
 	std::unordered_map<const char*, const char*> mDynamicFieldList;
 
+	AbstractClassRep *mClassRep;
 
+	static ConcreteClassRep<ScriptObject> sConcreteClassRep;
 };
 
 #endif // _GAME_SCRIPTOBJECT_H_

@@ -12,8 +12,8 @@
 template<typename T>
 class ConcreteClassRep : public AbstractClassRep {
 public:
-	ConcreteClassRep() {
-
+	ConcreteClassRep(const std::string &name) {
+		mName = name;
 	}
 
 	virtual ~ConcreteClassRep() {

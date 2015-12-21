@@ -7,6 +7,11 @@
 #include "base/io.h"
 #include "scriptEngine/scriptEngine.h"
 #include "scriptEngine/scriptFunctions.h"
+#include "scriptEngine/abstractClassRep.h"
+
+// initialize the lined list for abstractclassrep
+AbstractClassRep *AbstractClassRep::sLast = nullptr;
+std::unordered_map<std::string, AbstractClassRep*> AbstractClassRep::sClassRepMap;
 
 #include <angelscript/add_on/scriptstdstring/scriptstdstring.h>
 #include <angelscript/add_on/scripthandle/scripthandle.h>
@@ -43,6 +48,9 @@ bool ScriptEngine::init() {
 		printf("ScriptEngine::init() - Already called init.\n");
 		return false;
 	}
+
+	// Initialize the abstract classes
+	AbstractClassRep::init();
 
 	// allocate the script engine
 	mEngine = asCreateScriptEngine();
