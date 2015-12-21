@@ -496,6 +496,7 @@ set (DIFVIEWERGAME_SRC
 	source/render/util.h
 
 	# ScriptEngine
+	source/scriptEngine/abstractClassRep.h
 	source/scriptEngine/scriptEngine.cpp
 	source/scriptEngine/scriptEngine.h
 	source/scriptEngine/scriptEngine.inl
