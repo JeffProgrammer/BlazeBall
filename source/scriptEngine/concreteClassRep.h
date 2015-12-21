@@ -12,7 +12,8 @@
 /**
  * The main purpose of a ConcreteClassRep is to be able to instantiate the
  * actual instance of the object from the string provided to the
- * AbstractClassRep.
+ * AbstractClassRep. All classes instantiated from ConcreteClassReps must
+ * inherit from ScriptObject.
  */
 template<typename T>
 class ConcreteClassRep : public AbstractClassRep {
