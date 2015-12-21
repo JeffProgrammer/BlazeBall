@@ -7,6 +7,7 @@
 #include "game/levelLoader.h"
 #include "base/types.h"
 #include "base/io.h"
+#include "scriptEngine/abstractClassRep.h"
 #include <rapidjson/document.h>
 
 bool loadLevel(const std::string &file) {
@@ -37,6 +38,7 @@ bool loadLevel(const std::string &file) {
 		const char *klass = (*obj)["class"].GetString();
 
 		// create object here.
+		ScriptObject *scriptObject = AbstractClassRep::createFromName(klass);
 
 		// loop through each field
 		for (auto field = obj->MemberBegin(); field != obj->MemberEnd(); ++field) {
