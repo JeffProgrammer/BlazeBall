@@ -10,6 +10,12 @@
 #include "scriptEngine/abstractClassRep.h"
 #include <rapidjson/document.h>
 
+#ifdef __APPLE__
+#define stricmp strcasecmp
+#else
+//#define stricmp stricmp
+#endif
+
 bool loadLevel(const std::string &file) {
 	if (!IO::isfile(file)) {
 		printf("Unable to load level file: %s\n", file.c_str());

@@ -13,8 +13,8 @@
 
 class AbstractClassRep {
 public:
-	typedef const char*(*GetterFunction)(void*);
-	typedef bool(*SetterFunction)(void*, const char*);
+	typedef std::string (*GetterFunction)(void *ptr);
+	typedef bool(*SetterFunction)(void *ptr, const std::string &value);
 
 	AbstractClassRep() {
 		mNext = sLast;

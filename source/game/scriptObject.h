@@ -45,7 +45,7 @@ protected:
 	 * A list of fields that are extra, defined by the script, for the object.
 	 * They are stored as strings.
 	 */
-	std::unordered_map<const char*, const char*> mDynamicFieldList;
+	std::unordered_map<std::string, std::string> mDynamicFieldList;
 
 	AbstractClassRep *mClassRep;
 
