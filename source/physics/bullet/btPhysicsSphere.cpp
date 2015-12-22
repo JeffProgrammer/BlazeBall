@@ -8,7 +8,7 @@
 #include "physics/bullet/btPhysicsSphere.h"
 #include "physics/bullet/btPhysicsInterior.h"
 #include "game/gameInterior.h"
-
+#include "base/math/triangle.h"
 #include <glm/ext.hpp>
 
 #ifndef _WIN32
