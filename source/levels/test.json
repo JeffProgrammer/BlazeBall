@@ -2,6 +2,7 @@
 	{
 		"class": "ScriptObject",
 		"name": "Party Object",
-		"id": "1"
+		"test": "thing",
+		"party time": "you bet"
 	}
 ]

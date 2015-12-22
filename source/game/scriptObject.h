@@ -21,30 +21,22 @@ public:
 	ScriptObject();
 	virtual ~ScriptObject();
 
-	/*
-	 * Adds a dynamic field to the instance of the object.
-	 * @param key The field name.
-	 * @param value The field value.
-	 */
-	void addDynamicField(const std::string &key, const std::string &value);
-
-	/*
-	 * Checks to see if the object contains a field with a case insensative key.
-	 * @param key The field name.
-	 * @return true if the field exists, false otherwise.
-	 */
-	bool containsField(const std::string &key);
-
 	static void initFields();
 
 	virtual AbstractClassRep* getClassRep() {
 		return mClassRep;
 	}
 
-	std::string getMemberField(const std::string &name);
-	bool setMemberField(const std::string &name, const std::string &value);
+	bool getField(const std::string &name, std::string &value);
+	bool setField(const std::string &name, const std::string &value);
 
 protected:
+
+	bool getDynamicField(const std::string &name, std::string &value);
+	bool setDynamicField(const std::string &name, const std::string &value);
+
+	bool getMemberField(const std::string &name, std::string &value);
+	bool setMemberField(const std::string &name, const std::string &value);
 
 	std::string mName;
 	U32 mId;

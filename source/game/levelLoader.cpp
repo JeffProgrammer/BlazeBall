@@ -59,7 +59,8 @@ bool loadLevel(const std::string &file) {
 			if (stricmp(fieldName, "class") == 0)
 				continue;
 
-			if (!scriptObject->setMemberField(fieldName, fieldValue)) {
+			//Try and set the field
+			if (!scriptObject->setField(fieldName, fieldValue)) {
 				printf("Could not set class field %s on an object of type %s\n", fieldName, klass);
 			}
 		}

@@ -67,6 +67,10 @@ public:
 		SetterFunction setter;
 	};
 
+	bool isField(const std::string &name) {
+		return mFieldList.find(name) != mFieldList.end();
+	}
+
 	Field getField(const std::string &name) {
 		return mFieldList[name];
 	}
