@@ -455,6 +455,9 @@ void Scene::run() {
 	
 	controlObject = mPlayer;
 
+	//Maybe this is a good idea
+	PhysicsEngine::getEngine()->setRunning(true);
+
 	//Main loop
 	while (running) {
 		//Profiling
