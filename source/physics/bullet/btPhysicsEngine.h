@@ -52,7 +52,6 @@ class btPhysicsEngine : public PhysicsEngine {
 	btCollisionDispatcher *mDispatcher;
 	btDebugDrawer *mDebugDrawer;
 	
-	bool mRunning;
 	F64 mExtraTime;
 
 	virtual void step(const F64 &delta);

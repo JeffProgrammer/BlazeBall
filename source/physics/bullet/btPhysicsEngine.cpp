@@ -79,7 +79,7 @@ void btPhysicsEngine::init() {
 	gContactAddedCallback = contactAddedCallback;
 	gContactProcessedCallback = contactProcessedCallback;
 
-	running = true;
+	mRunning = true;
 }
 
 void btPhysicsEngine::simulate(const F64 &delta) {

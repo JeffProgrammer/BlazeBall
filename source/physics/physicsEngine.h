@@ -23,7 +23,7 @@ public:
 protected:
 	static PhysicsEngine *gEngine;
 
-	bool running;
+	bool mRunning;
 
 	StepCallback stepCallback;
 
@@ -31,7 +31,7 @@ protected:
 		this->stepCallback(delta);
 	}
 public:
-	PhysicsEngine() : running(false) {}
+	PhysicsEngine() : mRunning(false) {}
 
 	virtual void init() = 0;
 	virtual void simulate(const F64 &delta) = 0;
@@ -40,8 +40,8 @@ public:
 	virtual PhysicsBody *createInterior(GameInterior *interior) = 0;
 	virtual PhysicsBody *createSphere(const F32 &radius) = 0;
 
-	void setRunning(bool running) { this->running = running; }
-	bool getRunning() { return running; }
+	void setRunning(bool running) { this->mRunning = running; }
+	bool getRunning() { return mRunning; }
 
 	void setStepCallback(StepCallback callback) { this->stepCallback = callback; }
 
