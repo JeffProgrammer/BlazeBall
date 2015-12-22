@@ -7,6 +7,8 @@
 #include "game/scriptObject.h"
 #include "scriptEngine/abstractClassRep.h"
 #include "scriptEngine/concreteClassRep.h"
+#include "scriptEngine/scriptEngine.h"
+
 #ifdef __APPLE__
 #define stricmp strcasecmp
 #else
@@ -46,5 +48,33 @@ bool ScriptObject::containsField(const std::string &key) {
 }
 
 void ScriptObject::initFields() {
-
+	sConcreteClassRep.addSimpleField<std::string>("name", offsetof(ScriptObject, mName));
+	sConcreteClassRep.addSimpleField<U32>("id", offsetof(ScriptObject, mId));
 }
+
+std::string ScriptObject::getMemberField(const std::string &name) {
+	AbstractClassRep::Field field = getClassRep()->getField(name);
+	ptrdiff_t offset = field.offset;
+	AbstractClassRep::GetterFunction fn = field.getter;
+
+	if (fn == nullptr) {
+		//Not a member field
+		return "";
+	}
+
+	return fn(reinterpret_cast<U8 *>(this) + offset);
+}
+
+bool ScriptObject::setMemberField(const std::string &name, const std::string &value) {
+	AbstractClassRep::Field field = getClassRep()->getField(name);
+	ptrdiff_t offset = field.offset;
+	AbstractClassRep::SetterFunction fn = field.setter;
+
+	if (fn == nullptr) {
+		//Not a member field
+		return false;
+	}
+
+	return fn(reinterpret_cast<U8 *>(this) + offset, value);
+}
+

@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <string>
 #include "game/scriptObject.h"
+#include "scriptEngine/scriptEngine.h"
 
 class AbstractClassRep {
 public:
@@ -29,6 +30,11 @@ public:
 		mFieldList[name] = Field(offset, getterFunction, setterFunction);
 	}
 
+	template<typename T>
+	void addSimpleField(const std::string &name, ptrdiff_t offset) {
+		mFieldList[name] = Field(offset, scriptGetter<T>, scriptSetter<T>);
+	}
+
 	virtual ScriptObject* create() = 0;
 
 	static ScriptObject* createFromName(const std::string &name) {
@@ -38,13 +44,9 @@ public:
 	static void init() {
 		for (auto *rep = sLast; rep != nullptr; rep = rep->mNext) {
 			sClassRepMap[rep->mName] = rep;
+			rep->initClass();
 		}
 	}
-
-protected:
-	static std::unordered_map<std::string, AbstractClassRep*> sClassRepMap;
-	static AbstractClassRep *sLast;
-	AbstractClassRep *mNext;
 
 	struct Field {
 		Field() {
@@ -64,6 +66,17 @@ protected:
 		GetterFunction getter;
 		SetterFunction setter;
 	};
+
+	Field getField(const std::string &name) {
+		return mFieldList[name];
+	}
+
+	virtual void initClass() = 0;
+
+protected:
+	static std::unordered_map<std::string, AbstractClassRep*> sClassRepMap;
+	static AbstractClassRep *sLast;
+	AbstractClassRep *mNext;
 
 	std::unordered_map<std::string, Field> mFieldList;
 	std::string mName;

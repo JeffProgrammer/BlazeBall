@@ -97,3 +97,35 @@ template<> inline void ScriptEngine::setParameter(S32 index, F32 arg) {
 template<> inline void ScriptEngine::setParameter(S32 index, F64 arg) {
 	mCurrentContext->SetArgDouble(index, static_cast<double>(arg));
 }
+
+//-----------------------------------------------------------------------------
+// Setters and getters
+//-----------------------------------------------------------------------------
+
+template<typename T> std::string scriptGetter(void *ptr);
+template<typename T> bool scriptSetter(void *ptr, const std::string &value);
+
+#define EasyGetterSetter(type, getter, setter) \
+template<> inline std::string scriptGetter<type>(void *ptr) { \
+    return getter(*static_cast<type *>(ptr)); \
+} \
+template<> inline bool scriptSetter<type>(void *ptr, const std::string &value) { \
+    *static_cast<type *>(ptr) = setter(value.c_str()); \
+	return true; \
+}
+
+EasyGetterSetter(bool, std::to_string, atoi);
+EasyGetterSetter(S8,   std::to_string, atoi);
+EasyGetterSetter(U8,   std::to_string, atoi);
+EasyGetterSetter(S16,  std::to_string, atoi);
+EasyGetterSetter(U16,  std::to_string, atoi);
+EasyGetterSetter(S32,  std::to_string, atoi);
+EasyGetterSetter(U32,  std::to_string, atoi);
+EasyGetterSetter(S64,  std::to_string, atoll);
+EasyGetterSetter(U64,  std::to_string, atoll);
+EasyGetterSetter(F32,  std::to_string, atof);
+EasyGetterSetter(F64,  std::to_string, atof);
+
+EasyGetterSetter(std::string,,); //Strings work by default
+
+#undef EasyGetterSetter

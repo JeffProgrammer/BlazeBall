@@ -32,7 +32,13 @@ public:
 	 * @return an instance of the type specified to the AbstractClassRep.
 	 */
 	virtual ScriptObject* create() {
-		return new T();
+		T *obj = new T();
+		obj->mClassRep = this;
+		return obj;
+	}
+
+	virtual void initClass() {
+		T::initFields();
 	}
 };
 

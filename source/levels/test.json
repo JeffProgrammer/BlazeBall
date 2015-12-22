@@ -1,6 +1,7 @@
 [
 	{
 		"class": "ScriptObject",
-		"fieldA": "swag"
+		"name": "Party Object",
+		"id": "1"
 	}
 ]

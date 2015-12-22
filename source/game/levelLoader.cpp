@@ -53,12 +53,15 @@ bool loadLevel(const std::string &file) {
 				continue;
 			}
 			const char *fieldName = field->name.GetString();
+			const char *fieldValue = field->value.GetString();
 
 			// we allready got the class field.
 			if (stricmp(fieldName, "class") == 0)
 				continue;
 
-
+			if (!scriptObject->setMemberField(fieldName, fieldValue)) {
+				printf("Could not set class field %s on an object of type %s\n", fieldName, klass);
+			}
 		}
 	}
 

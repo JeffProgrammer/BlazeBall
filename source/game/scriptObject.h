@@ -15,6 +15,8 @@ class AbstractClassRep;
 template<typename T> class ConcreteClassRep;
 
 class ScriptObject {
+	template<typename T>
+	friend class ConcreteClassRep;
 public:
 	ScriptObject();
 	virtual ~ScriptObject();
@@ -39,7 +41,13 @@ public:
 		return mClassRep;
 	}
 
+	std::string getMemberField(const std::string &name);
+	bool setMemberField(const std::string &name, const std::string &value);
+
 protected:
+
+	std::string mName;
+	U32 mId;
 
 	/*
 	 * A list of fields that are extra, defined by the script, for the object.
