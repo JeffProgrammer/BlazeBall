@@ -636,6 +636,7 @@ set (BUILD_DIR_FILES
 	source/shaders/modelF.glsl
 	
 	source/scripts/main.as
+	source/levels/test.json
 )
 
 add_custom_command(TARGET Game PRE_BUILD
@@ -649,3 +650,7 @@ add_custom_command(TARGET Game PRE_BUILD
 add_custom_command(TARGET Game PRE_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
 	${CMAKE_SOURCE_DIR}/source/scripts $<TARGET_FILE_DIR:Game>)
+
+add_custom_command(TARGET Game PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_SOURCE_DIR}/source/levels $<TARGET_FILE_DIR:Game>)
