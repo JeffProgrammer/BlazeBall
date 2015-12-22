@@ -43,8 +43,8 @@
 
 class Scene {
 protected:
-	bool running;
-	bool printFPS = true;
+	bool mRunning;
+	bool mPrintFPS = true;
 
 	glm::mat4 mScreenProjectionMatrix;
 
@@ -52,17 +52,17 @@ protected:
 		bool hasSelection;
 		U32 surfaceIndex;
 		GameInterior *interior;
-	} selection;
+	} mSelection;
 
-	bool captureMouse = false;
+	bool mCaptureMouse = false;
 	struct {
 		bool left;
 		bool middle;
 		bool right;
 	} mouseButtons;
-	Movement movement;
+	Movement mMovement;
 
-	F32 pixelDensity;
+	F32 mPixelDensity;
 	F32 mSimulationSpeed;
 
 	bool mDoDebugDraw;
@@ -74,15 +74,15 @@ public:
 	const glm::vec3 sunPosition    = glm::vec3(100.0f, 75.0f, 100.0f);
 	const U32 specularExponent   = 7;
 
-	std::vector<GameObject *>objects;
+	std::vector<GameObject *>mObjects;
 	std::vector<RenderedObject *> mRenderedObjects;
-	GameObject *controlObject;
+	GameObject *mControlObject;
 	Camera *mCamera;
 	Sphere *mPlayer;
 	Skybox *mSkybox;
-	CubeMapFramebufferTexture *marbleCubemap;
+	CubeMapFramebufferTexture *mMarbleCubemap;
 
-	Window *window;
+	Window *mWindow;
 	Timer *mTimer;
 	Config *mConfig;
 
@@ -91,7 +91,7 @@ public:
 	bool mShouldSleep;
 
 	void addObject(GameObject *object) {
-		objects.push_back(object);
+		mObjects.push_back(object);
 		if (dynamic_cast<RenderedObject*>(object))
 			mRenderedObjects.push_back(static_cast<RenderedObject*>(object));
 	}
@@ -100,10 +100,10 @@ public:
 	~Scene();
 
 	static Scene *getSingleton() {
-		static Scene *singleton;
-		if (!singleton)
-			singleton = new Scene();
-		return singleton;
+		static Scene *gSingleton;
+		if (!gSingleton)
+			gSingleton = new Scene();
+		return gSingleton;
 	}
 
 	void updateWindowSize(const glm::ivec2 &size);
