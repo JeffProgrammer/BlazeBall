@@ -42,8 +42,6 @@ int main(int argc, const char *argv[]) {
 	// parse command line arguments.
 	parseArgs(argc, argv);
 
-	loadLevel("test.json");
-
 	//Let our scene go!
 	scene->run();
 
