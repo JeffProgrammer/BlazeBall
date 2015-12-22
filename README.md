@@ -15,19 +15,6 @@ Running
 Make the "install" target from the CMakeFile and run the `Game` executable in `bin/`.  
 The executable is run as `Game <dif file> [dif file 2, ...]`. Files can be in any compatible DIF format.
 
-Supported DIF File Formats:
--------------------
-* 0 (MB)
-* 0 (TGE)
-* 0 (TGEA)
-* 1 (MBU)
-* 2 (MBU)
-* 3 (MBU)
-* 4 (MBU)
-* 10 (T3D)
-* 14 (T3D / MBM)
-* Possibly those in the middle, unknown and untested.
-
 Requirements
 -------------------
 
