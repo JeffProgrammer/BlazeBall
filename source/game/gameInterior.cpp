@@ -124,33 +124,6 @@ void GameInterior::exportObj(FILE *file) {
 	}
 }
 
-U32 GameInterior::rayCast(RayF ray) {
-	//	ray = RayF(ray.origin.convert(), ray.direction.convert());
-
-	U32 closest = -1;
-	F32 closestDistance = FLT_MAX;
-
-	//	printf("Ray: {(%f,%f,%f),(%f,%f,%f)}\n",ray.origin.x,ray.origin.y,ray.origin.z,ray.direction.x,ray.direction.y,ray.direction.z);
-
-	for (U32 i = 0; i < mInterior.surface.size(); i ++) {
-		const DIF::Interior::Surface &surface = mInterior.surface[i];
-
-		for (U32 j = 0; j < surface.windingCount - 2; j ++) {
-			TriangleF triangle(mInterior.point[mInterior.index[surface.windingStart + j]], mInterior.point[mInterior.index[surface.windingStart + j + 1]], mInterior.point[mInterior.index[surface.windingStart + j + 2]]);
-
-			F32 distance = ray.distance(triangle);
-			if (distance > 0 && distance < closestDistance) {
-				//				printf("Found closest triangle (surface %d, offset %d), distance is %f\n", i, j, distance);
-				//				printf("Triangle: {(%f,%f,%f),(%f,%f,%f),(%f,%f,%f)}\n",triangle.point0.x,triangle.point0.y,triangle.point0.z,triangle.point1.x,triangle.point1.y,triangle.point1.z,triangle.point2.x,triangle.point2.y,triangle.point2.z);
-				closestDistance = distance;
-				closest = i;
-			}
-		}
-	}
-	
-	return closest;
-}
-
 const glm::vec3 GameInterior::getPosition() const {
 	return mActor->getPosition();
 }

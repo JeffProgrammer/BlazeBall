@@ -59,11 +59,6 @@ Third Party Libraries
 * srutil - Fast C++ Delegates
 * ZLIB - Compression Library
 
-Acknowledgements
--------------------
-
-Credits to Whirligig231 for his math in ray.h
-
 License
 -------------------
 

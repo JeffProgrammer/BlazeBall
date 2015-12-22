@@ -12,7 +12,6 @@
 #include "render/material.h"
 #include "physics/physicsEngine.h"
 #include "game/gameObject.h"
-#include "base/ray.h"
 #include "renderedObject.h"
 
 #include <dif/objects/dif.h>
@@ -47,7 +46,6 @@ public:
 	void generateMaterials(std::string directory);
 	void generateMesh();
 	void exportObj(FILE *file);
-	U32 rayCast(RayF ray);
 
 	const DIF::Interior &getInterior() {return mInterior;}
 	void setInterior(const DIF::Interior &interior) { mInterior = interior; }
