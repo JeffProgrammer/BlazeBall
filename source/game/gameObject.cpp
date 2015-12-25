@@ -15,6 +15,6 @@ void GameObject::updateMove(const Movement &movement, const F64 &delta) {
 }
 void GameObject::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
 	mat = glm::mat4(1);
-	mat = glm::translate(mat, glm::vec3(-mOrigin.x, -mOrigin.y, -mOrigin.z));
-	pos = mOrigin;
+	mat = glm::translate(mat, glm::vec3(-mPosition.x, -mPosition.y, -mPosition.z));
+	pos = mPosition;
 }
