@@ -29,7 +29,7 @@ protected:
 	/**
 	 * The position of the GameObject.
 	 */
-	glm::vec3 mOrigin;
+	glm::vec3 mPosition;
 
 	/**
 	 * The rotation of the GameObject.
@@ -42,7 +42,7 @@ protected:
 	glm::vec3 mScale;
 	
 public:
-	GameObject() : mOrigin(glm::vec3(0)), mRotation(glm::quat()), mScale(glm::vec3(1)) {};
+	GameObject() : mPosition(glm::vec3(0)), mRotation(glm::quat()), mScale(glm::vec3(1)) {};
 	virtual ~GameObject() {};
 
 	/**
@@ -61,13 +61,13 @@ public:
 	 * Gets the position of the GameObject.
 	 * @return the position vector of the GameObject.
 	 */
-	virtual glm::vec3 getPosition() { return mOrigin; }
+	virtual glm::vec3 getPosition() { return mPosition; }
 
 	/**
 	 * Sets the position of the GameObject.
 	 * @param position The position to set the GameObject.
 	 */
-	virtual void setPosition(const glm::vec3 &position) { mOrigin = position; }
+	virtual void setPosition(const glm::vec3 &position) { mPosition = position; }
 
 	/**
 	 * Gets the rotation of the GameObject as a quaternion.

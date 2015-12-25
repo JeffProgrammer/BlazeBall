@@ -40,7 +40,7 @@ void Camera::updateMove(const Movement &movement, const F64 &delta) {
 	if (movement.right)    deltaMat = glm::translate(deltaMat, glm::vec3(1, 0, 0));
 
 	//Move the origin
-	mOrigin += glm::vec3(deltaMat[3]) * F32(delta / 0.016f);
+	mPosition += glm::vec3(deltaMat[3]) * F32(delta / 0.016f);
 }
 
 void Camera::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
@@ -53,7 +53,7 @@ void Camera::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
 
 	//Offset the camera by the negative position to bring us into the center.
 	// This is not affected by pitch/yaw
-	mat = glm::translate(mat, -mOrigin);
+	mat = glm::translate(mat, -mPosition);
 
-	pos = mOrigin;
+	pos = mPosition;
 }
