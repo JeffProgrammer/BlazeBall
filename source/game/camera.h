@@ -37,6 +37,11 @@ protected:
 	 */
 	const F32 mKeyCameraSpeed = 3.f;
 
+	/**
+	 * The class rep representing the Camera class.
+	 */
+	static ConcreteClassRep<Camera> sConcreteClassRep;
+
 public:
 	Camera();
 	virtual ~Camera() {};
@@ -68,6 +73,11 @@ public:
 	 * @note Called at a fixed timestep.
 	 */
 	virtual inline void updateTick(const F64 &delta) {};
+
+	/**
+	 * Initializes the fields specific to the GameObject class.
+	 */
+	static void initFields();
 };
 
 #endif

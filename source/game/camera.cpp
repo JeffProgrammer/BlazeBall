@@ -7,6 +7,8 @@
 #include "camera.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+ConcreteClassRep<Camera> Camera::sConcreteClassRep("GameObject");
+
 Camera::Camera() {
 	mPitch = 0.0f;
 	mYaw = 0.0f;
@@ -56,4 +58,9 @@ void Camera::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
 	mat = glm::translate(mat, -mPosition);
 
 	pos = mPosition;
+}
+
+void Camera::initFields() {
+	sConcreteClassRep.addSimpleField<F32>("yaw", offsetof(Camera, mYaw));
+	sConcreteClassRep.addSimpleField<F32>("pitch", offsetof(Camera, mPitch));
 }
