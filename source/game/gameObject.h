@@ -12,6 +12,7 @@
 #include "base/types.h"
 #include "game/movement.h"
 #include "render/renderInfo.h"
+#include "scriptObject.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -20,11 +21,11 @@
 #endif
 
 /**
- * An abstract class that forms the foundation for all world objects within the
+ * An class that forms the foundation for all world objects within the
  * game. This class is merely a shell for all subclasses of 3-dimentional
  * classes.
  */
-class GameObject {
+class GameObject : public ScriptObject {
 protected:
 	/**
 	 * The position of the GameObject.
@@ -119,7 +120,7 @@ public:
 	 * @param delta The delta, in seconds, between physics ticks.
 	 * @note Called at a fixed timestep.
 	 */
-	virtual void updateTick(const F64 &delta) = 0;
+	virtual void updateTick(const F64 &delta) {}
 };
 
 #endif
