@@ -13,6 +13,7 @@
 #include "game/movement.h"
 #include "render/renderInfo.h"
 #include "scriptObject.h"
+#include "scriptEngine/concreteClassRep.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -41,6 +42,11 @@ protected:
 	 * The scale of the GameObject.
 	 */
 	glm::vec3 mScale;
+
+	/**
+	 * The class rep representing the GameObject abstract class
+	 */
+	static ConcreteClassRep<GameObject> sConcreteClassRep;
 	
 public:
 	GameObject() : mPosition(glm::vec3(0)), mRotation(glm::quat()), mScale(glm::vec3(1)) {};
@@ -121,6 +127,11 @@ public:
 	 * @note Called at a fixed timestep.
 	 */
 	virtual void updateTick(const F64 &delta) {}
+
+	/**
+	 * Initializes the fields specific to the GameObject class.
+	 */
+	static void initFields();
 };
 
 #endif
