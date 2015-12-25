@@ -102,6 +102,12 @@ template<> inline void ScriptEngine::setParameter(S32 index, F64 arg) {
 // Setters and getters
 //-----------------------------------------------------------------------------
 
+#if defined(_WIN32) && defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable : 4800) /* forcing value to bool 'true' or 'false' (performance warning) */
+#pragma warning(disable : 4244) /* conversion from 'double' to 'F32', possible loss of data */
+#endif
+
 template<typename T> std::string scriptGetter(void *ptr);
 template<typename T> bool scriptSetter(void *ptr, const std::string &value);
 
@@ -159,3 +165,7 @@ template<> inline bool scriptSetter<glm::quat>(void *ptr, const std::string &val
 	sscanf(value.c_str(), "%g %g %g %g", &quat->x, &quat->y, &quat->z, &quat->w);
 	return true;
 }
+
+#if defined(_WIN32) && defined(_MSC_VER)
+#pragma warning(pop)
+#endif
