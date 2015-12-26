@@ -151,11 +151,11 @@ U32 GameInterior::rayCast(RayF ray) {
 	return closest;
 }
 
-glm::vec3 GameInterior::getPosition() {
+const glm::vec3 GameInterior::getPosition() const {
 	return mActor->getPosition();
 }
 
-glm::quat GameInterior::getRotation() {
+const glm::quat GameInterior::getRotation() const {
 	return mActor->getRotation();
 }
 
@@ -167,7 +167,7 @@ void GameInterior::setRotation(const glm::quat &rot) {
 	mActor->setRotation(rot);
 }
 
-glm::vec3 GameInterior::getScale() {
+const glm::vec3 GameInterior::getScale() const {
 	return mActor->getScale();
 }
 void GameInterior::setScale(const glm::vec3 &scale) {

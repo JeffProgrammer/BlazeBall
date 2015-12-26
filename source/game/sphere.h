@@ -31,7 +31,6 @@ class Sphere : public RenderedObject {
 	const F32 LinearRollDamping   = 0.025f; // 97.5% of original
 
 protected:
-	std::vector<glm::vec3> geometry;
 	PhysicsBody *mActor;
 	F32 mRadius;
 	F32 mMaxAngVel;
@@ -58,8 +57,8 @@ public:
 	virtual void render(RenderInfo &info);
 	void draw(Material *material, RenderInfo &info, void *userInfo);
 
-	virtual glm::vec3 getPosition();
-	virtual glm::quat getRotation();
+	virtual const glm::vec3 getPosition() const;
+	virtual const glm::quat getRotation() const;
 
 	virtual void setPosition(const glm::vec3 &pos);
 	virtual void setRotation(const glm::quat &rot);
@@ -78,8 +77,8 @@ public:
 	bool getColliding();
 	glm::vec3 getCollisionNormal(glm::vec3 &toiVelocity);
     
-	glm::vec3 getVelocity();
-	glm::vec3 getAngularVelocity();
+	const glm::vec3 getVelocity() const;
+	const glm::vec3 getAngularVelocity() const;
 
 	void setLinearVelocity(const glm::vec3 &vel);
     void setAngularVelocity(const glm::vec3 &vel);

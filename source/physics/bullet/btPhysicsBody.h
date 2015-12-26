@@ -17,12 +17,12 @@ public:
 	btPhysicsBody() : mActor(nullptr) {};
 	btPhysicsBody(btRigidBody *actor) : mActor(actor) {};
 
-	virtual const F32 getMass();
-	virtual const glm::vec3 getPosition();
-	virtual const glm::quat getRotation();
-	virtual const glm::vec3 getScale();
-	virtual const glm::vec3 getLinearVelocity();
-	virtual const glm::vec3 getAngularVelocity();
+	virtual const F32 getMass() const;
+	virtual const glm::vec3 getPosition() const;
+	virtual const glm::quat getRotation() const;
+	virtual const glm::vec3 getScale() const;
+	virtual const glm::vec3 getLinearVelocity() const;
+	virtual const glm::vec3 getAngularVelocity() const;
 
 	virtual void setMass(const F32 &mass);
 	virtual void setPosition(const glm::vec3 &position);

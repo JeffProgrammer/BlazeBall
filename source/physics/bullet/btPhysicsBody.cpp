@@ -6,26 +6,26 @@
 
 #include "physics/bullet/btPhysicsBody.h"
 
-const F32 btPhysicsBody::getMass() {
+const F32 btPhysicsBody::getMass() const {
 	//Edge case: static objects have a mass of 0
 	if (mActor->getInvMass() == 0)
 		return 0;
 	//1 / Inverse mass because logic
 	return 1.0f / mActor->getInvMass();
 }
-const glm::vec3 btPhysicsBody::getPosition() {
+const glm::vec3 btPhysicsBody::getPosition() const {
 	return btConvert(mActor->getWorldTransform().getOrigin());
 }
-const glm::quat btPhysicsBody::getRotation() {
+const glm::quat btPhysicsBody::getRotation() const {
 	return btConvert(mActor->getWorldTransform().getRotation());
 }
-const glm::vec3 btPhysicsBody::getScale() {
+const glm::vec3 btPhysicsBody::getScale() const {
 	return btConvert(mActor->getCollisionShape()->getLocalScaling());
 }
-const glm::vec3 btPhysicsBody::getLinearVelocity() {
+const glm::vec3 btPhysicsBody::getLinearVelocity() const {
 	return btConvert(mActor->getLinearVelocity());
 }
-const glm::vec3 btPhysicsBody::getAngularVelocity() {
+const glm::vec3 btPhysicsBody::getAngularVelocity() const {
 	return btConvert(mActor->getAngularVelocity());
 }
 
