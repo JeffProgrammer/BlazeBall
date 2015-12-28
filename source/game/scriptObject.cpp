@@ -19,6 +19,7 @@ ConcreteClassRep<ScriptObject> ScriptObject::sConcreteClassRep("ScriptObject");
 
 ScriptObject::ScriptObject() {
 	mClassRep = nullptr;
+	mName = "";
 }
 
 ScriptObject::~ScriptObject() {
@@ -27,7 +28,6 @@ ScriptObject::~ScriptObject() {
 
 void ScriptObject::initFields() {
 	sConcreteClassRep.addSimpleField<std::string>("name", offsetof(ScriptObject, mName));
-	sConcreteClassRep.addSimpleField<U32>("id", offsetof(ScriptObject, mId));
 }
 
 bool ScriptObject::getMemberField(const std::string &name, std::string &value) {

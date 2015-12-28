@@ -39,7 +39,6 @@ protected:
 	bool setMemberField(const std::string &name, const std::string &value);
 
 	std::string mName;
-	U32 mId;
 
 	/*
 	 * A list of fields that are extra, defined by the script, for the object.
