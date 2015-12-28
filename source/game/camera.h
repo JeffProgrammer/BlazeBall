@@ -40,7 +40,7 @@ protected:
 	/**
 	 * The class rep representing the Camera class.
 	 */
-	static ConcreteClassRep<Camera> sConcreteClassRep;
+	DECLARE_SCRIPTOBJECT(Camera);
 
 public:
 	Camera();

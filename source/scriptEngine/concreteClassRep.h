@@ -23,8 +23,9 @@ public:
 	 * @param name The name of the class that the ConcreteClassRep is 
 	 *  instantiating.
 	 */
-	ConcreteClassRep(const std::string &name) {
+	ConcreteClassRep(const std::string &name, const std::string &parent) {
 		mName = name;
+		mParent = parent;
 	}
 
 	/**
@@ -41,5 +42,14 @@ public:
 		T::initFields();
 	}
 };
+
+#define DECLARE_SCRIPTOBJECT(className) \
+	static ConcreteClassRep<className> sConcreteClassRep
+
+#define IMPLEMENT_SCRIPTOBJECT(className, parent) \
+	ConcreteClassRep<className> className::sConcreteClassRep(#className, #parent)
+
+#define AddFieldSimple(name, type, offset) \
+	sConcreteClassRep.addSimpleField<type>(name, offset)
 
 #endif // _SCRIPTENGINE_CONCRETECLASSREP_H_

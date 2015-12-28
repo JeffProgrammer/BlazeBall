@@ -15,7 +15,7 @@
 //#define stricmp stricmp
 #endif
 
-ConcreteClassRep<ScriptObject> ScriptObject::sConcreteClassRep("ScriptObject");
+ConcreteClassRep<ScriptObject> ScriptObject::sConcreteClassRep("ScriptObject", "");
 
 ScriptObject::ScriptObject() {
 	mClassRep = nullptr;

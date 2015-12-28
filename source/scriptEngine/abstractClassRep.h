@@ -84,6 +84,7 @@ protected:
 
 	std::unordered_map<std::string, Field> mFieldList;
 	std::string mName;
+	std::string mParent;
 };
 
 #endif // _SCRIPTENGINE_ABSTRACTCLASSREP_H_

@@ -7,7 +7,7 @@
 #include "gameObject.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-ConcreteClassRep<GameObject> GameObject::sConcreteClassRep("GameObject");
+IMPLEMENT_SCRIPTOBJECT(GameObject, ScriptObject);
 
 void GameObject::updateCamera(const Movement &movement, const F64 &delta) {
 	//Nothing
@@ -22,7 +22,7 @@ void GameObject::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
 }
 
 void GameObject::initFields() {
-	sConcreteClassRep.addSimpleField<glm::vec3>("position", offsetof(GameObject, mPosition));
-	sConcreteClassRep.addSimpleField<glm::quat>("rotation", offsetof(GameObject, mRotation));
-	sConcreteClassRep.addSimpleField<glm::vec3>("scale",    offsetof(GameObject, mScale));
+	AddFieldSimple("position", glm::vec3, offsetof(GameObject, mPosition));
+	AddFieldSimple("rotation", glm::quat, offsetof(GameObject, mRotation));
+	AddFieldSimple("scale",    glm::vec3, offsetof(GameObject, mScale));
 }

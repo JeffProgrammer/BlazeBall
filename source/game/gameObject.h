@@ -46,7 +46,7 @@ protected:
 	/**
 	 * The class rep representing the GameObject abstract class
 	 */
-	static ConcreteClassRep<GameObject> sConcreteClassRep;
+	DECLARE_SCRIPTOBJECT(GameObject);
 	
 public:
 	GameObject() : mPosition(glm::vec3(0)), mRotation(glm::quat()), mScale(glm::vec3(1)) {};

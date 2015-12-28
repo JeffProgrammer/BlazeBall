@@ -49,6 +49,7 @@ protected:
 	AbstractClassRep *mClassRep;
 
 	static ConcreteClassRep<ScriptObject> sConcreteClassRep;
+	
 };
 
 #endif // _GAME_SCRIPTOBJECT_H_
