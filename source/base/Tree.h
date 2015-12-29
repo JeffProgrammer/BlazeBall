@@ -36,7 +36,7 @@ public:
 			// this will recursivly delete, as the destructor
 			// is implicitly called on each child.
 			for (auto it : children) {
-				delete *it;
+				delete it;
 			}
 		}
 	};
