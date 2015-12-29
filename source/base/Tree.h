@@ -41,48 +41,6 @@ public:
 		}
 	};
 
-	/**
-	 * A class that represents the iterator for the nodes, performing a 
-	 * breadth-first traversal over them. Internally, it uses the vector
-	 * of nodes to traverse over.
-	 */
-	class Iterator : public std::iterator<std::input_iterator_tag, Tree> {
-	private:
-		std::vector<Node*>::iterator mIteratorPosition;
-
-	public:
-		Iterator(const Tree &tree) {
-			mIteratorPosition = tree.traverse().begin();
-		}
-
-		Iterator(const Iterator &it) {
-			mIteratorPosition = it.mIteratorPosition;
-		}
-
-		Iterator& operator++() {
-			++mIteratorPosition;
-			return *this;
-		}
-
-		Iterator operator++(Tree) {
-			Iterator temporary(*this);
-			operator++();
-			return temporary;
-		}
-
-		bool operator==(const Iterator &rhs) {
-			return mIteratorPostiion == rhs.mIteratorPosition;
-		}
-
-		bool operator!=(const Iterator &rhs) {
-			return mIteratorPostiion != rhs.mIteratorPosition;
-		}
-
-		Node* operator*() {
-			return *mIteratorPosition;
-		}
-	};
-
 	Tree() {
 		mRoot = nullptr;
 	}
