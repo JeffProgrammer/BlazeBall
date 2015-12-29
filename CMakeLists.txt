@@ -411,6 +411,7 @@ set (DIFVIEWERGAME_SRC
 	source/base/io.h
 	source/base/math.cpp
 	source/base/math.h
+	source/base/tree.h
 	source/base/types.h
 
 	# Bitmap folder
