@@ -6,6 +6,8 @@
 
 #include "renderedObject.h"
 
+IMPLEMENT_SCRIPTOBJECT(RenderedObject, GameObject);
+
 void RenderedObject::calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix) {
 	glm::vec3 pos = getPosition();
 	glm::quat rot = getRotation();
@@ -30,4 +32,8 @@ void RenderedObject::loadModelMatrix(const RenderInfo &info, Shader *shader) {
 	//Load it into the shader
 	shader->setUniformMatrix("modelMat", GL_FALSE, modelMatrix);
 	shader->setUniformMatrix("inverseModelMat", GL_FALSE, inverseModelMatrix);
+}
+
+void RenderedObject::initFields() {
+	// Nothing at the moment.
 }

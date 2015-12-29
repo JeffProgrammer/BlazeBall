@@ -39,6 +39,14 @@ public:
 	 * @param shader The shader which will be used for finding uniform locations.
 	 */
 	void loadModelMatrix(const RenderInfo &info, Shader *shader);
+
+	/**
+	 * Initializes the fields specific to the GameObject class.
+	 */
+	static void initFields();
+
+protected:
+	DECLARE_SCRIPTOBJECT(RenderedObject);
 };
 
 #endif
