@@ -141,7 +141,7 @@ public:
 			nodeQueue.pop();
 
 			for (auto child : current->children) {
-				nodeQueue.push(*child);
+				nodeQueue.push(child);
 			}
 		}
 
