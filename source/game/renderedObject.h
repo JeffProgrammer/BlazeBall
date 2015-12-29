@@ -20,7 +20,7 @@ public:
 	 * Render the object using OpenGL.
 	 * @param info A RenderInfo struct containing all the render state information.
 	 */
-	virtual void render(RenderInfo &info) = 0;
+	virtual void render(RenderInfo &info) {}
 	/**
 	 * If the object should be rendered.
 	 * @return True for rendered objects
