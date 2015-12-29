@@ -9,10 +9,14 @@
 
 #include <unordered_map>
 #include <string>
+#include "base/Tree.h"
 #include "game/scriptObject.h"
 #include "scriptEngine/scriptEngine.h"
 
 class AbstractClassRep {
+	// This is fucking bullshit.
+	// Let them access our private members :^)
+	template<typename T> friend class ConcreteClassRep;
 public:
 	typedef std::string (*GetterFunction)(void *ptr);
 	typedef bool(*SetterFunction)(void *ptr, const std::string &value);
@@ -42,9 +46,36 @@ public:
 	}
 
 	static void init() {
+		Tree<AbstractClassRep*> tree;
+		std::unordered_map<AbstractClassRep*, Tree<AbstractClassRep*>::Node*> map;
+
+		// store classreps
 		for (auto *rep = sLast; rep != nullptr; rep = rep->mNext) {
+			auto node = new Tree<AbstractClassRep*>::Node;
+			node->data = rep;
+
+			map[rep] = node;
 			sClassRepMap[rep->mName] = rep;
-			rep->initClass();
+		}
+
+		// sort the classes into their hiearchy
+		for (auto i : map) {
+			auto rep = i.first;
+			auto node = i.second;
+
+			// find parent rep and set it to the node
+			if (rep->mParent == "")
+				tree.push(node, nullptr);
+			else {
+				auto parentRep = sClassRepMap[rep->mParent];
+				tree.push(node, map[parentRep]);
+			}
+		}
+
+		// traverse the tree and initialize the fields (while having a party)
+		const auto &vec = tree.traverse();
+		for (auto classRep : vec) {
+			classRep->data->initClass();
 		}
 	}
 
@@ -76,6 +107,10 @@ public:
 	}
 
 	virtual void initClass() = 0;
+
+	std::string toString() {
+		return mName;
+	}
 
 protected:
 	static std::unordered_map<std::string, AbstractClassRep*> sClassRepMap;

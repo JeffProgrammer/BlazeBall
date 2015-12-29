@@ -39,6 +39,13 @@ public:
 	}
 
 	virtual void initClass() {
+		// copy the parent's fields
+		// this will perform a deep copy of all fields since we call initClass on
+		// an ordered tree!
+		if (mParent != "") {
+			const auto &fields = sClassRepMap[mParent]->mFieldList;
+			mFieldList.insert(fields.begin(), fields.end());
+		}
 		T::initFields();
 	}
 };
