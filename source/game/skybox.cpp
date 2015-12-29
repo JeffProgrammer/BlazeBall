@@ -9,6 +9,8 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+IMPLEMENT_SCRIPTOBJECT(Skybox, RenderedObject);
+
 static GLfloat sVertices[] = {
 	-1.0f, 1.0f, -1.0f,
 	-1.0f, -1.0f, -1.0f,
@@ -104,3 +106,6 @@ void Skybox::render(RenderInfo &info) {
 	glDepthFunc(GL_LESS);
 }
 
+void Skybox::initFields() {
+	// TODO
+}

@@ -17,7 +17,10 @@ protected:
 	bool mGenerated;
 
 	Material *mMaterial;
+
+	DECLARE_SCRIPTOBJECT(Skybox);
 public:
+	Skybox() : Skybox(nullptr) {}
 	Skybox(Material *material);
 	virtual ~Skybox();
 
@@ -34,6 +37,11 @@ public:
 
 	virtual void render(RenderInfo &info);
 	virtual inline void updateTick(const F64 &delta) {};
+
+	/**
+	* Initializes the fields specific to the GameObject class.
+	*/
+	static void initFields();
 };
 
 #endif /* skybox_h */
