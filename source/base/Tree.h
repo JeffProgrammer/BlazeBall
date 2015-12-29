@@ -106,6 +106,15 @@ public:
 		return ret;
 	}
 
+	std::string toString() {
+		std::string ret;
+		const auto &trav = traverse();
+		for (auto i : trav) {
+			ret += i->data->toString() + " ";
+		}
+		return ret;
+	}
+
 private:
 	/**
 	 * The root node of the tree.
