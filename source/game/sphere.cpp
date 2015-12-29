@@ -14,7 +14,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/projection.hpp>
 
+IMPLEMENT_SCRIPTOBJECT(Sphere, RenderedObject);
+
 GLuint gSphereVBO = 0;
+
+Sphere::Sphere() : Sphere(glm::vec3(0), 0) {
+}
 
 Sphere::Sphere(glm::vec3 origin, F32 radius) : RenderedObject(), mRadius(radius), mMaxAngVel(1000.0f), mMaterial(nullptr) {
 	mActor = PhysicsEngine::getEngine()->createSphere(mRadius);
@@ -317,6 +322,10 @@ void Sphere::updateTick(const F64 &delta) {
 		setLinearVelocity(glm::vec3(0, 0, 0));
 		setAngularVelocity(glm::vec3(0, 0, 0));
 	}
+}
+
+void Sphere::initFields() {
+	// TODO
 }
 
 // OLD JUMP CODE

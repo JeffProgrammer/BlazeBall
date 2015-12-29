@@ -50,7 +50,10 @@ protected:
 	const F32 cameraSpeed = 0.3f;
 	const F32 keyCameraSpeed = 3.f;
 
+	DECLARE_SCRIPTOBJECT(Sphere);
+
 public:
+	Sphere();
 	Sphere(glm::vec3 origin, F32 radius);
 	virtual ~Sphere();
 
@@ -89,6 +92,11 @@ public:
 	virtual void getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos);
 
 	virtual void updateTick(const F64 &delta);
+
+	/**
+	 * Initializes the fields specific to the GameObject class.
+	 */
+	static void initFields();
 };
 
 #endif
