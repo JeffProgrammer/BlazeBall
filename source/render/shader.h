@@ -199,6 +199,15 @@ public:
 			return nullptr;
 		return sShaderTable[name];
 	}
+
+	/**
+	 * Deletes all of the shaders within the hash table.
+	 */
+	static void destroyAllShaders() {
+		for (auto shader : sShaderTable)
+			delete shader.second;
+	}
+
 	/**
 	 * Initializes all of the shaders that are to be used within the game.
 	 */
