@@ -71,7 +71,7 @@ public:
 	 * @param vertPath The path to the file containing the vertex shader
 	 * @param fragPath The path to the file containing the fragment shader
 	 */
-	Shader(const std::string &name, std::string &vertPath, const std::string &fragPath);
+	Shader(const std::string &name, const std::string &vertPath, const std::string &fragPath);
 	/**
 	 * Destroy the shader and free its program.
 	 */

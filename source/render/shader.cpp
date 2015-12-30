@@ -18,7 +18,7 @@
 std::unordered_map<std::string, Shader*> Shader::sShaderTable;
 Shader *Shader::defaultShader = nullptr;
 
-Shader::Shader(const std::string &name,  std::string &vertPath, const std::string &fragPath) {
+Shader::Shader(const std::string &name, const std::string &vertPath, const std::string &fragPath) {
 	mName = name;
 
 	//Try to generate the shader
