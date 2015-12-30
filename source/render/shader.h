@@ -199,6 +199,10 @@ public:
 			return nullptr;
 		return sShaderTable[name];
 	}
+	/**
+	 * Initializes all of the shaders that are to be used within the game.
+	 */
+	static void initializeShaders();
 };
 
 #define ShaderUniformScalar(type, fn) \
