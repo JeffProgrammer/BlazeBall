@@ -21,7 +21,7 @@
 #include "scriptEngine/concreteClassRep.h"
 #include "game/scriptObject.h"
 
-class Shader : public ScriptObject {
+class Shader {
 protected:
 	struct AttributeInfo {
 		GLint size;
