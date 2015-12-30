@@ -493,6 +493,7 @@ set (DIFVIEWERGAME_SRC
 	source/render/scene.h
 	source/render/shader.cpp
 	source/render/shader.h
+	source/render/shaderImpl.cpp
 	source/render/util.h
 
 	# ScriptEngine
