@@ -139,15 +139,7 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 }
 
 bool Scene::initGL() {
-	Shader::defaultShader = new Shader("Default", "defaultV.glsl", "defaultF.glsl");
-
-	//TODO: Have a config somewhere load all of these and init these values
-	mShapeShader = new Shader("Model", "modelV.glsl", "modelF.glsl");
-
-	//TODO: Shapes
-	mShapeShader->addUniformLocation("textureSampler", 0);
-//	mShapeShader->addUniformLocation("normalSampler", 1);
-//	mShapeShader->addUniformLocation("specularSampler", 2);
+	Shader::initializeShaders();
 
 	marbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
 	marbleCubemap->generateBuffer();
@@ -379,6 +371,9 @@ bool Scene::init() {
 void Scene::cleanup() {
 	delete mTimer;
 	
+	// destroy all shaders
+	Shader::destroyAllShaders();
+
 	//Destroy the SDL
 	window->destroyContext();
 }
@@ -404,10 +399,6 @@ void Scene::run() {
 
 	//Create skybox
 	{
-		Shader *shader = new Shader("Skybox", "skyboxV.glsl", "skyboxF.glsl");
-		shader->addUniformLocation("cubemapSampler", 0);
-		shader->addAttribute("vertexPosition", 3, GL_FLOAT, GL_FALSE, 0, 0);
-
 		std::vector<CubeMapTexture::TextureInfo> textures;
 		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky0.jpg", CubeMapTexture::PositiveX));
 		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky1.jpg", CubeMapTexture::NegativeX));
@@ -418,7 +409,7 @@ void Scene::run() {
 
 		CubeMapTexture *cubeMap = new CubeMapTexture(textures);
 		Material *skyMaterial = new Material("skybox", cubeMap, GL_TEXTURE0);
-		skyMaterial->setShader(shader);
+		skyMaterial->setShader(Shader::getShaderByName("Skybox"));
 		mSkybox = new Skybox(skyMaterial);
 		addObject(mSkybox);
 	}
@@ -432,22 +423,10 @@ void Scene::run() {
 
 	//Create player
 	{
-		Shader *shader = new Shader("Sphere", "sphereV.glsl", "sphereF.glsl");
-		shader->addUniformLocation("textureSampler", 0);
-		shader->addUniformLocation("normalSampler", 1);
-		shader->addUniformLocation("specularSampler", 2);
-		shader->addUniformLocation("cubemapSampler", 3);
-
-		shader->addAttribute("vertexPosition",  3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
-		shader->addAttribute("vertexUV",        2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
-		shader->addAttribute("vertexNormal",    3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
-		shader->addAttribute("vertexTangent",   3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
-		shader->addAttribute("vertexBitangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
-
 		Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
 		Material *material = new Material("marble.skin");
 		material->setTexture(marbleCubemap, GL_TEXTURE3);
-		material->setShader(shader);
+		material->setShader(Shader::getShaderByName("Sphere"));
 		player->setMaterial(material);
 		mPlayer = player;
 		addObject(player);

@@ -31,18 +31,7 @@ void GameInterior::generateMaterials(std::string directory) {
 	mNoiseTexture = IO::loadTexture("noise.jpg");
 
 	//TODO: Per-material shaders
-	Shader *shader = new Shader("Interior", "interiorV.glsl", "interiorF.glsl");
-	shader->addUniformLocation("textureSampler", 0);
-	shader->addUniformLocation("normalSampler", 1);
-	shader->addUniformLocation("specularSampler", 2);
-	shader->addUniformLocation("noiseSampler", 3);
-	shader->addUniformLocation("cubemapSampler", 4);
 
-	shader->addAttribute("vertexPosition",  3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
-	shader->addAttribute("vertexUV",        2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
-	shader->addAttribute("vertexNormal",    3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
-	shader->addAttribute("vertexTangent",   3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
-	shader->addAttribute("vertexBitangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
 
 	//Allocate all textures for the interior
 	if (mInterior.materialName.size()) {
@@ -65,7 +54,7 @@ void GameInterior::generateMaterials(std::string directory) {
 			material->setTexture(mNoiseTexture, GL_TEXTURE3);
 
 			//TODO: Make this material-dependant when we get around to material properties
-			material->setShader(shader);
+			material->setShader(Shader::getShaderByName("Interior"));
 
 			//Assign the texture
 			mMaterialList.push_back(material);

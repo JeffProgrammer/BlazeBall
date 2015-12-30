@@ -39,11 +39,8 @@ void btDebugDrawer::draw(RenderInfo &info, const PhysicsEngine::DebugDrawType &d
 	}
 
 	if (mShader == NULL) {
-		mShader = new Shader("Debug", "debugV.glsl", "debugF.glsl");
+		mShader = Shader::getShaderByName("Debug");
 		glGenBuffers(1, &mVertexBuffer);
-
-		mShader->addAttribute("vertexPosition", 3, GL_FLOAT, false, sizeof(Point), (void *)offsetof(Point, vertex));
-		mShader->addAttribute("vertexColor", 3, GL_FLOAT, false, sizeof(Point), (void *)offsetof(Point, color));
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
