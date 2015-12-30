@@ -12,16 +12,25 @@
 #include "base/types.h"
 #include "texture/texture.h"
 #include "render/shader.h"
+#include "scriptEngine/concreteClassRep.h"
+#include "game/scriptObject.h"
 
 #define DEFAULT_NORMAL_TEXTURE   "DefaultNormal.png"
 #define DEFAULT_SPECULAR_TEXTURE "DefaultSpec.png"
 
-class Material {
+class Material : public ScriptObject {
 	std::unordered_map<GLuint, Texture *> mTextures;
 	Shader *mShader;
 
-	std::string mName;
+	//std::string mName;
 	std::string mPath;
+
+	std::string mDiffuseTextureName;
+	std::string mNormalTextureName;
+	std::string mSpecularTextureName;
+	std::string mShaderName;
+
+	std::string mMaterialName;
 
 	/**
 	 * Attempt to load textures for the material from a given diffuse path, resolving
@@ -44,14 +53,20 @@ class Material {
 	 * @return If the texture was loaded successfully.
 	 */
 	bool tryLoadTexture(const std::string &path, const GLuint &index);
+
+	DECLARE_SCRIPTOBJECT(Material);
 public:
+	Material() {
+		// don't use this yet. this is for script exposure. TODO
+	}
+
 	/**
 	 * Construct a material from only a name and texture. No files will be loaded.
 	 * @param name     The material's name
 	 * @param texture  A texture that will be used on the material
 	 * @param location The location for the given texture
 	 */
-	Material(const std::string &name, Texture *texture, GLuint location) : mShader(nullptr), mName(name) {
+	Material(const std::string &name, Texture *texture, GLuint location) : mShader(nullptr), mMaterialName(name) {
 		setTexture(texture, location);
 	}
 
@@ -61,7 +76,7 @@ public:
 	 * @param textures A vector of <Texture *, GLuint> pairs specifying the textures
 	 *                 and their desired locations.
 	 */
-	Material(const std::string &name, const std::vector<std::pair<Texture *, GLuint>> &textures) : mShader(nullptr), mName(name) {
+	Material(const std::string &name, const std::vector<std::pair<Texture *, GLuint>> &textures) : mShader(nullptr), mMaterialName(name) {
 		for (auto &texture : textures) {
 			setTexture(texture.first, texture.second);
 		}
@@ -123,7 +138,7 @@ public:
 	 * @return The material's name
 	 */
 	std::string getName() const {
-		return this->mName;
+		return this->mMaterialName;
 	}
 
 	/**
@@ -150,6 +165,8 @@ public:
 	 * Deactivate the texture, and its shader if one is defined.
 	 */
 	void deactivate();
+
+	static void initFields();
 };
 
 #endif 

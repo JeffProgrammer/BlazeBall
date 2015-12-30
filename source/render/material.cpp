@@ -7,6 +7,8 @@
 #include "render/material.h"
 #include "base/io.h"
 
+IMPLEMENT_SCRIPTOBJECT(Material, ScriptObject);
+
 Material::~Material() {
 
 }
@@ -105,4 +107,11 @@ void Material::deactivate() {
 
 void Material::setTexture(Texture *texture, const GLuint &index) {
 	this->mTextures[index] = texture;
+}
+
+void Material::initFields() {
+	AddFieldSimple("shader", std::string, offsetof(Material, mShaderName));
+	AddFieldSimple("diffuseTexture", std::string, offsetof(Material, mDiffuseTextureName));
+	AddFieldSimple("normalTexture", std::string, offsetof(Material, mNormalTextureName));
+	AddFieldSimple("specularTexture", std::string, offsetof(Material, mSpecularTextureName));
 }
