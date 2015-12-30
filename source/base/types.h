@@ -84,4 +84,13 @@ struct Triangle {
 	Vertex verts[3];
 };
 
+struct Point {
+	glm::vec3 vertex;
+	glm::vec3 color;
+
+	Point(const glm::vec3 &vertex, const glm::vec3 &color) : vertex(vertex), color(color) {
+
+	}
+};
+
 #endif
