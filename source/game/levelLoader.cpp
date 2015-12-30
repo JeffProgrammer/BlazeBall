@@ -9,6 +9,7 @@
 #include "base/io.h"
 #include "scriptEngine/abstractClassRep.h"
 #include <rapidjson/document.h>
+#include "render/scene.h"
 
 #ifdef __APPLE__
 #define stricmp strcasecmp
@@ -63,6 +64,14 @@ bool loadLevel(const std::string &file) {
 			if (!scriptObject->setField(fieldName, fieldValue)) {
 				printf("Could not set class field %s on an object of type %s\n", fieldName, klass);
 			}
+		}
+
+		// This is a shitty way of doing this, but this is a level loader.
+		// If the object is a game object, add it to the scene.
+		GameObject *gameObject = dynamic_cast<GameObject*>(scriptObject);
+		if (gameObject != nullptr) {
+			// add it to the scene.
+			Scene::getSingleton()->addObject(gameObject);
 		}
 	}
 
