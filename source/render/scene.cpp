@@ -139,10 +139,10 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 }
 
 bool Scene::initGL() {
-	Shader::defaultShader = new Shader("defaultV.glsl", "defaultF.glsl");
+	Shader::defaultShader = new Shader("Default", "defaultV.glsl", "defaultF.glsl");
 
 	//TODO: Have a config somewhere load all of these and init these values
-	mShapeShader = new Shader("modelV.glsl", "modelF.glsl");
+	mShapeShader = new Shader("Model", "modelV.glsl", "modelF.glsl");
 
 	//TODO: Shapes
 	mShapeShader->addUniformLocation("textureSampler", 0);
@@ -404,7 +404,7 @@ void Scene::run() {
 
 	//Create skybox
 	{
-		Shader *shader = new Shader("skyboxV.glsl", "skyboxF.glsl");
+		Shader *shader = new Shader("Skybox", "skyboxV.glsl", "skyboxF.glsl");
 		shader->addUniformLocation("cubemapSampler", 0);
 		shader->addAttribute("vertexPosition", 3, GL_FLOAT, GL_FALSE, 0, 0);
 
@@ -432,7 +432,7 @@ void Scene::run() {
 
 	//Create player
 	{
-		Shader *shader = new Shader("sphereV.glsl", "sphereF.glsl");
+		Shader *shader = new Shader("Sphere", "sphereV.glsl", "sphereF.glsl");
 		shader->addUniformLocation("textureSampler", 0);
 		shader->addUniformLocation("normalSampler", 1);
 		shader->addUniformLocation("specularSampler", 2);

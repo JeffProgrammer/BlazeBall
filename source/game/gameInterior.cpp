@@ -31,7 +31,7 @@ void GameInterior::generateMaterials(std::string directory) {
 	mNoiseTexture = IO::loadTexture("noise.jpg");
 
 	//TODO: Per-material shaders
-	Shader *shader = new Shader("interiorV.glsl", "interiorF.glsl");
+	Shader *shader = new Shader("Interior", "interiorV.glsl", "interiorF.glsl");
 	shader->addUniformLocation("textureSampler", 0);
 	shader->addUniformLocation("normalSampler", 1);
 	shader->addUniformLocation("specularSampler", 2);

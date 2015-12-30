@@ -39,7 +39,7 @@ void btDebugDrawer::draw(RenderInfo &info, const PhysicsEngine::DebugDrawType &d
 	}
 
 	if (mShader == NULL) {
-		mShader = new Shader("debugV.glsl", "debugF.glsl");
+		mShader = new Shader("Debug", "debugV.glsl", "debugF.glsl");
 		glGenBuffers(1, &mVertexBuffer);
 
 		mShader->addAttribute("vertexPosition", 3, GL_FLOAT, false, sizeof(Point), (void *)offsetof(Point, vertex));
