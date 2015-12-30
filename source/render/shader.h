@@ -18,8 +18,10 @@
 
 #include <string>
 #include <unordered_map>
+#include "scriptEngine/concreteClassRep.h"
+#include "game/scriptObject.h"
 
-class Shader {
+class Shader : public ScriptObject {
 protected:
 	struct AttributeInfo {
 		GLint size;
@@ -39,6 +41,13 @@ protected:
 	std::unordered_map<std::string, AttributeInfo> mAttributes;
 
 	/**
+	 * The name of the shader object.
+	 * Note that this name will be used in script to determine what
+	 * shader to attach to objects and/or materials.
+	 */
+	std::string mName;
+
+	/**
 	 * Load a shader from a given path with a given type.
 	 * @param path The file path of the shader to load
 	 * @param type The shader's type (fragment/vertex)
@@ -52,6 +61,8 @@ protected:
 	 * @return The OpenGL id for the program, or 0 if the operation fails.
 	 */
 	GLuint loadProgram(const std::string &vertPath, const std::string &fragPath);
+
+	static std::unordered_map<std::string, Shader*> sShaderTable;
 public:
 	static Shader *defaultShader;
 
@@ -60,7 +71,7 @@ public:
 	 * @param vertPath The path to the file containing the vertex shader
 	 * @param fragPath The path to the file containing the fragment shader
 	 */
-	Shader(const std::string &vertPath, const std::string &fragPath);
+	Shader(const std::string &name, std::string &vertPath, const std::string &fragPath);
 	/**
 	 * Destroy the shader and free its program.
 	 */
@@ -167,6 +178,27 @@ public:
 	 */
 	template <typename T>
 	void setUniformMatrix(const std::string &name, GLboolean transpose, const T &data);
+
+	/**
+	 * Gets the name of the shader object.
+	 * @return the name of the shader object.
+	 */
+	const std::string getName() const {
+		return mName;
+	}
+
+	/**
+	 * Searches the shader hash table to find a shader object specified by the 
+	 * name.
+	 * @param name The shader who's mName property reflects the desired search.
+	 * @return The Shader object, or nullptr if it is not found.
+	 */
+	static Shader* getShaderByName(const std::string &name) {
+		// ensure we have it.
+		if (sShaderTable.find(name) == sShaderTable.end())
+			return nullptr;
+		return sShaderTable[name];
+	}
 };
 
 #define ShaderUniformScalar(type, fn) \

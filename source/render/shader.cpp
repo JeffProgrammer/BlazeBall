@@ -15,17 +15,26 @@
 #include <OpenGL/gl3.h>
 #endif
 
+std::unordered_map<std::string, Shader*> Shader::sShaderTable;
 Shader *Shader::defaultShader = nullptr;
 
-Shader::Shader(const std::string &vertPath, const std::string &fragPath) {
+Shader::Shader(const std::string &name,  std::string &vertPath, const std::string &fragPath) {
+	mName = name;
+
 	//Try to generate the shader
 	mProgramId = loadProgram(vertPath, fragPath);
+
+	// add to the shader hash table
+	sShaderTable[name] = this;
 }
 
 Shader::~Shader() {
 	//If we have successfully generated, tell OpenGL to delete our program
 	if (getProgramId())
 		glDeleteProgram(getProgramId());
+
+	// remove from the shader hash table
+	sShaderTable.erase(mName);
 }
 
 GLuint Shader::loadShader(const std::string &path, const GLenum &type) {
