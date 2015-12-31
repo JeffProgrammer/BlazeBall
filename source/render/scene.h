@@ -90,11 +90,7 @@ public:
 	
 	bool mShouldSleep;
 
-	void addObject(GameObject *object) {
-		objects.push_back(object);
-		if (dynamic_cast<RenderedObject*>(object))
-			mRenderedObjects.push_back(static_cast<RenderedObject*>(object));
-	}
+	void addObject(GameObject *object);
 
 	Scene();
 	~Scene();

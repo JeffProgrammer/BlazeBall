@@ -41,6 +41,11 @@ public:
 	void loadModelMatrix(const RenderInfo &info, Shader *shader);
 
 	/**
+	 * A callback that is called when the object is added to the scene.
+	 */
+	virtual void onAddToScene() {}
+
+	/**
 	 * Initializes the fields specific to the GameObject class.
 	 */
 	static void initFields();

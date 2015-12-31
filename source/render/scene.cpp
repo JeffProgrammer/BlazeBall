@@ -378,6 +378,19 @@ void Scene::cleanup() {
 	window->destroyContext();
 }
 
+void Scene::addObject(GameObject *object) {
+	objects.push_back(object);
+
+	// For rendered objects.
+	auto *renderedObject = dynamic_cast<RenderedObject*>(object);
+	if (renderedObject != nullptr) {
+		mRenderedObjects.push_back(renderedObject);
+
+		// fire callback
+		renderedObject->onAddToScene();
+	}
+}
+
 void Scene::run() {
 	Event *eventt;
 
