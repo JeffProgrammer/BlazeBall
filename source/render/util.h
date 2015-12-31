@@ -19,6 +19,7 @@ namespace GL {
 		GLenum error = GL_NO_ERROR;
 		while ((error = glGetError()) != GL_NO_ERROR) {
 			printf("//--------------------------------------------------------\n");
+			printf("OpenGL Error:\n");
 			switch (error) {
 				case 0x500: printf("Code: Invalid Enum\n"); break;
 				case 0x501: printf("Code: Invalid Value\n"); break;
