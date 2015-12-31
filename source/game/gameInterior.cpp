@@ -11,6 +11,12 @@
 #include <string>
 #include <cfloat>
 
+IMPLEMENT_SCRIPTOBJECT(GameInterior, RenderedObject);
+
+void GameInterior::initFields() {
+	// TODO
+}
+
 GameInterior::GameInterior(DIF::Interior interior) : RenderedObject(), mInterior(interior) {
 	gfxInit();
 }

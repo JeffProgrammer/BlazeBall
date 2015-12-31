@@ -38,6 +38,7 @@ protected:
 	
 	GLuint mVbo;
 
+	DECLARE_SCRIPTOBJECT(GameInterior);
 public:
 	GameInterior();
 	GameInterior(DIF::Interior interior);
@@ -67,6 +68,8 @@ public:
 	virtual void setScale(const glm::vec3 &scale);
 	
 	virtual inline void updateTick(const F64 &delta) {};
+
+	static void initFields();
 };
 
 #endif
