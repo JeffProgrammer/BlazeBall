@@ -17,6 +17,16 @@
 //#define stricmp stricmp
 #endif
 
+/* Temporary function until str functions are put in place */
+inline bool temp___containsMoreThanOneWord(const std::string &str) {
+	size_t len = str.length();
+	for (size_t i = 0; i < len; i++) {
+		if (str[i] == ' ')
+			return true;
+	}
+	return false;
+}
+
 bool loadLevel(const std::string &file) {
 	if (!IO::isfile(file)) {
 		printf("Unable to load level file: %s\n", file.c_str());
@@ -56,6 +66,12 @@ bool loadLevel(const std::string &file) {
 			const char *fieldName = field->name.GetString();
 			const char *fieldValue = field->value.GetString();
 
+			// Make sure that the field only is 1 word. If not reject it
+			if (temp___containsMoreThanOneWord(fieldName)) {
+				printf("Field %s was rejected because a field name must only be one word!\n", fieldName);
+				continue;
+			}
+
 			// we allready got the class field.
 			if (stricmp(fieldName, "class") == 0)
 				continue;
@@ -63,6 +79,7 @@ bool loadLevel(const std::string &file) {
 			//Try and set the field
 			if (!scriptObject->setField(fieldName, fieldValue)) {
 				printf("Could not set class field %s on an object of type %s\n", fieldName, klass);
+				continue;
 			}
 		}
 
