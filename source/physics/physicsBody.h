@@ -12,12 +12,12 @@
 
 class PhysicsBody {
 public:
-	virtual const F32 getMass() = 0;
-	virtual const glm::vec3 getPosition() = 0;
-	virtual const glm::quat getRotation() = 0;
-	virtual const glm::vec3 getScale() = 0;
-	virtual const glm::vec3 getLinearVelocity() = 0;
-	virtual const glm::vec3 getAngularVelocity() = 0;
+	virtual const F32 getMass() const = 0;
+	virtual const glm::vec3 getPosition() const = 0;
+	virtual const glm::quat getRotation() const = 0;
+	virtual const glm::vec3 getScale() const = 0;
+	virtual const glm::vec3 getLinearVelocity() const = 0;
+	virtual const glm::vec3 getAngularVelocity() const = 0;
 
 	virtual void setMass(const F32 &mass) = 0;
 	virtual void setPosition(const glm::vec3 &position) = 0;

@@ -23,14 +23,14 @@ glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4x4(1), -90.0f, glm::v
 
 Scene::Scene() {
 	mShapeShader = nullptr;
-	controlObject = nullptr;
+	mControlObject = nullptr;
 }
 
 Scene::~Scene() {
-	for (auto object : objects) {
+	for (auto object : mObjects) {
 		delete object;
 	}
-	delete window;
+	delete mWindow;
 	delete mTimer;
 }
 
@@ -38,8 +38,8 @@ void Scene::render() {
 	//Get the camera transform from the marble
 	glm::mat4 cameraTransform;
 	glm::vec3 cameraPosition;
-	if (controlObject)
-		controlObject->getCameraPosition(cameraTransform, cameraPosition);
+	if (mControlObject)
+		mControlObject->getCameraPosition(cameraTransform, cameraPosition);
 
 	//Camera
 	glm::mat4 viewMatrix = glm::mat4x4(1);
@@ -58,7 +58,7 @@ void Scene::render() {
 
 	info.isReflectionPass = false;
 
-	marbleCubemap->generateBuffer(mPlayer->getPosition(), window->getWindowSize() * (S32)pixelDensity, [&](RenderInfo &info) {
+	mMarbleCubemap->generateBuffer(mPlayer->getPosition(), mWindow->getWindowSize() * (S32)mPixelDensity, [&](RenderInfo &info) {
 		this->renderScene(info);
 	}, info);
 
@@ -81,10 +81,10 @@ void Scene::renderScene(RenderInfo &info) {
 	glEnable(GL_MULTISAMPLE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	//Render all the objects in the scene
+	//Render all the mObjects in the scene
 	for (auto object : mRenderedObjects) {
-		//Don't render non-renderable objects (like the camera)
-		//Also don't render some objects in reflections (like particles)
+		//Don't render non-renderable mObjects (like the camera)
+		//Also don't render some mObjects in reflections (like particles)
 		if (object->isRenderable() && (!info.isReflectionPass || object->isReflectable())) {
 			object->render(info);
 		}
@@ -110,19 +110,19 @@ void Scene::loop(const F64 &delta) {
 }
 
 void Scene::tick(const F64 &delta) {
-	if (controlObject) {
-		controlObject->updateCamera(movement, delta);
-		controlObject->updateMove(movement, delta);
+	if (mControlObject) {
+		mControlObject->updateCamera(mMovement, delta);
+		mControlObject->updateMove(mMovement, delta);
 	}
 
-	movement.pitch = 0;
-	movement.yaw = 0;
+	mMovement.pitch = 0;
+	mMovement.yaw = 0;
 
-	if (movement.fire) {
+	if (mMovement.fire) {
 
 	}
 
-	for (auto object : objects) {
+	for (auto object : mObjects) {
 		object->updateTick(delta);
 	}
 }
@@ -135,18 +135,18 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 	glGetIntegerv(GL_VIEWPORT, viewport);
 
 	//Should be 2x if you have a retina display
-	pixelDensity = static_cast<F32>(viewport[2] / size.x);
+	mPixelDensity = static_cast<F32>(viewport[2] / size.x);
 }
 
 bool Scene::initGL() {
 	Shader::initializeShaders();
 	mShapeShader = Shader::getShaderByName("Model");
 
-	marbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
-	marbleCubemap->generateBuffer();
+	mMarbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
+	mMarbleCubemap->generateBuffer();
 
 	//Window size for viewport
-	glm::ivec2 screenSize = window->getWindowSize();
+	glm::ivec2 screenSize = mWindow->getWindowSize();
 	updateWindowSize(screenSize);
 
 	glEnable(GL_DEPTH_TEST);
@@ -166,7 +166,7 @@ bool Scene::initGL() {
 
 void Scene::performClick(S32 mouseX, S32 mouseY) {
 	/*
-	glm::ivec2 screenSize = window->getWindowSize();
+	glm::ivec2 screenSize = mWindow->getWindowSize();
 	//http://antongerdelan.net/opengl/raycasting.html
 	//(x, y) are in device coordinates. We need to convert that to model coords
 
@@ -195,24 +195,24 @@ void Scene::handleEvent(Event *event) {
 	switch (event->getType()) {
 		//Quit
 		case Event::Quit:
-			running = false;
+			mRunning = false;
 			break;
 		case Event::KeyDown: {
 			KeyEvent::Key key = static_cast<KeyEvent::Key>(static_cast<KeyDownEvent *>(event)->key);
-			if (key == mConfig->getKey("forward"))  movement.forward  = true;
-			if (key == mConfig->getKey("backward")) movement.backward = true;
-			if (key == mConfig->getKey("left"))     movement.left     = true;
-			if (key == mConfig->getKey("right"))    movement.right    = true;
+			if (key == mConfig->getKey("forward"))  mMovement.forward  = true;
+			if (key == mConfig->getKey("backward")) mMovement.backward = true;
+			if (key == mConfig->getKey("left"))     mMovement.left     = true;
+			if (key == mConfig->getKey("right"))    mMovement.right    = true;
 			switch (key) {
-				case KeyEvent::KEY_UP:    movement.pitchUp   = true; break;
-				case KeyEvent::KEY_DOWN:  movement.pitchDown = true; break;
-				case KeyEvent::KEY_LEFT:  movement.yawLeft   = true; break;
-				case KeyEvent::KEY_RIGHT: movement.yawRight  = true; break;
-				case KeyEvent::KEY_SPACE: movement.jump      = true; break;
-				case KeyEvent::KEY_V: window->toggleVsync(); break;
+				case KeyEvent::KEY_UP:    mMovement.pitchUp   = true; break;
+				case KeyEvent::KEY_DOWN:  mMovement.pitchDown = true; break;
+				case KeyEvent::KEY_LEFT:  mMovement.yawLeft   = true; break;
+				case KeyEvent::KEY_RIGHT: mMovement.yawRight  = true; break;
+				case KeyEvent::KEY_SPACE: mMovement.jump      = true; break;
+				case KeyEvent::KEY_V: mWindow->toggleVsync(); break;
 				case KeyEvent::KEY_Q:
 				{
-					movement.fire = true;
+					mMovement.fire = true;
 
 					// make a new sphere!
 					Sphere *sphere = new Sphere(glm::vec3(0, 0, 30), 0.75);
@@ -222,11 +222,11 @@ void Scene::handleEvent(Event *event) {
 				}
 				case KeyEvent::KEY_C:
 				{
-					// swap control objects!
-					if (controlObject == mPlayer)
-						controlObject = mCamera;
+					// swap control mObjects!
+					if (mControlObject == mPlayer)
+						mControlObject = mCamera;
 					else
-						controlObject = mPlayer;
+						mControlObject = mPlayer;
 					break;
 				}
 				case KeyEvent::KEY_M:
@@ -243,10 +243,10 @@ void Scene::handleEvent(Event *event) {
 					// mega / regular marble
 					if (mPlayer->getRadius() < 1.0f) {
 						mPlayer->setRadius(1.0f);
-						marbleCubemap->setExtent(glm::vec2(256, 256));
+						mMarbleCubemap->setExtent(glm::vec2(256, 256));
 					} else {
 						mPlayer->setRadius(0.2f);
-						marbleCubemap->setExtent(glm::vec2(64, 64));
+						mMarbleCubemap->setExtent(glm::vec2(64, 64));
 					}
 					break;
 				}
@@ -270,18 +270,18 @@ void Scene::handleEvent(Event *event) {
 					// mbu / regular marble
 					if (mPlayer->getRadius() < 0.3f) {
 						mPlayer->setRadius(0.3f);
-						marbleCubemap->setExtent(glm::vec2(128, 128));
+						mMarbleCubemap->setExtent(glm::vec2(128, 128));
 					}
 					else {
 						mPlayer->setRadius(0.2f);
-						marbleCubemap->setExtent(glm::vec2(64, 64));
+						mMarbleCubemap->setExtent(glm::vec2(64, 64));
 					}
 					break;
 				}
 				case KeyEvent::KEY_ESCAPE:
 				{
-					window->lockCursor(false);
-					captureMouse = false;
+					mWindow->lockCursor(false);
+					mCaptureMouse = false;
 					break;
 				}
 				default:
@@ -291,17 +291,17 @@ void Scene::handleEvent(Event *event) {
 		}
 		case Event::KeyUp: {
 			KeyEvent::Key key = static_cast<KeyEvent::Key>(static_cast<KeyDownEvent *>(event)->key);
-			if (key == mConfig->getKey("forward"))  movement.forward  = false;
-			if (key == mConfig->getKey("backward")) movement.backward = false;
-			if (key == mConfig->getKey("left"))     movement.left     = false;
-			if (key == mConfig->getKey("right"))    movement.right    = false;
+			if (key == mConfig->getKey("forward"))  mMovement.forward  = false;
+			if (key == mConfig->getKey("backward")) mMovement.backward = false;
+			if (key == mConfig->getKey("left"))     mMovement.left     = false;
+			if (key == mConfig->getKey("right"))    mMovement.right    = false;
 			switch (key) {
-				case KeyEvent::KEY_UP:    movement.pitchUp   = false; break;
-				case KeyEvent::KEY_DOWN:  movement.pitchDown = false; break;
-				case KeyEvent::KEY_LEFT:  movement.yawLeft   = false; break;
-				case KeyEvent::KEY_RIGHT: movement.yawRight  = false; break;
-				case KeyEvent::KEY_SPACE: movement.jump      = false; break;
-				case KeyEvent::KEY_Q:     movement.fire      = false; break;
+				case KeyEvent::KEY_UP:    mMovement.pitchUp   = false; break;
+				case KeyEvent::KEY_DOWN:  mMovement.pitchDown = false; break;
+				case KeyEvent::KEY_LEFT:  mMovement.yawLeft   = false; break;
+				case KeyEvent::KEY_RIGHT: mMovement.yawRight  = false; break;
+				case KeyEvent::KEY_SPACE: mMovement.jump      = false; break;
+				case KeyEvent::KEY_Q:     mMovement.fire      = false; break;
 				default:
 					break;
 			}
@@ -309,9 +309,9 @@ void Scene::handleEvent(Event *event) {
 		}
 		//Mouse for rotation
 		case Event::MouseMove:
-			if (captureMouse) {
-				movement.yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x;
-				movement.pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y;
+			if (mCaptureMouse) {
+				mMovement.yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x;
+				mMovement.pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y;
 			}
 			break;
 		case Event::MouseDown:
@@ -323,8 +323,8 @@ void Scene::handleEvent(Event *event) {
 			}
 
 			if (((MouseDownEvent *)event)->button == 1) { //Left mouse: click
-				window->lockCursor(true);
-				captureMouse = true;
+				mWindow->lockCursor(true);
+				mCaptureMouse = true;
 				performClick(((MouseDownEvent *)event)->position.x, ((MouseDownEvent *)event)->position.y);
 			}
 			break;
@@ -351,11 +351,11 @@ void Scene::handleEvent(Event *event) {
 }
 
 bool Scene::init() {
-	running = true;
+	mRunning = true;
 	mShouldSleep = false;
 	mDoDebugDraw = false;
 
-	if (!window->createContext()) {
+	if (!mWindow->createContext()) {
 		return false;
 	}
 
@@ -364,7 +364,7 @@ bool Scene::init() {
 		return false;
 	}
 
-	captureMouse = true;
+	mCaptureMouse = true;
 
 	return true;
 }
@@ -376,11 +376,11 @@ void Scene::cleanup() {
 	Shader::destroyAllShaders();
 
 	//Destroy the SDL
-	window->destroyContext();
+	mWindow->destroyContext();
 }
 
 void Scene::addObject(GameObject *object) {
-	objects.push_back(object);
+	mObjects.push_back(object);
 
 	// For rendered objects.
 	auto *renderedObject = dynamic_cast<RenderedObject*>(object);
@@ -395,7 +395,7 @@ void Scene::addObject(GameObject *object) {
 GameObject* Scene::findGameObject(const std::string &name) {
 	// O(n)
 	// TODO: store objects in a hash map or something.
-	for (const auto obj : objects) {
+	for (const auto obj : mObjects) {
 		if (obj->getName() == name)
 			return obj;
 	}
@@ -432,20 +432,23 @@ void Scene::run() {
 	{
 		Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
 		Material *material = new Material("marble.skin");
-		material->setTexture(marbleCubemap, GL_TEXTURE3);
+		material->setTexture(mMarbleCubemap, GL_TEXTURE3);
 		material->setShader(Shader::getShaderByName("Sphere"));
 		player->setMaterial(material);
 		mPlayer = player;
 		addObject(player);
 	}
 	
-	controlObject = mPlayer;
+	mControlObject = mPlayer;
+
+	//Maybe this is a good idea
+	PhysicsEngine::getEngine()->setRunning(true);
 
 	//Maybe this is a good idea
 	PhysicsEngine::getEngine()->setRunning(true);
 
 	//Main loop
-	while (running) {
+	while (mRunning) {
 		//Profiling
 		mTimer->start();
 		
@@ -454,7 +457,7 @@ void Scene::run() {
 		}
 
 		//Input
-		while (window->pollEvents(eventt)) {
+		while (mWindow->pollEvents(eventt)) {
 			if (eventt != NULL) {
 				handleEvent(eventt);
 				delete eventt;
@@ -472,16 +475,16 @@ void Scene::run() {
 		render();
 		
 		//Flip buffers
-		window->swapBuffers();
+		mWindow->swapBuffers();
 
 		//Profiling
-		if (printFPS) {
+		if (mPrintFPS) {
 			counter += lastDelta;
 			fpsCounter++;
 			if (counter >= 1.f) {
 				F32 mspf = 1000.0f / fpsCounter;
 				std::string title = "FPS: " + std::to_string(fpsCounter) + " mspf: " + std::to_string(mspf);
-				window->setWindowTitle(title.c_str());
+				mWindow->setWindowTitle(title.c_str());
 				
 				counter = 0.0;
 				fpsCounter = 0;

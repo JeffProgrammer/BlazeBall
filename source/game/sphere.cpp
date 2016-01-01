@@ -145,19 +145,19 @@ glm::vec3 Sphere::getCollisionNormal(glm::vec3 &toiVelocity) {
 	return dynamic_cast<PhysicsSphere *>(mActor)->getCollisionNormal(toiVelocity);
 }
 
-glm::vec3 Sphere::getPosition() {
+const glm::vec3 Sphere::getPosition() const {
 	return mActor->getPosition();
 }
 
-glm::quat Sphere::getRotation() {
+const glm::quat Sphere::getRotation() const {
 	return mActor->getRotation();
 }
 
-glm::vec3 Sphere::getVelocity() {
+const glm::vec3 Sphere::getVelocity() const {
 	return mActor->getLinearVelocity();
 }
 
-glm::vec3 Sphere::getAngularVelocity() {
+const glm::vec3 Sphere::getAngularVelocity() const {
 	return mActor->getAngularVelocity();
 }
 

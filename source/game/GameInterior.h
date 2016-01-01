@@ -60,13 +60,13 @@ public:
 	virtual void render(::RenderInfo &info);
 	void drawMaterial(Material *material, ::RenderInfo &info, void *userInfo);
 
-	virtual glm::vec3 getPosition();
-	virtual glm::quat getRotation();
+	virtual const glm::vec3 getPosition() const;
+	virtual const glm::quat getRotation() const;
 
 	virtual void setPosition(const glm::vec3 &pos);
 	virtual void setRotation(const glm::quat &rot);
 
-	virtual glm::vec3 getScale();
+	virtual const glm::vec3 getScale() const;
 	virtual void setScale(const glm::vec3 &scale);
 	
 	virtual inline void updateTick(const F64 &delta) {};

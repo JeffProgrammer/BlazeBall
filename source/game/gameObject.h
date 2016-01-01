@@ -68,7 +68,7 @@ public:
 	 * Gets the position of the GameObject.
 	 * @return the position vector of the GameObject.
 	 */
-	virtual glm::vec3 getPosition() { return mPosition; }
+	virtual const glm::vec3 getPosition() const { return mPosition; }
 
 	/**
 	 * Sets the position of the GameObject.
@@ -80,7 +80,7 @@ public:
 	 * Gets the rotation of the GameObject as a quaternion.
 	 * @return the rotation quaternion of the GameObject.
 	 */
-	virtual glm::quat getRotation() { return mRotation; }
+	virtual const glm::quat getRotation() const { return mRotation; }
 
 	/**
 	 * Sets the rotation of the GameObject as a quaternion.
@@ -92,7 +92,7 @@ public:
 	 * Gets the scale of the GameObject.
 	 * @return the scale vector of the GameObject.
 	 */
-	virtual glm::vec3 getScale() { return mScale; }
+	virtual const glm::vec3 getScale() const { return mScale; }
 
 	/**
 	 * Sets the scale of the GameObject.

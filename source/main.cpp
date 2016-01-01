@@ -26,7 +26,7 @@ int main(int argc, const char *argv[]) {
 	PhysicsEngine::setEngine(new btPhysicsEngine());
 
 	//Init SDL
-	scene->window = new SDLWindow();
+	scene->mWindow = new SDLWindow();
 	scene->mTimer = new SDLTimer();
 	scene->mConfig = new Config("config.txt");
 
