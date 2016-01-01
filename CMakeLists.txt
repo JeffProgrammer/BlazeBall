@@ -9,11 +9,17 @@ endif()
 
 # Enable Static Linking the C++ ABI directly into the executables and libraries
 if (MSVC)
-	SET(CMAKE_REQUIRED_LINKER_FLAGS "/SAFESEH:NO")
-	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-	set(CMAKE_CXX_FLAGS_RelWithDebInfo "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-	set(CMAKE_CXX_FLAGS_RelWithDebInfo "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+	#---BEGIN COPY FROM BULLET CMAKE--- 
+	#We statically link to reduce dependancies
+	FOREACH(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO )
+		IF(${flag_var} MATCHES "/MD")
+			STRING(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+		ENDIF(${flag_var} MATCHES "/MD")
+		IF(${flag_var} MATCHES "/MDd")
+			STRING(REGEX REPLACE "/MDd" "/MTd" ${flag_var} "${${flag_var}}")
+		ENDIF(${flag_var} MATCHES "/MDd")
+	ENDFOREACH(flag_var)
+	#---END COPY FROM BULLET CMAKE--- 
 endif()
 
 # http://stackoverflow.com/a/25286420/214063
