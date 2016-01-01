@@ -53,30 +53,5 @@ int main(int argc, const char *argv[]) {
 }
 
 void parseArgs(int argc, const char *argv[]) {
-	for (int i = 1; i < argc; i++) {
-		DIF::DIF dif;
 
-		std::string path = argv[1];
-		std::string directory = IO::getPath(path);
-		std::ifstream file(path, std::ios::binary);
-
-		if (dif.read(file)) {
-			GameInterior *interior = new GameInterior();
-
-			// load interior
-			for (auto dinterior : dif.interior) {
-				interior->setInterior(dinterior);
-				interior->generateMaterials(directory);
-			}
-
-			// make mesh
-			interior->generateMesh();
-
-			// add the interior to the scene.
-			Scene::getSingleton()->addObject(interior);
-		}
-
-		// cleanup
-		file.close();
-	}
 }
