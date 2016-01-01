@@ -53,5 +53,9 @@ int main(int argc, const char *argv[]) {
 }
 
 void parseArgs(int argc, const char *argv[]) {
-
+	if (argc == 1) {
+		printf("Must specify a json file to load.\n");
+		assert(false);
+	}
+	//loadLevel(argv[1]); // suck it nerds
 }

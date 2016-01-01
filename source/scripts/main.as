@@ -1,10 +1,11 @@
 void main() {
 	echo("Hello World");
 	
-	if (loadLevel("test.json"))
-		echo("Level test.json loaded successfully.");
+	//if (loadLevel("test.json"))
+	if (loadLevel("level.json"))
+		echo("Level level.json loaded successfully.");
 	else
-		echo("Level file test.json not found!");
+		echo("Level file level.json not found!");
 }
 
 float get5() {
