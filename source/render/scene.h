@@ -92,6 +92,8 @@ public:
 
 	void addObject(GameObject *object);
 
+	GameObject *findGameObject(const std::string &name);
+
 	Scene();
 	~Scene();
 

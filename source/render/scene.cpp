@@ -391,6 +391,16 @@ void Scene::addObject(GameObject *object) {
 	}
 }
 
+GameObject* Scene::findGameObject(const std::string &name) {
+	// O(n)
+	// TODO: store objects in a hash map or something.
+	for (const auto obj : objects) {
+		if (obj->getName() == name)
+			return obj;
+	}
+	return nullptr;
+}
+
 void Scene::run() {
 	Event *eventt;
 
