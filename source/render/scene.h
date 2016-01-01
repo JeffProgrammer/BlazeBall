@@ -98,8 +98,8 @@ public:
 	~Scene();
 
 	static Scene *getSingleton() {
-		static Scene *singleton;
-		if (!singleton)
+		static Scene *singleton = nullptr;
+		if (singleton == nullptr)
 			singleton = new Scene();
 		return singleton;
 	}

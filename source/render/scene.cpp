@@ -140,6 +140,7 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 
 bool Scene::initGL() {
 	Shader::initializeShaders();
+	mShapeShader = Shader::getShaderByName("Model");
 
 	marbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
 	marbleCubemap->generateBuffer();
