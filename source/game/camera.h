@@ -30,12 +30,12 @@ protected:
 	/**
 	 * A speed factor of which the camera moves based on mouse movement.
 	 */
-	const F32 mCameraSpeed = 0.3f;
+	const F32 mCameraSpeed = 0.005f;
 
 	/**
 	 * A speed factor of which the camera moves based on keyboard movement.
 	 */
-	const F32 mKeyCameraSpeed = 3.f;
+	const F32 mKeyCameraSpeed = 0.05f;
 
 	/**
 	 * The class rep representing the Camera class.

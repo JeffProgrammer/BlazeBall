@@ -15,7 +15,7 @@
 #include <algorithm>
 #include <ctime>
 
-glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4x4(1), -90.0f, glm::vec3(1, 0, 0));
+glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4x4(1), glm::radians(-90.0f), glm::vec3(1, 0, 0));
 
 /// The amount of time that has to pass before a tick happens.
 /// Default is 16.6667 ms which means we tick at 60 frames per second
@@ -43,7 +43,7 @@ void Scene::render() {
 
 	//Camera
 	glm::mat4 viewMatrix = glm::mat4x4(1);
-	viewMatrix = glm::rotate(viewMatrix, -90.0f, glm::vec3(1, 0, 0));
+	viewMatrix = glm::rotate(viewMatrix, glm::radians(-90.0f), glm::vec3(1, 0, 0));
 	viewMatrix *= cameraTransform;
 
 	RenderInfo info;
@@ -129,7 +129,7 @@ void Scene::tick(const F64 &delta) {
 
 void Scene::updateWindowSize(const glm::ivec2 &size) {
 	GLfloat aspect = (GLfloat)size.x / (GLfloat)size.y;
-	mScreenProjectionMatrix = glm::perspective(90.f, aspect, 0.1f, 500.f);
+	mScreenProjectionMatrix = glm::perspective(glm::radians(90.f), aspect, 0.1f, 500.f);
 
 	GLint viewport[4]; //x y w h
 	glGetIntegerv(GL_VIEWPORT, viewport);

@@ -616,7 +616,7 @@ source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
-target_compile_definitions(Game PUBLIC GLEW_STATIC)
+target_compile_definitions(Game PUBLIC GLEW_STATIC GLM_FORCE_RADIANS)
 
 if (APPLE)
 	ADD_FRAMEWORK(Game Cocoa)

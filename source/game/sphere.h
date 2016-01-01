@@ -46,8 +46,8 @@ protected:
 	const U32 segments = 36;
 	const U32 slices = 18;
 
-	const F32 cameraSpeed = 0.3f;
-	const F32 keyCameraSpeed = 3.f;
+	const F32 cameraSpeed = 0.005f;
+	const F32 keyCameraSpeed = 0.05f;
 
 	DECLARE_SCRIPTOBJECT(Sphere);
 
