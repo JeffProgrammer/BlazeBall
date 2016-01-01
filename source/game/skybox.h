@@ -12,16 +12,26 @@
 #include "renderedObject.h"
 
 class Skybox : public RenderedObject {
+	typedef RenderedObject Parent;
 protected:
 	GLuint mBuffer;
 	bool mGenerated;
+
+	/*
+	 * The 6 faces of the cubemap
+	 */
+	std::string mFace0;
+	std::string mFace1;
+	std::string mFace2;
+	std::string mFace3;
+	std::string mFace4;
+	std::string mFace5;
 
 	Material *mMaterial;
 
 	DECLARE_SCRIPTOBJECT(Skybox);
 public:
-	Skybox() : Skybox(nullptr) {}
-	Skybox(Material *material);
+	Skybox();
 	virtual ~Skybox();
 
 	void generate();
@@ -37,6 +47,8 @@ public:
 
 	virtual void render(RenderInfo &info);
 	virtual inline void updateTick(const F64 &delta) {};
+
+	virtual void onAddToScene();
 
 	/**
 	* Initializes the fields specific to the GameObject class.

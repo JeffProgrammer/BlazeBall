@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 
 #include "skybox.h"
+#include "texture/cubeMapFramebufferTexture.h"
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -56,14 +57,17 @@ static GLfloat sVertices[] = {
 };
 static U32 sVertCount = sizeof(sVertices) / sizeof(GLfloat);
 
-Skybox::Skybox(Material *material) : mGenerated(false), mMaterial(material) {
-
+Skybox::Skybox() {
+	mGenerated = false;
+	mBuffer = 0;
+	mMaterial = nullptr;
 }
 
 Skybox::~Skybox() {
 	if (mGenerated) {
 		glDeleteBuffers(1, &mBuffer);
 	}
+	delete mMaterial;
 }
 
 void Skybox::generate() {
@@ -106,6 +110,31 @@ void Skybox::render(RenderInfo &info) {
 	glDepthFunc(GL_LESS);
 }
 
+void Skybox::onAddToScene() {
+	Parent::onAddToScene();
+
+	std::vector<CubeMapTexture::TextureInfo> textures;
+	textures.push_back(CubeMapTexture::TextureInfo(mFace0, CubeMapTexture::PositiveX));
+	textures.push_back(CubeMapTexture::TextureInfo(mFace1, CubeMapTexture::NegativeX));
+	textures.push_back(CubeMapTexture::TextureInfo(mFace2, CubeMapTexture::PositiveY));
+	textures.push_back(CubeMapTexture::TextureInfo(mFace3, CubeMapTexture::NegativeY));
+	textures.push_back(CubeMapTexture::TextureInfo(mFace4, CubeMapTexture::PositiveZ));
+	textures.push_back(CubeMapTexture::TextureInfo(mFace5, CubeMapTexture::NegativeZ));
+
+	CubeMapTexture *cubeMap = new CubeMapTexture(textures);
+	Material *skyMaterial = new Material("skybox", cubeMap, GL_TEXTURE0);
+	skyMaterial->setShader(Shader::getShaderByName("Skybox"));
+
+	// store material.
+	mMaterial = skyMaterial;
+}
+
 void Skybox::initFields() {
-	// TODO
+	// faces 0-5
+	AddFieldSimple("face0", std::string, offsetof(Skybox, mFace0));
+	AddFieldSimple("face1", std::string, offsetof(Skybox, mFace1));
+	AddFieldSimple("face2", std::string, offsetof(Skybox, mFace2));
+	AddFieldSimple("face3", std::string, offsetof(Skybox, mFace3));
+	AddFieldSimple("face4", std::string, offsetof(Skybox, mFace4));
+	AddFieldSimple("face5", std::string, offsetof(Skybox, mFace5));
 }

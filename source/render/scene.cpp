@@ -420,23 +420,6 @@ void Scene::run() {
 
 	// onStart
 
-	//Create skybox
-	{
-		std::vector<CubeMapTexture::TextureInfo> textures;
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky0.jpg", CubeMapTexture::PositiveX));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky1.jpg", CubeMapTexture::NegativeX));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky2.jpg", CubeMapTexture::PositiveY));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky3.jpg", CubeMapTexture::NegativeY));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky4.jpg", CubeMapTexture::PositiveZ));
-		textures.push_back(CubeMapTexture::TextureInfo(std::string("cubemap") + DIR_SEP + "sky5.jpg", CubeMapTexture::NegativeZ));
-
-		CubeMapTexture *cubeMap = new CubeMapTexture(textures);
-		Material *skyMaterial = new Material("skybox", cubeMap, GL_TEXTURE0);
-		skyMaterial->setShader(Shader::getShaderByName("Skybox"));
-		mSkybox = new Skybox(skyMaterial);
-		addObject(mSkybox);
-	}
-
 	//Create camera
 	{
 		Camera *camera = new Camera();
