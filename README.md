@@ -21,7 +21,7 @@ Requirements
 C++11 support  
 OpenGL 3.3+
 
-* Windows XP SP3+
+* Windows 7+
 * Mac OSX 10.9+
 * Intel Core2Duo CPU @ 2.0ghz
 * GPU:
