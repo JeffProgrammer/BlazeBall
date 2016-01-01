@@ -31,3 +31,4 @@ Bullet/BulletConfig.cmake
 *.psd
 bin
 interiors/
+Debug/
