@@ -18,7 +18,10 @@
 #include <vector>
 
 class GameInterior : public RenderedObject {
+	typedef RenderedObject Parent;
 protected:
+	std::string mInteriorFile;
+
 	DIF::Interior mInterior;
 	std::vector<Material*> mMaterialList;
 	Texture *mNoiseTexture;
@@ -41,7 +44,6 @@ protected:
 	DECLARE_SCRIPTOBJECT(GameInterior);
 public:
 	GameInterior();
-	GameInterior(DIF::Interior interior);
 	virtual ~GameInterior();
 	
 	void generateMaterials(std::string directory);
@@ -68,6 +70,8 @@ public:
 	virtual void setScale(const glm::vec3 &scale);
 	
 	virtual inline void updateTick(const F64 &delta) {};
+
+	virtual void onAddToScene();
 
 	static void initFields();
 };

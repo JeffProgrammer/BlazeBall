@@ -14,19 +14,45 @@
 IMPLEMENT_SCRIPTOBJECT(GameInterior, RenderedObject);
 
 void GameInterior::initFields() {
-	// TODO
+	AddFieldSimple("interiorFile", std::string, offsetof(GameInterior, mInteriorFile));
 }
 
-GameInterior::GameInterior(DIF::Interior interior) : RenderedObject(), mInterior(interior) {
-	gfxInit();
-}
+GameInterior::GameInterior() {
 
-GameInterior::GameInterior() : RenderedObject() {
-	gfxInit();
 }
 
 GameInterior::~GameInterior() {
 	glDeleteBuffers(1, &mVbo);
+}
+
+void GameInterior::onAddToScene() {
+	Parent::onAddToScene();
+
+	// create the interior
+	// TODO: create a resource cache for difs
+	DIF::DIF dif;
+
+	std::string path = mInteriorFile.c_str();
+	std::string directory = IO::getPath(path);
+	std::ifstream file(path, std::ios::binary);
+
+	if (!dif.read(file)) {
+		printf("DIF file could not be read!");
+		return;
+	}
+		
+	// load interior
+	mInterior = dif.interior[0];
+	generateMaterials(directory);
+
+	// make mesh
+	generateMesh();
+
+	// cleanup
+	file.close();
+
+	// init graphics
+	gfxInit();
 }
 
 void GameInterior::gfxInit() {
