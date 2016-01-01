@@ -7,11 +7,11 @@
 #ifndef io_h
 #define io_h
 
-#ifdef _WIN32
-#define DIR_SEP '\\'
-#else
+//#ifdef _WIN32
+//#define DIR_SEP '\\'
+//#else
 #define DIR_SEP '/'
-#endif
+//#endif
 
 #include <string>
 #include "base/types.h"

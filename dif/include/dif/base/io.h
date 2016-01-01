@@ -38,11 +38,11 @@ DIF_NAMESPACE
 
 #define LIGHT_MAP_SIZE 0x400
 
-#ifdef _WIN32
-#define DIR_SEP '\\'
-#else
+//#ifdef _WIN32
+//#define DIR_SEP '\\'
+//#else
 #define DIR_SEP '/'
-#endif
+//#endif
 
 //Define this to activate stream debug read/write logging
 #if 0
