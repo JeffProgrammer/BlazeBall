@@ -30,6 +30,10 @@ public:
 	bool getField(const std::string &name, std::string &value);
 	bool setField(const std::string &name, const std::string &value);
 
+	inline const std::string getName() const {
+		return mName;
+	}
+
 protected:
 
 	bool getDynamicField(const std::string &name, std::string &value);
