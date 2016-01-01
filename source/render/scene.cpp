@@ -155,10 +155,7 @@ bool Scene::initGL() {
 
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
-		// win32 doesn't have gluErrorString
-#ifndef _WIN32
-		fprintf(stderr, "Error in GL init: %d / %s", err, gluErrorString(err));
-#endif
+		fprintf(stderr, "Error in GL init: %d", err);
 		return false;
 	}
 	return true;

@@ -23,6 +23,6 @@ void Shape::render(RenderInfo &info) {
 }
 
 void Shape::loadShape() {
-	bool loaded = MODELMGR->loadAsset(mShapeFile);
+	MODELMGR->loadAsset(mShapeFile);
 	MODELMGR->addShape(this);
 }

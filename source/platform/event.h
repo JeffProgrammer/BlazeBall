@@ -45,7 +45,7 @@ public:
 	U32 key;
 	U32 modifier;
 
-	KeyDownEvent() : key(0), modifier(0), Event(KeyDown) {};
+	KeyDownEvent() : Event(KeyDown), key(0), modifier(0) {};
 	U32 getKey() {
 		return key;
 	}
@@ -59,7 +59,7 @@ public:
 	U32 key;
 	U32 modifier;
 
-	KeyUpEvent() : key(0), modifier(0), Event(KeyUp) {};
+	KeyUpEvent() : Event(KeyUp), key(0), modifier(0) {};
 	U32 getKey() {
 		return key;
 	}
@@ -73,7 +73,7 @@ public:
 	glm::ivec2 position;
 	glm::ivec2 delta;
 
-	MouseMoveEvent() : position(glm::ivec2(0, 0)), delta(glm::ivec2(0, 0)), Event(MouseMove) {};
+	MouseMoveEvent() : Event(MouseMove), position(glm::ivec2(0, 0)), delta(glm::ivec2(0, 0)) {};
 	glm::ivec2 getPosition() {
 		return position;
 	}
@@ -87,7 +87,7 @@ public:
 	glm::ivec2 position;
 	U8 button;
 
-	MouseDownEvent() : position(glm::ivec2(0, 0)), button(0), Event(MouseDown) {};
+	MouseDownEvent() : Event(MouseDown), position(glm::ivec2(0, 0)), button(0) {};
 	glm::ivec2 getPosition() {
 		return position;
 	}
@@ -101,7 +101,7 @@ public:
 	glm::ivec2 position;
 	U8 button;
 
-	MouseUpEvent() : position(glm::ivec2(0, 0)), button(0), Event(MouseUp) {};
+	MouseUpEvent() : Event(MouseUp), position(glm::ivec2(0, 0)), button(0) {};
 	glm::ivec2 getPosition() {
 		return position;
 	}
@@ -363,7 +363,7 @@ public:
 class WindowResizeEvent : public Event {
 public:
 	glm::ivec2 newSize;
-	WindowResizeEvent() : newSize(glm::ivec2(0, 0)), Event(WindowResize) {};
+	WindowResizeEvent() : Event(WindowResize), newSize(glm::ivec2(0, 0)) {};
 };
 
 #endif

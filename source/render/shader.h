@@ -13,7 +13,7 @@
 #ifdef _WIN32
 #include <GL/glew.h>
 #else
-#include <OpenGL/gl.h>
+#include <OpenGL/gl3.h>
 #endif
 
 #include <string>

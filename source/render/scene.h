@@ -30,9 +30,7 @@
 #include "base/config.h"
 
 #ifdef __APPLE__
-#include <OpenGL/gl.h>
 #include <OpenGL/gl3.h>
-#include <OpenGL/glu.h>
 #else
 #include <GL/glew.h>
 #endif
