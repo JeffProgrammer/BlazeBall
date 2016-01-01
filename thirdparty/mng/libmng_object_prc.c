@@ -2876,7 +2876,9 @@ mng_retcode mng_create_ani_chrm (mng_datap  pData,
                                  mng_chunkp pChunk)
 #endif
 {
+#ifdef MNG_OPTIMIZE_OBJCLEANUP
   mng_ptr       pTemp;
+#endif
   mng_ani_chrmp pCHRM;
 
 #ifdef MNG_SUPPORT_TRACE
@@ -3115,7 +3117,9 @@ mng_retcode mng_create_ani_iccp (mng_datap  pData,
                                  mng_chunkp pChunk)
 #endif
 {
+#ifdef MNG_OPTIMIZE_OBJCLEANUP
   mng_ptr       pTemp;
+#endif
   mng_ani_iccpp pICCP;
 
 #ifdef MNG_SUPPORT_TRACE
@@ -3252,7 +3256,9 @@ mng_retcode mng_create_ani_bkgd (mng_datap  pData,
 mng_retcode mng_create_ani_bkgd (mng_datap  pData)
 #endif
 {
+#ifdef MNG_OPTIMIZE_OBJCLEANUP
   mng_ptr       pTemp;
+#endif
   mng_ani_bkgdp pBKGD;
 
 #ifdef MNG_SUPPORT_TRACE
@@ -4918,7 +4924,9 @@ mng_retcode mng_process_ani_term (mng_datap   pData,
 #ifndef MNG_SKIPCHUNK_SAVE
 mng_retcode mng_create_ani_save (mng_datap pData)
 {
+#ifdef MNG_OPTIMIZE_OBJCLEANUP
   mng_ptr       pTemp;
+#endif
   mng_ani_savep pSAVE;
 
 #ifdef MNG_SUPPORT_TRACE
@@ -5009,7 +5017,9 @@ mng_retcode mng_create_ani_seek (mng_datap  pData,
                                  mng_chunkp pChunk)
 #endif
 {
+#ifdef MNG_OPTIMIZE_OBJCLEANUP
   mng_ptr       pTemp;
+#endif
   mng_ani_seekp pSEEK;
 
 #ifdef MNG_SUPPORT_TRACE
