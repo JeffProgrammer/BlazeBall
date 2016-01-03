@@ -618,6 +618,10 @@ set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
 target_compile_definitions(Game PUBLIC GLEW_STATIC GLM_FORCE_RADIANS)
 
+if (MSVC)
+	add_definitions(-D_CRT_NONSTDC_NO_WARNINGS)
+endif()
+
 if (APPLE)
 	ADD_FRAMEWORK(Game Cocoa)
 	ADD_FRAMEWORK(Game Carbon)
