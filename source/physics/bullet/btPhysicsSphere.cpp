@@ -168,7 +168,7 @@ void btPhysicsSphere::notifyContact(ContactCallbackInfo &info, bool isBody0) {
 
 		//Test all other manifold points
 		btDispatcher *dispatcher = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld()->getCollisionWorld()->getDispatcher();
-		for (U32 i = 0; i < dispatcher->getNumManifolds(); i ++) {
+		for (S32 i = 0; i < dispatcher->getNumManifolds(); i ++) {
 			btPersistentManifold *manifold = dispatcher->getManifoldByIndexInternal(i);
 
 			//Store a list of points to remove so we don't get weird memory errors
@@ -182,7 +182,7 @@ void btPhysicsSphere::notifyContact(ContactCallbackInfo &info, bool isBody0) {
 				//Don't bother checking if we're the only point in that manifold
 				if (manifold->getNumContacts() > 1) {
 					//Go through all the points for this manifold
-					for (U32 j = 0; j < manifold->getNumContacts(); j ++) {
+					for (S32 j = 0; j < manifold->getNumContacts(); j ++) {
 						btManifoldPoint &point = manifold->getContactPoint(j);
 
 						//Access to index
