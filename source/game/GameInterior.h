@@ -56,22 +56,22 @@ public:
 	void gfxInit();
 	void init();
 
-	virtual bool isReflectable() { return true; }
-	virtual void render(::RenderInfo &info);
+	virtual bool isReflectable() override { return true; }
+	virtual void render(::RenderInfo &info) override;
 	void drawMaterial(Material *material, ::RenderInfo &info, void *userInfo);
 
-	virtual const glm::vec3 getPosition() const;
-	virtual const glm::quat getRotation() const;
+	virtual const glm::vec3 getPosition() const override;
+	virtual const glm::quat getRotation() const override;
 
-	virtual void setPosition(const glm::vec3 &pos);
-	virtual void setRotation(const glm::quat &rot);
+	virtual void setPosition(const glm::vec3 &pos) override;
+	virtual void setRotation(const glm::quat &rot) override;
 
-	virtual const glm::vec3 getScale() const;
-	virtual void setScale(const glm::vec3 &scale);
+	virtual const glm::vec3 getScale() const override;
+	virtual void setScale(const glm::vec3 &scale) override;
 	
-	virtual inline void updateTick(const F64 &delta) {};
+	virtual inline void updateTick(const F64 &delta) override {};
 
-	virtual void onAddToScene();
+	virtual void onAddToScene() override;
 
 	static void initFields();
 };

@@ -51,28 +51,28 @@ public:
 	 * @param movement The move struct that contains input for this frame.
 	 * @param delta The delta, in seconds, between the last and current frame.
 	 */
-	virtual void updateCamera(const Movement &movement, const F64 &deltaMS);
+	virtual void updateCamera(const Movement &movement, const F64 &deltaMS) override;
 
 	/**
 	 * Updates the movement of the Camera based upon input and mspf.
 	 * @param movement The move struct that contains input for this frame.
 	 * @param delta The delta, in seconds, between the last and current frame.
 	 */
-	virtual void updateMove(const Movement &movement, const F64 &deltaMS);
+	virtual void updateMove(const Movement &movement, const F64 &deltaMS) override;
 
 	/**
 	 * Gets the camera position from the Camera's perspective.
 	 * @param OUT mat The camera matrix from the Camera's perspective.
 	 * @param OUT pos The position of the Camera.
 	 */
-	virtual void getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos);
+	virtual void getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) override;
 
 	/**
 	 * An update callback that is called every physics tick.
 	 * @param delta The delta, in seconds, between physics ticks.
 	 * @note Called at a fixed timestep.
 	 */
-	virtual inline void updateTick(const F64 &delta) {};
+	virtual void updateTick(const F64 &delta) override {};
 
 	/**
 	 * Initializes the fields specific to the GameObject class.

@@ -25,7 +25,7 @@ public:
 	 * If the object should be rendered.
 	 * @return True for rendered objects
 	 */
-	virtual bool isRenderable() { return true; }
+	virtual bool isRenderable() override { return true; }
 
 	/**
 	 * Load the object's model matrix into a mat4 reference.
@@ -33,6 +33,7 @@ public:
 	 * @param modelMatrix A reference to a matrix into which the model matrix will be loaded.
 	 */
 	virtual void calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix);
+
 	/**
 	 * Send the object's model matrix to OpenGL
 	 * @param info   A RenderInfo struct with all the render state information.

@@ -21,8 +21,8 @@ protected:
 public:
 	Shape(const std::string &shapeFile);
 	virtual ~Shape();
-	virtual void updateTick(const F64 &delta);
-	virtual void render(RenderInfo &info);
+	virtual void updateTick(const F64 &delta) override;
+	virtual void render(RenderInfo &info) override;
 
 	void loadShape();
 

@@ -43,11 +43,11 @@ public:
 		return mMaterial;
 	}
 
-	virtual bool isReflectable() { return true; }
+	virtual bool isReflectable() override { return true; }
 
-	virtual void render(RenderInfo &info);
+	virtual void render(RenderInfo &info) override;
 
-	virtual void onAddToScene();
+	virtual void onAddToScene() override;
 
 	/**
 	* Initializes the fields specific to the GameObject class.

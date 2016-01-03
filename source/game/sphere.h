@@ -56,15 +56,15 @@ public:
 	Sphere(glm::vec3 origin, F32 radius);
 	virtual ~Sphere();
 
-	virtual void calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix);
-	virtual void render(RenderInfo &info);
+	virtual void calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix) override;
+	virtual void render(RenderInfo &info) override;
 	void draw(Material *material, RenderInfo &info, void *userInfo);
 
-	virtual const glm::vec3 getPosition() const;
-	virtual const glm::quat getRotation() const;
+	virtual const glm::vec3 getPosition() const override;
+	virtual const glm::quat getRotation() const override;
 
-	virtual void setPosition(const glm::vec3 &pos);
-	virtual void setRotation(const glm::quat &rot);
+	virtual void setPosition(const glm::vec3 &pos) override;
+	virtual void setRotation(const glm::quat &rot) override;
 
 	F32 getRadius();
 	void setRadius(const F32 &radius);
@@ -84,13 +84,13 @@ public:
 	const glm::vec3 getAngularVelocity() const;
 
 	void setLinearVelocity(const glm::vec3 &vel);
-    void setAngularVelocity(const glm::vec3 &vel);
+   void setAngularVelocity(const glm::vec3 &vel);
 
-	virtual void updateCamera(const Movement &movement, const F64 &delta);
-	virtual void updateMove(const Movement &movement, const F64 &delta);
-	virtual void getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos);
+	virtual void updateCamera(const Movement &movement, const F64 &delta) override;
+	virtual void updateMove(const Movement &movement, const F64 &delta) override;
+	virtual void getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) override;
 
-	virtual void updateTick(const F64 &delta);
+	virtual void updateTick(const F64 &delta) override;
 
 	/**
 	 * Initializes the fields specific to the GameObject class.
