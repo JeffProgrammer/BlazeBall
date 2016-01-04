@@ -7,6 +7,7 @@
 #include <fstream>
 #include "platformSDL/SDLWindow.h"
 #include "platformSDL/SDLTimer.h"
+#include "platform/network.h"
 #include "render/scene.h"
 #include "game/GameInterior.h"
 #include "scriptEngine/scriptEngine.h"
@@ -39,6 +40,9 @@ int main(int argc, const char *argv[]) {
 	if (!ScriptEngine::getSingleton()->init())
 		return 1;
 
+	// Load the networking engine
+	Network::init();
+	
 	// parse command line arguments.
 	parseArgs(argc, argv);
 
@@ -48,6 +52,9 @@ int main(int argc, const char *argv[]) {
 	// much hack, very wow
 	if (gSphereVBO)
 		glDeleteBuffers(1, &gSphereVBO);
+
+	// destroy the networking engine
+	Network::destroy();
 
 	return 0;
 }
