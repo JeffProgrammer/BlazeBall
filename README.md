@@ -39,6 +39,7 @@ Third Party Libraries
 * AngelScript - Scripting Language Library
 * Bullet3D - Physics Library
 * ENet - Networking Library
+* ENetPP - Networking extensions library for ENet
 * GLEW - OpenGL Extensions Loader
 * GLM - Math Library
 * JPEG - Image Library
