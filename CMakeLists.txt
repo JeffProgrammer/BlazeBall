@@ -573,8 +573,8 @@ set (DIFVIEWERGAME_LIBRARIES
 	# AngelScript
 	AngelScript
 	
-	# ENet
-	ENet
+	#Enet
+	enet
 )
 
 if (MSVC)
