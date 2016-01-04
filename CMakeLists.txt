@@ -403,6 +403,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/assimp/include
 	thirdparty/angelscript/include
 	thirdparty/rapidjson/include
+	thirdparty/enet/include
 )
 
 # Main project source
@@ -537,6 +538,15 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
 #------------------------------------------------------------------------------
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
+
+#------------------------------------------------------------------------------
+# ENet Networking Library
+#------------------------------------------------------------------------------
+
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/enet" ENet)
+if (MSVC)
+	add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
+endif()
 
 #------------------------------------------------------------------------------
 
