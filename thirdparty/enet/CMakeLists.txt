@@ -64,6 +64,6 @@ add_library(enet STATIC
         win32.c
     )
 
-	 if (MSVC)
+if (MSVC)
 	add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
 endif()
