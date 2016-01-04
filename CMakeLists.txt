@@ -404,6 +404,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/angelscript/include
 	thirdparty/rapidjson/include
 	thirdparty/enet/include
+	thirdparty/enetpp/include
 )
 
 # Main project source
@@ -571,6 +572,9 @@ set (DIFVIEWERGAME_LIBRARIES
 	
 	# AngelScript
 	AngelScript
+	
+	# ENet
+	ENet
 )
 
 if (MSVC)
