@@ -37,25 +37,25 @@ void Material::loadTextures(const std::string &diffusePath, const std::string &n
 
 	//Diffuse texture- needs to be loaded or else we can't have a material.
 	if (!tryLoadTexture(diffusePath, GL_TEXTURE0)) {
-		printf("Could not load diffuse texture %s\n", diffusePath.c_str());
+		IO::printf("Could not load diffuse texture %s\n", diffusePath.c_str());
 		return;
 	}
 	//Normal texture
 	if (!tryLoadTexture(normalPath, GL_TEXTURE1)) {
-		printf("Could not load normal texture %s\n", normalPath.c_str());
+		IO::printf("Could not load normal texture %s\n", normalPath.c_str());
 
 		//Attempt to load the default normal texture so we at least have something
 		if (!tryLoadTexture(DEFAULT_NORMAL_TEXTURE, GL_TEXTURE1)) {
-			printf("Could not load default normal texture!\n");
+			IO::printf("Could not load default normal texture!\n");
 		}
 	}
 	//Specular texture
 	if (!tryLoadTexture(specularPath, GL_TEXTURE2)) {
-		printf("Could not load specular texture %s\n", specularPath.c_str());
+		IO::printf("Could not load specular texture %s\n", specularPath.c_str());
 
 		//Attempt to load the default specular texture so we at least have something
 		if (!tryLoadTexture(DEFAULT_SPECULAR_TEXTURE, GL_TEXTURE2)) {
-			printf("Could not load default specular texture!\n");
+			IO::printf("Could not load default specular texture!\n");
 		}
 	}
 }

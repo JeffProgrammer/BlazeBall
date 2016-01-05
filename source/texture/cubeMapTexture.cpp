@@ -22,7 +22,7 @@ CubeMapTexture::CubeMapTexture(const std::vector<TextureInfo> &textureInfos) {
 	//Load each of the new textures into the cubemap
 	for (const auto &texture : textureInfos) {
 		if (texture.extent.x > MaxTextureSize || texture.extent.y > MaxTextureSize) {
-			printf("Texture too large! (%d, %d) > (%d, %d). Bug HiGuy to make textures larger.", texture.extent.x, texture.extent.y, MaxTextureSize, MaxTextureSize);
+			IO::printf("Texture too large! (%d, %d) > (%d, %d). Bug HiGuy to make textures larger.\n", texture.extent.x, texture.extent.y, MaxTextureSize, MaxTextureSize);
 			return;
 		}
 

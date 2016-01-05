@@ -20,7 +20,7 @@
 
 BitmapTexture::BitmapTexture(U8 *pixels, const glm::ivec2 &extent, const Format &format) {
 	if (extent.x > MaxTextureSize || extent.y > MaxTextureSize) {
-		printf("Texture too large! (%d, %d) > (%d, %d). Bug HiGuy to make textures larger.", extent.x, extent.y, MaxTextureSize, MaxTextureSize);
+		IO::printf("Texture too large! (%d, %d) > (%d, %d). Bug HiGuy to make textures larger.\n", extent.x, extent.y, MaxTextureSize, MaxTextureSize);
 		return;
 	}
 

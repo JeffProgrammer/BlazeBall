@@ -37,7 +37,7 @@ void GameInterior::onAddToScene() {
 	std::ifstream file(path, std::ios::binary);
 
 	if (!dif.read(file)) {
-		printf("DIF file could not be read!");
+		IO::printf("DIF file could not be read!\n");
 		return;
 	}
 		

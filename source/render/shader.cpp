@@ -64,7 +64,7 @@ GLuint Shader::loadShader(const std::string &path, const GLenum &type) {
 	
 	//Did we actually have an error? If so, terminate here
 	if (!result) {
-		printf("%s error: %s\n", path.c_str(), log);
+		IO::printf("%s error: %s\n", path.c_str(), log);
 		delete[] log;
 
 		//Errored so we can't return an id
@@ -90,7 +90,7 @@ GLuint Shader::loadProgram(const std::string &vertPath, const std::string &fragP
 	//If there was any error, then let us know.
 	GLenum error = glGetError();
 	if (error) {
-		printf("Error loading shader: code %d\n", error);
+		IO::printf("Error loading shader: code %d\n", error);
 		return 0;
 	}
 	
@@ -113,7 +113,7 @@ GLuint Shader::loadProgram(const std::string &vertPath, const std::string &fragP
 	
 	//If we didn't create a shader successfully, let us know.
 	if (!result) {
-		printf("%s\n", log);
+		IO::printf("%s\n", log);
 		delete[] log;
 
 		//Clean up the shaders

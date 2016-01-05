@@ -151,7 +151,7 @@ void GameInterior::render(::RenderInfo &info) {
 			last += numTriangles;
 
 			if (!mMaterialList[i]) {
-				printf("Trying to render with invalid material %d: %s\n", i, mInterior.materialName[i].c_str());
+				IO::printf("Trying to render with invalid material %d: %s\n", i, mInterior.materialName[i].c_str());
 				continue;
 			}
 

@@ -103,7 +103,7 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 
 	U32 index = isBody0 ? info.index1 : info.index0;
 
-	//printf("vel: %f %f %f\n", sphere->getLinearVelocity().x, sphere->getLinearVelocity().y, sphere->getLinearVelocity().z);
+	//IO::printf("vel: %f %f %f\n", sphere->getLinearVelocity().x, sphere->getLinearVelocity().y, sphere->getLinearVelocity().z);
 	info.point.m_impactVelocity = btConvert(getLinearVelocity());
 
 	const btPhysicsInterior::TriangleInfo &triangleInfo = inter->getTriangleInfo(index);
@@ -224,7 +224,7 @@ void btPhysicsSphere::notifyContact(ContactCallbackInfo &info, bool isBody0) {
 
 	if ((wallDot * wallDot) < 0.0001f) {
 //		F32 appliedForce = sqrtf(glm::length(glm::proj(btConvert(info.point.m_impactVelocity), btConvert(info.point.m_normalWorldOnB))) * info.point.m_combinedFriction);
-//		printf("Wall contact applied force %f\n", appliedForce);
+//		IO::printf("Wall contact applied force %f\n", appliedForce);
 		//Wall hit of some sort
 //		applyImpulse(glm::vec3(0, 0, appliedForce), glm::vec3(0, 0, 0));
 	}

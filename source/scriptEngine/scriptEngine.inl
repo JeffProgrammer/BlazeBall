@@ -41,9 +41,9 @@ template<typename T> inline T ScriptEngine::executeFunction() {
 	if (code != asEXECUTION_FINISHED) {
 		if (code == asEXECUTION_EXCEPTION) {
 			// we got an exception
-			printf("Exception: %s\n", context->GetExceptionString());
-			printf("Function: %s\n", context->GetExceptionFunction()->GetDeclaration());
-			printf("Line: %d\n", context->GetExceptionLineNumber());
+			IO::printf("Exception: %s\n", context->GetExceptionString());
+			IO::printf("Function: %s\n", context->GetExceptionFunction()->GetDeclaration());
+			IO::printf("Line: %d\n", context->GetExceptionLineNumber());
 		}
 	}
 
@@ -59,9 +59,9 @@ template<> inline void ScriptEngine::executeFunction() {
 	if (code != asEXECUTION_FINISHED) {
 		if (code == asEXECUTION_EXCEPTION) {
 			// we got an exception
-			printf("Exception: %s\n", context->GetExceptionString());
-			printf("Function: %s\n", context->GetExceptionFunction()->GetDeclaration());
-			printf("Line: %d\n", context->GetExceptionLineNumber());
+			IO::printf("Exception: %s\n", context->GetExceptionString());
+			IO::printf("Function: %s\n", context->GetExceptionFunction()->GetDeclaration());
+			IO::printf("Line: %d\n", context->GetExceptionLineNumber());
 		}
 	}
 	context->Unprepare();

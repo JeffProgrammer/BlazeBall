@@ -11,7 +11,7 @@
 
 // script function
 static void echo(std::string &in) {
-	printf("%s\n", in.c_str());
+	IO::printf("%s\n", in.c_str());
 }
 
 #endif // _SCRIPTENGINE_SCRIPTFUNCTION_H_

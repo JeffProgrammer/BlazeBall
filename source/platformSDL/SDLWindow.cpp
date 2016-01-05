@@ -37,8 +37,8 @@ bool SDLWindow::createContext() {
 	// create context
 	context = SDL_GL_CreateContext(window);
 	if (context == nullptr) {
-		printf("Unable to load a valid OpenGL context. Please make sure your drivers are up to date.\n");
-		printf("OpenGL %d.%d is required.\n", SDL_CONFIG_MAJOR_GL_VERSION, SDL_CONFIG_MINOR_GL_VERSION);
+		IO::printf("Unable to load a valid OpenGL context. Please make sure your drivers are up to date.\n");
+		IO::printf("OpenGL %d.%d is required.\n", SDL_CONFIG_MAJOR_GL_VERSION, SDL_CONFIG_MINOR_GL_VERSION);
 		return false;
 	}
 
@@ -60,13 +60,13 @@ bool SDLWindow::createContext() {
 	while (glGetError() != GL_NO_ERROR);
 #endif
 
-	printf("Please note that your GPU may support a higher GL version or newer extensions.\n");
-	printf("Extensions outside of the core may be used, but are not required.\n");
-	printf("OpenGL Core Profile Info\n");
-	printf("    Version: %s\n", glGetString(GL_VERSION));
-	printf("     Vendor: %s\n", glGetString(GL_VENDOR));
-	printf("   Renderer: %s\n", glGetString(GL_RENDERER));
-	printf("    Shading: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	IO::printf("Please note that your GPU may support a higher GL version or newer extensions.\n");
+	IO::printf("Extensions outside of the core may be used, but are not required.\n");
+	IO::printf("OpenGL Core Profile Info\n");
+	IO::printf("    Version: %s\n", glGetString(GL_VERSION));
+	IO::printf("     Vendor: %s\n", glGetString(GL_VENDOR));
+	IO::printf("   Renderer: %s\n", glGetString(GL_RENDERER));
+	IO::printf("    Shading: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	//Use Vsync
 	setVerticalSync(true);

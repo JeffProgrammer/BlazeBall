@@ -227,9 +227,9 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 		if (torque.y < 0 && torque.y + angRel.y < -MaxAirSpinVelocity) torque.y = glm::min(0.0f, -MaxAirSpinVelocity - angRel.y);
 	}
 
-//	printf("LR: %f %f\n", linRel.x, linRel.y);
-//	printf("AR: %f %f\n", angRel.x, angRel.y);
-//	printf("T:  %f %f\n", torque.x, torque.y);
+//	IO::printf("LR: %f %f\n", linRel.x, linRel.y);
+//	IO::printf("AR: %f %f\n", angRel.x, angRel.y);
+//	IO::printf("T:  %f %f\n", torque.x, torque.y);
 
 	//Torque is based on the movement and yaw
 	glm::vec3 torqueRel = glm::vec3(glm::translate(deltaMat, torque)[3]);
@@ -255,9 +255,9 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 			if (glm::length(projVel) < JumpImpulse) {
 				glm::vec3 finalVelocity = vel - currentVelocity + (normal * JumpImpulse);
 				setLinearVelocity(finalVelocity);
-				printf("Jump! Impact velocity: %f %f %f\n   final Velocity: %f %f %f\n    Projection velocity: %f %f %f\n    Dot: %f\n", vel.x, vel.y, vel.z, finalVelocity.x, finalVelocity.y, finalVelocity.z, projVel.x, projVel.y, projVel.z, glm::dot(up, normal));
+				IO::printf("Jump! Impact velocity: %f %f %f\n   final Velocity: %f %f %f\n    Projection velocity: %f %f %f\n    Dot: %f\n", vel.x, vel.y, vel.z, finalVelocity.x, finalVelocity.y, finalVelocity.z, projVel.x, projVel.y, projVel.z, glm::dot(up, normal));
 			} else {
-				printf("No jump, projection velocity is %f %f %f\n", projVel.x, projVel.y, projVel.z);
+				IO::printf("No jump, projection velocity is %f %f %f\n", projVel.x, projVel.y, projVel.z);
 			}
 		}
 	} else {
@@ -339,7 +339,7 @@ void Sphere::initFields() {
 
 //glm::vec3 proj = jumpNormal * (glm::dot(vel, jumpNormal) * glm::dot(jumpNormal, jumpNormal));
 //glm::vec3 imp = jumpNormal * (JumpImpulse - glm::length(proj));
-//printf("jump normal: %f %f %f\nvel: %f %f %f\nproj: %f %f %f\nimp: %f %f %f\n",
+//IO::printf("jump normal: %f %f %f\nvel: %f %f %f\nproj: %f %f %f\nimp: %f %f %f",
 // jumpNormal.x, jumpNormal.y, jumpNormal.z,
 //vel.x, vel.y, vel.z,
 // proj.x, proj.y, proj.z,

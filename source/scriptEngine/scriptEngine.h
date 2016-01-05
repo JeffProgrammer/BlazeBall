@@ -9,6 +9,7 @@
 
 #include "angelscript.h"
 #include "base/types.h"
+#include "base/io.h"
 #include <vector>
 
 class ScriptEngine {

@@ -8,6 +8,7 @@
 #define SDLWindow_h
 
 #include <stdio.h>
+#include "base/io.h"
 #include "platform/window.h"
 #include "platformSDL/SDLConfig.h"
 

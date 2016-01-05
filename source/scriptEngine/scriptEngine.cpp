@@ -23,13 +23,13 @@ std::unordered_map<std::string, AbstractClassRep*> AbstractClassRep::sClassRepMa
 
 static void ScriptMessageCallback(const asSMessageInfo *msg, void *param) {
 	if (msg->type == asMSGTYPE_ERROR)
-		printf("SCRIPT MESSAGE [ERROR]: %s, line: %d, %s\n", msg->section, msg->row, msg->message);
+		IO::printf("SCRIPT MESSAGE [ERROR]: %s, line: %d, %s\n", msg->section, msg->row, msg->message);
 	else if (msg->type == asMSGTYPE_WARNING)
-		printf("SCRIPT MESSAGE [WARN]: %s, line: %d, %s\n", msg->section, msg->row, msg->message);
+		IO::printf("SCRIPT MESSAGE [WARN]: %s, line: %d, %s\n", msg->section, msg->row, msg->message);
 	else if (msg->type == asMSGTYPE_INFORMATION)
-		printf("SCRIPT MESSAGE [INFO]: %s, line: %d, %s\n", msg->section, msg->row, msg->message);
+		IO::printf("SCRIPT MESSAGE [INFO]: %s, line: %d, %s\n", msg->section, msg->row, msg->message);
 	else {
-		printf("SCRIPT MESSAGE [UNKNOWN]\n");
+		IO::printf("SCRIPT MESSAGE [UNKNOWN]\n");
 		assert(false);
 	}
 }
@@ -46,7 +46,7 @@ ScriptEngine::~ScriptEngine() {
 
 bool ScriptEngine::init() {
 	if (mEngine != nullptr) {
-		printf("ScriptEngine::init() - Already called init.\n");
+		IO::printf("ScriptEngine::init() - Already called init.\n");
 		return false;
 	}
 
@@ -84,7 +84,7 @@ bool ScriptEngine::init() {
 
 	asIScriptFunction *mainFn = mEngine->GetModule("main")->GetFunctionByDecl("void main()");
 	if (mainFn == NULL) {
-		printf("Unable to find function main.\n");
+		IO::printf("Unable to find function main.\n");
 		return false;
 	}
 
@@ -95,31 +95,31 @@ bool ScriptEngine::init() {
 	// call test function to get a value
 	asIScriptFunction *fn = mEngine->GetModule("main")->GetFunctionByDecl("float get5()");
 	if (fn == NULL) {
-		printf("Unable to find function get5\n");
+		IO::printf("Unable to find function get5\n");
 		return false;
 	}
 	prepareFunction(fn);
 	F32 val = executeFunction<float>();
-	printf("get5() returned %f\n", val);
+	IO::printf("get5() returned %f\n", val);
 
 	// test add function and get value
 	asIScriptFunction *addFn = mEngine->GetModule("main")->GetFunctionByDecl("float add(float a, float b)");
 	if (addFn == NULL) {
-		printf("Unable to find function add\n");
+		IO::printf("Unable to find function add\n");
 		return false;
 	}
 	prepareFunction(addFn);
 	setParameter(0, 2.0f);
 	setParameter(1, 1.0f);
 	F32 addResult = executeFunction<float>();
-	printf("add() returned %f\n", addResult);
+	IO::printf("add() returned %f\n", addResult);
 
 	return true;
 }
 
 bool ScriptEngine::compileScript(const std::string &scriptFile) {
 	if (!IO::isfile(scriptFile)) {
-		printf("Unable to find script file %s\n", scriptFile.c_str());
+		IO::printf("Unable to find script file %s\n", scriptFile.c_str());
 		return false;
 	}
 
@@ -127,30 +127,29 @@ bool ScriptEngine::compileScript(const std::string &scriptFile) {
 	const char *fileBase = base.c_str();
    
 	if (containsModule(fileBase))
-		printf("Attempting to recreate module %s\n", fileBase);
-   
+		IO::printf("Attempting to recreate module %s\n", fileBase);
 
 	// Create a new script module for this file.
 	CScriptBuilder scriptBuilder;
 	if (scriptBuilder.StartNewModule(mEngine, fileBase) < 0) {
-		printf("Unable to create scriptModule %s\n", fileBase);
+		IO::printf("Unable to create scriptModule %s\n", fileBase);
 		return false;
 	}
 
 	// Load script
 	if (scriptBuilder.AddSectionFromFile(scriptFile.c_str()) < 0) {
-		printf("Unable to load script file %s\n", scriptFile.c_str());
+		IO::printf("Unable to load script file %s\n", scriptFile.c_str());
 		return false;
 	}
 
 	// Build the script
 	if (scriptBuilder.BuildModule() < 0) {
-		printf("Unable to build module %s\n", fileBase);
+		IO::printf("Unable to build module %s\n", fileBase);
 		return false;
 	}
 
 	// succeeded
-	printf("Loading module %s successfully!\n", fileBase);
+	IO::printf("Loading module %s successfully!\n", fileBase);
 	return true;
 }
 

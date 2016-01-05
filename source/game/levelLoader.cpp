@@ -29,7 +29,7 @@ inline bool temp___containsMoreThanOneWord(const std::string &str) {
 
 bool loadLevel(const std::string &file) {
 	if (!IO::isfile(file)) {
-		printf("Unable to load level file: %s\n", file.c_str());
+		IO::printf("Unable to load level file: %s\n", file.c_str());
 		return false;
 	}
 
@@ -43,13 +43,13 @@ bool loadLevel(const std::string &file) {
 	for (auto obj = document.Begin(); obj != document.End(); ++obj) {
 		// make sure this is an object. We can only have an array of objects.
 		if (!obj->IsObject()) {
-			printf("The level file %s can only have an arra of objects within the JSON structure\n", file.c_str());
+			IO::printf("The level file %s can only have an arra of objects within the JSON structure.\n", file.c_str());
 			continue;
 		}
 
 		// get class name
 		if (!obj->HasMember("class")) {
-			printf("In %s, an object could not created as a class field was not specified.\n", file.c_str());
+			IO::printf("In %s, an object could not created as a class field was not specified.\n", file.c_str());
 			continue;
 		}
 		const char *klass = (*obj)["class"].GetString();
@@ -60,7 +60,7 @@ bool loadLevel(const std::string &file) {
 		// loop through each field
 		for (auto field = obj->MemberBegin(); field != obj->MemberEnd(); ++field) {
 			if (!field->name.IsString()) {
-				printf("In %s, all object field names must declared in levels must be strings.\n", file.c_str());
+				IO::printf("In %s, all object field names must declared in levels must be strings.\n", file.c_str());
 				continue;
 			}
 			const char *fieldName = field->name.GetString();
@@ -68,7 +68,7 @@ bool loadLevel(const std::string &file) {
 
 			// Make sure that the field only is 1 word. If not reject it
 			if (temp___containsMoreThanOneWord(fieldName)) {
-				printf("Field %s was rejected because a field name must only be one word!\n", fieldName);
+				IO::printf("Field %s was rejected because a field name must only be one word!\n", fieldName);
 				continue;
 			}
 
@@ -78,7 +78,7 @@ bool loadLevel(const std::string &file) {
 
 			//Try and set the field
 			if (!scriptObject->setField(fieldName, fieldValue)) {
-				printf("Could not set class field %s on an object of type %s\n", fieldName, klass);
+				IO::printf("Could not set class field %s on an object of type %s.\n", fieldName, klass);
 				continue;
 			}
 		}

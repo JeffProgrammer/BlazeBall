@@ -243,7 +243,7 @@ bool ModelManager::_generateMaterial(const ModelScene *scene, const aiMesh *mesh
 	aiMaterial *aiMat = scene->scene->mMaterials[mesh->mMaterialIndex];
 	if (aiMat->GetTexture(aiTextureType_DIFFUSE, 0, &path) != AI_SUCCESS) {
 		// failed to load a texture
-		printf("Failed to load texture at path: %s", path.C_Str());
+		IO::printf("Failed to load texture at path: %s\n", path.C_Str());
 		material = nullptr;
 		return false;
 	}
