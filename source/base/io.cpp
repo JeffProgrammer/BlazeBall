@@ -8,9 +8,15 @@
 #include <stdlib.h>
 #include <string>
 #include <math.h>
-#include <cstdarg>
 #include <mutex>
 #include "base/io.h"
+
+#ifdef _WIN32
+#include "asprintf.h"
+#else
+#include <unistd.h>
+#endif
+
 #include "render/bitmap/mngsupport.h"
 #include "render/bitmap/jpegsupport.h"
 #include "texture/bitmapTexture.h"
@@ -107,17 +113,17 @@ Texture *IO::loadTexture(const std::string &file) {
 
 void IO::printf(const char *format, ...) {
 	static std::mutex mtx;
-	std::lock_guard<std::mutex> guard(mtx);
 	{
-		// http://en.cppreference.com/w/cpp/io/c/vfprintf
-		va_list args1;
-		va_start(args1, format);
-		va_list args2;
-		va_copy(args2, args1);
-		std::vector<char> buffer(1 + std::vsnprintf(NULL, 0, format, args1));
-		va_end(args1);
-		std::vsnprintf(buffer.data(), buffer.size(), format, args2);
-		va_end(args2);
-		std::printf("%s", buffer.data());
+		// Only 1 thread can access this function at a time :)
+		std::lock_guard<std::mutex> guard(mtx);
+
+		va_list args;
+		va_start(args, format);
+		char *buffer;
+		if (vasprintf(&buffer, format, args) >= 0) {
+			std::printf("%s", buffer);
+			free(buffer);
+		}
+		va_end(args);
 	}
 }
