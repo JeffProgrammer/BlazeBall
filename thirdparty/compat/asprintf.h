@@ -17,7 +17,9 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #ifndef _ASPRINTF_H_
 #define _ASPRINTF_H_
 
-#ifdef _WIN32
+#ifndef _WIN32
+#error "Use unistd.h for unix based systems."
+#endif
 
 #include <cstdarg>
 #include <stdio.h>
@@ -57,7 +59,5 @@ static int asprintf(char **strp, const char *fmt, ...)
    va_end(ap);
    return(r);
 }
-
-#endif // _WIN32
 
 #endif // _ASPRINTF_H_
