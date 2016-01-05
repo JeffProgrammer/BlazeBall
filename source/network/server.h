@@ -9,6 +9,8 @@
 
 #include "base/types.h"
 #include "base/io.h"
+#include "platform/timer.h"
+#include "platformSDL/SDLTimer.h"
 #include <thread>
 
 class Server {
@@ -23,8 +25,11 @@ public:
 private:
 	std::thread mServerThread;
 	bool mIsRunning;
+	Timer *mTimer;
+	F64 mAccumulator;
 
 	void run();
+	void handleNetwork();
 };
 
 #endif
