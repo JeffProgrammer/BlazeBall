@@ -11,18 +11,22 @@
 
 class Timer {
 public:
-	virtual ~Timer() {}
+	/* 
+	 * Starts the timer and keeps track of the time.
+	 * Do not call getDelta() until end() is called.
+	 */
+	virtual void start() = 0;
 	
-	/// Starts the timer and keeps track of the time.
-	/// Do not call getDelta() until end() is called.
-	inline virtual void start() = 0;
+	/*
+	 * Ends the timer.
+	 */
+	virtual void end() = 0;
 	
-	/// Ends the timer.
-	inline virtual void end() = 0;
-	
-	/// Gets the time delta between the start() and end() calls.
-	/// @return the delta between the timer calls.
-	inline virtual F64 getDelta() const = 0;
+	/* 
+	 * Gets the time delta between the start() and end() calls.
+	 * @return the delta between the timer calls.
+	 */
+	virtual F64 getDelta() const = 0;
 };
 
 #endif
