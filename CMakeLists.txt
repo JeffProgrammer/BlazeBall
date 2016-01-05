@@ -590,6 +590,10 @@ set (DIFVIEWERGAME_LIBRARIES
 	Kernel32
 	User32
 	OpenGL32
+	
+	# These are for enet sockets
+	Winmm
+	ws2_32
 
 	# Assimp
 	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimpd.lib
