@@ -449,6 +449,11 @@ set (DIFVIEWERGAME_SRC
 	source/game/sphere.cpp
 	source/game/sphere.h
 	
+	# Networking
+	source/network/network.h
+	source/network/server.cpp
+	source/network/server.h
+	
 	# Texture folder
 	source/texture/bitmapTexture.cpp
 	source/texture/bitmapTexture.h
@@ -481,7 +486,6 @@ set (DIFVIEWERGAME_SRC
 
 	# Platform folder
 	source/platform/event.h
-	source/platform/network.h
 	source/platform/timer.h
 	source/platform/window.h
 	source/platformSDL/SDLEvent.cpp
@@ -632,6 +636,7 @@ source_group("scriptEngine"          REGULAR_EXPRESSION scriptEngine/.*)
 source_group("texture"               REGULAR_EXPRESSION texture/.*)
 source_group("assets\\shaders"       REGULAR_EXPRESSION shaders/.*)
 source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)
+source_group("network"               REGULAR_EXPRESSION network/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
