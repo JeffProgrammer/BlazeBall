@@ -405,6 +405,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/rapidjson/include
 	thirdparty/enet/include
 	thirdparty/enetpp/include
+	thirdparty/compat
 )
 
 # Main project source
