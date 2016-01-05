@@ -8,8 +8,21 @@
 #define timer_h
 
 #include "base/types.h"
+#include <mutex>
 
+/**
+ * A timer class that lets one calculate the delta time in seconds between the
+ * start and end calls.
+ * Interally, the timer class must be implemented as thread-safe. I recommend
+ * not sharing Timer objects between threads, though you *probably* can.
+ */
 class Timer {
+protected:
+	/* 
+	 * Locks the global timer from being accessed concurrently
+	 */
+	static std::mutex sMutex;
+
 public:
 	/* 
 	 * Starts the timer and keeps track of the time.
