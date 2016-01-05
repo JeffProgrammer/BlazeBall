@@ -64,6 +64,8 @@ public:
 	static U8 *readFile(const std::string &file, U32 &length);
 	
 	static Texture *loadTexture(const std::string &file);
+
+	static void printf(const char *format, ...);
 };
 
 #endif
