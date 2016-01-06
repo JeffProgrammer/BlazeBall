@@ -449,14 +449,16 @@ set (DIFVIEWERGAME_SRC
 	source/network/client.cpp
 	source/network/client.h
 	source/network/network.h
-	source/network/networkHandler.cpp
-	source/network/networkHandler.h
 	source/network/server.cpp
 	source/network/server.h
+	source/network/charStream.h
 
 	# Net events
+	source/network/event/netEvent.cpp
 	source/network/event/netEvent.h
+	source/network/event/netClientEvent.cpp
 	source/network/event/netClientEvent.h
+	source/network/event/netServerEvent.cpp
 	source/network/event/netServerEvent.h
 
 	# Physics folder
