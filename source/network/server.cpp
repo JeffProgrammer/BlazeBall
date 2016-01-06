@@ -13,7 +13,7 @@
 Server::Server() {
 	mIsRunning = false;
 	mAccumulator = 0.0;
-	mTimer = nullptr;
+	mTimer = new SDLTimer;
 }
 
 Server::~Server() {
