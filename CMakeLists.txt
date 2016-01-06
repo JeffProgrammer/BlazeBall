@@ -487,6 +487,7 @@ set (DIFVIEWERGAME_SRC
 
 	# Platform folder
 	source/platform/event.h
+	source/platform/timer.cpp
 	source/platform/timer.h
 	source/platform/window.h
 	source/platformSDL/SDLEvent.cpp
