@@ -55,5 +55,7 @@ void Client::pollEvents(bool hasPressedSpaceBar) {
 }
 
 void Client::sendEvent(const NetClientEvent &event) {
-	
+	const std::vector<U8> &data = event.serialize().getBuffer();
+
+	mClient.send_packet(0, reinterpret_cast<const U8 *>(&data[0]), data.size(), ENET_PACKET_FLAG_RELIABLE);
 }

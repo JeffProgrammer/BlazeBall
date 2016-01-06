@@ -8,11 +8,24 @@
 #define _NETWORK_CHARSTREAM_H_
 
 #include <assert.h>
+#include <vector>
 #include <deque>
 
 class CharStream {
 	std::deque<U8> mData;
 public:
+	CharStream() {
+
+	}
+	explicit CharStream(const std::vector<U8> &data) {
+		mData.insert(mData.end(), data.begin(), data.end());
+	}
+	CharStream(const U8 *data, const U32 &length) {
+		for (U32 i = 0; i < length; i ++) {
+			mData.push_back(data[i]);
+		}
+	}
+
 	template <typename T>
 	T push(const T &value);
 
@@ -21,6 +34,12 @@ public:
 
 	template <typename T>
 	T peek();
+
+	std::vector<U8> getBuffer() const {
+		std::vector<U8> data;
+		data.insert(data.end(), mData.begin(), mData.end());
+		return data;
+	}
 };
 
 
