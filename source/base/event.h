@@ -19,7 +19,12 @@ public:
 		MouseUp,
 		WindowFocus,
 		WindowBlur,
-		WindowResize
+		WindowResize,
+
+		NetClientConnect,
+		NetClientDisconnect,
+		NetServerConnect,
+		NetServerDisconnect
 	};
 
 	Type type;

@@ -53,3 +53,7 @@ void Client::pollEvents(bool hasPressedSpaceBar) {
 
 	mClient.consume_events(onConnect, onDisconnect, onReceiveData);
 }
+
+void Client::sendEvent(const NetClientEvent &event) {
+	
+}

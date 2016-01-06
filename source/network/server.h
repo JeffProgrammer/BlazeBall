@@ -12,6 +12,7 @@
 #include "platform/platformTimer.h"
 #include "platform/SDL/SDLTimer.h"
 #include "network/networkHandler.h"
+#include "network/event/netServerEvent.h"
 #include <thread>
 
 class Server {
@@ -20,8 +21,10 @@ public:
 	~Server();
 
 	void start();
-
 	void stop();
+
+	void sendEvent(const NetServerEvent &event); //Global
+	//TODO: Send to one client
 
 private:
 	std::thread mServerThread;

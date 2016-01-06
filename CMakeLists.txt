@@ -416,6 +416,7 @@ set (DIFVIEWERGAME_SRC
 	# Base folder
 	source/base/config.cpp
 	source/base/config.h
+	source/base/event.h
 	source/base/io.cpp
 	source/base/io.h
 	source/base/math.cpp
@@ -452,6 +453,11 @@ set (DIFVIEWERGAME_SRC
 	source/network/networkHandler.h
 	source/network/server.cpp
 	source/network/server.h
+
+	# Net events
+	source/network/event/netEvent.h
+	source/network/event/netClientEvent.h
+	source/network/event/netServerEvent.h
 
 	# Physics folder
 	source/physics/physicsBody.cpp
@@ -645,6 +651,7 @@ source_group("render\\texture"       REGULAR_EXPRESSION render/texture/.*)
 source_group("assets\\shaders"       REGULAR_EXPRESSION shaders/.*)
 source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)
 source_group("network"               REGULAR_EXPRESSION network/.*)
+source_group("network\\event"        REGULAR_EXPRESSION network/event/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})

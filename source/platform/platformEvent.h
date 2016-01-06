@@ -8,31 +8,11 @@
 #define event_h
 
 #include "base/types.h"
+#include "base/event.h"
 
-class PlatformEvent {
+class PlatformEvent : public Event {
 public:
-	enum Type {
-		None,
-		Quit,
-		KeyDown,
-		KeyUp,
-		MouseMove,
-		MouseDown,
-		MouseUp,
-		WindowFocus,
-		WindowBlur,
-		WindowResize
-	};
-
-	Type type;
-
-	Type getType() {
-		return type;
-	}
-	Type getType() const {
-		return type;
-	}
-	PlatformEvent(Type type) : type(type) {};
+	PlatformEvent(Type type) : Event(type) {};
 };
 
 class QuitEvent : public PlatformEvent {

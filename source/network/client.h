@@ -8,6 +8,7 @@
 #define _NETWORK_CLIENT_H_
 
 #include "base/types.h"
+#include "network/event/netClientEvent.h"
 #include <enetpp/client.h>
 
 class Client {
@@ -19,6 +20,8 @@ public:
 	void disconnect();
 
 	void pollEvents(bool hasPressedSpaceBar);
+
+	void sendEvent(const NetClientEvent &event);
 
 protected:
 	enetpp::client mClient;
