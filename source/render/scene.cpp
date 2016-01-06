@@ -14,8 +14,11 @@
 #include <thread>
 #include <algorithm>
 #include <ctime>
+#include "network/client.h"
 
 glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4x4(1), glm::radians(-90.0f), glm::vec3(1, 0, 0));
+
+bool gPressedSpace = false;
 
 /// The amount of time that has to pass before a tick happens.
 /// Default is 16.6667 ms which means we tick at 60 frames per second
@@ -205,7 +208,7 @@ void Scene::handleEvent(Event *event) {
 				case KeyEvent::KEY_DOWN:  mMovement.pitchDown = true; break;
 				case KeyEvent::KEY_LEFT:  mMovement.yawLeft   = true; break;
 				case KeyEvent::KEY_RIGHT: mMovement.yawRight  = true; break;
-				case KeyEvent::KEY_SPACE: mMovement.jump      = true; break;
+				case KeyEvent::KEY_SPACE: { mMovement.jump = true; gPressedSpace = true; break; }
 				case KeyEvent::KEY_V: mWindow->toggleVsync(); break;
 				case KeyEvent::KEY_Q:
 				{
@@ -418,6 +421,16 @@ void Scene::run() {
 
 	// onStart
 
+	// NETWORKING MWHAHAHAHAH
+	Client *client = nullptr;
+	IO::printf("Please enter an ip address to enter a multiplayer server, or press enter to go to singleplayer.\n");
+	std::string ip;
+	std::getline(std::cin, ip);
+	if (ip != "") {
+		client = new Client(ip, 28000);
+		client->connect();
+	}
+
 	//Create camera
 	{
 		Camera *camera = new Camera();
@@ -444,6 +457,8 @@ void Scene::run() {
 	//Maybe this is a good idea
 	PhysicsEngine::getEngine()->setRunning(true);
 
+	
+
 	//Main loop
 	while (mRunning) {
 		//Profiling
@@ -467,6 +482,12 @@ void Scene::run() {
 		if (mSimulationSpeed != 1.0f) {
 			this->loop(lastDelta * mSimulationSpeed);
 			this->tick(lastDelta * mSimulationSpeed);
+		}
+
+		// le networking
+		if (client != nullptr) {
+			client->pollEvents(gPressedSpace);
+			gPressedSpace = false; // reset
 		}
 
 		render();
@@ -493,6 +514,13 @@ void Scene::run() {
 		mTimer->end();
 
 		lastDelta = mTimer->getDelta();
+	}
+
+	// cleanup client.
+	if (client != nullptr) {
+		client->disconnect();
+		delete client;
+		client = nullptr;
 	}
 	
 	//Clean up (duh)

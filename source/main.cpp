@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 
 #include <fstream>
+#include <cstdlib>
 #include "platformSDL/SDLWindow.h"
 #include "platformSDL/SDLTimer.h"
 #include "platform/network.h"
@@ -18,6 +19,8 @@
 #include "network/server.h"
 
 extern GLuint gSphereVBO;
+
+bool gIsDedicated = false;
 
 void parseArgs(int argc, const char *argv[]);
 
@@ -48,15 +51,28 @@ int main(int argc, const char *argv[]) {
 	// parse command line arguments.
 	parseArgs(argc, argv);
 
-	// create a server obj
-	Server s;
-	s.start();
 
-	//Let our scene go!
-	scene->run();
+	if (gIsDedicated) {
+		// create a server obj
+		Server server;
+		server.start();
 
-	// stop server
-	s.stop();
+		// block until we quit
+		std::string line;
+		while (true) {  
+			std::getline(std::cin, line);
+			if (line == "quit")
+				break;
+		}
+
+		// stop server
+		server.stop();
+	}
+	else {
+		//Let our scene go!
+		scene->run();
+	}
+
 
 	// much hack, very wow
 	if (gSphereVBO)
@@ -69,5 +85,9 @@ int main(int argc, const char *argv[]) {
 }
 
 void parseArgs(int argc, const char *argv[]) {
-
+	for (int i = 1; i < argc; i++) {
+		std::string cmp = argv[i];
+		if (cmp == "-dedicated")
+			gIsDedicated = true;
+	}
 }

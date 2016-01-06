@@ -18,6 +18,8 @@ Client::~Client() {
 }
 
 void Client::connect() {
+	IO::printf("Connecting to IP address: %s\n", mServerAddress.c_str());
+
 	enetpp::client_connect_params params;
 	params.set_channel_count(1);
 	params.set_server_host_name_and_port(mServerAddress.c_str(), mPort);
@@ -26,6 +28,7 @@ void Client::connect() {
 }
 
 void Client::disconnect() {
+	IO::printf("Disconnecting!");
 	mClient.disconnect();
 }
 
