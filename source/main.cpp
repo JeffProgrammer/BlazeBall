@@ -25,25 +25,6 @@ bool gIsDedicated = false;
 void parseArgs(int argc, const char *argv[]);
 
 int main(int argc, const char *argv[]) {
-	//Create us a new scene
-	Scene *scene = Scene::getSingleton();
-
-	//Load the physics engine
-	PhysicsEngine::setEngine(new btPhysicsEngine());
-
-	//Init SDL
-	scene->mWindow = new SDLWindow();
-	scene->mTimer = new SDLTimer();
-	scene->mConfig = new Config("config.txt");
-
-	//Init SDL
-	if (!scene->init()) {
-		return 1;
-	}
-
-	// Init script engine and call the main function
-	if (!ScriptEngine::getSingleton()->init())
-		return 1;
 
 	// Load the networking engine
 	Network::init();
@@ -69,14 +50,34 @@ int main(int argc, const char *argv[]) {
 		server.stop();
 	}
 	else {
+		//Create us a new scene
+		Scene *scene = Scene::getSingleton();
+
+		//Load the physics engine
+		PhysicsEngine::setEngine(new btPhysicsEngine());
+
+		//Init SDL
+		scene->mWindow = new SDLWindow();
+		scene->mTimer = new SDLTimer();
+		scene->mConfig = new Config("config.txt");
+
+		//Init SDL
+		if (!scene->init()) {
+			return 1;
+		}
+
+		// Init script engine and call the main function
+		if (!ScriptEngine::getSingleton()->init())
+			return 1;
+
 		//Let our scene go!
 		scene->run();
+
+		// much hack, very wow
+		if (gSphereVBO)
+			glDeleteBuffers(1, &gSphereVBO);
 	}
 
-
-	// much hack, very wow
-	if (gSphereVBO)
-		glDeleteBuffers(1, &gSphereVBO);
 
 	// destroy the networking engine
 	Network::destroy();
