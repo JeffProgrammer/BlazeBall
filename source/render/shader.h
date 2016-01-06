@@ -204,8 +204,9 @@ public:
 	 * Deletes all of the shaders within the hash table.
 	 */
 	static void destroyAllShaders() {
-		for (auto shader : sShaderTable)
-			delete shader.second;
+		// TODO:
+		//for (auto shader : sShaderTable)
+			//delete shader.second;
 	}
 
 	/**
