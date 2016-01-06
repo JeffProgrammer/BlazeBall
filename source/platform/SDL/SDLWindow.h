@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include "base/io.h"
 #include "platform/platformWindow.h"
-#include "platformSDL/SDLConfig.h"
+#include "platform/SDL/SDLConfig.h"
 
 class SDLWindow : public PlatformWindow {
 protected:

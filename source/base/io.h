@@ -16,7 +16,7 @@
 #include <string>
 #include "base/types.h"
 #include "base/math.h"
-#include "texture/texture.h"
+#include "render/texture/texture.h"
 
 class IO {
 public:

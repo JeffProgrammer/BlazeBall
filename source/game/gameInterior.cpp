@@ -7,7 +7,7 @@
 #include "game/gameInterior.h"
 #include "base/io.h"
 #include "physics/physicsBody.h"
-#include "texture/texture.h"
+#include "render/texture/texture.h"
 #include <string>
 #include <cfloat>
 

@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 #include "platform/platformTimer.h"
-#include "platformSDL/SDLConfig.h"
+#include "platform/SDL/SDLConfig.h"
 
 class SDLTimer : public PlatformTimer {
 private:

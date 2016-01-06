@@ -19,7 +19,7 @@
 
 #include "render/bitmap/mngsupport.h"
 #include "render/bitmap/jpegsupport.h"
-#include "texture/bitmapTexture.h"
+#include "render/texture/bitmapTexture.h"
 
 bool IO::isfile(const std::string &file) {
 	FILE *stream = fopen(file.c_str(), "rb");

@@ -6,8 +6,8 @@
 
 #include <fstream>
 #include <cstdlib>
-#include "platformSDL/SDLWindow.h"
-#include "platformSDL/SDLTimer.h"
+#include "platform/SDL/SDLWindow.h"
+#include "platform/SDL/SDLTimer.h"
 #include "platform/network.h"
 #include "render/scene.h"
 #include "game/GameInterior.h"

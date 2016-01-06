@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#include "platformSDL/SDLWindow.h"
-#include "platformSDL/SDLEvent.h"
+#include "platform/SDL/SDLWindow.h"
+#include "platform/SDL/SDLEvent.h"
 
 bool SDLWindow::createContext() {
 	//Init SDL

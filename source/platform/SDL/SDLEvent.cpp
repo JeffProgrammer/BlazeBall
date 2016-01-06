@@ -4,7 +4,7 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#include "platformSDL/SDLEvent.h"
+#include "platform/SDL/SDLEvent.h"
 
 PlatformEvent *SDLEvent::convert(SDL_Event sdlevent) {
 	PlatformEvent::Type type = convertType(sdlevent);

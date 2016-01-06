@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 #include "platform/platformEvent.h"
-#include "platformSDL/SDLConfig.h"
+#include "platform/SDL/SDLConfig.h"
 
 namespace SDLEvent {
 	PlatformEvent *convert(SDL_Event event);

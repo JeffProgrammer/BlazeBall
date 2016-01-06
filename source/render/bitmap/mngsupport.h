@@ -9,7 +9,7 @@
 
 #include <stdbool.h>
 #include "base/types.h"
-#include "texture/bitmapTexture.h"
+#include "render/texture/bitmapTexture.h"
 
 /**
  Reads an image from a given file using MNG (PNG/MNG support)

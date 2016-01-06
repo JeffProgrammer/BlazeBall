@@ -10,7 +10,7 @@
 #include "base/types.h"
 #include "base/io.h"
 #include "platform/platformTimer.h"
-#include "platformSDL/SDLTimer.h"
+#include "platform/SDL/SDLTimer.h"
 #include "network/networkHandler.h"
 #include <thread>
 

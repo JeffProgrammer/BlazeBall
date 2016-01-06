@@ -5,7 +5,7 @@
 //------------------------------------------------------------------------------
 
 #include "skybox.h"
-#include "texture/cubeMapFramebufferTexture.h"
+#include "render/texture/cubeMapFramebufferTexture.h"
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>

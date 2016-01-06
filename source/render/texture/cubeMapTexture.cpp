@@ -15,7 +15,7 @@
 #endif
 
 #include "base/io.h"
-#include "texture/cubeMapTexture.h"
+#include "render/texture/cubeMapTexture.h"
 #include "render/util.h"
 
 CubeMapTexture::CubeMapTexture(const std::vector<TextureInfo> &textureInfos) {
