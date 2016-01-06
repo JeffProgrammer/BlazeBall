@@ -43,13 +43,12 @@ void Client::pollEvents(bool hasPressedSpaceBar) {
 
 	auto onReceiveData = [&](const U8 *data, size_t size) {
 		IO::printf("%s", data);
-
-		// send a message if you press the space bar.
-		if (hasPressedSpaceBar) {
-			std::string message = "I have pressed da key yo!\n";
-			mClient.send_packet(0, reinterpret_cast<const U8*>(message.c_str()), message.length(), ENET_PACKET_FLAG_RELIABLE);
-		}
 	};
+
+	if (hasPressedSpaceBar) {
+		std::string message = "I have pressed da key yo!\n";
+		mClient.send_packet(0, reinterpret_cast<const U8*>(message.c_str()), message.length(), ENET_PACKET_FLAG_RELIABLE);
+	}
 
 	mClient.consume_events(onConnect, onDisconnect, onReceiveData);
 }

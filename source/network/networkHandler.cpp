@@ -39,7 +39,7 @@ void NetworkHandler::stop() {
 void NetworkHandler::pollEvents() {
 	// receive events.
 	auto onClientConnect = [](Connection &client) {
-		IO::printf("Client %u with IP %s has joined the server.\n", client.id, client.ipAddress);
+		IO::printf("Client %u with IP %s has joined the server.\n", client.id, client.ipAddress.c_str());
 	};
 
 	auto onClientDisconnect = [](U32 clientId) {
