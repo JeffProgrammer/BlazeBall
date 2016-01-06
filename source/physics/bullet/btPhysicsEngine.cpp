@@ -70,11 +70,13 @@ void btPhysicsEngine::init() {
 	btBroadphaseInterface *interface = new btDbvtBroadphase();
 	btConstraintSolver *solver = new btSequentialImpulseConstraintSolver();
 
-	mDebugDrawer = new btDebugDrawer;
-
 	mWorld = new btDiscreteDynamicsWorld(mDispatcher, interface, solver, configuration);
 	mWorld->setGravity(btVector3(0, 0, -20.0f));
+
+#ifdef DEBUG_PHYSICS
+	mDebugDrawer = new btDebugDrawer;
 	mWorld->setDebugDrawer(mDebugDrawer);
+#endif
 
 	gContactAddedCallback = contactAddedCallback;
 	gContactProcessedCallback = contactProcessedCallback;
@@ -89,7 +91,10 @@ void btPhysicsEngine::simulate(const F64 &delta) {
 			step(PHYSICS_TICK);
 			mExtraTime -= PHYSICS_TICK;
 		}
+		
+#ifdef DEBUG_PHYSICS
 		mWorld->debugDrawWorld();
+#endif
 	}
 }
 
@@ -117,7 +122,9 @@ PhysicsBody *btPhysicsEngine::createSphere(const F32 &radius) {
 }
 
 void btPhysicsEngine::debugDraw(RenderInfo &info, const DebugDrawType &drawType) {
+#ifdef DEBUG_PHYSICS
 	mDebugDrawer->draw(info, drawType);
+#endif
 }
 
 void btPhysicsEngine::raycast(RaycastInfo &info) {
