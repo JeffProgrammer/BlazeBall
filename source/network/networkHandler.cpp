@@ -8,6 +8,10 @@
 #include "base/io.h"
 #include <enetpp/server_listen_params.h>
 
+#ifdef _WIN32
+#include <asprintf.h>
+#endif
+
 U32 NetworkHandler::sUniqueId = 0;
 
 NetworkHandler::NetworkHandler() {
