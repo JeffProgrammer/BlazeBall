@@ -5,6 +5,8 @@
 //------------------------------------------------------------------------------
 
 #include "netClientEvent.h"
+#include "network/client.h"
+#include "base/io.h"
 
 const U8 Magic = 0x42;
 
@@ -55,4 +57,12 @@ bool NetClientEvent::read(CharStream &data) {
 
 	//Nothing special here
 	return true;
+}
+
+NetClientConnectEvent::NetClientConnectEvent(Client *client) : NetClientEvent(NetConnect, client) {
+	IO::printf("Got a client connect event\n");
+}
+
+NetClientDisconnectEvent::NetClientDisconnectEvent(Client *client) : NetClientEvent(NetDisconnect, client) {
+	IO::printf("Got a client disconnect event\n");
 }

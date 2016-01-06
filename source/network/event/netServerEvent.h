@@ -25,12 +25,12 @@ public:
 
 class NetServerConnectEvent : public NetServerEvent {
 public:
-	NetServerConnectEvent(Server *server) : NetServerEvent(NetConnect, server) {}
+	NetServerConnectEvent(Server *server);
 };
 
 class NetServerDisconnectEvent : public NetServerEvent {
 public:
-	NetServerDisconnectEvent(Server *server) : NetServerEvent(NetDisconnect, server) {}
+	NetServerDisconnectEvent(Server *server);
 };
 
 #endif

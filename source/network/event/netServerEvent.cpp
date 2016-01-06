@@ -5,7 +5,7 @@
 //------------------------------------------------------------------------------
 
 #include "netServerEvent.h"
-
+#include "network/server.h"
 #include "base/io.h"
 
 const U8 Magic = 0x87;
@@ -24,11 +24,9 @@ NetServerEvent *NetServerEvent::deserialize(CharStream &data, Server *server) {
 	switch (type) {
 		case Event::NetConnect:
 			event = new NetServerConnectEvent(server);
-			IO::printf("New connect event\n");
 			break;
 		case Event::NetDisconnect:
 			event = new NetServerDisconnectEvent(server);
-			IO::printf("New disconnect event\n");
 			break;
 		default:
 			return nullptr;
@@ -59,4 +57,12 @@ bool NetServerEvent::read(CharStream &data) {
 
 	//Nothing special here
 	return true;
+}
+
+NetServerConnectEvent::NetServerConnectEvent(Server *server) : NetServerEvent(NetConnect, server) {
+	IO::printf("Got a server connect event\n");
+}
+
+NetServerDisconnectEvent::NetServerDisconnectEvent(Server *server) : NetServerEvent(NetDisconnect, server) {
+	IO::printf("Got a server disconnect event\n");
 }

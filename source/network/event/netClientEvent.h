@@ -25,12 +25,12 @@ public:
 
 class NetClientConnectEvent : public NetClientEvent {
 public:
-	NetClientConnectEvent(Client *client) : NetClientEvent(NetConnect, client) {}
+	NetClientConnectEvent(Client *client);
 };
 
 class NetClientDisconnectEvent : public NetClientEvent {
 public:
-	NetClientDisconnectEvent(Client *client) : NetClientEvent(NetDisconnect, client) {}
+	NetClientDisconnectEvent(Client *client);
 };
 
 #endif
