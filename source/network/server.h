@@ -17,6 +17,14 @@
 
 class Server {
 public:
+	struct Connection {
+		U32 id;
+		std::string ipAddress;
+
+		// This is needed for enet internally.
+		U32 get_id() { return id; }
+	};
+
 	Server();
 	~Server();
 
@@ -26,25 +34,19 @@ public:
 	void pollEvents();
 
 	void sendEvent(const NetServerEvent &event); //Global
-	//TODO: Send to one client
+	void sendEvent(const NetServerEvent &event, Connection *connection);
 
 private:
 	static U32 sUniqueId;
 
-	struct Connection {
-		U32 id;
-		std::string ipAddress;
-
-		// This is needed for enet internally.
-		U32 get_id() { return id; }
-	};
-	
 	std::thread mServerThread;
 	bool mIsRunning;
 	PlatformTimer *mTimer;
 	F64 mAccumulator;
 
 	enetpp::server<Connection> mServer;
+
+
 
 	void run();
 };
