@@ -423,12 +423,6 @@ set (DIFVIEWERGAME_SRC
 	source/base/tree.h
 	source/base/types.h
 
-	# Bitmap folder
-	source/render/bitmap/jpegSupport.cpp
-	source/render/bitmap/jpegSupport.h
-	source/render/bitmap/mngSupport.cpp
-	source/render/bitmap/mngSupport.h
-
 	# Game folder
 	source/game/camera.cpp
 	source/game/camera.h
@@ -458,16 +452,6 @@ set (DIFVIEWERGAME_SRC
 	source/network/networkHandler.h
 	source/network/server.cpp
 	source/network/server.h
-	
-	# Texture folder
-	source/texture/bitmapTexture.cpp
-	source/texture/bitmapTexture.h
-	source/texture/cubeMapTexture.cpp
-	source/texture/cubeMapTexture.h
-	source/texture/cubeMapFramebufferTexture.cpp
-	source/texture/cubeMapFramebufferTexture.h
-	source/texture/texture.cpp
-	source/texture/texture.h
 
 	# Physics folder
 	source/physics/physicsBody.cpp
@@ -490,16 +474,18 @@ set (DIFVIEWERGAME_SRC
 	source/physics/bullet/btDebugDrawer.h
 
 	# Platform folder
-	source/platform/event.h
-	source/platform/timer.cpp
-	source/platform/timer.h
-	source/platform/window.h
-	source/platformSDL/SDLEvent.cpp
-	source/platformSDL/SDLEvent.h
-	source/platformSDL/SDLTimer.h
-	source/platformSDL/SDLWindow.cpp
-	source/platformSDL/SDLWindow.h
-	source/platformSDL/SDLConfig.h
+	source/platform/platformEvent.h
+	source/platform/platformTimer.cpp
+	source/platform/platformTimer.h
+	source/platform/platformWindow.h
+
+	# SDL folder
+	source/platform/SDL/SDLEvent.cpp
+	source/platform/SDL/SDLEvent.h
+	source/platform/SDL/SDLTimer.h
+	source/platform/SDL/SDLWindow.cpp
+	source/platform/SDL/SDLWindow.h
+	source/platform/SDL/SDLConfig.h
 	
 	# Render folder
 	source/render/interiorRender.cpp
@@ -514,6 +500,22 @@ set (DIFVIEWERGAME_SRC
 	source/render/shader.h
 	source/render/shaderImpl.cpp
 	source/render/util.h
+
+	# Bitmap folder
+	source/render/bitmap/jpegSupport.cpp
+	source/render/bitmap/jpegSupport.h
+	source/render/bitmap/mngSupport.cpp
+	source/render/bitmap/mngSupport.h
+
+	# Texture folder
+	source/render/texture/bitmapTexture.cpp
+	source/render/texture/bitmapTexture.h
+	source/render/texture/cubeMapTexture.cpp
+	source/render/texture/cubeMapTexture.h
+	source/render/texture/cubeMapFramebufferTexture.cpp
+	source/render/texture/cubeMapFramebufferTexture.h
+	source/render/texture/texture.cpp
+	source/render/texture/texture.h
 
 	# ScriptEngine
 	source/scriptEngine/abstractClassRep.h
@@ -637,9 +639,9 @@ source_group("objects"               REGULAR_EXPRESSION objects/.*)
 source_group("game\\physics"         REGULAR_EXPRESSION physics/.*)
 source_group("game\\physics\\bullet" REGULAR_EXPRESSION bullet/.*)
 source_group("platform"              REGULAR_EXPRESSION platform/.*)
-source_group("platform\\SDL"         REGULAR_EXPRESSION platformSDL/.*)
+source_group("platform\\SDL"         REGULAR_EXPRESSION platform/SDL/.*)
 source_group("scriptEngine"          REGULAR_EXPRESSION scriptEngine/.*)
-source_group("texture"               REGULAR_EXPRESSION texture/.*)
+source_group("render\\texture"       REGULAR_EXPRESSION render/texture/.*)
 source_group("assets\\shaders"       REGULAR_EXPRESSION shaders/.*)
 source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)
 source_group("network"               REGULAR_EXPRESSION network/.*)
