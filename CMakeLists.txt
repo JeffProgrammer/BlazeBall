@@ -451,6 +451,8 @@ set (DIFVIEWERGAME_SRC
 	source/game/sphere.h
 	
 	# Networking
+	source/network/client.cpp
+	source/network/client.h
 	source/network/network.h
 	source/network/networkHandler.cpp
 	source/network/networkHandler.h
