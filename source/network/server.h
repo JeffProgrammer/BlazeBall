@@ -11,6 +11,7 @@
 #include "base/io.h"
 #include "platform/timer.h"
 #include "platformSDL/SDLTimer.h"
+#include "network/networkHandler.h"
 #include <thread>
 
 class Server {
@@ -28,8 +29,9 @@ private:
 	Timer *mTimer;
 	F64 mAccumulator;
 
+	NetworkHandler mHandler;
+
 	void run();
-	void handleNetwork();
 };
 
 #endif

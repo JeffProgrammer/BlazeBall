@@ -13,7 +13,7 @@
 Server::Server() {
 	mIsRunning = false;
 	mAccumulator = 0.0;
-	mTimer = new SDLTimer;
+	mTimer = new SDLTimer();
 }
 
 Server::~Server() {
@@ -28,12 +28,14 @@ void Server::start() {
 
 	// start the server process
 	IO::printf("Starting server process...\n");
+	mHandler.start();
 	mIsRunning = true;
 	mServerThread = std::thread(&Server::run, this);
 }
 
 void Server::stop() {
 	// block this thread and wait for the server thread to finish before moving on
+	mHandler.stop();
 	mIsRunning = false;
 	mServerThread.join();
 	IO::printf("Stopping server process...\n");
@@ -50,7 +52,7 @@ void Server::run() {
 		// network update
 		mAccumulator += delta;
 		while (mAccumulator > SERVER_TIME) {
-			handleNetwork();
+			mHandler.pollEvents();
 			mAccumulator -= SERVER_TIME;
 		}
 
@@ -59,8 +61,4 @@ void Server::run() {
 		mTimer->end();
 		delta = mTimer->getDelta();
 	}
-}
-
-void Server::handleNetwork() {
-
 }
