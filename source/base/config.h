@@ -9,7 +9,7 @@
 
 #include "types.h"
 #include "io.h"
-#include "platform/event.h"
+#include "platform/platformEvent.h"
 
 class Config {
 protected:

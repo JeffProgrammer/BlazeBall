@@ -115,7 +115,7 @@ glm::ivec2 SDLWindow::getWindowSize() {
 	return glm::ivec2(screenWidth, screenHeight);
 }
 
-bool SDLWindow::pollEvents(Event *&event) {
+bool SDLWindow::pollEvents(PlatformEvent *&event) {
 	SDL_Event sdlevent;
 	if (SDL_PollEvent(&sdlevent)) {
 		event = SDLEvent::convert(sdlevent);

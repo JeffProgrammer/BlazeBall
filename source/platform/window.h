@@ -8,7 +8,7 @@
 #define window_h
 
 #include "base/types.h"
-#include "platform/event.h"
+#include "platform/platformEvent.h"
 
 class Window {
 public:
@@ -23,7 +23,7 @@ public:
 	virtual void toggleVsync() = 0;
 
 	virtual glm::ivec2 getWindowSize() = 0;
-	virtual bool pollEvents(Event *&event) = 0;
+	virtual bool pollEvents(PlatformEvent *&event) = 0;
 };
 
 #endif

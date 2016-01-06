@@ -18,7 +18,7 @@
 #include "render/shader.h"
 #include "render/scene.h"
 #include "platform/window.h"
-#include "platform/event.h"
+#include "platform/platformEvent.h"
 #include "platform/timer.h"
 #include <vector>
 #include "game/movement.h"
@@ -114,7 +114,7 @@ public:
 	void cleanup();
 	void run();
 	void performClick(S32 mouseX, S32 mouseY);
-	void handleEvent(Event *event);
+	void handleEvent(PlatformEvent *event);
 
 	void createCamera(const glm::vec3 &position);
 	void createPlayer(const glm::vec3 &position, F32 radius);

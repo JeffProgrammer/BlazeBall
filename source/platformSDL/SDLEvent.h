@@ -8,28 +8,28 @@
 #define SDLEvent_h
 
 #include <stdio.h>
-#include "platform/event.h"
+#include "platform/platformEvent.h"
 #include "platformSDL/SDLConfig.h"
 
 namespace SDLEvent {
-	Event *convert(SDL_Event event);
+	PlatformEvent *convert(SDL_Event event);
 
-	inline Event::Type convertType(SDL_Event event) {
+	inline PlatformEvent::Type convertType(SDL_Event event) {
 		SDL_EventType sdlType = (SDL_EventType)event.type;
 		switch (sdlType) {
-			case SDL_QUIT:    return Event::Quit;
-			case SDL_KEYDOWN: return Event::KeyDown;
-			case SDL_KEYUP:   return Event::KeyUp;
-			case SDL_MOUSEBUTTONDOWN: return Event::MouseDown;
-			case SDL_MOUSEBUTTONUP:   return Event::MouseUp;
-			case SDL_MOUSEMOTION:     return Event::MouseMove;
+			case SDL_QUIT:    return PlatformEvent::Quit;
+			case SDL_KEYDOWN: return PlatformEvent::KeyDown;
+			case SDL_KEYUP:   return PlatformEvent::KeyUp;
+			case SDL_MOUSEBUTTONDOWN: return PlatformEvent::MouseDown;
+			case SDL_MOUSEBUTTONUP:   return PlatformEvent::MouseUp;
+			case SDL_MOUSEMOTION:     return PlatformEvent::MouseMove;
 			case SDL_WINDOWEVENT:
 				switch (event.window.event) {
-					case SDL_WINDOWEVENT_FOCUS_LOST:   return Event::WindowBlur;
-					case SDL_WINDOWEVENT_FOCUS_GAINED: return Event::WindowFocus;
-					case SDL_WINDOWEVENT_RESIZED:      return Event::WindowResize;
+					case SDL_WINDOWEVENT_FOCUS_LOST:   return PlatformEvent::WindowBlur;
+					case SDL_WINDOWEVENT_FOCUS_GAINED: return PlatformEvent::WindowFocus;
+					case SDL_WINDOWEVENT_RESIZED:      return PlatformEvent::WindowResize;
 				}
-			default: return Event::None;
+			default: return PlatformEvent::None;
 		}
 	}
 };

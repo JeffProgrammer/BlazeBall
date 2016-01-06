@@ -9,7 +9,7 @@
 
 #include "base/types.h"
 
-class Event {
+class PlatformEvent {
 public:
 	enum Type {
 		None,
@@ -32,20 +32,20 @@ public:
 	Type getType() const {
 		return type;
 	}
-	Event(Type type) : type(type) {};
+	PlatformEvent(Type type) : type(type) {};
 };
 
-class QuitEvent : public Event {
+class QuitEvent : public PlatformEvent {
 public:
-	QuitEvent() : Event(Quit) {};
+	QuitEvent() : PlatformEvent(Quit) {};
 };
 
-class KeyDownEvent : public Event {
+class KeyDownEvent : public PlatformEvent {
 public:
 	U32 key;
 	U32 modifier;
 
-	KeyDownEvent() : Event(KeyDown), key(0), modifier(0) {};
+	KeyDownEvent() : PlatformEvent(KeyDown), key(0), modifier(0) {};
 	U32 getKey() {
 		return key;
 	}
@@ -54,12 +54,12 @@ public:
 	}
 };
 
-class KeyUpEvent : public Event {
+class KeyUpEvent : public PlatformEvent {
 public:
 	U32 key;
 	U32 modifier;
 
-	KeyUpEvent() : Event(KeyUp), key(0), modifier(0) {};
+	KeyUpEvent() : PlatformEvent(KeyUp), key(0), modifier(0) {};
 	U32 getKey() {
 		return key;
 	}
@@ -68,12 +68,12 @@ public:
 	}
 };
 
-class MouseMoveEvent : public Event {
+class MouseMoveEvent : public PlatformEvent {
 public:
 	glm::ivec2 position;
 	glm::ivec2 delta;
 
-	MouseMoveEvent() : Event(MouseMove), position(glm::ivec2(0, 0)), delta(glm::ivec2(0, 0)) {};
+	MouseMoveEvent() : PlatformEvent(MouseMove), position(glm::ivec2(0, 0)), delta(glm::ivec2(0, 0)) {};
 	glm::ivec2 getPosition() {
 		return position;
 	}
@@ -82,12 +82,12 @@ public:
 	}
 };
 
-class MouseDownEvent : public Event {
+class MouseDownEvent : public PlatformEvent {
 public:
 	glm::ivec2 position;
 	U8 button;
 
-	MouseDownEvent() : Event(MouseDown), position(glm::ivec2(0, 0)), button(0) {};
+	MouseDownEvent() : PlatformEvent(MouseDown), position(glm::ivec2(0, 0)), button(0) {};
 	glm::ivec2 getPosition() {
 		return position;
 	}
@@ -96,12 +96,12 @@ public:
 	}
 };
 
-class MouseUpEvent : public Event {
+class MouseUpEvent : public PlatformEvent {
 public:
 	glm::ivec2 position;
 	U8 button;
 
-	MouseUpEvent() : Event(MouseUp), position(glm::ivec2(0, 0)), button(0) {};
+	MouseUpEvent() : PlatformEvent(MouseUp), position(glm::ivec2(0, 0)), button(0) {};
 	glm::ivec2 getPosition() {
 		return position;
 	}
@@ -350,20 +350,20 @@ namespace KeyEvent {
 	};
 }
 
-class WindowFocusEvent : public Event {
+class WindowFocusEvent : public PlatformEvent {
 public:
-	WindowFocusEvent() : Event(WindowFocus) {};
+	WindowFocusEvent() : PlatformEvent(WindowFocus) {};
 };
 
-class WindowBlurEvent : public Event {
+class WindowBlurEvent : public PlatformEvent {
 public:
-	WindowBlurEvent() : Event(WindowBlur) {};
+	WindowBlurEvent() : PlatformEvent(WindowBlur) {};
 };
 
-class WindowResizeEvent : public Event {
+class WindowResizeEvent : public PlatformEvent {
 public:
 	glm::ivec2 newSize;
-	WindowResizeEvent() : Event(WindowResize), newSize(glm::ivec2(0, 0)) {};
+	WindowResizeEvent() : PlatformEvent(WindowResize), newSize(glm::ivec2(0, 0)) {};
 };
 
 #endif

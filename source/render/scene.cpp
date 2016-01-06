@@ -190,14 +190,14 @@ void Scene::performClick(S32 mouseX, S32 mouseY) {
 	*/
 }
 
-void Scene::handleEvent(Event *event) {
+void Scene::handleEvent(PlatformEvent *event) {
 	//Key events, movement
 	switch (event->getType()) {
 		//Quit
-		case Event::Quit:
+		case PlatformEvent::Quit:
 			mRunning = false;
 			break;
-		case Event::KeyDown: {
+		case PlatformEvent::KeyDown: {
 			KeyEvent::Key key = static_cast<KeyEvent::Key>(static_cast<KeyDownEvent *>(event)->key);
 			if (key == mConfig->getKey("forward"))  mMovement.forward  = true;
 			if (key == mConfig->getKey("backward")) mMovement.backward = true;
@@ -289,7 +289,7 @@ void Scene::handleEvent(Event *event) {
 			}
 			break;
 		}
-		case Event::KeyUp: {
+		case PlatformEvent::KeyUp: {
 			KeyEvent::Key key = static_cast<KeyEvent::Key>(static_cast<KeyDownEvent *>(event)->key);
 			if (key == mConfig->getKey("forward"))  mMovement.forward  = false;
 			if (key == mConfig->getKey("backward")) mMovement.backward = false;
@@ -308,13 +308,13 @@ void Scene::handleEvent(Event *event) {
 			break;
 		}
 		//Mouse for rotation
-		case Event::MouseMove:
+		case PlatformEvent::MouseMove:
 			if (mCaptureMouse) {
 				mMovement.yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x;
 				mMovement.pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y;
 			}
 			break;
-		case Event::MouseDown:
+		case PlatformEvent::MouseDown:
 			switch (((MouseDownEvent *)event)->button) {
 				case 1: mouseButtons.left   = true; break;
 				case 2: mouseButtons.middle = true; break;
@@ -328,7 +328,7 @@ void Scene::handleEvent(Event *event) {
 				performClick(((MouseDownEvent *)event)->position.x, ((MouseDownEvent *)event)->position.y);
 			}
 			break;
-		case Event::MouseUp:
+		case PlatformEvent::MouseUp:
 			switch (((MouseDownEvent *)event)->button) {
 				case 1: mouseButtons.left   = false; break;
 				case 2: mouseButtons.middle = false; break;
@@ -336,13 +336,13 @@ void Scene::handleEvent(Event *event) {
 				default: break;
 			}
 			break;
-		case Event::WindowFocus:
+		case PlatformEvent::WindowFocus:
 			mShouldSleep = false;
 			break;
-		case Event::WindowBlur:
+		case PlatformEvent::WindowBlur:
 			mShouldSleep = true;
 			break;
-		case Event::WindowResize:
+		case PlatformEvent::WindowResize:
 			updateWindowSize(static_cast<WindowResizeEvent *>(event)->newSize);
 			break;
 		default:
@@ -403,7 +403,7 @@ GameObject* Scene::findGameObject(const std::string &name) {
 }
 
 void Scene::run() {
-	Event *eventt;
+	PlatformEvent *eventt;
 
 	F64 lastDelta = 0;
 	

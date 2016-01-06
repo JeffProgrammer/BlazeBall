@@ -32,7 +32,7 @@ public:
 	virtual void toggleVsync();
 
 	virtual glm::ivec2 getWindowSize();
-	virtual bool pollEvents(Event *&event);
+	virtual bool pollEvents(PlatformEvent *&event);
 };
 
 #endif
