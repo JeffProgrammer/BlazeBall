@@ -36,6 +36,9 @@ public:
 	Event(Type type) : type(type) {
 		
 	}
+	virtual ~Event() {
+
+	}
 };
 
 #endif

@@ -45,6 +45,7 @@ void Client::pollEvents() {
 	auto onReceiveData = [this](const U8 *data, size_t size) {
 		CharStream stream(data, size);
 		NetClientEvent *event = NetClientEvent::deserialize(stream, this);
+		delete event;
 	};
 
 	mClient.consume_events(onConnect, onDisconnect, onReceiveData);
