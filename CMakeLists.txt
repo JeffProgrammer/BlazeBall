@@ -4,7 +4,7 @@ project (DifViewerGame C CXX)
 
 # Force C++11 standard on compilers
 if (NOT MSVC)
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 endif()
 
 # Enable Static Linking the C++ ABI directly into the executables and libraries
