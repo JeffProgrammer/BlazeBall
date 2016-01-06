@@ -12,8 +12,10 @@
 #include "game/GameInterior.h"
 #include "scriptEngine/scriptEngine.h"
 
+// TODO: clean this shit up
 #include "physics/bullet/btPhysicsEngine.h"
 #include "game/levelLoader.h"
+#include "network/server.h"
 
 extern GLuint gSphereVBO;
 
@@ -46,8 +48,15 @@ int main(int argc, const char *argv[]) {
 	// parse command line arguments.
 	parseArgs(argc, argv);
 
+	// create a server obj
+	Server s;
+	s.start();
+
 	//Let our scene go!
 	scene->run();
+
+	// stop server
+	s.stop();
 
 	// much hack, very wow
 	if (gSphereVBO)
