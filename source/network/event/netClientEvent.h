@@ -17,20 +17,20 @@ public:
 
 	NetClientEvent(Type type, Client *client) : NetEvent(type), mClient(client) {}
 
-	static NetEvent *deserialize(CharStream &data, Client *client);
+	static NetClientEvent *deserialize(CharStream &data, Client *client);
 
-	virtual bool write(CharStream &data);
+	virtual bool write(CharStream &data) const;
 	virtual bool read(CharStream &data);
 };
 
 class NetClientConnectEvent : public NetClientEvent {
 public:
-	NetClientConnectEvent(Client *client) : NetClientEvent(NetClientConnect, client) {}
+	NetClientConnectEvent(Client *client) : NetClientEvent(NetConnect, client) {}
 };
 
 class NetClientDisconnectEvent : public NetClientEvent {
 public:
-	NetClientDisconnectEvent(Client *client) : NetClientEvent(NetClientDisconnect, client) {}
+	NetClientDisconnectEvent(Client *client) : NetClientEvent(NetDisconnect, client) {}
 };
 
 #endif

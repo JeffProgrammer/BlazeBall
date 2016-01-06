@@ -8,7 +8,7 @@
 
 const U8 NetEvent::Magic = 0x24;
 
-CharStream NetEvent::serialize() {
+CharStream NetEvent::serialize() const {
 	CharStream stream;
 	if (write(stream)) {
 		return stream;
@@ -16,7 +16,7 @@ CharStream NetEvent::serialize() {
 	return CharStream();
 }
 
-bool NetEvent::write(CharStream &data) {
+bool NetEvent::write(CharStream &data) const {
 	//So we can identify as a NetEvent
 	data.push<U8>(Magic);
 	data.push<U32>(type);

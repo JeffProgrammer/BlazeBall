@@ -21,10 +21,8 @@ public:
 		WindowBlur,
 		WindowResize,
 
-		NetClientConnect,
-		NetClientDisconnect,
-		NetServerConnect,
-		NetServerDisconnect
+		NetConnect,
+		NetDisconnect
 	};
 
 	Type type;

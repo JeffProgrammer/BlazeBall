@@ -27,7 +27,7 @@ public:
 	 * and used to deserialize the object later
 	 * @return The CharStream containing the representation of the event
 	 */
-	CharStream serialize();
+	virtual CharStream serialize() const;
 
 	/**
 	 * Deserialize a CharStream into a NetEvent object that can be used.
@@ -44,7 +44,7 @@ protected:
 	 * @param data The stream to which the event's data is written
 	 * @return If the write succeeded
 	 */
-	virtual bool write(CharStream &data);
+	virtual bool write(CharStream &data) const;
 	/**
 	 * Read the event's data from a CharStream, called from deserialize()
 	 * @param data The stream from which the event's data is read

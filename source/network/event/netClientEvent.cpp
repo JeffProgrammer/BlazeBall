@@ -8,7 +8,7 @@
 
 const U8 Magic = 0x42;
 
-NetEvent *NetClientEvent::deserialize(CharStream &data, Client *client) {
+NetClientEvent *NetClientEvent::deserialize(CharStream &data, Client *client) {
 	//Don't corrupt the stream if it's not a net event
 	if (data.peek<U8>() != NetEvent::Magic)
 		return nullptr;
@@ -16,14 +16,14 @@ NetEvent *NetClientEvent::deserialize(CharStream &data, Client *client) {
 	data.pop<U8>();
 
 	Type type = static_cast<Type>(data.pop<U32>());
-	NetEvent *event;
+	NetClientEvent *event;
 
 	//TODO: Make this fancy
 	switch (type) {
-		case Event::NetClientConnect:
+		case Event::NetConnect:
 			event = new NetClientConnectEvent(client);
 			break;
-		case Event::NetClientDisconnect:
+		case Event::NetDisconnect:
 			event = new NetClientDisconnectEvent(client);
 			break;
 		default:
@@ -34,7 +34,7 @@ NetEvent *NetClientEvent::deserialize(CharStream &data, Client *client) {
 	return event;
 }
 
-bool NetClientEvent::write(CharStream &data) {
+bool NetClientEvent::write(CharStream &data) const {
 	if (!NetEvent::write(data)) {
 		return false;
 	}

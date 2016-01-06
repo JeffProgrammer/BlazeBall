@@ -17,20 +17,20 @@ public:
 
 	NetServerEvent(Type type, Server *server) : NetEvent(type), mServer(server) {}
 
-	static NetEvent *deserialize(CharStream &data, Server *server);
+	static NetServerEvent *deserialize(CharStream &data, Server *server);
 
-	virtual bool write(CharStream &data);
+	virtual bool write(CharStream &data) const;
 	virtual bool read(CharStream &data);
 };
 
 class NetServerConnectEvent : public NetServerEvent {
 public:
-	NetServerConnectEvent(Server *server) : NetServerEvent(NetServerConnect, server) {}
+	NetServerConnectEvent(Server *server) : NetServerEvent(NetConnect, server) {}
 };
 
 class NetServerDisconnectEvent : public NetServerEvent {
 public:
-	NetServerDisconnectEvent(Server *server) : NetServerEvent(NetServerDisconnect, server) {}
+	NetServerDisconnectEvent(Server *server) : NetServerEvent(NetDisconnect, server) {}
 };
 
 #endif

@@ -6,9 +6,11 @@
 
 #include "netServerEvent.h"
 
+#include "base/io.h"
+
 const U8 Magic = 0x87;
 
-NetEvent *NetServerEvent::deserialize(CharStream &data, Server *server) {
+NetServerEvent *NetServerEvent::deserialize(CharStream &data, Server *server) {
 	//Don't corrupt the stream if it's not a net event
 	if (data.peek<U8>() != NetEvent::Magic)
 		return nullptr;
@@ -16,15 +18,17 @@ NetEvent *NetServerEvent::deserialize(CharStream &data, Server *server) {
 	data.pop<U8>();
 
 	Type type = static_cast<Type>(data.pop<U32>());
-	NetEvent *event;
+	NetServerEvent *event;
 
 	//TODO: Make this fancy
 	switch (type) {
-		case Event::NetServerConnect:
+		case Event::NetConnect:
 			event = new NetServerConnectEvent(server);
+			IO::printf("New connect event\n");
 			break;
-		case Event::NetServerDisconnect:
+		case Event::NetDisconnect:
 			event = new NetServerDisconnectEvent(server);
+			IO::printf("New disconnect event\n");
 			break;
 		default:
 			return nullptr;
@@ -34,7 +38,7 @@ NetEvent *NetServerEvent::deserialize(CharStream &data, Server *server) {
 	return event;
 }
 
-bool NetServerEvent::write(CharStream &data) {
+bool NetServerEvent::write(CharStream &data) const {
 	if (!NetEvent::write(data)) {
 		return false;
 	}
