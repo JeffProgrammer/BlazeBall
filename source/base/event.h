@@ -9,7 +9,7 @@
 
 class Event {
 public:
-	enum Type {
+	enum Type : U32 {
 		None,
 		Quit,
 		KeyDown,
@@ -35,7 +35,6 @@ public:
 	Type getType() const {
 		return type;
 	}
-
 	Event(Type type) : type(type) {
 		
 	}

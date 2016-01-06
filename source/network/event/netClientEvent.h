@@ -16,16 +16,21 @@ public:
 	Client *mClient;
 
 	NetClientEvent(Type type, Client *client) : NetEvent(type), mClient(client) {}
+
+	static NetEvent *deserialize(CharStream &data, Client *client);
+
+	virtual bool write(CharStream &data);
+	virtual bool read(CharStream &data);
 };
 
 class NetClientConnectEvent : public NetClientEvent {
 public:
-	NetClientConnectEvent(Type type, Client *client) : NetClientEvent(NetClientConnect, client) {}
+	NetClientConnectEvent(Client *client) : NetClientEvent(NetClientConnect, client) {}
 };
 
 class NetClientDisconnectEvent : public NetClientEvent {
 public:
-	NetClientDisconnectEvent(Type type, Client *client) : NetClientEvent(NetClientDisconnect, client) {}
+	NetClientDisconnectEvent(Client *client) : NetClientEvent(NetClientDisconnect, client) {}
 };
 
 #endif

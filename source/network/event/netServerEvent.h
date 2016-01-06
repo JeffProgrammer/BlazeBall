@@ -16,6 +16,11 @@ public:
 	Server *mServer;
 
 	NetServerEvent(Type type, Server *server) : NetEvent(type), mServer(server) {}
+
+	static NetEvent *deserialize(CharStream &data, Server *server);
+
+	virtual bool write(CharStream &data);
+	virtual bool read(CharStream &data);
 };
 
 class NetServerConnectEvent : public NetServerEvent {
