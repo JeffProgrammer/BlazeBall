@@ -9,10 +9,10 @@
 
 #include <stdio.h>
 #include "base/io.h"
-#include "platform/window.h"
+#include "platform/platformWindow.h"
 #include "platformSDL/SDLConfig.h"
 
-class SDLWindow : public Window {
+class SDLWindow : public PlatformWindow {
 protected:
 	SDL_Window *window;
 	SDL_GLContext context;

@@ -17,9 +17,9 @@
 #include "physics/physicsEngine.h"
 #include "render/shader.h"
 #include "render/scene.h"
-#include "platform/window.h"
+#include "platform/platformWindow.h"
 #include "platform/platformEvent.h"
-#include "platform/timer.h"
+#include "platform/platformTimer.h"
 #include <vector>
 #include "game/movement.h"
 #include "game/camera.h"
@@ -80,8 +80,8 @@ public:
 	Skybox *mSkybox;
 	CubeMapFramebufferTexture *mMarbleCubemap;
 
-	Window *mWindow;
-	Timer *mTimer;
+	PlatformWindow *mWindow;
+	PlatformTimer *mTimer;
 	Config *mConfig;
 
 	Shader *mShapeShader;

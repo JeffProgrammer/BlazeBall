@@ -4,7 +4,7 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#include "platform/timer.h"
+#include "platform/platformTimer.h"
 
 // Initialize the global mutex for the timer subsystem.
-std::mutex Timer::sMutex;
+std::mutex PlatformTimer::sMutex;

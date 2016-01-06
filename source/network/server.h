@@ -9,7 +9,7 @@
 
 #include "base/types.h"
 #include "base/io.h"
-#include "platform/timer.h"
+#include "platform/platformTimer.h"
 #include "platformSDL/SDLTimer.h"
 #include "network/networkHandler.h"
 #include <thread>
@@ -26,7 +26,7 @@ public:
 private:
 	std::thread mServerThread;
 	bool mIsRunning;
-	Timer *mTimer;
+	PlatformTimer *mTimer;
 	F64 mAccumulator;
 
 	NetworkHandler mHandler;

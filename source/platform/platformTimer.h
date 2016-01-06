@@ -16,7 +16,7 @@
  * Interally, the timer class must be implemented as thread-safe. I recommend
  * not sharing Timer objects between threads, though you *probably* can.
  */
-class Timer {
+class PlatformTimer {
 protected:
 	/* 
 	 * Locks the global timer from being accessed concurrently

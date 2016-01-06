@@ -8,10 +8,10 @@
 #define SDLTimer_h
 
 #include <stdio.h>
-#include "platform/timer.h"
+#include "platform/platformTimer.h"
 #include "platformSDL/SDLConfig.h"
 
-class SDLTimer : public Timer {
+class SDLTimer : public PlatformTimer {
 private:
 	/*
 	 * The timestamp at which the timer begins counting at again

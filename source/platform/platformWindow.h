@@ -10,9 +10,9 @@
 #include "base/types.h"
 #include "platform/platformEvent.h"
 
-class Window {
+class PlatformWindow {
 public:
-	virtual ~Window() {};
+	virtual ~PlatformWindow() {};
 
 	virtual bool createContext() = 0;
 	virtual void destroyContext() = 0;
