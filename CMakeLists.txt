@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.0)
 include (CheckIncludeFiles)
 project (DifViewerGame C CXX)
 
-# Force C++11 standard on compilers
+# Force C++14 standard on compilers
 if (NOT MSVC)
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 endif()
@@ -144,27 +144,27 @@ set(ANGELSCRIPT_PLUGINS_SRC
 )
 
 if(MSVC AND CMAKE_CL_64)
-    enable_language(ASM_MASM)
-    if(CMAKE_ASM_MASM_COMPILER_WORKS)
-        set(ANGELSCRIPT_SRC ${ANGELSCRIPT_SRC} thirdparty/angelscript/source/as_callfunc_x64_msvc_asm.asm)
-    else()
-        message(FATAL ERROR "MSVC x86_64 target requires a working assembler")
-    endif()
+	enable_language(ASM_MASM)
+	if(CMAKE_ASM_MASM_COMPILER_WORKS)
+		set(ANGELSCRIPT_SRC ${ANGELSCRIPT_SRC} thirdparty/angelscript/source/as_callfunc_x64_msvc_asm.asm)
+	else()
+		message(FATAL ERROR "MSVC x86_64 target requires a working assembler")
+	endif()
 endif()
 
 add_definitions(-DANGELSCRIPT_EXPORT -D_LIB)
 
 # Fix x64 issues on Linux
 if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64" AND NOT APPLE)
-    add_definitions(-fPIC)
+	add_definitions(-fPIC)
 endif()
 
 add_library(AngelScript STATIC ${ANGELSCRIPT_SRC} ${ANGELSCRIPT_PLUGINS_SRC})
 target_link_libraries(AngelScript ${CMAKE_THREAD_LIBS_INIT})
 
 if(MSVC)
-    set_target_properties(${ANGELSCRIPT_LIBRARY_NAME} PROPERTIES COMPILE_FLAGS "/MP")
-	 add_definitions(-D_CRT_SECURE_NO_WARNINGS) 
+	set_target_properties(${ANGELSCRIPT_LIBRARY_NAME} PROPERTIES COMPILE_FLAGS "/MP")
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS) 
 endif()
 
 #------------------------------------------------------------------------------
@@ -410,7 +410,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 
 # Main project source
 set (DIFVIEWERGAME_SRC
-   # Main
+	# Main
 	source/main.cpp
 
 	# Base folder
