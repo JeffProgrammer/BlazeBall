@@ -19,7 +19,7 @@ public:
 	void connect();
 	void disconnect();
 
-	void pollEvents(bool hasPressedSpaceBar);
+	void pollEvents();
 
 	void sendEvent(const NetClientEvent &event);
 

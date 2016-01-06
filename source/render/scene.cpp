@@ -18,8 +18,6 @@
 
 glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4x4(1), glm::radians(-90.0f), glm::vec3(1, 0, 0));
 
-bool gPressedSpace = false;
-
 /// The amount of time that has to pass before a tick happens.
 /// Default is 16.6667 ms which means we tick at 60 frames per second
 #define TICK_MS 16.6666666666666667
@@ -208,7 +206,7 @@ void Scene::handleEvent(PlatformEvent *event) {
 				case KeyEvent::KEY_DOWN:  mMovement.pitchDown = true; break;
 				case KeyEvent::KEY_LEFT:  mMovement.yawLeft   = true; break;
 				case KeyEvent::KEY_RIGHT: mMovement.yawRight  = true; break;
-				case KeyEvent::KEY_SPACE: { mMovement.jump = true; gPressedSpace = true; break; }
+				case KeyEvent::KEY_SPACE: mMovement.jump      = true; break;
 				case KeyEvent::KEY_V: mWindow->toggleVsync(); break;
 				case KeyEvent::KEY_Q:
 				{
@@ -423,13 +421,8 @@ void Scene::run() {
 
 	// NETWORKING MWHAHAHAHAH
 	Client *client = nullptr;
-	IO::printf("Please enter an ip address to enter a multiplayer server, or press enter to go to singleplayer.\n");
-	std::string ip;
-	std::getline(std::cin, ip);
-	if (ip != "") {
-		client = new Client(ip, 28000);
-		client->connect();
-	}
+	client = new Client("127.0.0.1", 28000);
+	client->connect();
 
 	//Create camera
 	{
@@ -478,8 +471,7 @@ void Scene::run() {
 
 		// le networking
 		if (client != nullptr) {
-			client->pollEvents(gPressedSpace);
-			gPressedSpace = false; // reset
+			client->pollEvents();
 		}
 
 		render();

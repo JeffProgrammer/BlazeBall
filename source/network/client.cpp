@@ -32,24 +32,20 @@ void Client::disconnect() {
 	mClient.disconnect();
 }
 
-void Client::pollEvents(bool hasPressedSpaceBar) {
-	auto onConnect = []() {
+void Client::pollEvents() {
+	auto onConnect = [this]() {
 		IO::printf("You have connected to the server!\n");
+		this->sendEvent(NetClientConnectEvent(this));
 	};
 
 	auto onDisconnect = []() {
 		IO::printf("You have disconnected from the server!\n");
 	};
 
-	auto onReceiveData = [&](const U8 *data, size_t size) {
-		std::string message(reinterpret_cast<const char *>(data), size);
-		IO::printf("Received %d bytes from server: %s\n", size, message.c_str());
+	auto onReceiveData = [this](const U8 *data, size_t size) {
+		CharStream stream(data, size);
+		NetClientEvent *event = NetClientEvent::deserialize(stream, this);
 	};
-
-	if (hasPressedSpaceBar) {
-		std::string message = "I have pressed da key yo!";
-		mClient.send_packet(0, reinterpret_cast<const U8*>(message.c_str()), message.length(), ENET_PACKET_FLAG_RELIABLE);
-	}
 
 	mClient.consume_events(onConnect, onDisconnect, onReceiveData);
 }
