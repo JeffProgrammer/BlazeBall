@@ -46,9 +46,18 @@ void NetworkHandler::pollEvents() {
 		IO::printf("Client %u has left the server.\n", clientId);
 	};
 
-	auto onReceiveData = [](Connection &client, const U8 *data, size_t size) {
+	auto onReceiveData = [this](Connection &client, const U8 *data, size_t size) {
 		std::string message = reinterpret_cast<const char*>(data);
 		IO::printf("Client %u: %s\n", client.id, message.c_str());
+
+		const size_t len = size + 30;
+
+		// encode message back
+		char *buffer = new char[len];
+		sprintf(buffer, "Client %u: %s\n", client.id, message.c_str());
+
+		// send your message back, what you said
+		mServer.send_packet_to_all_if(0, reinterpret_cast<U8*>(buffer), len, ENET_PACKET_FLAG_RELIABLE, [](const Connection &) { return true; } );
 	};
 
 	mServer.consume_events(onClientConnect, onClientDisconnect, onReceiveData);
