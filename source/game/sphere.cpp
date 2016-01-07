@@ -21,10 +21,10 @@ Sphere::Sphere() : Sphere(glm::vec3(0), 0) {
 }
 
 Sphere::Sphere(glm::vec3 origin, F32 radius) : RenderedObject(), mRadius(radius), mMaxAngVel(1000.0f), mMaterial(nullptr) {
-	mActor = PhysicsEngine::getEngine()->createSphere(mRadius);
+	mActor = mWorld->getPhysicsEngine()->createSphere(mRadius);
 	mActor->setPosition(origin);
 	mActor->setMass(1.0f);
-	PhysicsEngine::getEngine()->addBody(mActor);
+	mWorld->getPhysicsEngine()->addBody(mActor);
 	
 	mGenerated = false;
 
@@ -303,7 +303,7 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
 	info.from = getPosition();
 	info.to = pos;
 
-	PhysicsEngine::getEngine()->raycast(info);
+	mWorld->getPhysicsEngine()->raycast(info);
 
 	//If we hit the ground, offset the camera so we can still see
 	if (info.hit) {

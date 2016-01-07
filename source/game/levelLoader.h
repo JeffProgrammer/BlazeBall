@@ -8,7 +8,8 @@
 #define _GAME_LEVELLOADER_H_
 
 #include <string>
+#include "game/world.h"
 
-bool loadLevel(const std::string &file);
+bool loadLevel(World *world, const std::string &file);
 
 #endif // _GAME_LEVELLOADER_H_

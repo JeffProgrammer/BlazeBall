@@ -14,6 +14,7 @@
 #include "render/renderInfo.h"
 #include "network/netObject.h"
 #include "scriptEngine/concreteClassRep.h"
+#include "game/world.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
@@ -42,6 +43,11 @@ protected:
 	 * The scale of the GameObject.
 	 */
 	glm::vec3 mScale;
+
+	/**
+	 * The world which contains the GameObject.
+	 */
+	World *mWorld;
 
 	/**
 	 * The class rep representing the GameObject abstract class

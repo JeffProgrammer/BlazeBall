@@ -10,9 +10,9 @@
 #include <vector>
 
 #include "base/types.h"
-#include "game/gameObject.h"
 #include "physics/physicsEngine.h"
 
+class GameObject;
 class World {
 	std::vector<GameObject *> mObjects;
 	PhysicsEngine *mPhysicsEngine;

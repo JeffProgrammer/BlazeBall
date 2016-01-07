@@ -5,10 +5,12 @@
 //------------------------------------------------------------------------------
 
 #include "game/levelLoader.h"
+
+#include <rapidjson/document.h>
 #include "base/types.h"
 #include "base/io.h"
 #include "scriptEngine/abstractClassRep.h"
-#include <rapidjson/document.h>
+#include "game/gameObject.h"
 
 #ifdef __APPLE__
 #define stricmp strcasecmp
@@ -26,7 +28,7 @@ inline bool temp___containsMoreThanOneWord(const std::string &str) {
 	return false;
 }
 
-bool loadLevel(const std::string &file) {
+bool loadLevel(World *world, const std::string &file) {
 	if (!IO::isfile(file)) {
 		IO::printf("Unable to load level file: %s\n", file.c_str());
 		return false;
@@ -84,11 +86,11 @@ bool loadLevel(const std::string &file) {
 
 		// This is a shitty way of doing this, but this is a level loader.
 		// If the object is a game object, add it to the scene.
-		GameObject *gameObject = dynamic_cast<GameObject*>(scriptObject);
+		GameObject *gameObject = dynamic_cast<GameObject *>(scriptObject);
 		if (gameObject != nullptr) {
 			// add it to the scene.
 			//TODO
-//			Scene::getSingleton()->addObject(gameObject);
+			world->addObject(gameObject);
 		}
 	}
 

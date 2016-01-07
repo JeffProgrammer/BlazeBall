@@ -68,10 +68,10 @@ void RenderWorld::render() {
 
 	if (mDoDebugDraw) {
 		glDisable(GL_DEPTH_TEST);
-		PhysicsEngine::getEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Everything);
+		getPhysicsEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Everything);
 		glEnable(GL_DEPTH_TEST);
 	} else {
-		PhysicsEngine::getEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Nothing);
+		getPhysicsEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Nothing);
 	}
 }
 
@@ -410,7 +410,7 @@ void RenderWorld::run() {
 
 	mSimulationSpeed = 1.0f;
 
-	PhysicsEngine::getEngine()->setStepCallback([&](F64 delta){
+	getPhysicsEngine()->setStepCallback([&](F64 delta){
 		if (mSimulationSpeed == 1.0f) {
 		this->loop(delta);
 		this->tick(delta);
@@ -461,7 +461,7 @@ void RenderWorld::run() {
 		}
 
 		//Update the physics and game items
-		PhysicsEngine::getEngine()->simulate(lastDelta * mSimulationSpeed);
+		getPhysicsEngine()->simulate(lastDelta * mSimulationSpeed);
 
 		if (mSimulationSpeed != 1.0f) {
 			this->loop(lastDelta * mSimulationSpeed);
