@@ -65,10 +65,10 @@ NetServerConnectEvent::NetServerConnectEvent(Server *server) : NetServerEvent(Ne
 NetServerDisconnectEvent::NetServerDisconnectEvent(Server *server) : NetServerEvent(NetDisconnect, server) {
 }
 
-NetServerGhostEvent::NetServerGhostEvent(Server *server, NetObject *object) : NetServerEvent(NetGhost, server), mObject(object) {
+NetServerGhostCreateEvent::NetServerGhostCreateEvent(Server *server, NetObject *object) : NetServerEvent(NetGhostCreate, server), mObject(object) {
 }
 
-bool NetServerGhostEvent::write(CharStream &data) const {
+bool NetServerGhostCreateEvent::write(CharStream &data) const {
 	if (!NetServerEvent::write(data)) {
 		return false;
 	}
@@ -79,16 +79,7 @@ bool NetServerGhostEvent::write(CharStream &data) const {
 	return mObject->write(data);
 }
 
-bool NetServerGhostEvent::read(CharStream &data) {
-	if (!NetServerEvent::read(data)) {
-		return false;
-	}
-
-	U32 ghostId = data.pop<U32>();
-	mObject = mServer->getGhostedObject(ghostId);
-	if (mObject == nullptr) {
-		return false;
-	}
-
-	return mObject->read(data);
+bool NetServerGhostCreateEvent::read(CharStream &data) {
+	//Clients can't create ghosted objects
+	return false;
 }

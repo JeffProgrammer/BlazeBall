@@ -34,10 +34,10 @@ public:
 	NetClientDisconnectEvent(Client *client);
 };
 
-class NetClientGhostEvent : public NetClientEvent {
+class NetClientGhostCreateEvent : public NetClientEvent {
 	NetObject *mObject;
 public:
-	NetClientGhostEvent(Client *client, NetObject *object);
+	NetClientGhostCreateEvent(Client *client, NetObject *object);
 
 	virtual bool write(CharStream &data) const;
 	virtual bool read(CharStream &data);

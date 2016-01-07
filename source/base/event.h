@@ -23,7 +23,7 @@ public:
 
 		NetConnect,
 		NetDisconnect,
-		NetGhost
+		NetGhostCreate
 	};
 
 	Type type;

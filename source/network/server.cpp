@@ -113,6 +113,6 @@ void Server::ghostObject(NetObject *object) {
 	object->mGhostId = sLastGhostId++;
 
 	//Create a ghosting packet
-	auto event = std::make_shared<NetServerGhostEvent>(this, object);
+	auto event = std::make_shared<NetServerGhostCreateEvent>(this, object);
 	sendEvent(event);
 }

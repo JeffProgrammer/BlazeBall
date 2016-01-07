@@ -66,20 +66,15 @@ NetClientConnectEvent::NetClientConnectEvent(Client *client) : NetClientEvent(Ne
 NetClientDisconnectEvent::NetClientDisconnectEvent(Client *client) : NetClientEvent(NetDisconnect, client) {
 }
 
-NetClientGhostEvent::NetClientGhostEvent(Client *client, NetObject *object) : NetClientEvent(NetGhost, client), mObject(object) {
+NetClientGhostCreateEvent::NetClientGhostCreateEvent(Client *client, NetObject *object) : NetClientEvent(NetGhostCreate, client), mObject(object) {
 }
 
-bool NetClientGhostEvent::write(CharStream &data) const {
-	if (!NetClientEvent::write(data)) {
-		return false;
-	}
-
-	data.push<U32>(mObject->getGhostId());
-
-	return mObject->write(data);
+bool NetClientGhostCreateEvent::write(CharStream &data) const {
+	//Don't try to create ghosted objects
+	return false;
 }
 
-bool NetClientGhostEvent::read(CharStream &data) {
+bool NetClientGhostCreateEvent::read(CharStream &data) {
 	if (!NetClientEvent::read(data)) {
 		return false;
 	}

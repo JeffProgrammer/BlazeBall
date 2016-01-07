@@ -34,10 +34,10 @@ public:
 	NetServerDisconnectEvent(Server *server);
 };
 
-class NetServerGhostEvent : public NetServerEvent {
+class NetServerGhostCreateEvent : public NetServerEvent {
 	NetObject *mObject;
 public:
-	NetServerGhostEvent(Server *server, NetObject *object);
+	NetServerGhostCreateEvent(Server *server, NetObject *object);
 
 	virtual bool write(CharStream &data) const;
 	virtual bool read(CharStream &data);
