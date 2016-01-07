@@ -29,6 +29,9 @@ std::shared_ptr<NetClientEvent> NetClientEvent::deserialize(CharStream &data, Cl
 		case Event::NetDisconnect:
 			event = std::make_shared<NetClientDisconnectEvent>(client);
 			break;
+		case Event::NetGhostCreate:
+			event = std::make_shared<NetClientGhostCreateEvent>(client);
+			break;
 		default:
 			return nullptr;
 	}
@@ -66,7 +69,7 @@ NetClientConnectEvent::NetClientConnectEvent(Client *client) : NetClientEvent(Ne
 NetClientDisconnectEvent::NetClientDisconnectEvent(Client *client) : NetClientEvent(NetDisconnect, client) {
 }
 
-NetClientGhostCreateEvent::NetClientGhostCreateEvent(Client *client, NetObject *object) : NetClientEvent(NetGhostCreate, client), mObject(object) {
+NetClientGhostCreateEvent::NetClientGhostCreateEvent(Client *client) : NetClientEvent(NetGhostCreate, client), mObject(nullptr) {
 }
 
 bool NetClientGhostCreateEvent::write(CharStream &data) const {

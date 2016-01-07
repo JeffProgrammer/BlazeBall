@@ -37,7 +37,7 @@ public:
 class NetClientGhostCreateEvent : public NetClientEvent {
 	NetObject *mObject;
 public:
-	NetClientGhostCreateEvent(Client *client, NetObject *object);
+	NetClientGhostCreateEvent(Client *client);
 
 	virtual bool write(CharStream &data) const;
 	virtual bool read(CharStream &data);
