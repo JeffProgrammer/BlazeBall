@@ -6,6 +6,22 @@
 
 #include "netObject.h"
 
+bool NetObject::readClientPacket(CharStream &stream) {
+	return true;
+}
+
+bool NetObject::readServerPacket(CharStream &stream) {
+	return true;
+}
+
+bool NetObject::writeClientPacket(CharStream &stream) const {
+	return true;
+}
+
+bool NetObject::writeServerPacket(CharStream &stream) const {
+	return true;
+}
+
 bool NetObject::read(CharStream &stream) {
 	return true;
 }
