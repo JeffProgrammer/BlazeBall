@@ -84,7 +84,7 @@ int main(int argc, const char *argv[]) {
 		gConnectionState.clientWorld = world;
 	}
 
-	F64 lastDelta;
+	F64 lastDelta = 0.0;
 
 	SDLTimer *timer = new SDLTimer();
 
