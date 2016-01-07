@@ -73,7 +73,7 @@ bool NetServerGhostCreateEvent::write(CharStream &data) const {
 		return false;
 	}
 
-	data.push<U32>(mObject->getGhostId());
+	data.push<U32>(mServer->getGhostIndex(mObject));
 	data.push<std::string>(mObject->getClassRep()->getName());
 
 	return mObject->write(data);

@@ -110,9 +110,41 @@ void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConne
 }
 
 void Server::ghostObject(NetObject *object) {
-	object->mGhostId = sLastGhostId++;
+	//Get the object a ghosted id if we haven't seen it before
+	if (mGhostedIndices.find(object) == mGhostedIndices.end()) {
+		U32 index = sLastGhostId ++;
+		mGhostedIndices[object] = index;
+		mGhostedObjects[index] = object;
+	}
 
 	//Create a ghosting packet
 	auto event = std::make_shared<NetServerGhostCreateEvent>(this, object);
 	sendEvent(event);
+}
+
+void Server::ghostObject(NetObject *object, ClientConnection *connection) {
+	//Get the object a ghosted id if we haven't seen it before
+	if (mGhostedIndices.find(object) == mGhostedIndices.end()) {
+		U32 index = sLastGhostId ++;
+		mGhostedIndices[object] = index;
+		mGhostedObjects[index] = object;
+	}
+
+	//Create a ghosting packet
+	auto event = std::make_shared<NetServerGhostCreateEvent>(this, object);
+	sendEvent(event, connection);
+}
+
+void Server::ghostAllObjects() {
+	//Ghost all objects to everyone
+	for (const auto &pair : mGhostedObjects) {
+		ghostObject(pair.second);
+	}
+}
+
+void Server::ghostAllObjects(ClientConnection *connection) {
+	//Ghost all objects to the client
+	for (const auto &pair : mGhostedObjects) {
+		ghostObject(pair.second, connection);
+	}
 }

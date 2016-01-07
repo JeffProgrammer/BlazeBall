@@ -12,15 +12,10 @@
 #include "network/charStream.h"
 
 class NetObject : public ScriptObject {
-	friend class Server;
-	friend class NetClientGhostEvent;
-	U32 mGhostId;
 public:
 	NetObject() {
 
 	}
-
-	U32 getGhostId() { return mGhostId; }
 
 	virtual bool read(CharStream &stream);
 	virtual bool write(CharStream &stream) const;

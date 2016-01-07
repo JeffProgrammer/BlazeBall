@@ -32,10 +32,16 @@ public:
 	void sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection *connection, ENetPacketFlag flag = ENET_PACKET_FLAG_RELIABLE);
 
 	void ghostObject(NetObject *object); //Global
-	//TODO: Individual ghosting
+	void ghostObject(NetObject *object, ClientConnection *connection);
+
+	void ghostAllObjects(); //Global
+	void ghostAllObjects(ClientConnection *connection);
 
 	NetObject *getGhostedObject(U32 index) {
 		return mGhostedObjects[index];
+	}
+	U32 getGhostIndex(NetObject *object) {
+		return mGhostedIndices[object];
 	}
 
 private:
@@ -47,7 +53,8 @@ private:
 	PlatformTimer *mTimer;
 	F64 mAccumulator;
 
-	std::map<U32, GameObject *> mGhostedObjects;
+	std::map<U32, NetObject *> mGhostedObjects;
+	std::map<NetObject *, U32> mGhostedIndices;
 
 	enetpp::server<ClientConnection> mServer;
 

@@ -28,8 +28,12 @@ public:
 	NetObject *getGhostedObject(U32 index) {
 		return mGhostedObjects[index];
 	}
+	U32 getGhostIndex(NetObject *object) {
+		return mGhostedIndices[object];
+	}
 	void addGhostedObject(U32 index, NetObject *object) {
 		mGhostedObjects[index] = object;
+		mGhostedIndices[object] = index;
 	}
 
 protected:
@@ -38,6 +42,7 @@ protected:
 	U16 mPort;
 
 	std::map<U32, NetObject *> mGhostedObjects;
+	std::map<NetObject *, U32> mGhostedIndices;
 };
 
 #endif

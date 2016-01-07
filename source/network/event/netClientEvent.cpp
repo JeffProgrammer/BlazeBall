@@ -86,7 +86,7 @@ bool NetClientGhostCreateEvent::read(CharStream &data) {
 	if (!mObject) {
 		return false;
 	}
-	mObject->mGhostId = ghostId;
+	mClient->addGhostedObject(ghostId, mObject);
 
 	return mObject->read(data);
 }
