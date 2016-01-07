@@ -11,7 +11,6 @@
 #include "game/gameInterior.h"
 #include "base/math.h"
 #include "render/util.h"
-#include "render/scene.h"
 
 void GameInterior::init() {
 	std::vector<std::vector<Triangle>> perMaterialTriangles(mInterior.materialName.size());

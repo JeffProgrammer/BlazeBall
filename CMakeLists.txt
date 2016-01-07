@@ -508,8 +508,8 @@ set (DIFVIEWERGAME_SRC
 	source/render/modelManager.cpp
 	source/render/modelManager.h
 	source/render/renderInfo.h
-	source/render/scene.cpp
-	source/render/scene.h
+	source/render/renderWorld.cpp
+	source/render/renderWorld.h
 	source/render/shader.cpp
 	source/render/shader.h
 	source/render/shaderImpl.cpp

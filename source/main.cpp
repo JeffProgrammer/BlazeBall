@@ -9,10 +9,10 @@
 #include "platform/SDL/SDLWindow.h"
 #include "platform/SDL/SDLTimer.h"
 #include "platform/network.h"
-#include "render/scene.h"
 #include "game/GameInterior.h"
 #include "scriptEngine/scriptEngine.h"
 #include "game/world.h"
+#include "render/renderWorld.h"
 
 // TODO: clean this shit up
 #include "physics/bullet/btPhysicsEngine.h"
@@ -49,18 +49,16 @@ int main(int argc, const char *argv[]) {
 		// stop server
 		server.stop();
 	} else {
-		World *world = new World(new btPhysicsEngine());
-		
 		//Create us a new scene
-		Scene *scene = Scene::getSingleton();
+		RenderWorld *world = new RenderWorld(new btPhysicsEngine());
 
 		//Init SDL
-		scene->mWindow = new SDLWindow();
-		scene->mTimer = new SDLTimer();
-		scene->mConfig = new Config("config.txt");
+		world->mWindow = new SDLWindow();
+		world->mTimer = new SDLTimer();
+		world->mConfig = new Config("config.txt");
 
 		//Init SDL
-		if (!scene->init()) {
+		if (!world->init()) {
 			return 1;
 		}
 
@@ -69,7 +67,7 @@ int main(int argc, const char *argv[]) {
 			return 1;
 
 		//Let our scene go!
-		scene->run();
+		world->run();
 
 		// much hack, very wow
 		if (gSphereVBO)

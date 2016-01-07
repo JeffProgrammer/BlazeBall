@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef scene_h
-#define scene_h
+#ifndef _RENDER_RENDERWORLD_H_
+#define _RENDER_RENDERWORLD_H_
 
 #include <stdio.h>
 #include "base/math.h"
@@ -16,7 +16,6 @@
 #include "game/sphere.h"
 #include "physics/physicsEngine.h"
 #include "render/shader.h"
-#include "render/scene.h"
 #include "platform/platformWindow.h"
 #include "platform/platformEvent.h"
 #include "platform/platformTimer.h"
@@ -28,6 +27,7 @@
 #include "render/modelManager.h"
 #include "renderInfo.h"
 #include "base/config.h"
+#include "game/world.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
@@ -39,7 +39,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/vec3.hpp>
 
-class Scene {
+class RenderWorld : public World {
 protected:
 	bool mRunning;
 	bool mPrintFPS = true;
@@ -92,15 +92,8 @@ public:
 
 	GameObject *findGameObject(const std::string &name);
 
-	Scene();
-	~Scene();
-
-	static Scene *getSingleton() {
-		static Scene *singleton = nullptr;
-		if (singleton == nullptr)
-			singleton = new Scene();
-		return singleton;
-	}
+	RenderWorld(PhysicsEngine *physics);
+	virtual ~RenderWorld();
 
 	void updateWindowSize(const glm::ivec2 &size);
 

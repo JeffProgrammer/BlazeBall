@@ -9,7 +9,6 @@
 #include "base/io.h"
 #include "scriptEngine/abstractClassRep.h"
 #include <rapidjson/document.h>
-#include "render/scene.h"
 
 #ifdef __APPLE__
 #define stricmp strcasecmp
@@ -88,7 +87,8 @@ bool loadLevel(const std::string &file) {
 		GameObject *gameObject = dynamic_cast<GameObject*>(scriptObject);
 		if (gameObject != nullptr) {
 			// add it to the scene.
-			Scene::getSingleton()->addObject(gameObject);
+			//TODO
+//			Scene::getSingleton()->addObject(gameObject);
 		}
 	}
 

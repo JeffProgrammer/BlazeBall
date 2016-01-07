@@ -30,7 +30,7 @@ protected:
 	}
 public:
 	PhysicsEngine() : mRunning(false) {}
-	~PhysicsEngine() {}
+	virtual ~PhysicsEngine() {}
 
 	virtual void init() = 0;
 	virtual void simulate(const F64 &delta) = 0;

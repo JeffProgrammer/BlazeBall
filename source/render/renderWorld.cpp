@@ -4,7 +4,7 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#include "render/scene.h"
+#include "render/renderWorld.h"
 #include "game/gameInterior.h"
 #include "game/camera.h"
 #include "game/shape.h"
@@ -22,12 +22,12 @@ glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4x4(1), glm::radians(-
 /// Default is 16.6667 ms which means we tick at 60 frames per second
 #define TICK_MS 16.6666666666666667
 
-Scene::Scene() {
+RenderWorld::RenderWorld(PhysicsEngine *physics) : World(physics) {
 	mShapeShader = nullptr;
 	mControlObject = nullptr;
 }
 
-Scene::~Scene() {
+RenderWorld::~RenderWorld() {
 	for (auto object : mObjects) {
 		delete object;
 	}
@@ -35,7 +35,7 @@ Scene::~Scene() {
 	delete mTimer;
 }
 
-void Scene::render() {
+void RenderWorld::render() {
 	//Get the camera transform from the marble
 	glm::mat4 cameraTransform;
 	glm::vec3 cameraPosition;
@@ -75,7 +75,7 @@ void Scene::render() {
 	}
 }
 
-void Scene::renderScene(RenderInfo &info) {
+void RenderWorld::renderScene(RenderInfo &info) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_CULL_FACE);
@@ -106,11 +106,11 @@ void Scene::renderScene(RenderInfo &info) {
 	GL_CHECKERRORS();
 }
 
-void Scene::loop(const F64 &delta) {
+void RenderWorld::loop(const F64 &delta) {
 
 }
 
-void Scene::tick(const F64 &delta) {
+void RenderWorld::tick(const F64 &delta) {
 	if (mControlObject) {
 		mControlObject->updateCamera(mMovement, delta);
 		mControlObject->updateMove(mMovement, delta);
@@ -128,7 +128,7 @@ void Scene::tick(const F64 &delta) {
 	}
 }
 
-void Scene::updateWindowSize(const glm::ivec2 &size) {
+void RenderWorld::updateWindowSize(const glm::ivec2 &size) {
 	GLfloat aspect = (GLfloat)size.x / (GLfloat)size.y;
 	mScreenProjectionMatrix = glm::perspective(glm::radians(90.f), aspect, 0.1f, 500.f);
 
@@ -139,7 +139,7 @@ void Scene::updateWindowSize(const glm::ivec2 &size) {
 	mPixelDensity = static_cast<F32>(viewport[2] / size.x);
 }
 
-bool Scene::initGL() {
+bool RenderWorld::initGL() {
 	Shader::initializeShaders();
 	mShapeShader = Shader::getShaderByName("Model");
 
@@ -162,7 +162,7 @@ bool Scene::initGL() {
 	return true;
 }
 
-void Scene::performClick(S32 mouseX, S32 mouseY) {
+void RenderWorld::performClick(S32 mouseX, S32 mouseY) {
 	/*
 	glm::ivec2 screenSize = mWindow->getWindowSize();
 	//http://antongerdelan.net/opengl/raycasting.html
@@ -188,7 +188,7 @@ void Scene::performClick(S32 mouseX, S32 mouseY) {
 	*/
 }
 
-void Scene::handleEvent(PlatformEvent *event) {
+void RenderWorld::handleEvent(PlatformEvent *event) {
 	//Key events, movement
 	switch (event->getType()) {
 		//Quit
@@ -348,7 +348,7 @@ void Scene::handleEvent(PlatformEvent *event) {
 	}
 }
 
-bool Scene::init() {
+bool RenderWorld::init() {
 	mRunning = true;
 	mShouldSleep = false;
 	mDoDebugDraw = false;
@@ -367,7 +367,7 @@ bool Scene::init() {
 	return true;
 }
 
-void Scene::cleanup() {
+void RenderWorld::cleanup() {
 	delete mTimer;
 	
 	// destroy all shaders
@@ -377,7 +377,7 @@ void Scene::cleanup() {
 	mWindow->destroyContext();
 }
 
-void Scene::addObject(GameObject *object) {
+void RenderWorld::addObject(GameObject *object) {
 	mObjects.push_back(object);
 
 	// For rendered objects.
@@ -390,7 +390,7 @@ void Scene::addObject(GameObject *object) {
 	}
 }
 
-GameObject* Scene::findGameObject(const std::string &name) {
+GameObject* RenderWorld::findGameObject(const std::string &name) {
 	// O(n)
 	// TODO: store objects in a hash map or something.
 	for (const auto obj : mObjects) {
@@ -400,7 +400,7 @@ GameObject* Scene::findGameObject(const std::string &name) {
 	return nullptr;
 }
 
-void Scene::run() {
+void RenderWorld::run() {
 	PlatformEvent *eventt;
 
 	F64 lastDelta = 0;

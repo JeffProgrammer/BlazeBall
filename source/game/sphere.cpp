@@ -7,7 +7,6 @@
 #include "game/sphere.h"
 #include "base/math.h"
 #include "base/io.h"
-#include "render/scene.h"
 #include "physics/physicsSphere.h"
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
