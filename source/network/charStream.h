@@ -180,6 +180,29 @@ inline glm::vec3 CharStream::pop() {
 }
 
 //-----------------------------------------------------------------------------
+// glm::vec4 datatype stream
+//-----------------------------------------------------------------------------
+
+template<>
+inline glm::vec4 CharStream::push(const glm::vec4 &value) {
+	push<F32>(value.x);
+	push<F32>(value.y);
+	push<F32>(value.z);
+	push<F32>(value.w);
+	return value;
+}
+
+template<>
+inline glm::vec4 CharStream::pop() {
+	F32 data[4];
+	data[0] = pop<F32>();
+	data[1] = pop<F32>();
+	data[2] = pop<F32>();
+	data[3] = pop<F32>();
+	return glm::vec4(data[0], data[1], data[2], data[3]);
+}
+
+//-----------------------------------------------------------------------------
 // glm::quat datatype stream
 //-----------------------------------------------------------------------------
 
@@ -200,6 +223,29 @@ inline glm::quat CharStream::pop() {
 	data[2] = pop<F32>();
 	data[3] = pop<F32>();
 	return glm::quat(data[0], data[1], data[2], data[3]);
+}
+
+//-----------------------------------------------------------------------------
+// glm::mat4 datatype stream
+//-----------------------------------------------------------------------------
+
+template<>
+inline glm::mat4 CharStream::push(const glm::mat4 &value) {
+	push<glm::vec4>(value[0]);
+	push<glm::vec4>(value[1]);
+	push<glm::vec4>(value[2]);
+	push<glm::vec4>(value[3]);
+	return value;
+}
+
+template<>
+inline glm::mat4 CharStream::pop() {
+	glm::mat4 data;
+	data[0] = pop<glm::vec4>();
+	data[1] = pop<glm::vec4>();
+	data[2] = pop<glm::vec4>();
+	data[3] = pop<glm::vec4>();
+	return data;
 }
 
 #endif
