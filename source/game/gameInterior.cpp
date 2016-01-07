@@ -17,7 +17,7 @@ void GameInterior::initFields() {
 	AddFieldSimple("interiorFile", std::string, offsetof(GameInterior, mInteriorFile));
 }
 
-GameInterior::GameInterior(World *world) : RenderedObject(world) {
+GameInterior::GameInterior(World *world) : RenderedObject(world), mActor(nullptr) {
 
 }
 
@@ -154,17 +154,38 @@ const glm::quat GameInterior::getRotation() const {
 	return mActor->getRotation();
 }
 
-void GameInterior::setPosition(const glm::vec3 &pos) {
-	mActor->setPosition(pos);
-}
-
-void GameInterior::setRotation(const glm::quat &rot) {
-	mActor->setRotation(rot);
-}
-
 const glm::vec3 GameInterior::getScale() const {
 	return mActor->getScale();
 }
+
+void GameInterior::setPosition(const glm::vec3 &pos) {
+	if (mActor)
+		mActor->setPosition(pos);
+}
+
+void GameInterior::setRotation(const glm::quat &rot) {
+	if (mActor)
+		mActor->setRotation(rot);
+}
+
 void GameInterior::setScale(const glm::vec3 &scale) {
-	mActor->setScale(scale);
+	if (mActor)
+		mActor->setScale(scale);
+}
+
+bool GameInterior::read(CharStream &stream) {
+	if (!GameObject::read(stream)) {
+		return false;
+	}
+
+	mInteriorFile = stream.pop<std::string>();
+	return true;
+}
+bool GameInterior::write(CharStream &stream) const {
+	if (!GameObject::write(stream)) {
+		return false;
+	}
+
+	stream.push<std::string>(mInteriorFile);
+	return true;
 }

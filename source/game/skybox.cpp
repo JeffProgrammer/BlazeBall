@@ -138,3 +138,30 @@ void Skybox::initFields() {
 	AddFieldSimple("face4", std::string, offsetof(Skybox, mFace4));
 	AddFieldSimple("face5", std::string, offsetof(Skybox, mFace5));
 }
+
+bool Skybox::read(CharStream &stream) {
+	if (!GameObject::read(stream)) {
+		return false;
+	}
+	mFace0 = stream.pop<std::string>();
+	mFace1 = stream.pop<std::string>();
+	mFace2 = stream.pop<std::string>();
+	mFace3 = stream.pop<std::string>();
+	mFace4 = stream.pop<std::string>();
+	mFace5 = stream.pop<std::string>();
+
+	return true;
+}
+bool Skybox::write(CharStream &stream) const {
+	if (!GameObject::write(stream)) {
+		return false;
+	}
+	stream.push<std::string>(mFace0);
+	stream.push<std::string>(mFace1);
+	stream.push<std::string>(mFace2);
+	stream.push<std::string>(mFace3);
+	stream.push<std::string>(mFace4);
+	stream.push<std::string>(mFace5);
+
+	return true	;
+}

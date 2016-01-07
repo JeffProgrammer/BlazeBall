@@ -73,6 +73,9 @@ public:
 
 	virtual void onAddToScene() override;
 
+	virtual bool read(CharStream &stream);
+	virtual bool write(CharStream &stream) const;
+
 	static void initFields();
 };
 
