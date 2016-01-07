@@ -114,9 +114,6 @@ void RenderWorld::renderScene(RenderInfo &info) {
 void RenderWorld::loop(const F64 &delta) {
 	PlatformEvent *eventt;
 
-	F64 counter = 0;
-	U32 fpsCounter = 0;
-
 	if (mShouldSleep) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(200));
 	}
