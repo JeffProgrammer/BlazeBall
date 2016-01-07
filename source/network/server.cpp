@@ -100,35 +100,34 @@ void Server::pollEvents() {
 
 void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ENetPacketFlag flag) {
 	for (const auto &connection : mServer.get_connected_clients()) {
-		sendEvent(event, connection, flag);
+		sendEvent(event, *connection, flag);
 	}
 }
 
-void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection *connection, ENetPacketFlag flag) {
+void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection &connection, ENetPacketFlag flag) {
 	const std::vector<U8> &data = event->serialize().getBuffer();
-	mServer.send_packet_to(connection->id, 0, &data[0], data.size(), flag);
+	mServer.send_packet_to(connection.id, 0, &data[0], data.size(), flag);
 }
 
-void Server::ghostObject(NetObject *object) {
+void Server::addGhostedObject(NetObject *object) {
 	//Get the object a ghosted id if we haven't seen it before
 	if (mGhostedIndices.find(object) == mGhostedIndices.end()) {
 		U32 index = sLastGhostId ++;
 		mGhostedIndices[object] = index;
 		mGhostedObjects[index] = object;
 	}
+}
+
+void Server::ghostObject(NetObject *object) {
+	addGhostedObject(object);
 
 	//Create a ghosting packet
 	auto event = std::make_shared<NetServerGhostCreateEvent>(this, object);
 	sendEvent(event);
 }
 
-void Server::ghostObject(NetObject *object, ClientConnection *connection) {
-	//Get the object a ghosted id if we haven't seen it before
-	if (mGhostedIndices.find(object) == mGhostedIndices.end()) {
-		U32 index = sLastGhostId ++;
-		mGhostedIndices[object] = index;
-		mGhostedObjects[index] = object;
-	}
+void Server::ghostObject(NetObject *object, ClientConnection &connection) {
+	addGhostedObject(object);
 
 	//Create a ghosting packet
 	auto event = std::make_shared<NetServerGhostCreateEvent>(this, object);
@@ -142,7 +141,7 @@ void Server::ghostAllObjects() {
 	}
 }
 
-void Server::ghostAllObjects(ClientConnection *connection) {
+void Server::ghostAllObjects(ClientConnection &connection) {
 	//Ghost all objects to the client
 	for (const auto &pair : mGhostedObjects) {
 		ghostObject(pair.second, connection);

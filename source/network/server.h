@@ -30,13 +30,14 @@ public:
 	void pollEvents();
 
 	void sendEvent(const std::shared_ptr<NetServerEvent> &event, ENetPacketFlag flag = ENET_PACKET_FLAG_RELIABLE); //Global
-	void sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection *connection, ENetPacketFlag flag = ENET_PACKET_FLAG_RELIABLE);
+	void sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection &connection, ENetPacketFlag flag = ENET_PACKET_FLAG_RELIABLE);
 
+	void addGhostedObject(NetObject *object);
 	void ghostObject(NetObject *object); //Global
-	void ghostObject(NetObject *object, ClientConnection *connection);
+	void ghostObject(NetObject *object, ClientConnection &connection);
 
 	void ghostAllObjects(); //Global
-	void ghostAllObjects(ClientConnection *connection);
+	void ghostAllObjects(ClientConnection &connection);
 
 	NetObject *getGhostedObject(U32 index) {
 		return mGhostedObjects[index];
