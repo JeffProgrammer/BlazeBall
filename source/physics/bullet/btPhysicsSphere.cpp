@@ -48,7 +48,7 @@ btPhysicsSphere::btPhysicsSphere(const F32 &radius) {
 }
 
 bool btPhysicsSphere::getColliding() {
-	btDiscreteDynamicsWorld *world = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld();
+	btDiscreteDynamicsWorld *world = static_cast<btPhysicsEngine *>(getWorld()->getPhysicsEngine())->getWorld();
 	U32 manifolds = world->getDispatcher()->getNumManifolds();
 
 	for (U32 i = 0; i < manifolds; i ++) {
@@ -66,7 +66,7 @@ bool btPhysicsSphere::getColliding() {
 }
 
 glm::vec3 btPhysicsSphere::getCollisionNormal(glm::vec3 &toiVelocity) {
-	btDiscreteDynamicsWorld *world = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld();
+	btDiscreteDynamicsWorld *world = static_cast<btPhysicsEngine *>(getWorld()->getPhysicsEngine())->getWorld();
 	U32 manifolds = world->getDispatcher()->getNumManifolds();
 
 	glm::vec3 total = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -167,7 +167,7 @@ void btPhysicsSphere::notifyContact(ContactCallbackInfo &info, bool isBody0) {
 	if (triangle.isPointInside(collisionPoint) && !triangle.isPointOnEdge(collisionPoint)) {
 
 		//Test all other manifold points
-		btDispatcher *dispatcher = static_cast<btPhysicsEngine *>(PhysicsEngine::getEngine())->getWorld()->getCollisionWorld()->getDispatcher();
+		btDispatcher *dispatcher = static_cast<btPhysicsEngine *>(getWorld()->getPhysicsEngine())->getWorld()->getCollisionWorld()->getDispatcher();
 		for (S32 i = 0; i < dispatcher->getNumManifolds(); i ++) {
 			btPersistentManifold *manifold = dispatcher->getManifoldByIndexInternal(i);
 

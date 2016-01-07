@@ -8,10 +8,15 @@
 #define physicsBody_h
 
 #include "base/types.h"
+#include "game/world.h"
 #include "physics/physicsEngine.h"
 
 class PhysicsBody {
+	World *mWorld;
 public:
+	virtual void setWorld(World *world) { mWorld = world; }
+	virtual World *getWorld() { return mWorld; }
+	
 	virtual const F32 getMass() const = 0;
 	virtual const glm::vec3 getPosition() const = 0;
 	virtual const glm::quat getRotation() const = 0;
@@ -29,7 +34,6 @@ public:
 	virtual void applyTorque(const glm::vec3 &torque) = 0;
 	virtual void applyImpulse(const glm::vec3 &impulse, const glm::vec3 &origin) = 0;
 	virtual void applyForce(const glm::vec3 &force, const glm::vec3 &origin) = 0;
-
 };
 
 #endif

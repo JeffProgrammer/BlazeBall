@@ -29,6 +29,8 @@ public:
 		mObjects.push_back(object);
 	}
 
+	PhysicsEngine *getPhysicsEngine() { return mPhysicsEngine; }
+
 	void tick(const F64 &delta);
 };
 
