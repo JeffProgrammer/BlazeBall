@@ -91,21 +91,20 @@ void Server::pollEvents() {
 
 	auto onReceiveData = [this](ClientConnection &client, const U8 *data, size_t size) {
 		CharStream stream(data, size);
-		NetServerEvent *event = NetServerEvent::deserialize(stream, this);
-		this->sendEvent(*event);
-		delete event;
+		const auto &event = NetServerEvent::deserialize(stream, this);
+		this->sendEvent(event);
 	};
 
 	mServer.consume_events(onClientConnect, onClientDisconnect, onReceiveData);
 }
 
-void Server::sendEvent(const NetServerEvent &event) {
+void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event) {
 	for (const auto &connection : mServer.get_connected_clients()) {
 		sendEvent(event, connection);
 	}
 }
 
-void Server::sendEvent(const NetServerEvent &event, ClientConnection *connection) {
-	const std::vector<U8> &data = event.serialize().getBuffer();
+void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection *connection) {
+	const std::vector<U8> &data = event->serialize().getBuffer();
 	mServer.send_packet_to(connection->id, 0, &data[0], data.size(), ENET_PACKET_FLAG_RELIABLE);
 }

@@ -10,7 +10,7 @@
 
 const U8 Magic = 0x87;
 
-NetServerEvent *NetServerEvent::deserialize(CharStream &data, Server *server) {
+std::shared_ptr<NetServerEvent> NetServerEvent::deserialize(CharStream &data, Server *server) {
 	//Don't corrupt the stream if it's not a net event
 	if (data.peek<U8>() != NetEvent::Magic)
 		return nullptr;
@@ -18,15 +18,15 @@ NetServerEvent *NetServerEvent::deserialize(CharStream &data, Server *server) {
 	data.pop<U8>();
 
 	Type type = static_cast<Type>(data.pop<U32>());
-	NetServerEvent *event;
+	std::shared_ptr<NetServerEvent> event;
 
 	//TODO: Make this fancy
 	switch (type) {
 		case Event::NetConnect:
-			event = new NetServerConnectEvent(server);
+			event = std::make_shared<NetServerConnectEvent>(server);
 			break;
 		case Event::NetDisconnect:
-			event = new NetServerDisconnectEvent(server);
+			event = std::make_shared<NetServerDisconnectEvent>(server);
 			break;
 		default:
 			return nullptr;

@@ -35,7 +35,7 @@ void Client::disconnect() {
 void Client::pollEvents() {
 	auto onConnect = [this]() {
 		IO::printf("You have connected to the server!\n");
-		this->sendEvent(NetClientConnectEvent(this));
+		this->sendEvent(std::make_shared<NetClientConnectEvent>(this));
 	};
 
 	auto onDisconnect = []() {
@@ -44,15 +44,14 @@ void Client::pollEvents() {
 
 	auto onReceiveData = [this](const U8 *data, size_t size) {
 		CharStream stream(data, size);
-		NetClientEvent *event = NetClientEvent::deserialize(stream, this);
-		delete event;
+		const auto &event = NetClientEvent::deserialize(stream, this);
 	};
 
 	mClient.consume_events(onConnect, onDisconnect, onReceiveData);
 }
 
-void Client::sendEvent(const NetClientEvent &event) {
-	const std::vector<U8> &data = event.serialize().getBuffer();
+void Client::sendEvent(const std::shared_ptr<NetClientEvent> &event) {
+	const std::vector<U8> &data = event->serialize().getBuffer();
 
 	mClient.send_packet(0, reinterpret_cast<const U8 *>(&data[0]), data.size(), ENET_PACKET_FLAG_RELIABLE);
 }

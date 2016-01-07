@@ -21,7 +21,7 @@ public:
 
 	void pollEvents();
 
-	void sendEvent(const NetClientEvent &event);
+	void sendEvent(const std::shared_ptr<NetClientEvent> &event);
 
 protected:
 	enetpp::client mClient;

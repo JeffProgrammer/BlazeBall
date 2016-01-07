@@ -17,7 +17,7 @@ public:
 
 	NetClientEvent(Type type, Client *client) : NetEvent(type), mClient(client) {}
 
-	static NetClientEvent *deserialize(CharStream &data, Client *client);
+	static std::shared_ptr<NetClientEvent> deserialize(CharStream &data, Client *client);
 
 	virtual bool write(CharStream &data) const;
 	virtual bool read(CharStream &data);

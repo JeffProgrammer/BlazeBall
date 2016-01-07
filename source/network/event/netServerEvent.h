@@ -17,7 +17,7 @@ public:
 
 	NetServerEvent(Type type, Server *server) : NetEvent(type), mServer(server) {}
 
-	static NetServerEvent *deserialize(CharStream &data, Server *server);
+	static std::shared_ptr<NetServerEvent> deserialize(CharStream &data, Server *server);
 
 	virtual bool write(CharStream &data) const;
 	virtual bool read(CharStream &data);

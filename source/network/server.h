@@ -26,8 +26,8 @@ public:
 
 	void pollEvents();
 
-	void sendEvent(const NetServerEvent &event); //Global
-	void sendEvent(const NetServerEvent &event, ClientConnection *connection);
+	void sendEvent(const std::shared_ptr<NetServerEvent> &event); //Global
+	void sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection *connection);
 
 private:
 	static U32 sUniqueId;
