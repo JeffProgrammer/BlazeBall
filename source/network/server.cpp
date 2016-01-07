@@ -103,6 +103,12 @@ void Server::pollEvents() {
 	};
 
 	mServer.consume_events(onClientConnect, onClientDisconnect, onReceiveData);
+
+	for (const auto &pair : mGhostedObjects) {
+		const auto obj = pair.second;
+		auto event = std::make_shared<NetServerGhostUpdateEvent>(this, obj);
+		sendEvent(event, ENetPacketFlag::ENET_PACKET_FLAG_UNSEQUENCED);
+	}
 }
 
 void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ENetPacketFlag flag) {
