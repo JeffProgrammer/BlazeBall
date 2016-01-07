@@ -96,6 +96,11 @@ int main(int argc, const char *argv[]) {
 				gConnectionState.clientWorld->loop(lastDelta);
 				gConnectionState.client->pollEvents();
 
+				// temp code
+				auto world = static_cast<RenderWorld*>(gConnectionState.clientWorld);
+				auto event = std::make_shared<NetClientGhostUpdateEvent>(gConnectionState.client, world->mControlObject);
+				gConnectionState.client->sendEvent(event, ENetPacketFlag::ENET_PACKET_FLAG_UNSEQUENCED);
+
 				if (!gConnectionState.clientWorld->getRunning()) {
 					break;
 				}
