@@ -131,3 +131,8 @@ bool World::loadLevel(const std::string &file) {
 	delete[] contents;
 	return true;
 }
+
+void World::addObject(GameObject *object) {
+	mObjects.push_back(object);
+	object->onAddToScene();
+}

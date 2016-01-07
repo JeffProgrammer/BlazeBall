@@ -37,10 +37,9 @@ public:
 	
 	bool loadLevel(const std::string &file);
 
+	const std::vector<GameObject *> &getObjectList() { return mObjects; }
 	GameObject *findGameObject(const std::string &name);
-	virtual void addObject(GameObject *object) {
-		mObjects.push_back(object);
-	}
+	virtual void addObject(GameObject *object);
 };
 
 #endif

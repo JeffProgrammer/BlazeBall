@@ -411,8 +411,5 @@ void RenderWorld::addObject(GameObject *object) {
 	auto *renderedObject = dynamic_cast<RenderedObject*>(object);
 	if (renderedObject != nullptr) {
 		mRenderedObjects.push_back(renderedObject);
-
-		// fire callback
-		renderedObject->onAddToScene();
 	}
 }
