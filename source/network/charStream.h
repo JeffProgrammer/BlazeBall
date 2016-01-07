@@ -248,4 +248,36 @@ inline glm::mat4 CharStream::pop() {
 	return data;
 }
 
+//-----------------------------------------------------------------------------
+// std::string datatype stream
+//-----------------------------------------------------------------------------
+
+template<>
+inline std::string CharStream::push(const std::string &value) {
+	size_t len = value.length();
+
+	// first part, write the length
+	push<U32>(static_cast<U32>(len));
+
+	// second part, each char
+	for (size_t i = 0; i < len; i++) {
+		push<U8>(static_cast<U8>(value[i]));
+	}
+	return value;
+}
+
+template<>
+inline std::string CharStream::pop() {
+	// first part, length
+	size_t len = static_cast<size_t>(pop<U32>());
+
+	// second part, each character
+	std::string data;
+	data.resize(len);
+	for (size_t i = 0; i < len; i++) {
+		data[i] = static_cast<S8>(pop<U8>());
+	}
+	return data;
+}
+
 #endif
