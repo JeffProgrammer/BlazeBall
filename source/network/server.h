@@ -28,8 +28,8 @@ public:
 
 	void pollEvents();
 
-	void sendEvent(const std::shared_ptr<NetServerEvent> &event); //Global
-	void sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection *connection);
+	void sendEvent(const std::shared_ptr<NetServerEvent> &event, ENetPacketFlag flag = ENET_PACKET_FLAG_RELIABLE); //Global
+	void sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection *connection, ENetPacketFlag flag = ENET_PACKET_FLAG_RELIABLE);
 
 	void ghostObject(NetObject *object); //Global
 	//TODO: Individual ghosting

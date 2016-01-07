@@ -98,15 +98,15 @@ void Server::pollEvents() {
 	mServer.consume_events(onClientConnect, onClientDisconnect, onReceiveData);
 }
 
-void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event) {
+void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ENetPacketFlag flag) {
 	for (const auto &connection : mServer.get_connected_clients()) {
-		sendEvent(event, connection);
+		sendEvent(event, connection, flag);
 	}
 }
 
-void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection *connection) {
+void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection *connection, ENetPacketFlag flag) {
 	const std::vector<U8> &data = event->serialize().getBuffer();
-	mServer.send_packet_to(connection->id, 0, &data[0], data.size(), ENET_PACKET_FLAG_RELIABLE);
+	mServer.send_packet_to(connection->id, 0, &data[0], data.size(), flag);
 }
 
 void Server::ghostObject(NetObject *object) {
