@@ -128,6 +128,9 @@ public:
 	 */
 	virtual void updateTick(const F64 &delta) {}
 
+	virtual bool read(CharStream &stream);
+	virtual bool write(CharStream &stream) const;
+
 	/**
 	 * Initializes the fields specific to the GameObject class.
 	 */
