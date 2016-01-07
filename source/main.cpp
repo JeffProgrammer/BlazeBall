@@ -55,7 +55,6 @@ int main(int argc, const char *argv[]) {
 	} else {
 		//Create us a new scene
 		RenderWorld *world = new RenderWorld(new btPhysicsEngine());
-		world->loadLevel("level.json");
 
 		//Init SDL
 		world->mWindow = new SDLWindow();
@@ -66,6 +65,8 @@ int main(int argc, const char *argv[]) {
 		if (!world->init()) {
 			return 1;
 		}
+
+		world->loadLevel("level.json");
 
 		//Let our scene go!
 		world->run();

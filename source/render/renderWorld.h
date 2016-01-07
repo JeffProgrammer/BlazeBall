@@ -72,7 +72,6 @@ public:
 	const glm::vec3 sunPosition    = glm::vec3(100.0f, 75.0f, 100.0f);
 	const U32 specularExponent   = 7;
 
-	std::vector<GameObject *>mObjects;
 	std::vector<RenderedObject *> mRenderedObjects;
 	GameObject *mControlObject;
 	Camera *mCamera;
@@ -88,7 +87,7 @@ public:
 	
 	bool mShouldSleep;
 
-	void addObject(GameObject *object);
+	virtual void addObject(GameObject *object);
 
 	GameObject *findGameObject(const std::string &name);
 
@@ -101,7 +100,7 @@ public:
 	void render();
 
 	void loop(const F64 &delta);
-	void tick(const F64 &delta);
+	virtual void tick(const F64 &delta);
 	bool initGL();
 	bool init();
 	void cleanup();

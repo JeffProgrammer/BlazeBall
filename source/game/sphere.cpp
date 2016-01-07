@@ -24,6 +24,7 @@ Sphere::Sphere(World *world, glm::vec3 origin, F32 radius) : RenderedObject(worl
 	mActor = mWorld->getPhysicsEngine()->createSphere(mRadius);
 	mActor->setPosition(origin);
 	mActor->setMass(1.0f);
+	mActor->setWorld(mWorld);
 	mWorld->getPhysicsEngine()->addBody(mActor);
 	
 	mGenerated = false;

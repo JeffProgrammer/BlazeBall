@@ -96,6 +96,7 @@ void GameInterior::generateMaterials(std::string directory) {
 
 void GameInterior::generateMesh() {
 	mActor = mWorld->getPhysicsEngine()->createInterior(this);
+	mActor->setWorld(mWorld);
 	mWorld->getPhysicsEngine()->addBody(mActor);
 }
 

@@ -14,6 +14,7 @@
 
 class GameObject;
 class World {
+protected:
 	std::vector<GameObject *> mObjects;
 	PhysicsEngine *mPhysicsEngine;
 
@@ -22,16 +23,19 @@ public:
 		mPhysicsEngine->init();
 	}
 	virtual ~World() {
+		for (auto object : mObjects) {
+			delete object;
+		}
 		delete mPhysicsEngine;
 	}
 
-	void addObject(GameObject *object) {
+	virtual void addObject(GameObject *object) {
 		mObjects.push_back(object);
 	}
 
 	PhysicsEngine *getPhysicsEngine() { return mPhysicsEngine; }
 
-	void tick(const F64 &delta);
+	virtual void tick(const F64 &delta);
 
 	bool loadLevel(const std::string &file);
 };

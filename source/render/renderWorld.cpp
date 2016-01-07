@@ -28,9 +28,6 @@ RenderWorld::RenderWorld(PhysicsEngine *physics) : World(physics) {
 }
 
 RenderWorld::~RenderWorld() {
-	for (auto object : mObjects) {
-		delete object;
-	}
 	delete mWindow;
 	delete mTimer;
 }
@@ -378,7 +375,7 @@ void RenderWorld::cleanup() {
 }
 
 void RenderWorld::addObject(GameObject *object) {
-	mObjects.push_back(object);
+	World::addObject(object);
 
 	// For rendered objects.
 	auto *renderedObject = dynamic_cast<RenderedObject*>(object);
@@ -412,8 +409,8 @@ void RenderWorld::run() {
 
 	getPhysicsEngine()->setStepCallback([&](F64 delta){
 		if (mSimulationSpeed == 1.0f) {
-		this->loop(delta);
-		this->tick(delta);
+			this->loop(delta);
+			this->tick(delta);
 		}
 	});
 
