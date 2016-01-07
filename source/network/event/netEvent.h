@@ -8,6 +8,7 @@
 #define _NETWORK_EVENT_NETEVENT_H_
 
 #include <unordered_map>
+#include <memory>
 
 #include "base/types.h"
 #include "base/event.h"
