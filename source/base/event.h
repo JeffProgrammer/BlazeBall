@@ -22,7 +22,8 @@ public:
 		WindowResize,
 
 		NetConnect,
-		NetDisconnect
+		NetDisconnect,
+		NetGhost
 	};
 
 	Type type;

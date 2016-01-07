@@ -60,9 +60,34 @@ bool NetClientEvent::read(CharStream &data) {
 }
 
 NetClientConnectEvent::NetClientConnectEvent(Client *client) : NetClientEvent(NetConnect, client) {
-	IO::printf("Got a client connect event\n");
 }
 
 NetClientDisconnectEvent::NetClientDisconnectEvent(Client *client) : NetClientEvent(NetDisconnect, client) {
-	IO::printf("Got a client disconnect event\n");
+}
+
+NetClientGhostEvent::NetClientGhostEvent(Client *client, GameObject *object) : NetClientEvent(NetGhost, client), mObject(object) {
+}
+
+bool NetClientGhostEvent::write(CharStream &data) const {
+	if (!NetClientEvent::write(data)) {
+		return false;
+	}
+
+	data.push<glm::vec3>(mObject->getPosition());
+	data.push<glm::quat>(mObject->getRotation());
+	data.push<glm::vec3>(mObject->getScale());
+
+	return true;
+}
+
+bool NetClientGhostEvent::read(CharStream &data) {
+	if (!NetClientEvent::read(data)) {
+		return false;
+	}
+
+	mObject->setPosition(data.pop<glm::vec3>());
+	mObject->setRotation(data.pop<glm::quat>());
+	mObject->setScale   (data.pop<glm::vec3>());
+
+	return true;
 }

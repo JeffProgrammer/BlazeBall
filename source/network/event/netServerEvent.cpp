@@ -8,7 +8,7 @@
 #include "network/server.h"
 #include "base/io.h"
 
-const U8 Magic = 0x87;
+const U8 Magic = 0x42;
 
 std::shared_ptr<NetServerEvent> NetServerEvent::deserialize(CharStream &data, Server *server) {
 	//Don't corrupt the stream if it's not a net event
@@ -60,9 +60,34 @@ bool NetServerEvent::read(CharStream &data) {
 }
 
 NetServerConnectEvent::NetServerConnectEvent(Server *server) : NetServerEvent(NetConnect, server) {
-	IO::printf("Got a server connect event\n");
 }
 
 NetServerDisconnectEvent::NetServerDisconnectEvent(Server *server) : NetServerEvent(NetDisconnect, server) {
-	IO::printf("Got a server disconnect event\n");
+}
+
+NetServerGhostEvent::NetServerGhostEvent(Server *server, GameObject *object) : NetServerEvent(NetGhost, server), mObject(object) {
+}
+
+bool NetServerGhostEvent::write(CharStream &data) const {
+	if (!NetServerEvent::write(data)) {
+		return false;
+	}
+
+	data.push<glm::vec3>(mObject->getPosition());
+	data.push<glm::quat>(mObject->getRotation());
+	data.push<glm::vec3>(mObject->getScale());
+
+	return true;
+}
+
+bool NetServerGhostEvent::read(CharStream &data) {
+	if (!NetServerEvent::read(data)) {
+		return false;
+	}
+
+	mObject->setPosition(data.pop<glm::vec3>());
+	mObject->setRotation(data.pop<glm::quat>());
+	mObject->setScale   (data.pop<glm::vec3>());
+
+	return true;
 }

@@ -92,7 +92,6 @@ void Server::pollEvents() {
 	auto onReceiveData = [this](ClientConnection &client, const U8 *data, size_t size) {
 		CharStream stream(data, size);
 		const auto &event = NetServerEvent::deserialize(stream, this);
-		this->sendEvent(event);
 	};
 
 	mServer.consume_events(onClientConnect, onClientDisconnect, onReceiveData);
