@@ -50,8 +50,8 @@ void Client::pollEvents() {
 	mClient.consume_events(onConnect, onDisconnect, onReceiveData);
 }
 
-void Client::sendEvent(const std::shared_ptr<NetClientEvent> &event) {
+void Client::sendEvent(const std::shared_ptr<NetClientEvent> &event, ENetPacketFlag flag) {
 	const std::vector<U8> &data = event->serialize().getBuffer();
 
-	mClient.send_packet(0, reinterpret_cast<const U8 *>(&data[0]), data.size(), ENET_PACKET_FLAG_RELIABLE);
+	mClient.send_packet(0, reinterpret_cast<const U8 *>(&data[0]), data.size(), flag);
 }
