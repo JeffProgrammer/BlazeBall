@@ -34,11 +34,11 @@ void Server::start() {
 	// start the server process
 	IO::printf("Starting server process...\n");
 
-	enetpp::server_listen_params<Connection> params;
+	enetpp::server_listen_params<ClientConnection> params;
 	params.set_max_client_count(16);
 	params.set_channel_count(1);
 	params.set_listen_port(28000);
-	params.set_initialize_client_function([](Connection &client, const char *ipAddress) {
+	params.set_initialize_client_function([](ClientConnection &client, const char *ipAddress) {
 		// Initializes the client by assining its IP address and its unique identifier.
 		client.ipAddress = ipAddress;
 		client.id = sUniqueId;
