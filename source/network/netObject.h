@@ -18,8 +18,9 @@ public:
 	}
 
 	/**
-	 * Reads a packet of type CharStream stream on the client when it is received
-	 * from the server.
+	 * Reads a packet of type CharStream stream on the server when it is received
+	 * from the client.
+	 * Called on the Server. Transfer Client->Server.
 	 * @param stream The CharStream from the client.
 	 * @return true if the stream was readable.
 	 * @note this is potentially not secure as we are trusting the client. Be
@@ -29,8 +30,9 @@ public:
 	virtual bool readClientPacket(CharStream &stream);
 
 	/**
-	 * Reads a packet of type CharStream stream on the server when the client
-	 * object wants to send data to the server.
+	 * Reads a packet of type CharStream stream on the client when the server
+	 * sends data.
+	 * Called on the Client. Transfer Server->Client.
 	 * @param stream The CharStream from the server.
 	 * @return true if the stream was readable.
 	 */
@@ -39,6 +41,7 @@ public:
 	/**
 	 * Writes a packet of type CharStream stream on the client and sends it off to
 	 * the server for interpretation.
+	 * Called on the Client. Transfer Client->Server.
 	 * @param stream The CharStream on the client.
 	 * @return true if the stream was writable.
 	 * @note this is potentially not secure as we are trusting the client. Be
@@ -50,6 +53,7 @@ public:
 	/**
 	 * Writes a packet of type CharStream stream on the server and sends it off to
 	 * the client for interpretation.
+	 * Called on the Server. Transfer Server->Client.
 	 * @param stream The CharStream on the server.
 	 * @return true if the stream was writable.
 	 */
