@@ -420,9 +420,8 @@ void Scene::run() {
 	// onStart
 
 	// NETWORKING MWHAHAHAHAH
-	Client *client = nullptr;
-	client = new Client("127.0.0.1", 28000);
-	client->connect();
+	Client client("127.0.0.1", 28000);
+	client.connect();
 
 	//Create camera
 	{
@@ -470,9 +469,7 @@ void Scene::run() {
 		}
 
 		// le networking
-		if (client != nullptr) {
-			client->pollEvents();
-		}
+		client.pollEvents();
 
 		render();
 		
@@ -501,12 +498,8 @@ void Scene::run() {
 	}
 
 	// cleanup client.
-	if (client != nullptr) {
-		client->disconnect();
-		delete client;
-		client = nullptr;
-	}
-	
+	client.disconnect();
+
 	//Clean up (duh)
 	cleanup();
 }

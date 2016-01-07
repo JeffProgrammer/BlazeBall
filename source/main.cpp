@@ -12,6 +12,7 @@
 #include "render/scene.h"
 #include "game/GameInterior.h"
 #include "scriptEngine/scriptEngine.h"
+#include "game/world.h"
 
 // TODO: clean this shit up
 #include "physics/bullet/btPhysicsEngine.h"
@@ -32,7 +33,6 @@ int main(int argc, const char *argv[]) {
 	// parse command line arguments.
 	parseArgs(argc, argv);
 
-
 	if (gIsDedicated) {
 		// create a server obj
 		Server server;
@@ -48,13 +48,11 @@ int main(int argc, const char *argv[]) {
 
 		// stop server
 		server.stop();
-	}
-	else {
+	} else {
+		World *world = new World(new btPhysicsEngine());
+		
 		//Create us a new scene
 		Scene *scene = Scene::getSingleton();
-
-		//Load the physics engine
-		PhysicsEngine::setEngine(new btPhysicsEngine());
 
 		//Init SDL
 		scene->mWindow = new SDLWindow();

@@ -21,8 +21,6 @@ class PhysicsEngine {
 public:
 	typedef std::function<void(const F64 &)> StepCallback;
 protected:
-	static PhysicsEngine *gEngine;
-
 	bool mRunning;
 
 	StepCallback stepCallback;
@@ -44,9 +42,6 @@ public:
 	bool getRunning() { return mRunning; }
 
 	void setStepCallback(StepCallback callback) { this->stepCallback = callback; }
-
-	static void setEngine(PhysicsEngine *engine);
-	static PhysicsEngine *getEngine();
 
 	struct RaycastInfo {
 		glm::vec3 from;
