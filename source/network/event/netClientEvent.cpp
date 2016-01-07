@@ -82,7 +82,7 @@ bool NetClientGhostCreateEvent::read(CharStream &data) {
 	U32 ghostId = data.pop<U32>();
 	std::string className = data.pop<std::string>();
 
-	mObject = dynamic_cast<NetObject *>(AbstractClassRep::createFromName(className));
+	mObject = dynamic_cast<NetObject *>(AbstractClassRep::createFromName(mClient->getWorld(), className));
 	if (!mObject) {
 		return false;
 	}

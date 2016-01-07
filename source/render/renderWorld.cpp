@@ -213,7 +213,7 @@ void RenderWorld::handleEvent(PlatformEvent *event) {
 					mMovement.fire = true;
 
 					// make a new sphere!
-					Sphere *sphere = new Sphere(glm::vec3(0, 0, 30), 0.75);
+					Sphere *sphere = new Sphere(this, glm::vec3(0, 0, 30), 0.75);
 					addObject(sphere);
 
 					break;
@@ -230,7 +230,7 @@ void RenderWorld::handleEvent(PlatformEvent *event) {
 				case KeyEvent::KEY_M:
 				{
 					// add a cube!
-					Shape *shape = new Shape("cube.dae");
+					Shape *shape = new Shape(this, "cube.dae");
 					shape->loadShape();
 					shape->setPosition(glm::vec3(rand() % 10, rand() % 10, rand() % 10));
 					addObject(shape);
@@ -420,19 +420,19 @@ void RenderWorld::run() {
 	// onStart
 
 	// NETWORKING MWHAHAHAHAH
-	Client client("127.0.0.1", 28000);
+	Client client(this, "127.0.0.1", 28000);
 	client.connect();
 
 	//Create camera
 	{
-		Camera *camera = new Camera();
+		Camera *camera = new Camera(this);
 		addObject(camera);
 		mCamera = camera;
 	}
 
 	//Create player
 	{
-		Sphere *player = new Sphere(glm::vec3(0, 0, 20), 0.2f);
+		Sphere *player = new Sphere(this, glm::vec3(0, 0, 20), 0.2f);
 		Material *material = new Material("marble.skin");
 		material->setTexture(mMarbleCubemap, GL_TEXTURE3);
 		material->setShader(Shader::getShaderByName("Sphere"));

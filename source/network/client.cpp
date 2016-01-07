@@ -8,7 +8,7 @@
 #include "base/io.h"
 #include <enetpp/client_connect_params.h>
 
-Client::Client(const std::string &ipAddress, const U16 port) {
+Client::Client(World *world, const std::string &ipAddress, const U16 port) : mWorld(world) {
 	mServerAddress = ipAddress;
 	mPort = port;
 }

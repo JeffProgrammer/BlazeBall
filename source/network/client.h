@@ -13,10 +13,11 @@
 #include "base/types.h"
 #include "network/event/netClientEvent.h"
 #include "network/netObject.h"
+#include "game/world.h"
 
 class Client {
 public:
-	Client(const std::string &serverAddress, const U16 port);
+	Client(World *world, const std::string &serverAddress, const U16 port);
 	~Client();
 
 	void connect();
@@ -36,11 +37,15 @@ public:
 		mGhostedObjects[index] = object;
 		mGhostedIndices[object] = index;
 	}
+	World *getWorld() {
+		return mWorld;
+	}
 
 protected:
 	enetpp::client mClient;
 	std::string mServerAddress;
 	U16 mPort;
+	World *mWorld;
 
 	std::unordered_map<U32, NetObject *> mGhostedObjects;
 	std::unordered_map<NetObject *, U32> mGhostedIndices;

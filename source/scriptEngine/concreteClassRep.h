@@ -7,7 +7,27 @@
 #ifndef _SCRIPTENGINE_CONCRETECLASSREP_H_
 #define _SCRIPTENGINE_CONCRETECLASSREP_H_
 
+#include <type_traits>
 #include "scriptEngine/abstractClassRep.h"
+
+class GameObject;
+
+//Nasty template hacking
+template<bool=true>
+struct create_impl {
+	template<typename T>
+	static T *create(World *world) {
+		return new T(world);
+	}
+};
+
+template<>
+struct create_impl<false> {
+	template<typename T>
+	static T *create(World *world) {
+		return new T();
+	}
+};
 
 /**
  * The main purpose of a ConcreteClassRep is to be able to instantiate the
@@ -32,8 +52,10 @@ public:
 	 * Create an instance of the type.
 	 * @return an instance of the type specified to the AbstractClassRep.
 	 */
-	virtual ScriptObject* create(World *world) {
-		T *obj = new T(world);
+	virtual ScriptObject* create(World *world = nullptr) {
+		//For everything that is a subclass of GameObject, this will create it with
+		// the world parameter. Everything else will be created without that parameter.
+		T *obj = create_impl<std::is_base_of<GameObject, T>::value>::template create<T>(world);
 		obj->mClassRep = this;
 		return obj;
 	}
