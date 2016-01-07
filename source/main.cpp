@@ -72,6 +72,7 @@ int main(int argc, const char *argv[]) {
 	}
 
 	client.disconnect();
+	server.stop();
 
 	// much hack, very wow
 	if (gSphereVBO)
