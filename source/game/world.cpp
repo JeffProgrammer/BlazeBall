@@ -5,3 +5,7 @@
 //------------------------------------------------------------------------------
 
 #include "world.h"
+
+void World::tick(const F64 &delta) {
+	mPhysicsEngine->simulate(delta);
+}

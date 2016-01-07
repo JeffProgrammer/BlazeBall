@@ -444,6 +444,8 @@ set (DIFVIEWERGAME_SRC
 	source/game/skybox.h
 	source/game/sphere.cpp
 	source/game/sphere.h
+	source/game/world.cpp
+	source/game/world.h
 	
 	# Networking
 	source/network/client.cpp

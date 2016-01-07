@@ -21,10 +21,15 @@ public:
 	World(PhysicsEngine *physics) : mPhysicsEngine(physics) {
 		mPhysicsEngine->init();
 	}
+	virtual ~World() {
+		delete mPhysicsEngine;
+	}
 
 	void addObject(GameObject *object) {
 		mObjects.push_back(object);
 	}
+
+	void tick(const F64 &delta);
 };
 
 #endif
