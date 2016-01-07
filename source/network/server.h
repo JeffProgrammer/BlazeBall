@@ -8,6 +8,7 @@
 #define _NETWORK_SERVER_H_
 
 #include <thread>
+#include <unordered_map>
 #include <enetpp/server.h>
 
 #include "base/types.h"
@@ -53,8 +54,8 @@ private:
 	PlatformTimer *mTimer;
 	F64 mAccumulator;
 
-	std::map<U32, NetObject *> mGhostedObjects;
-	std::map<NetObject *, U32> mGhostedIndices;
+	std::unordered_map<U32, NetObject *> mGhostedObjects;
+	std::unordered_map<NetObject *, U32> mGhostedIndices;
 
 	enetpp::server<ClientConnection> mServer;
 

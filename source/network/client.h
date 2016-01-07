@@ -7,6 +7,7 @@
 #ifndef _NETWORK_CLIENT_H_
 #define _NETWORK_CLIENT_H_
 
+#include <unordered_map>
 #include <enetpp/client.h>
 
 #include "base/types.h"
@@ -41,8 +42,8 @@ protected:
 	std::string mServerAddress;
 	U16 mPort;
 
-	std::map<U32, NetObject *> mGhostedObjects;
-	std::map<NetObject *, U32> mGhostedIndices;
+	std::unordered_map<U32, NetObject *> mGhostedObjects;
+	std::unordered_map<NetObject *, U32> mGhostedIndices;
 };
 
 #endif
