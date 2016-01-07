@@ -33,6 +33,9 @@ std::shared_ptr<NetClientEvent> NetClientEvent::deserialize(CharStream &data, Cl
 		case Event::NetGhostCreate:
 			event = std::make_shared<NetClientGhostCreateEvent>(client);
 			break;
+		case Event::NetGhostUpdate:
+			event = std::make_shared<NetClientGhostUpdateEvent>(client, nullptr);
+			break;
 		default:
 			return nullptr;
 	}
@@ -103,6 +106,41 @@ bool NetClientGhostCreateEvent::read(CharStream &data) {
 		// add it to the scene.
 		mClient->getWorld()->addObject(gameObject);
 	}
+
+	return true;
+}
+
+NetClientGhostUpdateEvent::NetClientGhostUpdateEvent(Client *client, NetObject *obj) : NetClientEvent(NetGhostUpdate, client), mObject(obj) {
+}
+
+bool NetClientGhostUpdateEvent::write(CharStream &stream) const {
+	if (!NetClientEvent::write(stream))
+		return false;
+
+	// grab and write the ghost ID from the object
+	U32 ghostId = mClient->getGhostIndex(mObject);
+	stream.push<U32>(ghostId);
+
+	// now write the object's data so that it can be sent to the server.
+	if (!mObject->writeClientPacket(stream))
+		return false;
+
+	return true;
+}
+
+bool NetClientGhostUpdateEvent::read(CharStream &stream) {
+	if (!NetClientEvent::read(stream))
+		return false;
+
+	// first, read the ghost id
+	U32 ghostId = stream.pop<U32>();
+	mObject = mClient->getGhostedObject(ghostId);
+	if (mObject == nullptr)
+		return false;
+
+	// now, read the packet from the server.
+	if (!mObject->readServerPacket(stream))
+		return false;
 
 	return true;
 }

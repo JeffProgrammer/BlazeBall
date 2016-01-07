@@ -43,4 +43,14 @@ public:
 	virtual bool read(CharStream &data);
 };
 
+class NetServerGhostUpdateEvent : public NetServerEvent {
+	NetObject *mObject;
+public:
+	NetServerGhostUpdateEvent(Server *server, NetObject *obj);
+
+	virtual bool write(CharStream &data) const;
+	virtual bool read(CharStream &data);
+};
+
+
 #endif

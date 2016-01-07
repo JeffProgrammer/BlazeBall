@@ -28,6 +28,9 @@ std::shared_ptr<NetServerEvent> NetServerEvent::deserialize(CharStream &data, Se
 		case Event::NetDisconnect:
 			event = std::make_shared<NetServerDisconnectEvent>(server);
 			break;
+		case Event::NetGhostUpdate:
+			event = std::make_shared<NetServerGhostUpdateEvent>(server, nullptr);
+			break;
 		default:
 			return nullptr;
 	}
@@ -82,4 +85,39 @@ bool NetServerGhostCreateEvent::write(CharStream &data) const {
 bool NetServerGhostCreateEvent::read(CharStream &data) {
 	//Clients can't create ghosted objects
 	return false;
+}
+
+NetServerGhostUpdateEvent::NetServerGhostUpdateEvent(Server *server, NetObject *obj) : NetServerEvent(NetGhostUpdate, server), mObject(obj) {
+}
+
+bool NetServerGhostUpdateEvent::write(CharStream &stream) const {
+	if (!NetServerEvent::write(stream))
+		return false;
+
+	// grab and write the ghost ID from the object
+	U32 ghostId = mServer->getGhostIndex(mObject);
+	stream.push<U32>(ghostId);
+
+	// now write the object's data so that it can be sent to the client.
+	if (!mObject->writeServerPacket(stream))
+		return false;
+
+	return true;
+}
+
+bool NetServerGhostUpdateEvent::read(CharStream &stream) {
+	if (!NetServerEvent::read(stream))
+		return false;
+
+	// first, read the ghost id
+	U32 ghostId = stream.pop<U32>();
+	mObject = mServer->getGhostedObject(ghostId);
+	if (mObject == nullptr)
+		return false;
+
+	// now, read the packet from the client.
+	if (!mObject->readClientPacket(stream))
+		return false;
+
+	return true;
 }
