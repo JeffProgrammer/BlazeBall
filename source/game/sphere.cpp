@@ -8,6 +8,7 @@
 #include "base/math.h"
 #include "base/io.h"
 #include "physics/physicsSphere.h"
+#include "render/renderWorld.h"
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -322,6 +323,57 @@ void Sphere::updateTick(const F64 &delta) {
 		setLinearVelocity(glm::vec3(0, 0, 0));
 		setAngularVelocity(glm::vec3(0, 0, 0));
 	}
+}
+
+bool Sphere::readClientPacket(CharStream &stream) {
+	if (!NetObject::readClientPacket(stream))
+		return false;
+
+	// discard packet if this is our control object.
+	// or else we'll end in a circular loop.
+	// TODO: don't even send from server.
+	// MAYBE??
+	if (static_cast<RenderWorld*>(mWorld)->mControlObject == this)
+		return false;
+
+	setPosition(stream.pop<glm::vec3>());
+	setRotation(stream.pop<glm::quat>());
+	setScale(stream.pop<glm::vec3>());
+
+	return true;
+}
+
+bool Sphere::readServerPacket(CharStream &stream) {
+	if (!NetObject::readServerPacket(stream))
+		return false;
+
+	setPosition(stream.pop<glm::vec3>());
+	setRotation(stream.pop<glm::quat>());
+	setScale(stream.pop<glm::vec3>());
+
+	return true;
+}
+
+bool Sphere::writeClientPacket(CharStream &stream) const {
+	if (!NetObject::writeClientPacket(stream))
+		return false;
+
+	stream.push<glm::vec3>(getPosition());
+	stream.push<glm::quat>(getRotation());
+	stream.push<glm::vec3>(getScale());
+
+	return true;
+}
+
+bool Sphere::writeServerPacket(CharStream &stream) const {
+	if (!NetObject::writeServerPacket(stream))
+		return false;
+
+	stream.push<glm::vec3>(getPosition());
+	stream.push<glm::quat>(getRotation());
+	stream.push<glm::vec3>(getScale());
+
+	return true;
 }
 
 void Sphere::initFields() {

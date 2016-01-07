@@ -92,6 +92,12 @@ public:
 
 	virtual void updateTick(const F64 &delta) override;
 
+
+	virtual bool readClientPacket(CharStream &stream) override;
+	virtual bool readServerPacket(CharStream &stream) override;
+	virtual bool writeClientPacket(CharStream &stream) const override;
+	virtual bool writeServerPacket(CharStream &stream) const override;
+
 	/**
 	 * Initializes the fields specific to the GameObject class.
 	 */
