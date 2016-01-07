@@ -7,6 +7,7 @@
 #include "netClientEvent.h"
 #include "network/client.h"
 #include "base/io.h"
+#include "scriptEngine/abstractClassRep.h"
 
 const U8 Magic = 0x42;
 
@@ -65,7 +66,7 @@ NetClientConnectEvent::NetClientConnectEvent(Client *client) : NetClientEvent(Ne
 NetClientDisconnectEvent::NetClientDisconnectEvent(Client *client) : NetClientEvent(NetDisconnect, client) {
 }
 
-NetClientGhostEvent::NetClientGhostEvent(Client *client, GameObject *object) : NetClientEvent(NetGhost, client), mObject(object) {
+NetClientGhostEvent::NetClientGhostEvent(Client *client, NetObject *object) : NetClientEvent(NetGhost, client), mObject(object) {
 }
 
 bool NetClientGhostEvent::write(CharStream &data) const {
@@ -73,11 +74,9 @@ bool NetClientGhostEvent::write(CharStream &data) const {
 		return false;
 	}
 
-	data.push<glm::vec3>(mObject->getPosition());
-	data.push<glm::quat>(mObject->getRotation());
-	data.push<glm::vec3>(mObject->getScale());
+	data.push<U32>(mObject->getGhostId());
 
-	return true;
+	return mObject->write(data);
 }
 
 bool NetClientGhostEvent::read(CharStream &data) {
@@ -85,9 +84,14 @@ bool NetClientGhostEvent::read(CharStream &data) {
 		return false;
 	}
 
-	mObject->setPosition(data.pop<glm::vec3>());
-	mObject->setRotation(data.pop<glm::quat>());
-	mObject->setScale   (data.pop<glm::vec3>());
+	U32 ghostId = data.pop<U32>();
+	std::string className = data.pop<std::string>();
 
-	return true;
+	mObject = dynamic_cast<NetObject *>(AbstractClassRep::createFromName(className));
+	if (!mObject) {
+		return false;
+	}
+	mObject->mGhostId = ghostId;
+
+	return mObject->read(data);
 }

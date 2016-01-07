@@ -8,7 +8,7 @@
 #define _NETWORK_EVENT_NETCLIENTEVENT_H_
 
 #include "network/event/netEvent.h"
-#include "game/gameObject.h"
+#include "network/netObject.h"
 
 class Client;
 
@@ -35,9 +35,9 @@ public:
 };
 
 class NetClientGhostEvent : public NetClientEvent {
-	GameObject *mObject;
+	NetObject *mObject;
 public:
-	NetClientGhostEvent(Client *client, GameObject *object);
+	NetClientGhostEvent(Client *client, NetObject *object);
 
 	virtual bool write(CharStream &data) const;
 	virtual bool read(CharStream &data);

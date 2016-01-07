@@ -3,6 +3,7 @@
 
 #include "enet/enet.h"
 #include <chrono>
+#include <string>
 
 namespace enetpp {
 

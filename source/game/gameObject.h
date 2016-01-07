@@ -12,7 +12,7 @@
 #include "base/types.h"
 #include "game/movement.h"
 #include "render/renderInfo.h"
-#include "scriptObject.h"
+#include "network/netObject.h"
 #include "scriptEngine/concreteClassRep.h"
 
 #ifdef __APPLE__
@@ -26,7 +26,7 @@
  * game. This class is merely a shell for all subclasses of 3-dimentional
  * classes.
  */
-class GameObject : public ScriptObject {
+class GameObject : public NetObject {
 protected:
 	/**
 	 * The position of the GameObject.

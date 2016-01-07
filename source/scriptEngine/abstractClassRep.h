@@ -112,6 +112,10 @@ public:
 		return mName;
 	}
 
+	std::string getName() const {
+		return mName;
+	}
+
 protected:
 	static std::unordered_map<std::string, AbstractClassRep*> sClassRepMap;
 	static AbstractClassRep *sLast;

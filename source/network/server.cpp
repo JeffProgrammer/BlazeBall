@@ -14,6 +14,7 @@
 #define SERVER_TIME 0.03333
 
 U32 Server::sUniqueId = 0;
+U32 Server::sLastGhostId = 0;
 
 Server::Server() {
 	mIsRunning = false;
@@ -106,4 +107,12 @@ void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event) {
 void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection *connection) {
 	const std::vector<U8> &data = event->serialize().getBuffer();
 	mServer.send_packet_to(connection->id, 0, &data[0], data.size(), ENET_PACKET_FLAG_RELIABLE);
+}
+
+void Server::ghostObject(NetObject *object) {
+	object->mGhostId = sLastGhostId++;
+
+	//Create a ghosting packet
+	auto event = std::make_shared<NetServerGhostEvent>(this, object);
+	sendEvent(event);
 }

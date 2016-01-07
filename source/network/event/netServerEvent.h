@@ -8,7 +8,7 @@
 #define _NETWORK_EVENT_NETSERVEREVENT_H_
 
 #include "network/event/netEvent.h"
-#include "game/gameObject.h"
+#include "network/netObject.h"
 
 class Server;
 
@@ -35,9 +35,9 @@ public:
 };
 
 class NetServerGhostEvent : public NetServerEvent {
-	GameObject *mObject;
+	NetObject *mObject;
 public:
-	NetServerGhostEvent(Server *server, GameObject *object);
+	NetServerGhostEvent(Server *server, NetObject *object);
 
 	virtual bool write(CharStream &data) const;
 	virtual bool read(CharStream &data);

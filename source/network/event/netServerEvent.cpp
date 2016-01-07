@@ -65,7 +65,7 @@ NetServerConnectEvent::NetServerConnectEvent(Server *server) : NetServerEvent(Ne
 NetServerDisconnectEvent::NetServerDisconnectEvent(Server *server) : NetServerEvent(NetDisconnect, server) {
 }
 
-NetServerGhostEvent::NetServerGhostEvent(Server *server, GameObject *object) : NetServerEvent(NetGhost, server), mObject(object) {
+NetServerGhostEvent::NetServerGhostEvent(Server *server, NetObject *object) : NetServerEvent(NetGhost, server), mObject(object) {
 }
 
 bool NetServerGhostEvent::write(CharStream &data) const {
@@ -73,11 +73,10 @@ bool NetServerGhostEvent::write(CharStream &data) const {
 		return false;
 	}
 
-	data.push<glm::vec3>(mObject->getPosition());
-	data.push<glm::quat>(mObject->getRotation());
-	data.push<glm::vec3>(mObject->getScale());
+	data.push<U32>(mObject->getGhostId());
+	data.push<std::string>(mObject->getClassRep()->getName());
 
-	return true;
+	return mObject->write(data);
 }
 
 bool NetServerGhostEvent::read(CharStream &data) {
@@ -85,9 +84,11 @@ bool NetServerGhostEvent::read(CharStream &data) {
 		return false;
 	}
 
-	mObject->setPosition(data.pop<glm::vec3>());
-	mObject->setRotation(data.pop<glm::quat>());
-	mObject->setScale   (data.pop<glm::vec3>());
+	U32 ghostId = data.pop<U32>();
+	mObject = mServer->getGhostedObject(ghostId);
+	if (mObject == nullptr) {
+		return false;
+	}
 
-	return true;
+	return mObject->read(data);
 }
