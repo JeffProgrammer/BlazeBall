@@ -17,10 +17,10 @@ IMPLEMENT_SCRIPTOBJECT(Sphere, RenderedObject);
 
 GLuint gSphereVBO = 0;
 
-Sphere::Sphere() : Sphere(glm::vec3(0), 0) {
+Sphere::Sphere(World *world) : Sphere(world, glm::vec3(0), 0) {
 }
 
-Sphere::Sphere(glm::vec3 origin, F32 radius) : RenderedObject(), mRadius(radius), mMaxAngVel(1000.0f), mMaterial(nullptr) {
+Sphere::Sphere(World *world, glm::vec3 origin, F32 radius) : RenderedObject(world), mRadius(radius), mMaxAngVel(1000.0f), mMaterial(nullptr) {
 	mActor = mWorld->getPhysicsEngine()->createSphere(mRadius);
 	mActor->setPosition(origin);
 	mActor->setMass(1.0f);

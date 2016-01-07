@@ -31,7 +31,7 @@ protected:
 
 	DECLARE_SCRIPTOBJECT(Skybox);
 public:
-	Skybox();
+	Skybox(World *world);
 	virtual ~Skybox();
 
 	void generate();

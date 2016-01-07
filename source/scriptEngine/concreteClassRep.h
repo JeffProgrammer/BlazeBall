@@ -32,8 +32,8 @@ public:
 	 * Create an instance of the type.
 	 * @return an instance of the type specified to the AbstractClassRep.
 	 */
-	virtual ScriptObject* create() {
-		T *obj = new T();
+	virtual ScriptObject* create(World *world) {
+		T *obj = new T(world);
 		obj->mClassRep = this;
 		return obj;
 	}

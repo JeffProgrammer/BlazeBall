@@ -16,6 +16,8 @@
 
 class RenderedObject : public GameObject {
 public:
+	RenderedObject(World *world) : GameObject(world) {}
+
 	/**
 	 * Render the object using OpenGL.
 	 * @param info A RenderInfo struct containing all the render state information.

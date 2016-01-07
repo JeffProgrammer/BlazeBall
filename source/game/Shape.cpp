@@ -7,7 +7,7 @@
 #include "game/Shape.h"
 #include "render/modelManager.h"
 
-Shape::Shape(const std::string &shapeFile) {
+Shape::Shape(World *world, const std::string &shapeFile) : RenderedObject(world) {
 	mShapeFile = shapeFile;
 }
 

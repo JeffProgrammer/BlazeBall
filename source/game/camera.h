@@ -43,7 +43,7 @@ protected:
 	DECLARE_SCRIPTOBJECT(Camera);
 
 public:
-	Camera();
+	Camera(World *world);
 	virtual ~Camera() {};
 
 	/**

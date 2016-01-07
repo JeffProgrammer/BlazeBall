@@ -55,7 +55,7 @@ protected:
 	DECLARE_SCRIPTOBJECT(GameObject);
 	
 public:
-	GameObject() : mPosition(glm::vec3(0)), mRotation(glm::quat()), mScale(glm::vec3(1)) {};
+	GameObject(World *world) : mPosition(glm::vec3(0)), mRotation(glm::quat()), mScale(glm::vec3(1)), mWorld(world) {};
 	virtual ~GameObject() {};
 
 	/**

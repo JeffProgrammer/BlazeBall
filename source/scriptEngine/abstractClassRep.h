@@ -13,6 +13,7 @@
 #include "game/scriptObject.h"
 #include "scriptEngine/scriptEngine.h"
 
+class World;
 class AbstractClassRep {
 	// This is fucking bullshit.
 	// Let them access our private members :^)
@@ -39,10 +40,10 @@ public:
 		mFieldList[name] = Field(offset, scriptGetter<T>, scriptSetter<T>);
 	}
 
-	virtual ScriptObject* create() = 0;
+	virtual ScriptObject* create(World *world) = 0;
 
-	static ScriptObject* createFromName(const std::string &name) {
-		return sClassRepMap[name]->create();
+	static ScriptObject* createFromName(World *world, const std::string &name) {
+		return sClassRepMap[name]->create(world);
 	}
 
 	static void init() {

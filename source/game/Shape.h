@@ -19,7 +19,7 @@ protected:
 	std::string mShapeFile;
 
 public:
-	Shape(const std::string &shapeFile);
+	Shape(World *world, const std::string &shapeFile);
 	virtual ~Shape();
 	virtual void updateTick(const F64 &delta) override;
 	virtual void render(RenderInfo &info) override;

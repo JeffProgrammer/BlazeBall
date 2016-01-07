@@ -52,8 +52,8 @@ protected:
 	DECLARE_SCRIPTOBJECT(Sphere);
 
 public:
-	Sphere();
-	Sphere(glm::vec3 origin, F32 radius);
+	Sphere(World *world);
+	Sphere(World *world, glm::vec3 origin, F32 radius);
 	virtual ~Sphere();
 
 	virtual void calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix) override;

@@ -43,7 +43,7 @@ protected:
 
 	DECLARE_SCRIPTOBJECT(GameInterior);
 public:
-	GameInterior();
+	GameInterior(World *world);
 	virtual ~GameInterior();
 	
 	void generateMaterials(std::string directory);
