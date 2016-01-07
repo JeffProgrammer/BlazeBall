@@ -29,7 +29,11 @@ int main(int argc, const char *argv[]) {
 
 	// Load the networking engine
 	Network::init();
-	
+
+	// Init script engine and call the main function
+	if (!ScriptEngine::getSingleton()->init())
+		return 1;
+
 	// parse command line arguments.
 	parseArgs(argc, argv);
 
@@ -51,6 +55,7 @@ int main(int argc, const char *argv[]) {
 	} else {
 		//Create us a new scene
 		RenderWorld *world = new RenderWorld(new btPhysicsEngine());
+		world->loadLevel("level.json");
 
 		//Init SDL
 		world->mWindow = new SDLWindow();
@@ -61,10 +66,6 @@ int main(int argc, const char *argv[]) {
 		if (!world->init()) {
 			return 1;
 		}
-
-		// Init script engine and call the main function
-		if (!ScriptEngine::getSingleton()->init())
-			return 1;
 
 		//Let our scene go!
 		world->run();

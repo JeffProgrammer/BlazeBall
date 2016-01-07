@@ -32,6 +32,8 @@ public:
 	PhysicsEngine *getPhysicsEngine() { return mPhysicsEngine; }
 
 	void tick(const F64 &delta);
+
+	bool loadLevel(const std::string &file);
 };
 
 #endif

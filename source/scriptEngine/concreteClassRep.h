@@ -52,7 +52,7 @@ public:
 	 * Create an instance of the type.
 	 * @return an instance of the type specified to the AbstractClassRep.
 	 */
-	virtual ScriptObject* create(World *world = nullptr) {
+	virtual ScriptObject* create(World *world) {
 		//For everything that is a subclass of GameObject, this will create it with
 		// the world parameter. Everything else will be created without that parameter.
 		T *obj = create_impl<std::is_base_of<GameObject, T>::value>::template create<T>(world);

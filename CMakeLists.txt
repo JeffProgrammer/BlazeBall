@@ -431,8 +431,6 @@ set (DIFVIEWERGAME_SRC
 	source/game/gameObject.h
 	source/game/gameInterior.cpp
 	source/game/gameInterior.h
-	source/game/levelLoader.cpp
-	source/game/levelLoader.h
 	source/game/movement.h
 	source/game/renderedObject.cpp
 	source/game/renderedObject.h

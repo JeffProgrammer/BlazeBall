@@ -73,7 +73,6 @@ bool ScriptEngine::init() {
 	{
 		S32 r;
 		r = mEngine->RegisterGlobalFunction("void echo(string &in)", asFUNCTION(echo), asCALL_CDECL); assert(r >= 0);
-		r = mEngine->RegisterGlobalFunction("bool loadLevel(string &in)", asFUNCTION(loadLevel), asCALL_CDECL); assert(r >= 0);
 	}
 
 	mCurrentContext = mEngine->CreateContext();
