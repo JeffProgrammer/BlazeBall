@@ -29,6 +29,9 @@ public:
 
 	PhysicsEngine *getPhysicsEngine() { return mPhysicsEngine; }
 
+	bool getRunning() { return mRunning; }
+	void setRunning(bool running) { mRunning = running; }
+
 	virtual void tick(const F64 &delta);
 	virtual void loop(const F64 &delta);
 	

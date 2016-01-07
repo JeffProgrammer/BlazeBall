@@ -26,36 +26,6 @@ RenderWorld::RenderWorld(PhysicsEngine *physics) : World(physics) {
 	mControlObject = nullptr;
 
 	mDoDebugDraw = false;
-
-	if (!mWindow->createContext()) {
-		return;
-	}
-
-	//Initialize OpenGL
-	if (!initGL()) {
-		return;
-	}
-
-	//Create camera
-	{
-		Camera *camera = new Camera(this);
-		addObject(camera);
-		mCamera = camera;
-	}
-
-	//Create player
-	{
-		Sphere *player = new Sphere(this, glm::vec3(0, 0, 20), 0.2f);
-		Material *material = new Material("marble.skin");
-		material->setTexture(mMarbleCubemap, GL_TEXTURE3);
-		material->setShader(Shader::getShaderByName("Sphere"));
-		player->setMaterial(material);
-		mPlayer = player;
-		addObject(player);
-	}
-
-	mControlObject = mPlayer;
-
 	mCaptureMouse = true;
 }
 
@@ -144,13 +114,8 @@ void RenderWorld::renderScene(RenderInfo &info) {
 void RenderWorld::loop(const F64 &delta) {
 	PlatformEvent *eventt;
 
-	F64 lastDelta = 0;
-
 	F64 counter = 0;
 	U32 fpsCounter = 0;
-
-	//Profiling
-	mTimer->start();
 
 	if (mShouldSleep) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(200));
@@ -170,26 +135,6 @@ void RenderWorld::loop(const F64 &delta) {
 
 	//Flip buffers
 	mWindow->swapBuffers();
-
-	//Profiling
-	if (mPrintFPS) {
-		counter += lastDelta;
-		fpsCounter++;
-		if (counter >= 1.f) {
-			F32 mspf = 1000.0f / fpsCounter;
-			std::string title = "FPS: " + std::to_string(fpsCounter) + " mspf: " + std::to_string(mspf);
-			mWindow->setWindowTitle(title.c_str());
-
-			counter = 0.0;
-			fpsCounter = 0;
-		}
-	}
-
-	//Count how long a frame took
-	// calculate delta of this elapsed frame.
-	mTimer->end();
-
-	lastDelta = mTimer->getDelta();
 }
 
 void RenderWorld::tick(const F64 &delta) {
@@ -217,6 +162,40 @@ void RenderWorld::updateWindowSize(const glm::ivec2 &size) {
 
 	//Should be 2x if you have a retina display
 	mPixelDensity = static_cast<F32>(viewport[2] / size.x);
+}
+
+bool RenderWorld::init() {
+
+	if (!mWindow->createContext()) {
+		return false;
+	}
+
+	//Initialize OpenGL
+	if (!initGL()) {
+		return false;
+	}
+
+	//Create camera
+	{
+		Camera *camera = new Camera(this);
+		addObject(camera);
+		mCamera = camera;
+	}
+
+	//Create player
+	{
+		Sphere *player = new Sphere(this, glm::vec3(0, 0, 20), 0.2f);
+		Material *material = new Material("marble.skin");
+		material->setTexture(mMarbleCubemap, GL_TEXTURE3);
+		material->setShader(Shader::getShaderByName("Sphere"));
+		player->setMaterial(material);
+		mPlayer = player;
+		addObject(player);
+	}
+
+	mControlObject = mPlayer;
+
+	return true;
 }
 
 bool RenderWorld::initGL() {

@@ -96,6 +96,7 @@ public:
 	virtual void loop(const F64 &delta);
 	virtual void tick(const F64 &delta);
 	bool initGL();
+	bool init();
 	void performClick(S32 mouseX, S32 mouseY);
 	void handleEvent(PlatformEvent *event);
 

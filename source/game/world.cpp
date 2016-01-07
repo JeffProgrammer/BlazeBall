@@ -18,7 +18,6 @@
 World::World(PhysicsEngine *physics) : mPhysicsEngine(physics) {
 	mPhysicsEngine->init();
 	mPhysicsEngine->setStepCallback([this](F64 delta){
-		this->loop(delta);
 		this->tick(delta);
 	});
 
@@ -34,12 +33,10 @@ World::~World() {
 }
 
 void World::loop(const F64 &delta) {
-	
+	mPhysicsEngine->simulate(delta);
 }
 
 void World::tick(const F64 &delta) {
-	mPhysicsEngine->simulate(delta);
-
 	for (auto object : mObjects) {
 		object->updateTick(delta);
 	}

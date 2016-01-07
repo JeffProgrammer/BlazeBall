@@ -66,7 +66,26 @@ int main(int argc, const char *argv[]) {
 		world->mTimer = new SDLTimer();
 		world->mConfig = new Config("config.txt");
 
+		if (!world->init()) {
+			return 1;
+		}
+
 		world->loadLevel("level.json");
+
+		F64 lastDelta;
+
+		while (world->getRunning()) {
+			//Profiling
+			world->mTimer->start();
+
+			world->loop(lastDelta);
+
+			//Count how long a frame took
+			// calculate delta of this elapsed frame.
+			world->mTimer->end();
+
+			lastDelta = world->mTimer->getDelta();
+		}
 
 		client.disconnect();
 
