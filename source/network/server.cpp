@@ -16,7 +16,7 @@
 U32 Server::sUniqueId = 0;
 U32 Server::sLastGhostId = 0;
 
-Server::Server() {
+Server::Server(World *world) : mWorld(world) {
 	mIsRunning = false;
 	mAccumulator = 0.0;
 	mTimer = new SDLTimer();
@@ -34,6 +34,10 @@ void Server::start() {
 
 	// start the server process
 	IO::printf("Starting server process...\n");
+
+	for (const auto &object : mWorld->getObjectList()) {
+		addGhostedObject(object);
+	}
 
 	enetpp::server_listen_params<ClientConnection> params;
 	params.set_max_client_count(16);
@@ -74,6 +78,8 @@ void Server::run() {
 			mAccumulator -= SERVER_TIME;
 		}
 
+		mWorld->loop(delta);
+
 		// track time and sleep for a little bit so we don't kill our CPU
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		mTimer->end();
@@ -82,8 +88,9 @@ void Server::run() {
 }
 
 void Server::pollEvents() {
-	auto onClientConnect = [](ClientConnection &client) {
+	auto onClientConnect = [this](ClientConnection &client) {
 		IO::printf("Client %u with IP %s has joined the server.\n", client.id, client.ipAddress.c_str());
+		this->ghostAllObjects(client);
 	};
 
 	auto onClientDisconnect = [](U32 clientId) {

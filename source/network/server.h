@@ -21,7 +21,7 @@
 
 class Server {
 public:
-	Server();
+	Server(World *world);
 	~Server();
 
 	void start();
@@ -54,6 +54,7 @@ private:
 	bool mIsRunning;
 	PlatformTimer *mTimer;
 	F64 mAccumulator;
+	World *mWorld;
 
 	std::unordered_map<U32, NetObject *> mGhostedObjects;
 	std::unordered_map<NetObject *, U32> mGhostedIndices;
