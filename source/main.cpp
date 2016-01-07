@@ -38,62 +38,44 @@ int main(int argc, const char *argv[]) {
 	// parse command line arguments.
 	parseArgs(argc, argv);
 
-	if (gIsDedicated) {
-		// create a server obj
-		Server server;
-		server.start();
+	//Create us a new scene
+	RenderWorld *world = new RenderWorld(new btPhysicsEngine());
+	Client client(world, "127.0.0.1", 28000);
+	client.connect();
 
-		// block until we quit
-		std::string line;
-		while (true) {  
-			std::getline(std::cin, line);
-			if (line == "quit")
-				break;
-		}
+	World *serverWorld = new World(new btPhysicsEngine());
+	Server server(serverWorld);
+	serverWorld->loadLevel("level.json");
+	server.start();
 
-		// stop server
-		server.stop();
-	} else {
-		//Create us a new scene
-		RenderWorld *world = new RenderWorld(new btPhysicsEngine());
+	//Init SDL
+	world->mWindow = new SDLWindow();
+	world->mTimer = new SDLTimer();
+	world->mConfig = new Config("config.txt");
 
-		// NETWORKING MWHAHAHAHAH
-		Client client(world, "127.0.0.1", 28000);
-		client.connect();
-
-		//Init SDL
-		world->mWindow = new SDLWindow();
-		world->mTimer = new SDLTimer();
-		world->mConfig = new Config("config.txt");
-
-		if (!world->init()) {
-			return 1;
-		}
-
-		world->loadLevel("level.json");
-
-		F64 lastDelta;
-
-		while (world->getRunning()) {
-			//Profiling
-			world->mTimer->start();
-
-			world->loop(lastDelta);
-
-			//Count how long a frame took
-			// calculate delta of this elapsed frame.
-			world->mTimer->end();
-
-			lastDelta = world->mTimer->getDelta();
-		}
-
-		client.disconnect();
-
-		// much hack, very wow
-		if (gSphereVBO)
-			glDeleteBuffers(1, &gSphereVBO);
+	if (!world->init()) {
+		return 1;
 	}
 
+	F64 lastDelta;
+
+	while (world->getRunning()) {
+		//Profiling
+		world->mTimer->start();
+		{
+			world->loop(lastDelta);
+
+			client.pollEvents();
+		}
+		world->mTimer->end();
+		lastDelta = world->mTimer->getDelta();
+	}
+
+	client.disconnect();
+
+	// much hack, very wow
+	if (gSphereVBO)
+		glDeleteBuffers(1, &gSphereVBO);
 
 	// destroy the networking engine
 	Network::destroy();
