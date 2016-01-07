@@ -81,7 +81,7 @@ void Server::run() {
 }
 
 void Server::pollEvents() {
-	auto onClientConnect = [](Connection &client) {
+	auto onClientConnect = [](ClientConnection &client) {
 		IO::printf("Client %u with IP %s has joined the server.\n", client.id, client.ipAddress.c_str());
 	};
 
@@ -89,7 +89,7 @@ void Server::pollEvents() {
 		IO::printf("Client %u has left the server.\n", clientId);
 	};
 
-	auto onReceiveData = [this](Connection &client, const U8 *data, size_t size) {
+	auto onReceiveData = [this](ClientConnection &client, const U8 *data, size_t size) {
 		CharStream stream(data, size);
 		NetServerEvent *event = NetServerEvent::deserialize(stream, this);
 		this->sendEvent(*event);
@@ -105,7 +105,7 @@ void Server::sendEvent(const NetServerEvent &event) {
 	}
 }
 
-void Server::sendEvent(const NetServerEvent &event, Server::Connection *connection) {
+void Server::sendEvent(const NetServerEvent &event, ClientConnection *connection) {
 	const std::vector<U8> &data = event.serialize().getBuffer();
 	mServer.send_packet_to(connection->id, 0, &data[0], data.size(), ENET_PACKET_FLAG_RELIABLE);
 }

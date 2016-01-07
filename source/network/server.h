@@ -12,19 +12,12 @@
 #include "platform/platformTimer.h"
 #include "platform/SDL/SDLTimer.h"
 #include "network/event/netServerEvent.h"
+#include "network/clientConnection.h"
 #include <thread>
 #include <enetpp/server.h>
 
 class Server {
 public:
-	struct Connection {
-		U32 id;
-		std::string ipAddress;
-
-		// This is needed for enet internally.
-		U32 get_id() { return id; }
-	};
-
 	Server();
 	~Server();
 
@@ -34,7 +27,7 @@ public:
 	void pollEvents();
 
 	void sendEvent(const NetServerEvent &event); //Global
-	void sendEvent(const NetServerEvent &event, Connection *connection);
+	void sendEvent(const NetServerEvent &event, ClientConnection *connection);
 
 private:
 	static U32 sUniqueId;
@@ -44,9 +37,7 @@ private:
 	PlatformTimer *mTimer;
 	F64 mAccumulator;
 
-	enetpp::server<Connection> mServer;
-
-
+	enetpp::server<ClientConnection> mServer;
 
 	void run();
 };
