@@ -134,6 +134,11 @@ public:
 	 */
 	virtual void updateTick(const F64 &delta) {}
 
+	/**
+	 * A callback that is called when the object is added to the scene.
+	 */
+	virtual void onAddToScene() {}
+
 	virtual bool read(CharStream &stream);
 	virtual bool write(CharStream &stream) const;
 
