@@ -22,12 +22,29 @@
 
 extern GLuint gSphereVBO;
 
-bool gIsDedicated = false;
+struct GameState {
+	bool runClient;
+	bool runServer;
+
+	std::string serverAddress;
+
+	Client *client;
+	Server *server;
+
+	World *clientWorld;
+	World *serverWorld;
+
+	GameState() {
+		//Local server by default
+		runClient = true;
+		runServer = true;
+		serverAddress = "127.0.0.1";
+	}
+} gConnectionState;
 
 void parseArgs(int argc, const char *argv[]);
 
 int main(int argc, const char *argv[]) {
-
 	// Load the networking engine
 	Network::init();
 
@@ -38,45 +55,71 @@ int main(int argc, const char *argv[]) {
 	// parse command line arguments.
 	parseArgs(argc, argv);
 
-	//Create us a new scene
-	RenderWorld *world = new RenderWorld(new btPhysicsEngine());
-	Client client(world, "127.0.0.1", 28000);
-	client.connect();
+	if (gConnectionState.runServer) {
+		World *world = new World(new btPhysicsEngine());
+		Server *server = new Server(world);
+		world->loadLevel("level.json");
+		server->start();
 
-	World *serverWorld = new World(new btPhysicsEngine());
-	Server server(serverWorld);
-	serverWorld->loadLevel("level.json");
-	server.start();
+		gConnectionState.server = server;
+		gConnectionState.serverWorld = world;
+	}
 
-	//Init SDL
-	world->mWindow = new SDLWindow();
-	world->mTimer = new SDLTimer();
-	world->mConfig = new Config("config.txt");
+	if (gConnectionState.runClient) {
+		//Create us a new scene
+		RenderWorld *world = new RenderWorld(new btPhysicsEngine());
+		Client *client = new Client(world, gConnectionState.serverAddress, 28000);
+		client->connect();
 
-	if (!world->init()) {
-		return 1;
+		//Init SDL
+		world->mWindow = new SDLWindow();
+		world->mTimer = new SDLTimer();
+		world->mConfig = new Config("config.txt");
+
+		if (!world->init()) {
+			return 1;
+		}
+
+		gConnectionState.client = client;
+		gConnectionState.clientWorld = world;
 	}
 
 	F64 lastDelta;
 
-	while (world->getRunning()) {
-		//Profiling
-		world->mTimer->start();
-		{
-			world->loop(lastDelta);
+	SDLTimer *timer = new SDLTimer();
 
-			client.pollEvents();
+	while (true) {
+		//Profiling
+		timer->start();
+		{
+			if (gConnectionState.runClient) {
+				gConnectionState.clientWorld->loop(lastDelta);
+				gConnectionState.client->pollEvents();
+
+				if (!gConnectionState.clientWorld->getRunning()) {
+					break;
+				}
+			} else {
+				std::string input;
+				std::getline(std::cin, input);
+				if (input == "quit")
+					break;
+			}
 		}
-		world->mTimer->end();
-		lastDelta = world->mTimer->getDelta();
+		timer->end();
+		lastDelta = timer->getDelta();
 	}
 
-	client.disconnect();
-	server.stop();
+	if (gConnectionState.runClient) {
+		gConnectionState.client->disconnect();
 
-	// much hack, very wow
-	if (gSphereVBO)
-		glDeleteBuffers(1, &gSphereVBO);
+		// much hack, very wow
+		if (gSphereVBO)
+			glDeleteBuffers(1, &gSphereVBO);
+	}
+	if (gConnectionState.runServer) {
+		gConnectionState.server->stop();
+	}
 
 	// destroy the networking engine
 	Network::destroy();
@@ -87,7 +130,14 @@ int main(int argc, const char *argv[]) {
 void parseArgs(int argc, const char *argv[]) {
 	for (int i = 1; i < argc; i++) {
 		std::string cmp = argv[i];
-		if (cmp == "-dedicated")
-			gIsDedicated = true;
+		if (cmp == "--dedicated") {
+			gConnectionState.runClient = false;
+			gConnectionState.runServer = true;
+		}
+		if (cmp == "--server" && argc > i + 1) {
+			gConnectionState.runClient = true;
+			gConnectionState.runServer = false;
+			gConnectionState.serverAddress = argv[i + 1];
+		}
 	}
 }
