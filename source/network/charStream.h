@@ -42,6 +42,10 @@ public:
 	}
 };
 
+//-----------------------------------------------------------------------------
+// U8 datatype. Represents the base type for pushing and popping data off of
+// the stream
+//-----------------------------------------------------------------------------
 
 template<>
 inline U8 CharStream::push(const U8 &value) {
@@ -71,6 +75,12 @@ inline U8 CharStream::peek() {
 	return mData.front();
 }
 
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// U32 datatype stream
+//-----------------------------------------------------------------------------
+
 template<>
 inline U32 CharStream::push(const U32 &value) {
 	union {
@@ -97,6 +107,99 @@ inline U32 CharStream::pop() {
 	data.u8[2] = pop<U8>();
 	data.u8[3] = pop<U8>();
 	return data.u32;
+}
+
+template<>
+inline U32 CharStream::peek() {
+	union {
+		U32 u32;
+		U8 u8[4];
+	} data;
+	data.u8[0] = peek<U8>();
+	data.u8[1] = peek<U8>();
+	data.u8[2] = peek<U8>();
+	data.u8[3] = peek<U8>();
+	return data.u32;
+}
+
+//-----------------------------------------------------------------------------
+// F32 datatype stream
+//-----------------------------------------------------------------------------
+
+template<>
+inline F32 CharStream::push(const F32 &value) {
+	union {
+		F32 f32;
+		U32 u32;
+	} data;
+	data.f32 = value;
+	
+	push<U32>(data.u32);
+	return value;
+}
+
+template<>
+inline F32 CharStream::pop() {
+	union {
+		F32 f32;
+		U32 u32;
+	} data;
+	data.u32 = pop<U32>();
+	return data.f32;
+}
+
+template<>
+inline F32 CharStream::peek() {
+	union {
+		F32 f32;
+		U32 u32;
+	} data;
+	data.u32 = peek<U32>();
+	return data.f32;
+}
+
+//-----------------------------------------------------------------------------
+// glm::vec3 datatype stream
+//-----------------------------------------------------------------------------
+
+template<>
+inline glm::vec3 CharStream::push(const glm::vec3 &value) {
+	push<F32>(value.x);
+	push<F32>(value.y);
+	push<F32>(value.z);
+	return value;
+}
+
+template<>
+inline glm::vec3 CharStream::pop() {
+	F32 data[3];
+	data[0] = pop<F32>();
+	data[1] = pop<F32>();
+	data[2] = pop<F32>();
+	return glm::vec3(data[0], data[1], data[2]);
+}
+
+//-----------------------------------------------------------------------------
+// glm::quat datatype stream
+//-----------------------------------------------------------------------------
+
+template<>
+inline glm::quat CharStream::push(const glm::quat &value) {
+	push<F32>(value.x);
+	push<F32>(value.y);
+	push<F32>(value.z);
+	push<F32>(value.w);
+	return value;
+}
+
+template<>
+inline glm::quat CharStream::pop() {
+	F32 data[4];
+	data[0] = pop<F32>();
+	data[1] = pop<F32>();
+	data[2] = pop<F32>();
+	data[3] = pop<F32>();
+	return glm::quat(data[0], data[1], data[2], data[3]);
 }
 
 #endif
