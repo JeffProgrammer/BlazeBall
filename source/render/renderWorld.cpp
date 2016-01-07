@@ -64,9 +64,9 @@ void RenderWorld::render() {
 
 	info.isReflectionPass = false;
 
-	mMarbleCubemap->generateBuffer(mPlayer->getPosition(), mWindow->getWindowSize() * (S32)mPixelDensity, [&](RenderInfo &info) {
-		this->renderScene(info);
-	}, info);
+//	mMarbleCubemap->generateBuffer(mPlayer->getPosition(), mWindow->getWindowSize() * (S32)mPixelDensity, [&](RenderInfo &info) {
+//		this->renderScene(info);
+//	}, info);
 
 	//Actually render everything
 	renderScene(info);
@@ -183,7 +183,7 @@ bool RenderWorld::init() {
 	{
 		Sphere *player = new Sphere(this, glm::vec3(0, 0, 20), 0.2f);
 		Material *material = new Material("marble.skin");
-		material->setTexture(mMarbleCubemap, GL_TEXTURE3);
+//		material->setTexture(mMarbleCubemap, GL_TEXTURE3);
 		material->setShader(Shader::getShaderByName("Sphere"));
 		player->setMaterial(material);
 		mPlayer = player;
@@ -199,8 +199,8 @@ bool RenderWorld::initGL() {
 	Shader::initializeShaders();
 	mShapeShader = Shader::getShaderByName("Model");
 
-	mMarbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
-	mMarbleCubemap->generateBuffer();
+//	mMarbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
+//	mMarbleCubemap->generateBuffer();
 
 	//Window size for viewport
 	glm::ivec2 screenSize = mWindow->getWindowSize();
