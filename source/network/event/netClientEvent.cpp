@@ -7,6 +7,7 @@
 #include "netClientEvent.h"
 #include "network/client.h"
 #include "base/io.h"
+#include "game/gameObject.h"
 #include "scriptEngine/abstractClassRep.h"
 
 const U8 Magic = 0x42;
@@ -91,5 +92,17 @@ bool NetClientGhostCreateEvent::read(CharStream &data) {
 	}
 	mClient->addGhostedObject(ghostId, mObject);
 
-	return mObject->read(data);
+	if (!mObject->read(data)) {
+		return false;
+	}
+
+	// This is a shitty way of doing this, but this is a level loader.
+	// If the object is a game object, add it to the scene.
+	GameObject *gameObject = dynamic_cast<GameObject *>(mObject);
+	if (gameObject != nullptr) {
+		// add it to the scene.
+		mClient->getWorld()->addObject(gameObject);
+	}
+
+	return true;
 }
