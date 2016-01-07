@@ -451,6 +451,8 @@ set (DIFVIEWERGAME_SRC
 	source/network/clientConnection.cpp
 	source/network/clientConnection.h
 	source/network/network.h
+	source/network/netObject.cpp
+	source/network/netObject.h
 	source/network/server.cpp
 	source/network/server.h
 	source/network/charStream.h
