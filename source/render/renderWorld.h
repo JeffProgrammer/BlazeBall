@@ -41,7 +41,6 @@
 
 class RenderWorld : public World {
 protected:
-	bool mRunning;
 	bool mPrintFPS = true;
 
 	glm::mat4 mScreenProjectionMatrix;
@@ -61,7 +60,6 @@ protected:
 	Movement mMovement;
 
 	F32 mPixelDensity;
-	F32 mSimulationSpeed;
 
 	bool mDoDebugDraw;
 
@@ -79,17 +77,13 @@ public:
 	Skybox *mSkybox;
 	CubeMapFramebufferTexture *mMarbleCubemap;
 
-	PlatformWindow *mWindow;
 	PlatformTimer *mTimer;
+	PlatformWindow *mWindow;
 	Config *mConfig;
 
 	Shader *mShapeShader;
 	
-	bool mShouldSleep;
-
 	virtual void addObject(GameObject *object);
-
-	GameObject *findGameObject(const std::string &name);
 
 	RenderWorld(PhysicsEngine *physics);
 	virtual ~RenderWorld();
@@ -99,12 +93,9 @@ public:
 	void renderScene(RenderInfo &info);
 	void render();
 
-	void loop(const F64 &delta);
+	virtual void loop(const F64 &delta);
 	virtual void tick(const F64 &delta);
 	bool initGL();
-	bool init();
-	void cleanup();
-	void run();
 	void performClick(S32 mouseX, S32 mouseY);
 	void handleEvent(PlatformEvent *event);
 

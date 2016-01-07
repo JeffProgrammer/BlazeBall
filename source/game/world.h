@@ -18,26 +18,26 @@ protected:
 	std::vector<GameObject *> mObjects;
 	PhysicsEngine *mPhysicsEngine;
 
-public:
-	World(PhysicsEngine *physics) : mPhysicsEngine(physics) {
-		mPhysicsEngine->init();
-	}
-	virtual ~World() {
-		for (auto object : mObjects) {
-			delete object;
-		}
-		delete mPhysicsEngine;
-	}
+	bool mRunning;
+	bool mShouldSleep;
 
-	virtual void addObject(GameObject *object) {
-		mObjects.push_back(object);
-	}
+	F32 mSimulationSpeed;
+
+public:
+	World(PhysicsEngine *physics);
+	virtual ~World();
 
 	PhysicsEngine *getPhysicsEngine() { return mPhysicsEngine; }
 
 	virtual void tick(const F64 &delta);
-
+	virtual void loop(const F64 &delta);
+	
 	bool loadLevel(const std::string &file);
+
+	GameObject *findGameObject(const std::string &name);
+	virtual void addObject(GameObject *object) {
+		mObjects.push_back(object);
+	}
 };
 
 #endif

@@ -18,6 +18,7 @@
 #include "physics/bullet/btPhysicsEngine.h"
 #include "game/levelLoader.h"
 #include "network/server.h"
+#include "network/client.h"
 
 extern GLuint gSphereVBO;
 
@@ -56,20 +57,18 @@ int main(int argc, const char *argv[]) {
 		//Create us a new scene
 		RenderWorld *world = new RenderWorld(new btPhysicsEngine());
 
+		// NETWORKING MWHAHAHAHAH
+		Client client(world, "127.0.0.1", 28000);
+		client.connect();
+
 		//Init SDL
 		world->mWindow = new SDLWindow();
 		world->mTimer = new SDLTimer();
 		world->mConfig = new Config("config.txt");
 
-		//Init SDL
-		if (!world->init()) {
-			return 1;
-		}
-
 		world->loadLevel("level.json");
 
-		//Let our scene go!
-		world->run();
+		client.disconnect();
 
 		// much hack, very wow
 		if (gSphereVBO)

@@ -24,6 +24,7 @@ protected:
 	static std::mutex sMutex;
 
 public:
+	virtual ~PlatformTimer() {};
 	/* 
 	 * Starts the timer and keeps track of the time.
 	 * Do not call getDelta() until end() is called.

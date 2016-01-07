@@ -9,15 +9,52 @@
 #include <rapidjson/document.h>
 #include "game/gameObject.h"
 
-void World::tick(const F64 &delta) {
-	mPhysicsEngine->simulate(delta);
-}
-
 #ifdef __APPLE__
 #define stricmp strcasecmp
 #else
 //#define stricmp stricmp
 #endif
+
+World::World(PhysicsEngine *physics) : mPhysicsEngine(physics) {
+	mPhysicsEngine->init();
+	mPhysicsEngine->setStepCallback([this](F64 delta){
+		this->loop(delta);
+		this->tick(delta);
+	});
+
+	mRunning = true;
+	mShouldSleep = false;
+}
+
+World::~World() {
+	for (auto object : mObjects) {
+		delete object;
+	}
+	delete mPhysicsEngine;
+}
+
+void World::loop(const F64 &delta) {
+	
+}
+
+void World::tick(const F64 &delta) {
+	mPhysicsEngine->simulate(delta);
+
+	for (auto object : mObjects) {
+		object->updateTick(delta);
+	}
+}
+
+GameObject* World::findGameObject(const std::string &name) {
+	// O(n)
+	// TODO: store objects in a hash map or something.
+	for (const auto obj : mObjects) {
+		if (obj->getName() == name)
+			return obj;
+	}
+	return nullptr;
+}
+
 
 /* Temporary function until str functions are put in place */
 inline bool temp___containsMoreThanOneWord(const std::string &str) {

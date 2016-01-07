@@ -14,7 +14,6 @@
 #include <thread>
 #include <algorithm>
 #include <ctime>
-#include "network/client.h"
 
 glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4x4(1), glm::radians(-90.0f), glm::vec3(1, 0, 0));
 
@@ -25,11 +24,50 @@ glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4x4(1), glm::radians(-
 RenderWorld::RenderWorld(PhysicsEngine *physics) : World(physics) {
 	mShapeShader = nullptr;
 	mControlObject = nullptr;
+
+	mDoDebugDraw = false;
+
+	if (!mWindow->createContext()) {
+		return;
+	}
+
+	//Initialize OpenGL
+	if (!initGL()) {
+		return;
+	}
+
+	//Create camera
+	{
+		Camera *camera = new Camera(this);
+		addObject(camera);
+		mCamera = camera;
+	}
+
+	//Create player
+	{
+		Sphere *player = new Sphere(this, glm::vec3(0, 0, 20), 0.2f);
+		Material *material = new Material("marble.skin");
+		material->setTexture(mMarbleCubemap, GL_TEXTURE3);
+		material->setShader(Shader::getShaderByName("Sphere"));
+		player->setMaterial(material);
+		mPlayer = player;
+		addObject(player);
+	}
+
+	mControlObject = mPlayer;
+
+	mCaptureMouse = true;
 }
 
 RenderWorld::~RenderWorld() {
 	delete mWindow;
 	delete mTimer;
+
+	// destroy all shaders
+	Shader::destroyAllShaders();
+
+	//Destroy the SDL
+	mWindow->destroyContext();
 }
 
 void RenderWorld::render() {
@@ -104,10 +142,59 @@ void RenderWorld::renderScene(RenderInfo &info) {
 }
 
 void RenderWorld::loop(const F64 &delta) {
+	PlatformEvent *eventt;
 
+	F64 lastDelta = 0;
+
+	F64 counter = 0;
+	U32 fpsCounter = 0;
+
+	//Profiling
+	mTimer->start();
+
+	if (mShouldSleep) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+	}
+
+	//Input
+	while (mWindow->pollEvents(eventt)) {
+		if (eventt != NULL) {
+			handleEvent(eventt);
+			delete eventt;
+		}
+	}
+
+	World::loop(delta);
+
+	render();
+
+	//Flip buffers
+	mWindow->swapBuffers();
+
+	//Profiling
+	if (mPrintFPS) {
+		counter += lastDelta;
+		fpsCounter++;
+		if (counter >= 1.f) {
+			F32 mspf = 1000.0f / fpsCounter;
+			std::string title = "FPS: " + std::to_string(fpsCounter) + " mspf: " + std::to_string(mspf);
+			mWindow->setWindowTitle(title.c_str());
+
+			counter = 0.0;
+			fpsCounter = 0;
+		}
+	}
+
+	//Count how long a frame took
+	// calculate delta of this elapsed frame.
+	mTimer->end();
+
+	lastDelta = mTimer->getDelta();
 }
 
 void RenderWorld::tick(const F64 &delta) {
+	World::tick(delta);
+
 	if (mControlObject) {
 		mControlObject->updateCamera(mMovement, delta);
 		mControlObject->updateMove(mMovement, delta);
@@ -118,10 +205,6 @@ void RenderWorld::tick(const F64 &delta) {
 
 	if (mMovement.fire) {
 
-	}
-
-	for (auto object : mObjects) {
-		object->updateTick(delta);
 	}
 }
 
@@ -345,35 +428,6 @@ void RenderWorld::handleEvent(PlatformEvent *event) {
 	}
 }
 
-bool RenderWorld::init() {
-	mRunning = true;
-	mShouldSleep = false;
-	mDoDebugDraw = false;
-
-	if (!mWindow->createContext()) {
-		return false;
-	}
-
-	//Initialize OpenGL
-	if (!initGL()) {
-		return false;
-	}
-
-	mCaptureMouse = true;
-
-	return true;
-}
-
-void RenderWorld::cleanup() {
-	delete mTimer;
-	
-	// destroy all shaders
-	Shader::destroyAllShaders();
-
-	//Destroy the SDL
-	mWindow->destroyContext();
-}
-
 void RenderWorld::addObject(GameObject *object) {
 	World::addObject(object);
 
@@ -385,118 +439,4 @@ void RenderWorld::addObject(GameObject *object) {
 		// fire callback
 		renderedObject->onAddToScene();
 	}
-}
-
-GameObject* RenderWorld::findGameObject(const std::string &name) {
-	// O(n)
-	// TODO: store objects in a hash map or something.
-	for (const auto obj : mObjects) {
-		if (obj->getName() == name)
-			return obj;
-	}
-	return nullptr;
-}
-
-void RenderWorld::run() {
-	PlatformEvent *eventt;
-
-	F64 lastDelta = 0;
-	
-	F64 counter = 0;
-	U32 fpsCounter = 0;
-
-	mSimulationSpeed = 1.0f;
-
-	getPhysicsEngine()->setStepCallback([&](F64 delta){
-		if (mSimulationSpeed == 1.0f) {
-			this->loop(delta);
-			this->tick(delta);
-		}
-	});
-
-	// onStart
-
-	// NETWORKING MWHAHAHAHAH
-	Client client(this, "127.0.0.1", 28000);
-	client.connect();
-
-	//Create camera
-	{
-		Camera *camera = new Camera(this);
-		addObject(camera);
-		mCamera = camera;
-	}
-
-	//Create player
-	{
-		Sphere *player = new Sphere(this, glm::vec3(0, 0, 20), 0.2f);
-		Material *material = new Material("marble.skin");
-		material->setTexture(mMarbleCubemap, GL_TEXTURE3);
-		material->setShader(Shader::getShaderByName("Sphere"));
-		player->setMaterial(material);
-		mPlayer = player;
-		addObject(player);
-	}
-	
-	mControlObject = mPlayer;
-
-	//Main loop
-	while (mRunning) {
-		//Profiling
-		mTimer->start();
-		
-		if (mShouldSleep) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(200));
-		}
-
-		//Input
-		while (mWindow->pollEvents(eventt)) {
-			if (eventt != NULL) {
-				handleEvent(eventt);
-				delete eventt;
-			}
-		}
-
-		//Update the physics and game items
-		getPhysicsEngine()->simulate(lastDelta * mSimulationSpeed);
-
-		if (mSimulationSpeed != 1.0f) {
-			this->loop(lastDelta * mSimulationSpeed);
-			this->tick(lastDelta * mSimulationSpeed);
-		}
-
-		// le networking
-		client.pollEvents();
-
-		render();
-		
-		//Flip buffers
-		mWindow->swapBuffers();
-
-		//Profiling
-		if (mPrintFPS) {
-			counter += lastDelta;
-			fpsCounter++;
-			if (counter >= 1.f) {
-				F32 mspf = 1000.0f / fpsCounter;
-				std::string title = "FPS: " + std::to_string(fpsCounter) + " mspf: " + std::to_string(mspf);
-				mWindow->setWindowTitle(title.c_str());
-				
-				counter = 0.0;
-				fpsCounter = 0;
-			}
-		}
-		
-		//Count how long a frame took
-		// calculate delta of this elapsed frame.
-		mTimer->end();
-
-		lastDelta = mTimer->getDelta();
-	}
-
-	// cleanup client.
-	client.disconnect();
-
-	//Clean up (duh)
-	cleanup();
 }
