@@ -10,7 +10,7 @@
 
 const U8 Magic = 0x42;
 
-std::shared_ptr<NetServerEvent> NetServerEvent::deserialize(CharStream &data, Server *server) {
+std::shared_ptr<NetServerEvent> NetServerEvent::deserialize(CharStream &data, Server *server, ClientConnection *client) {
 	//Don't corrupt the stream if it's not a net event
 	if (data.peek<U8>() != NetEvent::Magic)
 		return nullptr;
@@ -23,13 +23,13 @@ std::shared_ptr<NetServerEvent> NetServerEvent::deserialize(CharStream &data, Se
 	//TODO: Make this fancy
 	switch (type) {
 		case Event::NetConnect:
-			event = std::make_shared<NetServerConnectEvent>(server);
+			event = std::make_shared<NetServerConnectEvent>(server, client);
 			break;
 		case Event::NetDisconnect:
-			event = std::make_shared<NetServerDisconnectEvent>(server);
+			event = std::make_shared<NetServerDisconnectEvent>(server, client);
 			break;
 		case Event::NetGhostUpdate:
-			event = std::make_shared<NetServerGhostUpdateEvent>(server, nullptr);
+			event = std::make_shared<NetServerGhostUpdateEvent>(server, client, nullptr);
 			break;
 		default:
 			return nullptr;
@@ -62,13 +62,13 @@ bool NetServerEvent::read(CharStream &data) {
 	return true;
 }
 
-NetServerConnectEvent::NetServerConnectEvent(Server *server) : NetServerEvent(NetConnect, server) {
+NetServerConnectEvent::NetServerConnectEvent(Server *server, ClientConnection *client) : NetServerEvent(NetConnect, server, client) {
 }
 
-NetServerDisconnectEvent::NetServerDisconnectEvent(Server *server) : NetServerEvent(NetDisconnect, server) {
+NetServerDisconnectEvent::NetServerDisconnectEvent(Server *server, ClientConnection *client) : NetServerEvent(NetDisconnect, server, client) {
 }
 
-NetServerGhostCreateEvent::NetServerGhostCreateEvent(Server *server, NetObject *object) : NetServerEvent(NetGhostCreate, server), mObject(object) {
+NetServerGhostCreateEvent::NetServerGhostCreateEvent(Server *server, ClientConnection *client, NetObject *object) : NetServerEvent(NetGhostCreate, server, client), mObject(object) {
 }
 
 bool NetServerGhostCreateEvent::write(CharStream &data) const {
@@ -87,7 +87,7 @@ bool NetServerGhostCreateEvent::read(CharStream &data) {
 	return false;
 }
 
-NetServerGhostEvent::NetServerGhostEvent(Type type, Server *server, NetObject *object) : NetServerEvent(type, server), mObject(object) {
+NetServerGhostEvent::NetServerGhostEvent(Type type, Server *server, ClientConnection *client, NetObject *object) : NetServerEvent(type, server, client), mObject(object) {
 }
 
 bool NetServerGhostEvent::write(CharStream &data) const {
@@ -122,7 +122,7 @@ bool NetServerGhostEvent::read(CharStream &data) {
 	return true;
 }
 
-NetServerGhostUpdateEvent::NetServerGhostUpdateEvent(Server *server, NetObject *obj) : NetServerGhostEvent(NetGhostUpdate, server, obj) {
+NetServerGhostUpdateEvent::NetServerGhostUpdateEvent(Server *server, ClientConnection *client, NetObject *obj) : NetServerGhostEvent(NetGhostUpdate, server, client, obj) {
 }
 
 bool NetServerGhostUpdateEvent::write(CharStream &stream) const {

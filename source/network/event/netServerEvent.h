@@ -11,14 +11,17 @@
 #include "network/netObject.h"
 
 class Server;
+class ClientConnection;
 
 class NetServerEvent : public NetEvent {
-public:
+protected:
 	Server *mServer;
+	ClientConnection *mClient;
+public:
 
-	NetServerEvent(Type type, Server *server) : NetEvent(type), mServer(server) {}
+	NetServerEvent(Type type, Server *server, ClientConnection *client) : NetEvent(type), mServer(server), mClient(client) {}
 
-	static std::shared_ptr<NetServerEvent> deserialize(CharStream &data, Server *server);
+	static std::shared_ptr<NetServerEvent> deserialize(CharStream &data, Server *server, ClientConnection *client);
 
 	virtual bool write(CharStream &data) const;
 	virtual bool read(CharStream &data);
@@ -26,18 +29,18 @@ public:
 
 class NetServerConnectEvent : public NetServerEvent {
 public:
-	NetServerConnectEvent(Server *server);
+	NetServerConnectEvent(Server *server, ClientConnection *client);
 };
 
 class NetServerDisconnectEvent : public NetServerEvent {
 public:
-	NetServerDisconnectEvent(Server *server);
+	NetServerDisconnectEvent(Server *server, ClientConnection *client);
 };
 
 class NetServerGhostCreateEvent : public NetServerEvent {
 	NetObject *mObject;
 public:
-	NetServerGhostCreateEvent(Server *server, NetObject *object);
+	NetServerGhostCreateEvent(Server *server, ClientConnection *client, NetObject *object);
 
 	virtual bool write(CharStream &data) const;
 	virtual bool read(CharStream &data);
@@ -47,7 +50,7 @@ class NetServerGhostEvent : public NetServerEvent {
 protected:
 	NetObject *mObject;
 public:
-	NetServerGhostEvent(Type type, Server *server, NetObject *object);
+	NetServerGhostEvent(Type type, Server *server, ClientConnection *client, NetObject *object);
 
 	virtual bool write(CharStream &data) const;
 	virtual bool read(CharStream &data);
@@ -55,7 +58,7 @@ public:
 
 class NetServerGhostUpdateEvent : public NetServerGhostEvent {
 public:
-	NetServerGhostUpdateEvent(Server *server, NetObject *obj);
+	NetServerGhostUpdateEvent(Server *server, ClientConnection *client, NetObject *obj);
 
 	virtual bool write(CharStream &data) const;
 	virtual bool read(CharStream &data);

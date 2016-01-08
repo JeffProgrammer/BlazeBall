@@ -100,7 +100,7 @@ void Server::pollEvents() {
 
 	auto onReceiveData = [this](ClientConnection &client, const U8 *data, size_t size) {
 		CharStream stream(data, size);
-		const auto &event = NetServerEvent::deserialize(stream, this);
+		const auto &event = NetServerEvent::deserialize(stream, this, &client);
 	};
 
 	mServer.consume_events(onClientConnect, onClientDisconnect, onReceiveData);
@@ -136,7 +136,7 @@ void Server::ghostObject(NetObject *object) {
 	addGhostedObject(object);
 
 	//Create a ghosting packet
-	auto event = std::make_shared<NetServerGhostCreateEvent>(this, object);
+	auto event = std::make_shared<NetServerGhostCreateEvent>(this, nullptr, object);
 	sendEvent(event);
 }
 
@@ -144,7 +144,7 @@ void Server::ghostObject(NetObject *object, ClientConnection &connection) {
 	addGhostedObject(object);
 
 	//Create a ghosting packet
-	auto event = std::make_shared<NetServerGhostCreateEvent>(this, object);
+	auto event = std::make_shared<NetServerGhostCreateEvent>(this, &connection, object);
 	sendEvent(event, connection);
 }
 
