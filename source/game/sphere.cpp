@@ -329,13 +329,6 @@ bool Sphere::readClientPacket(CharStream &stream) {
 	if (!NetObject::readClientPacket(stream))
 		return false;
 
-	// discard packet if this is our control object.
-	// or else we'll end in a circular loop.
-	// TODO: don't even send from server.
-	// MAYBE??
-	if (static_cast<RenderWorld*>(mWorld)->mControlObject == this)
-		return false;
-
 	setPosition(stream.pop<glm::vec3>());
 	setRotation(stream.pop<glm::quat>());
 	setScale(stream.pop<glm::vec3>());
