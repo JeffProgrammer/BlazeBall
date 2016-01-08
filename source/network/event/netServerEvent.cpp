@@ -146,3 +146,21 @@ bool NetServerGhostUpdateEvent::read(CharStream &stream) {
 
 	return true;
 }
+
+NetServerGhostControlObjectEvent::NetServerGhostControlObjectEvent(Server *server, ClientConnection *client, NetObject *obj) : NetServerGhostEvent(NetGhostControlObject, server, client, obj) {
+}
+
+bool NetServerGhostControlObjectEvent::write(CharStream &stream) const {
+	if (!NetServerGhostEvent::write(stream))
+		return false;
+	
+	return true;
+}
+
+bool NetServerGhostControlObjectEvent::read(CharStream &stream) {
+	if (!NetServerGhostEvent::read(stream))
+		return false;
+
+	//Clients don't set their control object, we do
+	return false;
+}

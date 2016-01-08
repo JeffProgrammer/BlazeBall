@@ -11,6 +11,8 @@
 Client::Client(World *world, const std::string &ipAddress, const U16 port) : mWorld(world) {
 	mServerAddress = ipAddress;
 	mPort = port;
+
+	mControlObject = nullptr;
 }
 
 Client::~Client() {

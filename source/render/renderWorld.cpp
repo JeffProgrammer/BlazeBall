@@ -10,6 +10,7 @@
 #include "game/shape.h"
 #include "game/skybox.h"
 #include "render/util.h"
+#include "network/client.h"
 #include <chrono>
 #include <thread>
 #include <algorithm>
@@ -23,8 +24,6 @@ glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4x4(1), glm::radians(-
 
 RenderWorld::RenderWorld(PhysicsEngine *physics) : World(physics) {
 	mShapeShader = nullptr;
-	mControlObject = nullptr;
-	mPlayer = nullptr;
 
 	mDoDebugDraw = false;
 	mCaptureMouse = true;
@@ -43,10 +42,11 @@ RenderWorld::~RenderWorld() {
 
 void RenderWorld::render() {
 	//Get the camera transform from the marble
-	glm::mat4 cameraTransform;
-	glm::vec3 cameraPosition;
-	if (mControlObject)
-		mControlObject->getCameraPosition(cameraTransform, cameraPosition);
+	glm::mat4 cameraTransform(1);
+	glm::vec3 cameraPosition(0);
+
+	if (mClient->getControlObject())
+		mClient->getControlObject()->getCameraPosition(cameraTransform, cameraPosition);
 
 	//Camera
 	glm::mat4 viewMatrix = glm::mat4x4(1);
@@ -65,7 +65,7 @@ void RenderWorld::render() {
 
 	info.isReflectionPass = false;
 
-	glm::vec3 position = (mPlayer ? mPlayer->getPosition() : glm::vec3(0));
+	glm::vec3 position = (mClient->getControlObject() ? mClient->getControlObject()->getPosition() : glm::vec3(0));
 	mMarbleCubemap->generateBuffer(position, mWindow->getWindowSize() * (S32)mPixelDensity, [&](RenderInfo &info) {
 		this->renderScene(info);
 	}, info);
@@ -139,9 +139,16 @@ void RenderWorld::loop(const F64 &delta) {
 void RenderWorld::tick(const F64 &delta) {
 	World::tick(delta);
 
-	if (mControlObject) {
-		mControlObject->updateCamera(mMovement, delta);
-		mControlObject->updateMove(mMovement, delta);
+	GameObject *control = mClient->getControlObject();
+	if (control) {
+		// temp code
+		auto event = std::make_shared<NetClientGhostUpdateEvent>(mClient, control);
+		mClient->sendEvent(event, ENetPacketFlag::ENET_PACKET_FLAG_UNSEQUENCED);
+
+		if (control) {
+			control->updateCamera(mMovement, delta);
+			control->updateMove(mMovement, delta);
+		}
 	}
 
 	mMovement.pitch = 0;
@@ -173,26 +180,6 @@ bool RenderWorld::init() {
 	if (!initGL()) {
 		return false;
 	}
-
-	//Create camera
-	{
-		Camera *camera = new Camera(this);
-		addObject(camera);
-		mCamera = camera;
-	}
-
-	//Create player
-	{
-		Sphere *player = new Sphere(this, glm::vec3(0, 0, 20), 0.2f);
-		Material *material = new Material("marble.skin");
-		material->setTexture(mMarbleCubemap, GL_TEXTURE3);
-		material->setShader(Shader::getShaderByName("Sphere"));
-		player->setMaterial(material);
-		mPlayer = player;
-		addObject(player);
-	}
-
-	mControlObject = mPlayer;
 
 	return true;
 }
@@ -279,10 +266,11 @@ void RenderWorld::handleEvent(PlatformEvent *event) {
 				case KeyEvent::KEY_C:
 				{
 					// swap control mObjects!
-					if (mControlObject == mPlayer)
-						mControlObject = mCamera;
-					else
-						mControlObject = mPlayer;
+					//TODO: Server this
+//					if (mControlObject == mPlayer)
+//						mControlObject = mCamera;
+//					else
+//						mControlObject = mPlayer;
 					break;
 				}
 				case KeyEvent::KEY_M:
@@ -297,13 +285,14 @@ void RenderWorld::handleEvent(PlatformEvent *event) {
 				case KeyEvent::KEY_G:
 				{
 					// mega / regular marble
-					if (mPlayer->getRadius() < 1.0f) {
-						mPlayer->setRadius(1.0f);
-						mMarbleCubemap->setExtent(glm::vec2(256, 256));
-					} else {
-						mPlayer->setRadius(0.2f);
-						mMarbleCubemap->setExtent(glm::vec2(64, 64));
-					}
+					//TODO: Server this
+//					if (mPlayer->getRadius() < 1.0f) {
+//						mPlayer->setRadius(1.0f);
+//						mMarbleCubemap->setExtent(glm::vec2(256, 256));
+//					} else {
+//						mPlayer->setRadius(0.2f);
+//						mMarbleCubemap->setExtent(glm::vec2(64, 64));
+//					}
 					break;
 				}
 				case KeyEvent::KEY_F:
@@ -324,14 +313,15 @@ void RenderWorld::handleEvent(PlatformEvent *event) {
 				case KeyEvent::KEY_U:
 				{
 					// mbu / regular marble
-					if (mPlayer->getRadius() < 0.3f) {
-						mPlayer->setRadius(0.3f);
-						mMarbleCubemap->setExtent(glm::vec2(128, 128));
-					}
-					else {
-						mPlayer->setRadius(0.2f);
-						mMarbleCubemap->setExtent(glm::vec2(64, 64));
-					}
+					//TODO: Server this
+//					if (mPlayer->getRadius() < 0.3f) {
+//						mPlayer->setRadius(0.3f);
+//						mMarbleCubemap->setExtent(glm::vec2(128, 128));
+//					}
+//					else {
+//						mPlayer->setRadius(0.2f);
+//						mMarbleCubemap->setExtent(glm::vec2(64, 64));
+//					}
 					break;
 				}
 				case KeyEvent::KEY_ESCAPE:

@@ -41,11 +41,15 @@ public:
 		return mWorld;
 	}
 
+	GameObject *getControlObject() const { return mControlObject; }
+	void setControlObject(GameObject *object) { mControlObject = object; }
+
 protected:
 	enetpp::client mClient;
 	std::string mServerAddress;
 	U16 mPort;
 	World *mWorld;
+	GameObject *mControlObject;
 
 	std::unordered_map<U32, NetObject *> mGhostedObjects;
 	std::unordered_map<NetObject *, U32> mGhostedIndices;

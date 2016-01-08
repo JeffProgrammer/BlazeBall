@@ -24,7 +24,8 @@ public:
 		NetConnect,
 		NetDisconnect,
 		NetGhostCreate,
-		NetGhostUpdate
+		NetGhostUpdate,
+		NetGhostControlObject
 	};
 
 	Type type;

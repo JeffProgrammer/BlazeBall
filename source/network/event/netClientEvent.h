@@ -61,4 +61,13 @@ public:
 	virtual bool read(CharStream &data);
 };
 
+class NetClientGhostControlObjectEvent : public NetClientGhostEvent {
+public:
+	NetClientGhostControlObjectEvent(Client *client, NetObject *obj);
+
+	virtual bool write(CharStream &data) const;
+	virtual bool read(CharStream &data);
+};
+
+
 #endif

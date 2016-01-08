@@ -72,9 +72,6 @@ public:
 	const U32 specularExponent   = 7;
 
 	std::vector<RenderedObject *> mRenderedObjects;
-	GameObject *mControlObject;
-	Camera *mCamera;
-	Sphere *mPlayer;
 	Skybox *mSkybox;
 	CubeMapFramebufferTexture *mMarbleCubemap;
 

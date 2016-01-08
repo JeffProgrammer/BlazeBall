@@ -36,6 +36,9 @@ std::shared_ptr<NetClientEvent> NetClientEvent::deserialize(CharStream &data, Cl
 		case Event::NetGhostUpdate:
 			event = std::make_shared<NetClientGhostUpdateEvent>(client, nullptr);
 			break;
+		case Event::NetGhostControlObject:
+			event = std::make_shared<NetClientGhostControlObjectEvent>(client, nullptr);
+			break;
 		default:
 			return nullptr;
 	}
@@ -167,6 +170,31 @@ bool NetClientGhostUpdateEvent::read(CharStream &stream) {
 	//Read the packet from the server.
 	if (!mObject->readServerPacket(stream))
 		return false;
+
+	return true;
+}
+
+NetClientGhostControlObjectEvent::NetClientGhostControlObjectEvent(Client *client, NetObject *obj) : NetClientGhostEvent(NetGhostControlObject, client, obj) {
+}
+
+bool NetClientGhostControlObjectEvent::write(CharStream &stream) const {
+	if (!NetClientGhostEvent::write(stream))
+		return false;
+
+	//We can't set this like this
+
+	return false;
+}
+
+bool NetClientGhostControlObjectEvent::read(CharStream &stream) {
+	if (!NetClientGhostEvent::read(stream))
+		return false;
+
+	GameObject *game = dynamic_cast<GameObject *>(mObject);
+	if (game == nullptr)
+		return false;
+
+	mClient->setControlObject(game);
 
 	return true;
 }
