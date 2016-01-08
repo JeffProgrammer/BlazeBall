@@ -108,20 +108,28 @@ void Server::pollEvents() {
 
 	for (const auto &pair : mGhostedObjects) {
 		const auto obj = pair.second;
-		auto event = std::make_shared<NetServerGhostUpdateEvent>(this, obj);
-		sendEvent(event, ENetPacketFlag::ENET_PACKET_FLAG_UNSEQUENCED);
+		auto event = std::make_shared<NetServerGhostUpdateEvent>(this, nullptr, obj);
+
+		//Don't send updates for people's control objects
+		sendEvent(event, [this, obj](const ClientConnection &connection) {
+			return obj != connection.getControlObject();
+		}, ENetPacketFlag::ENET_PACKET_FLAG_UNSEQUENCED);
 	}
 }
 
 void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ENetPacketFlag flag) {
-	for (const auto &connection : mServer.get_connected_clients()) {
-		sendEvent(event, *connection, flag);
-	}
+	const std::vector<U8> &data = event->serialize().getBuffer();
+	mServer.send_packet_to_all_if(0, &data[0], data.size(), flag, [](const ClientConnection &){return true;});
 }
 
 void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection &connection, ENetPacketFlag flag) {
 	const std::vector<U8> &data = event->serialize().getBuffer();
-	mServer.send_packet_to(connection.id, 0, &data[0], data.size(), flag);
+	mServer.send_packet_to(connection.get_id(), 0, &data[0], data.size(), flag);
+}
+
+void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, std::function<bool(const ClientConnection &)> predicate, ENetPacketFlag flag) {
+	const std::vector<U8> &data = event->serialize().getBuffer();
+	mServer.send_packet_to_all_if(0, &data[0], data.size(), flag, predicate);
 }
 
 void Server::addGhostedObject(NetObject *object) {
