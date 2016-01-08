@@ -15,8 +15,11 @@ void ClientConnection::setControlObject(GameObject *object) {
 	mControlObject = object;
 
 	//Update our client
-	auto event = std::make_shared<NetServerGhostControlObjectEvent>(mServer, this, object);
-	mServer->sendEvent(event, *this);
+	auto controlObjectEvent = std::make_shared<NetServerGhostControlObjectEvent>(mServer, this, object);
+	mServer->sendEvent(controlObjectEvent, *this);
+
+	auto updateEvent = std::make_shared<NetServerGhostUpdateEvent>(mServer, this, object);
+	mServer->sendEvent(updateEvent, *this);
 }
 
 void ClientConnection::createPlayer() {
@@ -31,6 +34,7 @@ void ClientConnection::createPlayer() {
 	//Create player
 	{
 		Sphere *player = static_cast<Sphere *>(AbstractClassRep::createFromName(mServer->getWorld(), "Sphere"));
+		player->setPosition(glm::vec3(0, 0, 20));
 		mServer->getWorld()->addObject(player);
 		mServer->ghostObject(player);
 		mPlayer = player;
