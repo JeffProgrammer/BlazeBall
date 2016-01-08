@@ -2,12 +2,12 @@
 	{
 		"class": "ScriptObject",
 		"name": "MissionInfo",
-		"desc": "A test level from Marble Blast Ultra.",
-		"author": "Alex Swanson"
+		"desc": "A test level from Threefolder",
+		"author": "Threefolder"
 	},
 	{
 		"class": "GameInterior",
-		"interiorFile": "bowl/bowl.dif",
+		"interiorFile": "tf/threefolder_walleyewarehouse_JEEF.dif",
 		"position": "0 0 0",
 		"scale": "1 1 1"
 	},
