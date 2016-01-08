@@ -73,6 +73,21 @@ bool ScriptEngine::init() {
 	{
 		S32 r;
 		r = mEngine->RegisterGlobalFunction("void echo(string &in)", asFUNCTION(echo), asCALL_CDECL); assert(r >= 0);
+
+		// Expose ScriptObject.....
+
+		// Register the type
+		r = mEngine->RegisterObjectType("ScriptObject", 0, asOBJ_REF); assert(r >= 0);
+		r = mEngine->RegisterObjectBehaviour("ScriptObject", asBEHAVE_ADDREF, "void f()", asMETHOD(ScriptObject, addRef), asCALL_THISCALL); assert(r >= 0);
+		r = mEngine->RegisterObjectBehaviour("ScriptObject", asBEHAVE_RELEASE, "void f()", asMETHOD(ScriptObject, release), asCALL_THISCALL); assert(r >= 0);
+
+		// Register a method to get the name
+		r = mEngine->RegisterObjectMethod("ScriptObject", "string getName()", asMETHOD(ScriptObject, getName), asCALL_THISCALL); assert(r >= 0);
+		r = mEngine->RegisterObjectMethod("ScriptObject", "void setName(const string &in)", asMETHOD(ScriptObject, setName), asCALL_THISCALL); assert(r >= 0);
+
+
+		// after we register the scriptobject, let us create them with a factory function!
+		r = mEngine->RegisterGlobalFunction("ScriptObject @+ createObject(string &in)", asFUNCTION(createObject), asCALL_CDECL); assert(r >= 0);
 	}
 
 	mCurrentContext = mEngine->CreateContext();

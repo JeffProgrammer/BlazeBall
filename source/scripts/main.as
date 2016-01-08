@@ -6,6 +6,12 @@ void main() {
 	//	echo("Level level.json loaded successfully.");
 	//else
 	//	echo("Level file level.json not found!");
+	
+	// create script object
+	ScriptObject @obj = createObject("ScriptObject");
+	obj.setName("Bob");
+	string name = obj.getName();
+	echo(name);
 }
 
 float get5() {

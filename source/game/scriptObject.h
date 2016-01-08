@@ -21,6 +21,18 @@ public:
 	ScriptObject();
 	virtual ~ScriptObject();
 
+	S32 addRef() {
+		return ++mRefCount;
+	}
+
+	S32 release() {
+		if (--mRefCount == 0) {
+			delete this;
+			return 0;
+		}
+		return mRefCount;
+	}
+
 	static void initFields();
 
 	virtual AbstractClassRep* getClassRep() {
@@ -29,6 +41,10 @@ public:
 
 	bool getField(const std::string &name, std::string &value);
 	bool setField(const std::string &name, const std::string &value);
+
+	void setName(const std::string &name) {
+		mName = name;
+	}
 
 	inline const std::string getName() const {
 		return mName;
@@ -43,6 +59,8 @@ protected:
 	bool setMemberField(const std::string &name, const std::string &value);
 
 	std::string mName;
+
+	S32 mRefCount;
 
 	/*
 	 * A list of fields that are extra, defined by the script, for the object.
