@@ -51,6 +51,10 @@ public:
 	}
 
 	void parseArgs(int argc, const char **argv);
+
+	bool start();
+	void stop();
+	void runLoop();
 };
 
 int main(int argc, const char **argv) {
@@ -66,73 +70,11 @@ int main(int argc, const char **argv) {
 	// parse command line arguments.
 	state.parseArgs(argc, argv);
 
-	if (state.runServer) {
-		World *world = new World(new btPhysicsEngine());
-		Server *server = new Server(world);
-		world->loadLevel("level.json");
-		server->start();
+	if (!state.start())
+		return 1;
 
-		state.server = server;
-		state.serverWorld = world;
-	}
-
-	if (state.runClient) {
-		//Create us a new scene
-		RenderWorld *world = new RenderWorld(new btPhysicsEngine());
-		Client *client = new Client(world, state.serverAddress, 28000);
-
-		world->setClient(client);
-		client->connect();
-
-		//Init SDL
-		world->mWindow = state.platform->createWindow();
-		world->mTimer = state.platform->createTimer();
-		world->mConfig = new Config("config.txt");
-
-		if (!world->init()) {
-			return 1;
-		}
-
-		state.client = client;
-		state.clientWorld = world;
-	}
-
-	F64 lastDelta = 0.0;
-
-	PlatformTimer *timer = state.platform->createTimer();
-
-	while (true) {
-		//Profiling
-		timer->start();
-		{
-			if (state.runClient) {
-				state.clientWorld->loop(lastDelta);
-				state.client->pollEvents();
-
-				if (!state.clientWorld->getRunning()) {
-					break;
-				}
-			} else {
-				std::string input;
-				std::getline(std::cin, input);
-				if (input == "quit")
-					break;
-			}
-		}
-		timer->end();
-		lastDelta = timer->getDelta();
-	}
-
-	if (state.runClient) {
-		state.client->disconnect();
-
-		// much hack, very wow
-		if (gSphereVBO)
-			glDeleteBuffers(1, &gSphereVBO);
-	}
-	if (state.runServer) {
-		state.server->stop();
-	}
+	state.runLoop();
+	state.stop();
 
 	// destroy the networking engine
 	Network::destroy();
@@ -152,5 +94,75 @@ void GameState::parseArgs(int argc, const char **argv) {
 			runServer = false;
 			serverAddress = argv[i + 1];
 		}
+	}
+}
+
+bool GameState::start() {
+	if (runServer) {
+		serverWorld = new World(new btPhysicsEngine());
+		server = new Server(serverWorld);
+		serverWorld->loadLevel("level.json");
+		server->start();
+	}
+
+	if (runClient) {
+		//Create us a new scene
+		RenderWorld *world = new RenderWorld(new btPhysicsEngine());
+		client = new Client(world, serverAddress, 28000);
+
+		world->setClient(client);
+		client->connect();
+
+		//Init SDL
+		world->mWindow = platform->createWindow();
+		world->mTimer = platform->createTimer();
+		world->mConfig = new Config("config.txt");
+
+		if (!world->init()) {
+			return false;
+		}
+
+		clientWorld = world;
+	}
+	return true;
+}
+
+void GameState::stop() {
+	if (runClient) {
+		client->disconnect();
+
+		// much hack, very wow
+		if (gSphereVBO)
+			glDeleteBuffers(1, &gSphereVBO);
+	}
+	if (runServer) {
+		server->stop();
+	}
+}
+
+void GameState::runLoop() {
+	F64 lastDelta = 0.0;
+	PlatformTimer *timer = platform->createTimer();
+
+	while (true) {
+		//Profiling
+		timer->start();
+		{
+			if (runClient) {
+				clientWorld->loop(lastDelta);
+				client->pollEvents();
+
+				if (!clientWorld->getRunning()) {
+					break;
+				}
+			} else {
+				std::string input;
+				std::getline(std::cin, input);
+				if (input == "quit")
+					break;
+			}
+		}
+		timer->end();
+		lastDelta = timer->getDelta();
 	}
 }
