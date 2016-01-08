@@ -6,9 +6,9 @@
 
 #include <fstream>
 #include <cstdlib>
-#include "platform/SDL/SDLWindow.h"
-#include "platform/SDL/SDLTimer.h"
-#include "platform/network.h"
+#include <memory>
+
+#include "platform/SDL/SDLPlatform.h"
 #include "game/GameInterior.h"
 #include "scriptEngine/scriptEngine.h"
 #include "game/world.h"
@@ -17,12 +17,17 @@
 // TODO: clean this shit up
 #include "physics/bullet/btPhysicsEngine.h"
 #include "game/levelLoader.h"
+
+#include "network/network.h"
 #include "network/server.h"
 #include "network/client.h"
 
 extern GLuint gSphereVBO;
 
-struct GameState {
+class GameState {
+public:
+	std::unique_ptr<Platform> platform;
+
 	bool runClient;
 	bool runServer;
 
@@ -34,17 +39,23 @@ struct GameState {
 	World *clientWorld;
 	World *serverWorld;
 
-	GameState() {
+	GameState(std::unique_ptr<Platform> &&platform) {
+		this->platform = std::move(platform);
 		//Local server by default
 		runClient = true;
 		runServer = true;
-		serverAddress = "127.0.0.1";
+		serverAddress = "localhost";
 	}
-} gConnectionState;
+	~GameState() {
 
-void parseArgs(int argc, const char *argv[]);
+	}
 
-int main(int argc, const char *argv[]) {
+	void parseArgs(int argc, const char **argv);
+};
+
+int main(int argc, const char **argv) {
+	GameState state(std::make_unique<SDLPlatform>());
+
 	// Load the networking engine
 	Network::init();
 
@@ -53,52 +64,52 @@ int main(int argc, const char *argv[]) {
 		return 1;
 
 	// parse command line arguments.
-	parseArgs(argc, argv);
+	state.parseArgs(argc, argv);
 
-	if (gConnectionState.runServer) {
+	if (state.runServer) {
 		World *world = new World(new btPhysicsEngine());
 		Server *server = new Server(world);
 		world->loadLevel("level.json");
 		server->start();
 
-		gConnectionState.server = server;
-		gConnectionState.serverWorld = world;
+		state.server = server;
+		state.serverWorld = world;
 	}
 
-	if (gConnectionState.runClient) {
+	if (state.runClient) {
 		//Create us a new scene
 		RenderWorld *world = new RenderWorld(new btPhysicsEngine());
-		Client *client = new Client(world, gConnectionState.serverAddress, 28000);
+		Client *client = new Client(world, state.serverAddress, 28000);
 
 		world->setClient(client);
 		client->connect();
 
 		//Init SDL
-		world->mWindow = new SDLWindow();
-		world->mTimer = new SDLTimer();
+		world->mWindow = state.platform->createWindow();
+		world->mTimer = state.platform->createTimer();
 		world->mConfig = new Config("config.txt");
 
 		if (!world->init()) {
 			return 1;
 		}
 
-		gConnectionState.client = client;
-		gConnectionState.clientWorld = world;
+		state.client = client;
+		state.clientWorld = world;
 	}
 
 	F64 lastDelta = 0.0;
 
-	SDLTimer *timer = new SDLTimer();
+	PlatformTimer *timer = state.platform->createTimer();
 
 	while (true) {
 		//Profiling
 		timer->start();
 		{
-			if (gConnectionState.runClient) {
-				gConnectionState.clientWorld->loop(lastDelta);
-				gConnectionState.client->pollEvents();
+			if (state.runClient) {
+				state.clientWorld->loop(lastDelta);
+				state.client->pollEvents();
 
-				if (!gConnectionState.clientWorld->getRunning()) {
+				if (!state.clientWorld->getRunning()) {
 					break;
 				}
 			} else {
@@ -112,15 +123,15 @@ int main(int argc, const char *argv[]) {
 		lastDelta = timer->getDelta();
 	}
 
-	if (gConnectionState.runClient) {
-		gConnectionState.client->disconnect();
+	if (state.runClient) {
+		state.client->disconnect();
 
 		// much hack, very wow
 		if (gSphereVBO)
 			glDeleteBuffers(1, &gSphereVBO);
 	}
-	if (gConnectionState.runServer) {
-		gConnectionState.server->stop();
+	if (state.runServer) {
+		state.server->stop();
 	}
 
 	// destroy the networking engine
@@ -129,17 +140,17 @@ int main(int argc, const char *argv[]) {
 	return 0;
 }
 
-void parseArgs(int argc, const char *argv[]) {
-	for (int i = 1; i < argc; i++) {
+void GameState::parseArgs(int argc, const char **argv) {
+	for (int i = 1; i < argc; i ++) {
 		std::string cmp = argv[i];
 		if (cmp == "--dedicated") {
-			gConnectionState.runClient = false;
-			gConnectionState.runServer = true;
+			runClient = false;
+			runServer = true;
 		}
-		if (cmp == "--server" && argc > i + 1) {
-			gConnectionState.runClient = true;
-			gConnectionState.runServer = false;
-			gConnectionState.serverAddress = argv[i + 1];
+		if (cmp == "--server" && argc > (i + 1)) {
+			runClient = true;
+			runServer = false;
+			serverAddress = argv[i + 1];
 		}
 	}
 }
