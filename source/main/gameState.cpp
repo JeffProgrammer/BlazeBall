@@ -7,7 +7,6 @@
 #include "gameState.h"
 
 #include "render/renderWorld.h"
-#include "physics/bullet/btPhysicsEngine.h"
 
 extern GLuint gSphereVBO;
 
@@ -28,7 +27,7 @@ void GameState::parseArgs(int argc, const char **argv) {
 
 bool GameState::start() {
 	if (runServer) {
-		serverWorld = new World(new btPhysicsEngine());
+		serverWorld = new World(platform->createPhysicsEngine());
 		server = new Server(serverWorld);
 		serverWorld->loadLevel("level.json");
 		server->start();
@@ -36,7 +35,7 @@ bool GameState::start() {
 
 	if (runClient) {
 		//Create us a new scene
-		RenderWorld *world = new RenderWorld(new btPhysicsEngine());
+		RenderWorld *world = new RenderWorld(platform->createPhysicsEngine());
 		client = new Client(world, serverAddress, 28000);
 
 		world->setClient(client);

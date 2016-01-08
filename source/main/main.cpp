@@ -7,13 +7,14 @@
 #include <fstream>
 #include <cstdlib>
 
+#include "physics/bullet/btPhysicsEngine.h"
 #include "scriptEngine/scriptEngine.h"
 #include "platform/SDL/SDLPlatform.h"
 #include "network/network.h"
 #include "main/gameState.h"
 
 int main(int argc, const char **argv) {
-	GameState state(std::make_unique<SDLPlatform>());
+	GameState state(std::make_unique<SDLPlatform>(std::make_unique<Platform::ConcretePhysicsEngineFactory<btPhysicsEngine>>()));
 
 	// Load the networking engine
 	Network::init();
