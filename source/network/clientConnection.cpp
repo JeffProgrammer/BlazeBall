@@ -24,7 +24,7 @@ void ClientConnection::createPlayer() {
 	{
 		Camera *camera = static_cast<Camera *>(AbstractClassRep::createFromName(mServer->getWorld(), "Camera"));
 		mServer->getWorld()->addObject(camera);
-		mServer->ghostObject(camera, *this);
+		mServer->ghostObject(camera);
 		mCamera = camera;
 	}
 
@@ -32,7 +32,7 @@ void ClientConnection::createPlayer() {
 	{
 		Sphere *player = static_cast<Sphere *>(AbstractClassRep::createFromName(mServer->getWorld(), "Sphere"));
 		mServer->getWorld()->addObject(player);
-		mServer->ghostObject(player, *this);
+		mServer->ghostObject(player);
 		mPlayer = player;
 	}
 
