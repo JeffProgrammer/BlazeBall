@@ -20,7 +20,8 @@ int main(int argc, const char **argv) {
 	Network::init();
 
 	// Init script engine and call the main function
-	if (!ScriptEngine::getSingleton()->init())
+	ScriptEngine *scripting = new ScriptEngine();
+	if (!scripting->init())
 		return 1;
 
 	// parse command line arguments.

@@ -31,11 +31,6 @@ public:
 
 	bool compileScript(const std::string &scriptFile);
 
-	static ScriptEngine *getSingleton() {
-		ScriptEngine *singleton = new ScriptEngine();
-		return singleton;
-	}
-
 private:
 	asIScriptEngine *mEngine;
 
