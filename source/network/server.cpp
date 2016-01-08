@@ -92,6 +92,7 @@ void Server::pollEvents() {
 	auto onClientConnect = [this](ClientConnection &client) {
 		IO::printf("Client %u with IP %s has joined the server.\n", client.get_id(), client.getAddress().c_str());
 		this->ghostAllObjects(client);
+		client.createPlayer();
 	};
 
 	auto onClientDisconnect = [](U32 clientId) {

@@ -46,6 +46,10 @@ public:
 		return mGhostedIndices[object];
 	}
 
+	World *getWorld() const {
+		return mWorld;
+	}
+
 private:
 	static U32 sUniqueId;
 	static U32 sLastGhostId;
