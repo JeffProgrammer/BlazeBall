@@ -158,7 +158,7 @@ const glm::quat Sphere::getRotation() const {
 	return mActor->getRotation();
 }
 
-const glm::vec3 Sphere::getVelocity() const {
+const glm::vec3 Sphere::getLinearVelocity() const {
 	return mActor->getLinearVelocity();
 }
 

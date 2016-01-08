@@ -80,11 +80,11 @@ public:
 	bool getColliding();
 	glm::vec3 getCollisionNormal(glm::vec3 &toiVelocity);
     
-	const glm::vec3 getVelocity() const;
+	const glm::vec3 getLinearVelocity() const;
 	const glm::vec3 getAngularVelocity() const;
 
 	void setLinearVelocity(const glm::vec3 &vel);
-   void setAngularVelocity(const glm::vec3 &vel);
+	void setAngularVelocity(const glm::vec3 &vel);
 
 	virtual void updateCamera(const Movement &movement, const F64 &delta) override;
 	virtual void updateMove(const Movement &movement, const F64 &delta) override;
