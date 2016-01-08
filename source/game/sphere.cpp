@@ -18,7 +18,11 @@ IMPLEMENT_SCRIPTOBJECT(Sphere, RenderedObject);
 
 GLuint gSphereVBO = 0;
 
-Sphere::Sphere(World *world) : Sphere(world, glm::vec3(0), 0) {
+Sphere::Sphere(World *world) : Sphere(world, glm::vec3(0), 0.2) {
+	Material *material = new Material("marble.skin");
+//	material->setTexture(mMarbleCubemap, GL_TEXTURE3);
+	material->setShader(Shader::getShaderByName("Sphere"));
+	setMaterial(material);
 }
 
 Sphere::Sphere(World *world, glm::vec3 origin, F32 radius) : RenderedObject(world), mRadius(radius), mMaxAngVel(1000.0f), mMaterial(nullptr) {
