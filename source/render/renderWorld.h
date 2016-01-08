@@ -62,6 +62,7 @@ protected:
 	F32 mPixelDensity;
 
 	bool mDoDebugDraw;
+	Client *mClient;
 
 public:
 	const glm::vec4 lightColor     = glm::vec4(1.000000f, 1.000000f, 1.000000f, 1.400000f);
@@ -103,6 +104,9 @@ public:
 	void createCamera(const glm::vec3 &position);
 	void createPlayer(const glm::vec3 &position, F32 radius);
 	void createInterior(const std::string &path);
+
+	Client *getClient() const { return mClient; }
+	void setClient(Client *client) { mClient = client; }
 };
 
 #endif

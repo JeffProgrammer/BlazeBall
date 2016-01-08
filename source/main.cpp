@@ -69,6 +69,8 @@ int main(int argc, const char *argv[]) {
 		//Create us a new scene
 		RenderWorld *world = new RenderWorld(new btPhysicsEngine());
 		Client *client = new Client(world, gConnectionState.serverAddress, 28000);
+
+		world->setClient(client);
 		client->connect();
 
 		//Init SDL
