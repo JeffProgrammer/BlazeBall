@@ -7,11 +7,22 @@
 #ifndef _RENDER_RENDERWORLD_H_
 #define _RENDER_RENDERWORLD_H_
 
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#else
+#include <GL/glew.h>
+#endif
+
 #include <stdio.h>
+#include <vector>
+#include <glm/matrix.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/vec3.hpp>
+#include <dif/objects/dif.h>
+
 #include "base/math.h"
 #include "base/types.h"
 #include "base/io.h"
-#include <dif/objects/dif.h>
 #include "texture/texture.h"
 #include "game/sphere.h"
 #include "physics/physicsEngine.h"
@@ -19,7 +30,6 @@
 #include "platform/platformWindow.h"
 #include "platform/platformEvent.h"
 #include "platform/platformTimer.h"
-#include <vector>
 #include "game/movement.h"
 #include "game/camera.h"
 #include "game/skybox.h"
@@ -29,15 +39,7 @@
 #include "base/config.h"
 #include "game/world.h"
 
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
-#include <GL/glew.h>
-#endif
-
-#include <glm/matrix.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/vec3.hpp>
+class Client;
 
 class RenderWorld : public World {
 protected:
