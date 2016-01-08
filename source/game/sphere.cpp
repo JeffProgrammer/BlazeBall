@@ -337,6 +337,9 @@ bool Sphere::readClientPacket(CharStream &stream) {
 	setRotation(stream.pop<glm::quat>());
 	setScale(stream.pop<glm::vec3>());
 
+	setLinearVelocity(stream.pop<glm::vec3>());
+	setAngularVelocity(stream.pop<glm::vec3>());
+
 	return true;
 }
 
@@ -347,6 +350,9 @@ bool Sphere::readServerPacket(CharStream &stream) {
 	setPosition(stream.pop<glm::vec3>());
 	setRotation(stream.pop<glm::quat>());
 	setScale(stream.pop<glm::vec3>());
+
+	setLinearVelocity(stream.pop<glm::vec3>());
+	setAngularVelocity(stream.pop<glm::vec3>());
 
 	return true;
 }
@@ -359,6 +365,9 @@ bool Sphere::writeClientPacket(CharStream &stream) const {
 	stream.push<glm::quat>(getRotation());
 	stream.push<glm::vec3>(getScale());
 
+	stream.push<glm::vec3>(getLinearVelocity());
+	stream.push<glm::vec3>(getAngularVelocity());
+
 	return true;
 }
 
@@ -369,6 +378,9 @@ bool Sphere::writeServerPacket(CharStream &stream) const {
 	stream.push<glm::vec3>(getPosition());
 	stream.push<glm::quat>(getRotation());
 	stream.push<glm::vec3>(getScale());
+
+	stream.push<glm::vec3>(getLinearVelocity());
+	stream.push<glm::vec3>(getAngularVelocity());
 
 	return true;
 }
