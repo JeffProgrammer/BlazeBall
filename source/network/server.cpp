@@ -43,10 +43,11 @@ void Server::start() {
 	params.set_max_client_count(16);
 	params.set_channel_count(1);
 	params.set_listen_port(28000);
-	params.set_initialize_client_function([](ClientConnection &client, const char *ipAddress) {
+	params.set_initialize_client_function([this](ClientConnection &client, const char *ipAddress) {
 		// Initializes the client by assining its IP address and its unique identifier.
-		client.ipAddress = ipAddress;
-		client.id = sUniqueId;
+		client.mIpAddress = ipAddress;
+		client.mId = sUniqueId;
+		client.mServer = this;
 		sUniqueId++;
 	});
 	mServer.start_listening(params);
@@ -89,7 +90,7 @@ void Server::run() {
 
 void Server::pollEvents() {
 	auto onClientConnect = [this](ClientConnection &client) {
-		IO::printf("Client %u with IP %s has joined the server.\n", client.id, client.ipAddress.c_str());
+		IO::printf("Client %u with IP %s has joined the server.\n", client.get_id(), client.getAddress().c_str());
 		this->ghostAllObjects(client);
 	};
 
