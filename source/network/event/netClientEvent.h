@@ -43,8 +43,17 @@ public:
 	virtual bool read(CharStream &data);
 };
 
-class NetClientGhostUpdateEvent : public NetClientEvent {
+class NetClientGhostEvent : public NetClientEvent {
+protected:
 	NetObject *mObject;
+public:
+	NetClientGhostEvent(Type type, Client *client, NetObject *object);
+
+	virtual bool write(CharStream &data) const;
+	virtual bool read(CharStream &data);
+};
+
+class NetClientGhostUpdateEvent : public NetClientGhostEvent {
 public:
 	NetClientGhostUpdateEvent(Client *client, NetObject *obj);
 

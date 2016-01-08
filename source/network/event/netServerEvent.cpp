@@ -87,18 +87,49 @@ bool NetServerGhostCreateEvent::read(CharStream &data) {
 	return false;
 }
 
-NetServerGhostUpdateEvent::NetServerGhostUpdateEvent(Server *server, NetObject *obj) : NetServerEvent(NetGhostUpdate, server), mObject(obj) {
+NetServerGhostEvent::NetServerGhostEvent(Type type, Server *server, NetObject *object) : NetServerEvent(type, server), mObject(object) {
+}
+
+bool NetServerGhostEvent::write(CharStream &data) const {
+	if (!NetServerEvent::write(data)) {
+		return false;
+	}
+
+	//Can't exactly have a ghost event without an object
+	if (!mObject)
+		return false;
+
+	//Push the ghost's id to the stream
+	U32 ghostId = mServer->getGhostIndex(mObject);
+	data.push<U32>(ghostId);
+
+	return true;
+}
+
+bool NetServerGhostEvent::read(CharStream &data) {
+	if (!NetServerEvent::read(data)) {
+		return false;
+	}
+
+	//Find our object in the server
+	U32 ghostId = data.pop<U32>();
+	mObject = mServer->getGhostedObject(ghostId);
+
+	//Doesn't exist?
+	if (mObject == nullptr)
+		return false;
+
+	return true;
+}
+
+NetServerGhostUpdateEvent::NetServerGhostUpdateEvent(Server *server, NetObject *obj) : NetServerGhostEvent(NetGhostUpdate, server, obj) {
 }
 
 bool NetServerGhostUpdateEvent::write(CharStream &stream) const {
-	if (!NetServerEvent::write(stream))
+	if (!NetServerGhostEvent::write(stream))
 		return false;
 
-	// grab and write the ghost ID from the object
-	U32 ghostId = mServer->getGhostIndex(mObject);
-	stream.push<U32>(ghostId);
-
-	// now write the object's data so that it can be sent to the client.
+	//Write the object's data so that it can be sent to the server.
 	if (!mObject->writeServerPacket(stream))
 		return false;
 
@@ -106,16 +137,10 @@ bool NetServerGhostUpdateEvent::write(CharStream &stream) const {
 }
 
 bool NetServerGhostUpdateEvent::read(CharStream &stream) {
-	if (!NetServerEvent::read(stream))
+	if (!NetServerGhostEvent::read(stream))
 		return false;
 
-	// first, read the ghost id
-	U32 ghostId = stream.pop<U32>();
-	mObject = mServer->getGhostedObject(ghostId);
-	if (mObject == nullptr)
-		return false;
-
-	// now, read the packet from the client.
+	//Read the packet from the server.
 	if (!mObject->readClientPacket(stream))
 		return false;
 
