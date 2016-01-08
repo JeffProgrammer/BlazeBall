@@ -486,18 +486,21 @@ set (DIFVIEWERGAME_SRC
 	source/physics/bullet/btDebugDrawer.h
 
 	# Platform folder
+	source/platform/platform.h
 	source/platform/platformEvent.h
 	source/platform/platformTimer.cpp
 	source/platform/platformTimer.h
 	source/platform/platformWindow.h
 
 	# SDL folder
+	source/platform/SDL/SDLConfig.h
 	source/platform/SDL/SDLEvent.cpp
 	source/platform/SDL/SDLEvent.h
+	source/platform/SDL/SDLPlatform.cpp
+	source/platform/SDL/SDLPlatform.h
 	source/platform/SDL/SDLTimer.h
 	source/platform/SDL/SDLWindow.cpp
 	source/platform/SDL/SDLWindow.h
-	source/platform/SDL/SDLConfig.h
 	
 	# Render folder
 	source/render/interiorRender.cpp
