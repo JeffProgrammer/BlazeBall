@@ -9,7 +9,7 @@
 
 #include "platform/platform.h"
 
-class SDLPlatform : public platform {
+class SDLPlatform : public Platform {
 public:
 	virtual PlatformTimer *createTimer();
 	virtual PlatformWindow *createWindow();

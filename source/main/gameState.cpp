@@ -4,83 +4,12 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#include <fstream>
-#include <cstdlib>
-#include <memory>
+#include "gameState.h"
 
-#include "platform/SDL/SDLPlatform.h"
-#include "game/GameInterior.h"
-#include "scriptEngine/scriptEngine.h"
-#include "game/world.h"
 #include "render/renderWorld.h"
-
-// TODO: clean this shit up
 #include "physics/bullet/btPhysicsEngine.h"
-#include "game/levelLoader.h"
-
-#include "network/network.h"
-#include "network/server.h"
-#include "network/client.h"
 
 extern GLuint gSphereVBO;
-
-class GameState {
-public:
-	std::unique_ptr<Platform> platform;
-
-	bool runClient;
-	bool runServer;
-
-	std::string serverAddress;
-
-	Client *client;
-	Server *server;
-
-	World *clientWorld;
-	World *serverWorld;
-
-	GameState(std::unique_ptr<Platform> &&platform) {
-		this->platform = std::move(platform);
-		//Local server by default
-		runClient = true;
-		runServer = true;
-		serverAddress = "localhost";
-	}
-	~GameState() {
-
-	}
-
-	void parseArgs(int argc, const char **argv);
-
-	bool start();
-	void stop();
-	void runLoop();
-};
-
-int main(int argc, const char **argv) {
-	GameState state(std::make_unique<SDLPlatform>());
-
-	// Load the networking engine
-	Network::init();
-
-	// Init script engine and call the main function
-	if (!ScriptEngine::getSingleton()->init())
-		return 1;
-
-	// parse command line arguments.
-	state.parseArgs(argc, argv);
-
-	if (!state.start())
-		return 1;
-
-	state.runLoop();
-	state.stop();
-
-	// destroy the networking engine
-	Network::destroy();
-
-	return 0;
-}
 
 void GameState::parseArgs(int argc, const char **argv) {
 	for (int i = 1; i < argc; i ++) {

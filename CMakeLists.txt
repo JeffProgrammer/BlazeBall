@@ -411,7 +411,9 @@ set (DIFVIEWERGAME_INCLUDEDIR
 # Main project source
 set (DIFVIEWERGAME_SRC
 	# Main
-	source/main.cpp
+	source/main/gameState.cpp
+	source/main/gameState.h
+	source/main/main.cpp
 
 	# Base folder
 	source/base/config.cpp
@@ -645,7 +647,7 @@ include_directories(include ${DIFVIEWERGAME_INCLUDEDIR})
 	add_executable(Game ${DIFVIEWERGAME_SRC})
 #endif()
 
-source_group("main"                  FILES source/main.cpp)
+source_group("main"                  REGULAR_EXPRESSION main/.*)
 source_group("render"                REGULAR_EXPRESSION render/.*)
 source_group("base"                  REGULAR_EXPRESSION base/.*)
 source_group("render\\bitmap"        REGULAR_EXPRESSION bitmap/.*)
