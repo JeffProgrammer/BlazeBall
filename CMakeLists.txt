@@ -262,7 +262,6 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty
 	dif/include
 	thirdparty/assimp/include
-	thirdparty/angelscript/include
 	thirdparty/rapidjson/include
 	thirdparty/enet/include
 	thirdparty/enetpp/include
@@ -460,9 +459,6 @@ set (DIFVIEWERGAME_LIBRARIES
 	
 	#SDL2
 	SDL2-static
-	
-	# AngelScript
-	AngelScript
 	
 	#Enet
 	enet
