@@ -289,6 +289,7 @@ set (DIFVIEWERGAME_SRC
 	source/base/math.h
 	source/base/tree.h
 	source/base/types.h
+	source/base/math/quat.h
 	source/base/math/triangle.h
 	source/base/math/vector3.h
 
