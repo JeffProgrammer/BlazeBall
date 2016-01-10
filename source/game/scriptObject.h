@@ -10,9 +10,12 @@
 #include "base/types.h"
 #include <string>
 #include <unordered_map>
+#include <memory>
 
 class AbstractClassRep;
 template<typename T> class ConcreteClassRep;
+
+class ScriptObject;
 
 class ScriptObject {
 	template<typename T>
@@ -20,18 +23,6 @@ class ScriptObject {
 public:
 	ScriptObject();
 	virtual ~ScriptObject();
-
-	S32 addRef() {
-		return ++mRefCount;
-	}
-
-	S32 release() {
-		if (--mRefCount == 0) {
-			delete this;
-			return 0;
-		}
-		return mRefCount;
-	}
 
 	static void initFields();
 
@@ -50,6 +41,8 @@ public:
 		return mName;
 	}
 
+	std::string mName;
+
 protected:
 
 	bool getDynamicField(const std::string &name, std::string &value);
@@ -57,10 +50,6 @@ protected:
 
 	bool getMemberField(const std::string &name, std::string &value);
 	bool setMemberField(const std::string &name, const std::string &value);
-
-	std::string mName;
-
-	S32 mRefCount;
 
 	/*
 	 * A list of fields that are extra, defined by the script, for the object.

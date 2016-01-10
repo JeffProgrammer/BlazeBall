@@ -103,11 +103,6 @@ bool ScriptEngine::init() {
 	// init engine
 	mEngine = new chaiscript::ChaiScript(chaiscript::Std_Lib::library());
 
-	// Engine functions
-	{
-		mEngine->add(chaiscript::fun(&echo), "echo");
-	}
-
 	// Vector3 type
 	{
 		mEngine->add(chaiscript::user_type<Vector3>(), "Vector3");
@@ -131,6 +126,18 @@ bool ScriptEngine::init() {
 
 		// expose methods
 		mEngine->add(chaiscript::fun(&Vector3::toString), "toString");
+	}
+
+	// Expose script object
+	{
+		mEngine->add(chaiscript::user_type<ScriptObject>(), "ScriptObject");
+		mEngine->add(chaiscript::constructor<ScriptObject()>(), "ScriptObject");
+		mEngine->add(chaiscript::fun(&ScriptObject::mName), "name");
+	}
+
+	// Engine functions
+	{
+		mEngine->add(chaiscript::fun(&echo), "echo");
 	}
 
 	// execute main.chai

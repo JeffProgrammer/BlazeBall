@@ -20,10 +20,12 @@ ConcreteClassRep<ScriptObject> ScriptObject::sConcreteClassRep("ScriptObject", "
 ScriptObject::ScriptObject() {
 	mClassRep = nullptr;
 	mName = "";
+
+	IO::printf("Constructed object %p\n", this);
 }
 
 ScriptObject::~ScriptObject() {
-
+	IO::printf("Destructed object %p\n", this);
 }
 
 void ScriptObject::initFields() {
