@@ -204,7 +204,7 @@ namespace KeyEvent {
 		KEY_F22                = 113 | (1 << 30),
 		KEY_F23                = 114 | (1 << 30),
 		KEY_F24                = 115 | (1 << 30),
-		KEY_EXECUTE            = 116 | (1 << 30),
+		KEY_EXECUTEF           = 116 | (1 << 30), // [JTH] KEY_EXECUTE conflicts with a windows header as that is a define.
 		KEY_HELP               = 117 | (1 << 30),
 		KEY_MENU               = 118 | (1 << 30),
 		KEY_SELECT             = 119 | (1 << 30),
