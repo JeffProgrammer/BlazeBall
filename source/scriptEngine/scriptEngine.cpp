@@ -7,6 +7,7 @@
 #include "scriptEngine/scriptEngine.h"
 #include "scriptEngine/abstractClassRep.h"
 #include "scriptEngine/scriptFunctions.h"
+#include "game/gameObject.h"
 
 class Vector3 : public glm::vec3 {
 public:
@@ -133,6 +134,18 @@ bool ScriptEngine::init() {
 		mEngine->add(chaiscript::user_type<ScriptObject>(), "ScriptObject");
 		mEngine->add(chaiscript::constructor<ScriptObject()>(), "ScriptObject");
 		mEngine->add(chaiscript::fun(&ScriptObject::mName), "name");
+	}
+
+	// Expose GameObject to script
+	{
+		mEngine->add(chaiscript::user_type<GameObject>(), "GameObject");
+		mEngine->add(chaiscript::constructor<GameObject()>(), "GameObject");
+		mEngine->add(chaiscript::base_class<ScriptObject, GameObject>());
+
+		mEngine->add(chaiscript::fun(&GameObject::getPosition), "getPosition");
+		mEngine->add(chaiscript::fun(&GameObject::setPosition), "setPosition");
+		mEngine->add(chaiscript::fun(&GameObject::getScale), "getScale");
+		mEngine->add(chaiscript::fun(&GameObject::setScale), "setScale");
 	}
 
 	// Engine functions
