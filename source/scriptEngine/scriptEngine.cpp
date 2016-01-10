@@ -13,14 +13,21 @@ AbstractClassRep *AbstractClassRep::sLast = nullptr;
 std::unordered_map<std::string, AbstractClassRep*> AbstractClassRep::sClassRepMap;
 
 ScriptEngine::ScriptEngine() {
-
+	mEngine = nullptr;
 }
 
 ScriptEngine::~ScriptEngine() {
-
+	delete mEngine;
 }
 
 bool ScriptEngine::init() {
+	// only init once
+	if (mEngine != nullptr) {
+		assert(false);
+		IO::printf("ScriptEngine::init() already initialized!");
+		return false;
+	}
+
 	// init engine
 	mEngine = new chaiscript::ChaiScript(chaiscript::Std_Lib::library());
 
