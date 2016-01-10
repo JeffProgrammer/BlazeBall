@@ -53,17 +53,17 @@ protected:
 
 public:
 	Sphere(World *world);
-	Sphere(World *world, glm::vec3 origin, F32 radius);
+	Sphere(World *world, Vector3 origin, F32 radius);
 	virtual ~Sphere();
 
 	virtual void calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix) override;
 	virtual void render(RenderInfo &info) override;
 	void draw(Material *material, RenderInfo &info, void *userInfo);
 
-	virtual const glm::vec3 getPosition() const override;
+	virtual const Vector3 getPosition() const override;
 	virtual const glm::quat getRotation() const override;
 
-	virtual void setPosition(const glm::vec3 &pos) override;
+	virtual void setPosition(const Vector3 &pos) override;
 	virtual void setRotation(const glm::quat &rot) override;
 
 	F32 getRadius();

@@ -8,78 +8,7 @@
 #include "scriptEngine/abstractClassRep.h"
 #include "scriptEngine/scriptFunctions.h"
 #include "game/gameObject.h"
-
-class Vector3 : public glm::vec3 {
-public:
-	Vector3() : glm::vec3() {
-
-	}
-
-	Vector3(const F32 &x, const F32 &y, const F32 &z) : glm::vec3(x, y, z) {}
-
-	Vector3& operator=(const Vector3 &vec) {
-		x = vec.x;
-		y = vec.y;
-		z = vec.z;
-		return *this;
-	}
-
-	Vector3& operator+(const Vector3 &vec) {
-		x += vec.x;
-		y += vec.y;
-		z += vec.z;
-		return *this;
-	}
-
-	Vector3& operator-(const Vector3 &vec) {
-		x -= vec.x;
-		y -= vec.y;
-		z -= vec.z;
-		return *this;
-	}
-
-	Vector3& operator*(const F32 &scalar) {
-		x *= scalar;
-		y *= scalar;
-		z *= scalar;
-		return *this;
-	}
-
-	Vector3& operator/(const F32 &scalar) {
-		x /= scalar;
-		y /= scalar;
-		z /= scalar;
-		return *this;
-	}
-
-	void operator+=(const Vector3 &vec) {
-		x += vec.x;
-		y += vec.y;
-		z += vec.z;
-	}
-
-	void operator-=(const Vector3 &vec) {
-		x -= vec.x;
-		y -= vec.y;
-		z -= vec.z;
-	}
-
-	void operator*=(const F32 &scalar) {
-		x *= scalar;
-		y *= scalar;
-		z *= scalar;
-	}
-
-	void operator/=(const F32 &scalar) {
-		x /= scalar;
-		y /= scalar;
-		z /= scalar;
-	}
-
-	std::string toString() const {
-		return "[" + std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z) + "]";
-	}
-};
+#include "base/math/vector3.h"
 
 // initialize the lined list for abstractclassrep
 AbstractClassRep *AbstractClassRep::sLast = nullptr;

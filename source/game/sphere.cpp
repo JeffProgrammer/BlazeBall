@@ -28,7 +28,7 @@ Sphere::Sphere(World *world) : Sphere(world, glm::vec3(0), 0.2f) {
 	}
 }
 
-Sphere::Sphere(World *world, glm::vec3 origin, F32 radius) : RenderedObject(world), mRadius(radius), mMaxAngVel(1000.0f), mMaterial(nullptr) {
+Sphere::Sphere(World *world, Vector3 origin, F32 radius) : RenderedObject(world), mRadius(radius), mMaxAngVel(1000.0f), mMaterial(nullptr) {
 	mActor = mWorld->getPhysicsEngine()->createSphere(mRadius);
 	mActor->setPosition(origin);
 	mActor->setMass(1.0f);
@@ -153,7 +153,7 @@ glm::vec3 Sphere::getCollisionNormal(glm::vec3 &toiVelocity) {
 	return dynamic_cast<PhysicsSphere *>(mActor)->getCollisionNormal(toiVelocity);
 }
 
-const glm::vec3 Sphere::getPosition() const {
+const Vector3 Sphere::getPosition() const {
 	return mActor->getPosition();
 }
 
@@ -169,7 +169,7 @@ const glm::vec3 Sphere::getAngularVelocity() const {
 	return mActor->getAngularVelocity();
 }
 
-void Sphere::setPosition(const glm::vec3 &pos) {
+void Sphere::setPosition(const Vector3 &pos) {
 	mActor->setPosition(pos);
 }
 
