@@ -2,9 +2,12 @@ cmake_minimum_required (VERSION 3.0)
 include (CheckIncludeFiles)
 project (DifViewerGame C CXX)
 
-# Force C++14 standard on compilers
 if (NOT MSVC)
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+	# Force C++14 standard on compilers, MSVC already does this by default
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+else()
+	# Force multiple processors to be used to compile visual studio builds.
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
 # Enable Static Linking the C++ ABI directly into the executables and libraries
