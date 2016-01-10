@@ -89,6 +89,12 @@ bool ScriptEngine::init() {
 }
 
 bool ScriptEngine::execScript(const std::string &scriptFile) {
-	mEngine->eval_file(scriptFile);
+	try {
+		mEngine->eval_file(scriptFile);
+	}
+	catch (chaiscript::exception::eval_error &e) {
+		IO::printf("ScriptEngine::exec() - %s\n", e.what());
+		return false;
+	}
 	return true;
 }
