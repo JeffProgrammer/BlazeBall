@@ -157,7 +157,7 @@ const Vector3 Sphere::getPosition() const {
 	return mActor->getPosition();
 }
 
-const glm::quat Sphere::getRotation() const {
+const Quat Sphere::getRotation() const {
 	return mActor->getRotation();
 }
 
@@ -173,7 +173,7 @@ void Sphere::setPosition(const Vector3 &pos) {
 	mActor->setPosition(pos);
 }
 
-void Sphere::setRotation(const glm::quat &rot) {
+void Sphere::setRotation(const Quat &rot) {
 	mActor->setRotation(rot);
 }
 

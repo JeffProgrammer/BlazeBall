@@ -11,6 +11,7 @@
 
 #include "base/types.h"
 #include "base/math/vector3.h"
+#include "base/math/quat.h"
 #include "game/movement.h"
 #include "render/renderInfo.h"
 #include "network/netObject.h"
@@ -38,7 +39,7 @@ protected:
 	/**
 	 * The rotation of the GameObject.
 	 */
-	glm::quat mRotation;
+	Quat mRotation;
 
 	/**
 	 * The scale of the GameObject.
@@ -88,13 +89,13 @@ public:
 	 * Gets the rotation of the GameObject as a quaternion.
 	 * @return the rotation quaternion of the GameObject.
 	 */
-	virtual const glm::quat getRotation() const { return mRotation; }
+	virtual const Quat getRotation() const { return mRotation; }
 
 	/**
 	 * Sets the rotation of the GameObject as a quaternion.
 	 * @param rotation The quaternion rotation of the GameObject.
 	 */
-	virtual void setRotation(const glm::quat &rotation) { mRotation = rotation; }
+	virtual void setRotation(const Quat &rotation) { mRotation = rotation; }
 
 	/**
 	 * Gets the scale of the GameObject.

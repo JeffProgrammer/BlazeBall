@@ -61,10 +61,10 @@ public:
 	void draw(Material *material, RenderInfo &info, void *userInfo);
 
 	virtual const Vector3 getPosition() const override;
-	virtual const glm::quat getRotation() const override;
+	virtual const Quat getRotation() const override;
 
 	virtual void setPosition(const Vector3 &pos) override;
-	virtual void setRotation(const glm::quat &rot) override;
+	virtual void setRotation(const Quat &rot) override;
 
 	F32 getRadius();
 	void setRadius(const F32 &radius);

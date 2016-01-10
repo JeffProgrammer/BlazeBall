@@ -150,7 +150,7 @@ const Vector3 GameInterior::getPosition() const {
 	return mActor->getPosition();
 }
 
-const glm::quat GameInterior::getRotation() const {
+const Quat GameInterior::getRotation() const {
 	return mActor->getRotation();
 }
 
@@ -163,7 +163,7 @@ void GameInterior::setPosition(const Vector3 &pos) {
 		mActor->setPosition(pos);
 }
 
-void GameInterior::setRotation(const glm::quat &rot) {
+void GameInterior::setRotation(const Quat &rot) {
 	if (mActor)
 		mActor->setRotation(rot);
 }
