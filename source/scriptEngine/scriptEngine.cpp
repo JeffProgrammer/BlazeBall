@@ -5,6 +5,10 @@
 //------------------------------------------------------------------------------
 
 #include "scriptEngine/scriptEngine.h"
+
+#include <chaiscript/chaiscript.hpp>
+#include <chaiscript/chaiscript_stdlib.hpp>
+
 #include "scriptEngine/abstractClassRep.h"
 #include "scriptEngine/scriptFunctions.h"
 #include "game/gameObject.h"

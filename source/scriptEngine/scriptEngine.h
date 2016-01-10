@@ -10,8 +10,10 @@
 #include <vector>
 #include "base/types.h"
 #include "base/io.h"
-#include <chaiscript/chaiscript.hpp>
-#include <chaiscript/chaiscript_stdlib.hpp>
+
+namespace chaiscript {
+	class ChaiScript;
+}
 
 class ScriptEngine {
 public:
