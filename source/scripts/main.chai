@@ -8,9 +8,19 @@ def test() {
 	echo("In test");
 
 	var scriptObject = ScriptObject();
-	scriptObject.name = "Bob";
-	echo(scriptObject.name);
+	scriptObject.setName("Bob");
+	echo(scriptObject.getName());
 }
 
 // run the test
 test();
+
+def inheritenceTest() {
+	echo("Inheritence testing...");
+	
+	var gameObject = GameObject();
+	gameObject.setName("PQ");
+	echo(gameObject.getName());
+	echo(gameObject.getScale().toString());
+}
+inheritenceTest();

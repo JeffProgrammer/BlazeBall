@@ -62,7 +62,8 @@ bool ScriptEngine::init() {
 	{
 		mEngine->add(chaiscript::user_type<ScriptObject>(), "ScriptObject");
 		mEngine->add(chaiscript::constructor<ScriptObject()>(), "ScriptObject");
-		mEngine->add(chaiscript::fun(&ScriptObject::mName), "name");
+		mEngine->add(chaiscript::fun(&ScriptObject::setName), "setName");
+		mEngine->add(chaiscript::fun(&ScriptObject::getName), "getName");
 	}
 
 	// Expose GameObject to script
