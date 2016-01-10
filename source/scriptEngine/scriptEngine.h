@@ -15,10 +15,17 @@
 
 class ScriptEngine {
 public:
+	enum Engine {
+		SERVER,
+		CLIENT
+	};
+
 	ScriptEngine();
 	~ScriptEngine();
 
-	bool init();
+	static ScriptEngine* get(Engine isServer);
+
+	bool init(const std::string &mainScript);
 
 	bool execScript(const std::string &scriptFile);
 private:
