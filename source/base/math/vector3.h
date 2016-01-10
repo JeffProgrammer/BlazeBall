@@ -16,13 +16,6 @@ public:
 	Vector3(const glm::vec3 &vec) : glm::vec3(vec) {}
 	Vector3(const F32 &x, const F32 &y, const F32 &z) : glm::vec3(x, y, z) {}
 
-	Vector3& operator=(const Vector3 &vec) {
-		x = vec.x;
-		y = vec.y;
-		z = vec.z;
-		return *this;
-	}
-
 	Vector3& operator+(const Vector3 &vec) {
 		x += vec.x;
 		y += vec.y;

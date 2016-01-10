@@ -44,7 +44,6 @@ bool ScriptEngine::init() {
 		mEngine->add(chaiscript::fun(&Vector3::z), "z");
 		
 		// expose operator overloading to script
-		mEngine->add(chaiscript::fun(&Vector3::operator=), "=");
 		mEngine->add(chaiscript::fun(&Vector3::operator+), "+");
 		mEngine->add(chaiscript::fun(&Vector3::operator-), "-");
 		mEngine->add(chaiscript::fun(&Vector3::operator*), "*");
