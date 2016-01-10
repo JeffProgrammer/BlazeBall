@@ -57,6 +57,21 @@ bool ScriptEngine::init() {
 		mEngine->add(chaiscript::fun(&Vector3::toString), "toString");
 	}
 
+	// Quat type
+	{
+		mEngine->add(chaiscript::user_type<Quat>(), "Quat");
+		mEngine->add(chaiscript::constructor<Quat(const F32&, const F32&, const F32&, const F32&)>(), "Quat");
+
+		// Expose x, y, z, and w properties
+		mEngine->add(chaiscript::fun(&Quat::x), "x");
+		mEngine->add(chaiscript::fun(&Quat::y), "y");
+		mEngine->add(chaiscript::fun(&Quat::z), "z");
+		mEngine->add(chaiscript::fun(&Quat::w), "w");
+
+		// expose methods
+		mEngine->add(chaiscript::fun(&Quat::toString), "toString");
+	}
+
 	// Expose script object
 	{
 		mEngine->add(chaiscript::user_type<ScriptObject>(), "ScriptObject");
