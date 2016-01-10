@@ -422,7 +422,8 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/sphereV.glsl
 	
 	# Scripts folder
-	source/scripts/main.chai
+	source/scripts/mainClient.chai
+	source/scripts/mainServer.chai
 )
 
 #------------------------------------------------------------------------------
