@@ -90,6 +90,8 @@ bool ScriptEngine::init() {
 		mEngine->add(chaiscript::fun(&GameObject::setPosition), "setPosition");
 		mEngine->add(chaiscript::fun(&GameObject::getScale), "getScale");
 		mEngine->add(chaiscript::fun(&GameObject::setScale), "setScale");
+		mEngine->add(chaiscript::fun(&GameObject::getRotation), "getRotation");
+		mEngine->add(chaiscript::fun(&GameObject::setRotation), "setRotation");
 	}
 
 	// Engine functions
