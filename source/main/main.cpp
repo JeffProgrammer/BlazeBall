@@ -14,6 +14,9 @@
 #include "main/gameState.h"
 
 int main(int argc, const char **argv) {
+	// Initialize the abstract class rep system
+	AbstractClassRep::init();
+
 	GameState state(std::make_unique<SDLPlatform>(std::make_unique<Platform::ConcretePhysicsEngineFactory<btPhysicsEngine>>()));
 
 	// Load the networking engine
