@@ -289,6 +289,8 @@ set (DIFVIEWERGAME_SRC
 	source/base/math.h
 	source/base/tree.h
 	source/base/types.h
+	source/base/math/triangle.h
+	source/base/math/vector3.h
 
 	# Game folder
 	source/game/camera.cpp
@@ -511,6 +513,7 @@ include_directories(include ${DIFVIEWERGAME_INCLUDEDIR})
 source_group("main"                  REGULAR_EXPRESSION main/.*)
 source_group("render"                REGULAR_EXPRESSION render/.*)
 source_group("base"                  REGULAR_EXPRESSION base/.*)
+source_group("base\\math"            REGULAR_EXPRESSION base/math/.*)
 source_group("render\\bitmap"        REGULAR_EXPRESSION bitmap/.*)
 source_group("game"                  REGULAR_EXPRESSION game/.*)
 source_group("objects"               REGULAR_EXPRESSION objects/.*)
