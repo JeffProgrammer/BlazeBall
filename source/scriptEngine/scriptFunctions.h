@@ -12,7 +12,7 @@
 #include "game/scriptObject.h"
 
 // script function
-static void echo(std::string &in) {
+static void echo(const std::string &in) {
 	IO::printf("%s\n", in.c_str());
 }
 

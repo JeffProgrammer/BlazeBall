@@ -7,9 +7,11 @@
 #ifndef _SCRIPTENGINE_SCRIPTENGINE_H_
 #define _SCRIPTENGINE_SCRIPTENGINE_H_
 
+#include <vector>
 #include "base/types.h"
 #include "base/io.h"
-#include <vector>
+#include <chaiscript/chaiscript.hpp>
+#include <chaiscript/chaiscript_stdlib.hpp>
 
 class ScriptEngine {
 public:
@@ -19,6 +21,8 @@ public:
 	bool init();
 
 	bool execScript(const std::string &scriptFile);
+private:
+	chaiscript::ChaiScript *mEngine;
 };
 
 #include "scriptEngine/scriptEngine.inl"
