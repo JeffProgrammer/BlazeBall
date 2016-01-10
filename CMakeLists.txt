@@ -416,7 +416,7 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/sphereV.glsl
 	
 	# Scripts folder
-	source/scripts/main.as
+	source/scripts/main.chai
 )
 
 #------------------------------------------------------------------------------
@@ -554,7 +554,7 @@ set (BUILD_DIR_FILES
 	source/shaders/modelV.glsl
 	source/shaders/modelF.glsl
 	
-	source/scripts/main.as
+	source/scripts/main.chai
 	source/levels/test.json
 )
 
