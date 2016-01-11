@@ -253,16 +253,7 @@ void RenderWorld::handleEvent(PlatformEvent *event) {
 				case KeyEvent::KEY_RIGHT: mMovement.yawRight  = true; break;
 				case KeyEvent::KEY_SPACE: mMovement.jump      = true; break;
 				case KeyEvent::KEY_V: mWindow->toggleVsync(); break;
-				case KeyEvent::KEY_Q:
-				{
-					mMovement.fire = true;
-
-					// make a new sphere!
-					Sphere *sphere = new Sphere(this, glm::vec3(0, 0, 30), 0.75);
-					addObject(sphere);
-
-					break;
-				}
+				case KeyEvent::KEY_Q: mMovement.fire = true; break;
 				case KeyEvent::KEY_C:
 				{
 					// swap control mObjects!

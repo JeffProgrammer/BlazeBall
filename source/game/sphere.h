@@ -36,6 +36,10 @@ protected:
 	F32 mMaxAngVel;
 	Material *mMaterial;
 
+	glm::vec3 mLinearVelocity;
+	glm::vec3 mAngularVelocity;
+	F32 mMass;
+
 	bool mGenerated;
 
 	F32 mCameraYaw;
@@ -53,7 +57,6 @@ protected:
 
 public:
 	Sphere(World *world);
-	Sphere(World *world, Vec3 origin, F32 radius);
 	virtual ~Sphere();
 
 	virtual void calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix) override;
@@ -62,12 +65,17 @@ public:
 
 	virtual Vec3 getPosition() const override;
 	virtual Quat getRotation() const override;
+	glm::vec3 getLinearVelocity() const;
+	glm::vec3 getAngularVelocity() const;
+	F32 getRadius() const;
+	F32 getMass() const;
 
 	virtual void setPosition(const Vec3 &pos) override;
 	virtual void setRotation(const Quat &rot) override;
-
-	F32 getRadius() const;
+	void setLinearVelocity(const glm::vec3 &vel);
+	void setAngularVelocity(const glm::vec3 &vel);
 	void setRadius(const F32 &radius);
+	void setMass(const F32 &mass);
 
 	void setMaterial(Material *material) {
 		this->mMaterial = material;
@@ -80,18 +88,12 @@ public:
 	bool getColliding();
 	glm::vec3 getCollisionNormal(glm::vec3 &toiVelocity);
     
-	const glm::vec3 getLinearVelocity() const;
-	const glm::vec3 getAngularVelocity() const;
-
-	void setLinearVelocity(const glm::vec3 &vel);
-	void setAngularVelocity(const glm::vec3 &vel);
-
 	virtual void updateCamera(const Movement &movement, const F64 &delta) override;
 	virtual void updateMove(const Movement &movement, const F64 &delta) override;
 	virtual void getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) override;
 
 	virtual void updateTick(const F64 &delta) override;
-
+	virtual void onAddToScene() override;
 
 	virtual bool readClientPacket(CharStream &stream) override;
 	virtual bool readServerPacket(CharStream &stream) override;

@@ -18,7 +18,12 @@ IMPLEMENT_SCRIPTOBJECT(Sphere, RenderedObject);
 
 GLuint gSphereVBO = 0;
 
-Sphere::Sphere(World *world) : Sphere(world, glm::vec3(0), 0.2f) {
+Sphere::Sphere(World *world) : RenderedObject(world), mActor(nullptr) {
+	mGenerated = false;
+
+	mCameraYaw = 0.0f;
+	mCameraPitch = 0.0f;
+
 	RenderWorld *renderer = dynamic_cast<RenderWorld *>(world);
 	if (renderer) {
 		Material *material = new Material("marble.skin");
@@ -26,19 +31,6 @@ Sphere::Sphere(World *world) : Sphere(world, glm::vec3(0), 0.2f) {
 		material->setShader(Shader::getShaderByName("Sphere"));
 		setMaterial(material);
 	}
-}
-
-Sphere::Sphere(World *world, Vec3 origin, F32 radius) : RenderedObject(world), mRadius(radius), mMaxAngVel(1000.0f), mMaterial(nullptr) {
-	mActor = mWorld->getPhysicsEngine()->createSphere(mRadius);
-	mActor->setPosition(origin);
-	mActor->setMass(1.0f);
-	mActor->setWorld(mWorld);
-	mWorld->getPhysicsEngine()->addBody(mActor);
-	
-	mGenerated = false;
-
-	mCameraYaw = 0.0f;
-	mCameraPitch = 0.0f;
 }
 
 Sphere::~Sphere() {
@@ -154,44 +146,87 @@ glm::vec3 Sphere::getCollisionNormal(glm::vec3 &toiVelocity) {
 }
 
 Vec3 Sphere::getPosition() const {
-	return mActor->getPosition();
+	if (mActor)
+		return mActor->getPosition();
+	else
+		return GameObject::getPosition();
 }
 
 Quat Sphere::getRotation() const {
-	return mActor->getRotation();
+	if (mActor)
+		return mActor->getRotation();
+	else
+		return GameObject::getRotation();
 }
 
-const glm::vec3 Sphere::getLinearVelocity() const {
-	return mActor->getLinearVelocity();
+glm::vec3 Sphere::getLinearVelocity() const {
+	if (mActor)
+		return mActor->getLinearVelocity();
+	else
+		return mLinearVelocity;
 }
 
-const glm::vec3 Sphere::getAngularVelocity() const {
-	return mActor->getAngularVelocity();
-}
-
-void Sphere::setPosition(const Vec3 &pos) {
-	mActor->setPosition(pos);
-}
-
-void Sphere::setRotation(const Quat &rot) {
-	mActor->setRotation(rot);
-}
-
-void Sphere::setLinearVelocity(const glm::vec3 &vel) {
-    mActor->setLinearVelocity(vel);
-}
-
-void Sphere::setAngularVelocity(const glm::vec3 &vel) {
-    mActor->setAngularVelocity(vel);
+glm::vec3 Sphere::getAngularVelocity() const {
+	if (mActor)
+		return mActor->getAngularVelocity();
+	else
+		return mAngularVelocity;
 }
 
 F32 Sphere::getRadius() const {
-	return dynamic_cast<PhysicsSphere *>(mActor)->getRadius();
+	if (mActor)
+		return dynamic_cast<PhysicsSphere *>(mActor)->getRadius();
+	else
+		return mRadius;
+}
+
+F32 Sphere::getMass() const {
+	if (mActor)
+		return mActor->getMass();
+	else
+		return mMass;
+}
+
+void Sphere::setPosition(const Vec3 &pos) {
+	if (mActor)
+		mActor->setPosition(pos);
+	else
+		GameObject::setPosition(pos);
+}
+
+void Sphere::setRotation(const Quat &rot) {
+	if (mActor)
+		mActor->setRotation(rot);
+	else
+		GameObject::setRotation(rot);
+}
+
+void Sphere::setLinearVelocity(const glm::vec3 &vel) {
+	if (mActor)
+	    mActor->setLinearVelocity(vel);
+	else
+		mLinearVelocity = vel;
+}
+
+void Sphere::setAngularVelocity(const glm::vec3 &vel) {
+	if (mActor)
+	    mActor->setAngularVelocity(vel);
+	else
+		mAngularVelocity = vel;
 }
 
 void Sphere::setRadius(const F32 &radius) {
-	this->mRadius = radius;
-	dynamic_cast<PhysicsSphere *>(mActor)->setRadius(radius);
+	if (mActor)
+		dynamic_cast<PhysicsSphere *>(mActor)->setRadius(radius);
+	else
+		mRadius = radius;
+}
+
+void Sphere::setMass(const F32 &mass) {
+	if (mActor)
+		mActor->setMass(mass);
+	else
+		mMass = mass;
 }
 
 void Sphere::updateCamera(const Movement &movement, const F64 &delta) {
@@ -332,6 +367,14 @@ void Sphere::updateTick(const F64 &delta) {
 	}
 }
 
+void Sphere::onAddToScene() {
+	mActor = mWorld->getPhysicsEngine()->createSphere(mRadius);
+	mActor->setPosition(mPosition);
+	mActor->setMass(1.0f);
+	mActor->setWorld(mWorld);
+	mWorld->getPhysicsEngine()->addBody(mActor);
+}
+
 bool Sphere::readClientPacket(CharStream &stream) {
 	if (!NetObject::readClientPacket(stream))
 		return false;
@@ -357,7 +400,8 @@ bool Sphere::readServerPacket(CharStream &stream) {
 	setLinearVelocity(stream.pop<glm::vec3>());
 	setAngularVelocity(stream.pop<glm::vec3>());
 
-	setRadius(getRadius());
+	setRadius(stream.pop<F32>());
+	setMass(stream.pop<F32>());
 
 	return true;
 }
@@ -388,6 +432,7 @@ bool Sphere::writeServerPacket(CharStream &stream) const {
 	stream.push<glm::vec3>(getAngularVelocity());
 
 	stream.push<F32>(getRadius());
+	stream.push<F32>(getMass());
 
 	return true;
 }
