@@ -33,7 +33,7 @@ bool GameState::start() {
 
 		serverWorld = new World(platform->createPhysicsEngine());
 		server = new Server(serverWorld);
-		serverWorld->loadLevel("level.json");
+		serverWorld->loadLevel("bowl.json");
 		server->start();
 	}
 
