@@ -147,20 +147,20 @@ void GameInterior::exportObj(FILE *file) {
 }
 
 Vec3 GameInterior::getPosition() const {
-   if (mActor == nullptr)
-      return Vec3(0.0f, 0.0f, 0.0f);
+	if (mActor == nullptr)
+		return Vec3(0.0f, 0.0f, 0.0f);
 	return mActor->getPosition();
 }
 
 Quat GameInterior::getRotation() const {
-   if (mActor == nullptr)
-      return Quat(0.0f, 0.0f, 0.0f, 0.0f);
+	if (mActor == nullptr)
+			return Quat(0.0f, 0.0f, 0.0f, 0.0f);
 	return mActor->getRotation();
 }
 
 Vec3 GameInterior::getScale() const {
-   if (mActor == nullptr)
-      return Vec3(1.0f, 1.0f, 1.0f);
+	if (mActor == nullptr)
+		return Vec3(1.0f, 1.0f, 1.0f);
 	return mActor->getScale();
 }
 
