@@ -14,6 +14,7 @@
 #include "network/event/netClientEvent.h"
 #include "network/netObject.h"
 #include "game/world.h"
+#include "game/sphere.h"
 
 class Client {
 public:
@@ -42,7 +43,7 @@ public:
 	}
 
 	GameObject *getControlObject() const { return mControlObject; }
-	void setControlObject(GameObject *object) { mControlObject = object; }
+	void setControlObject(GameObject *object) { mControlObject = object; dynamic_cast<Sphere *>(object)->setActivationState(true); }
 
 protected:
 	enetpp::client mClient;

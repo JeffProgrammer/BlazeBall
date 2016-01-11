@@ -67,6 +67,10 @@ void btPhysicsBody::setTorque(const glm::vec3 &torque) {
 	mActor->setTotalTorque(btConvert(torque));
 }
 
+void btPhysicsBody::setActivationState(bool state) {
+	mActor->setActivationState(state ? ACTIVE_TAG : DISABLE_SIMULATION);
+}
+
 
 void btPhysicsBody::applyTorque(const glm::vec3 &torque) {
 	mActor->applyTorque(btConvert(torque));

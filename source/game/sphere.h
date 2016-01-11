@@ -82,6 +82,7 @@ public:
 	void setTorque(const glm::vec3 &torque);
 	void setRadius(const F32 &radius);
 	void setMass(const F32 &mass);
+	void setActivationState(bool active);
 
 	void setMaterial(Material *material) {
 		this->mMaterial = material;

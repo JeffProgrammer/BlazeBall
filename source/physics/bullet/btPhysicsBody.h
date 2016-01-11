@@ -35,6 +35,8 @@ public:
 	virtual void setForce(const glm::vec3 &force);
 	virtual void setTorque(const glm::vec3 &torque);
 
+	virtual void setActivationState(bool state);
+
 	virtual void applyTorque(const glm::vec3 &torque);
 	virtual void applyImpulse(const glm::vec3 &impulse, const glm::vec3 &origin);
 	virtual void applyForce(const glm::vec3 &force, const glm::vec3 &origin);

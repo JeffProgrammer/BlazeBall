@@ -35,7 +35,7 @@ void ClientConnection::createPlayer() {
 	{
 		Sphere *player = static_cast<Sphere *>(AbstractClassRep::createFromName(mServer->getWorld(), "Sphere"));
 		player->setPosition(glm::vec3(0, 0, 20));
-		player->setRadius(0.675);
+		player->setRadius(.3);
 		player->setMass(1);
 		mServer->getWorld()->addObject(player);
 		mServer->ghostObject(player);

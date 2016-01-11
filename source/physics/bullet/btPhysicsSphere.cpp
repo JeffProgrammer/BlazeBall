@@ -139,8 +139,14 @@ bool btPhysicsSphere::modifyContact(ContactCallbackInfo &info, bool isBody0) {
 void btPhysicsSphere::notifyContact(ContactCallbackInfo &info, bool isBody0) {
 	//The interior with which we collided
 	btPhysicsInterior *inter = dynamic_cast<btPhysicsInterior *>(isBody0 ? info.body1 : info.body0);
-	if (inter == nullptr)
+	if (inter == nullptr) {
+		btPhysicsSphere *sphere = dynamic_cast<btPhysicsSphere *>(isBody0 ? info.body1 : info.body1);
+		if (sphere != nullptr) {
+			btVector3 impulse = info.point.m_normalWorldOnB * info.point.m_appliedImpulse;
+			IO::printf("Sphere push: %f %f %f\n", impulse.x(), impulse.y(), impulse.z());
+		}
 		return;
+	}
 
 	/*
 	 via https://github.com/bulletphysics/bullet3/issues/288

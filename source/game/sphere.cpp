@@ -257,6 +257,11 @@ void Sphere::setMass(const F32 &mass) {
 		mMass = mass;
 }
 
+void Sphere::setActivationState(bool active) {
+	if (mActor)
+		mActor->setActivationState(active);
+}
+
 void Sphere::updateCamera(const Movement &movement, const F64 &delta) {
 	if (movement.pitchUp) mCameraPitch -= keyCameraSpeed;
 	if (movement.pitchDown) mCameraPitch += keyCameraSpeed;
@@ -401,6 +406,8 @@ void Sphere::onAddToScene() {
 	mActor->setMass(mMass);
 	mActor->setWorld(mWorld);
 	mWorld->getPhysicsEngine()->addBody(mActor);
+
+	mActor->setActivationState(false);
 }
 
 bool Sphere::readClientPacket(CharStream &stream) {
