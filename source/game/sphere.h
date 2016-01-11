@@ -60,8 +60,8 @@ public:
 	virtual void render(RenderInfo &info) override;
 	void draw(Material *material, RenderInfo &info, void *userInfo);
 
-	virtual const Vec3 getPosition() const override;
-	virtual const Quat getRotation() const override;
+	virtual Vec3 getPosition() const override;
+	virtual Quat getRotation() const override;
 
 	virtual void setPosition(const Vec3 &pos) override;
 	virtual void setRotation(const Quat &rot) override;

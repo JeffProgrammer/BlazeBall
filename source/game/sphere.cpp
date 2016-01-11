@@ -153,11 +153,11 @@ glm::vec3 Sphere::getCollisionNormal(glm::vec3 &toiVelocity) {
 	return dynamic_cast<PhysicsSphere *>(mActor)->getCollisionNormal(toiVelocity);
 }
 
-const Vec3 Sphere::getPosition() const {
+Vec3 Sphere::getPosition() const {
 	return mActor->getPosition();
 }
 
-const Quat Sphere::getRotation() const {
+Quat Sphere::getRotation() const {
 	return mActor->getRotation();
 }
 
@@ -305,7 +305,7 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
 
 	//Final position of the camera
 	glm::vec3 rot = glm::mat3(glm::inverse(mat)) * glm::vec3(0, -2.5, 0);
-	pos = getPosition() + rot;
+	pos = static_cast<glm::vec3>(getPosition()) + rot;
 
 	//Test camera for collisions
 	PhysicsEngine::RaycastInfo info;

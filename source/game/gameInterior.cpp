@@ -146,15 +146,15 @@ void GameInterior::exportObj(FILE *file) {
 	}
 }
 
-const Vec3 GameInterior::getPosition() const {
+Vec3 GameInterior::getPosition() const {
 	return mActor->getPosition();
 }
 
-const Quat GameInterior::getRotation() const {
+Quat GameInterior::getRotation() const {
 	return mActor->getRotation();
 }
 
-const Vec3 GameInterior::getScale() const {
+Vec3 GameInterior::getScale() const {
 	return mActor->getScale();
 }
 
