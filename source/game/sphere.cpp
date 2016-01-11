@@ -173,6 +173,20 @@ glm::vec3 Sphere::getAngularVelocity() const {
 		return mAngularVelocity;
 }
 
+glm::vec3 Sphere::getForce() const {
+	if (mActor)
+		return mActor->getForce();
+	else
+		return mForce;
+}
+
+glm::vec3 Sphere::getTorque() const {
+	if (mActor)
+		return mActor->getTorque();
+	else
+		return mTorque;
+}
+
 F32 Sphere::getRadius() const {
 	if (mActor)
 		return dynamic_cast<PhysicsSphere *>(mActor)->getRadius();
@@ -213,6 +227,20 @@ void Sphere::setAngularVelocity(const glm::vec3 &vel) {
 	    mActor->setAngularVelocity(vel);
 	else
 		mAngularVelocity = vel;
+}
+
+void Sphere::setForce(const glm::vec3 &force) {
+	if (mActor)
+		mActor->setForce(force);
+	else
+		mForce = force;
+}
+
+void Sphere::setTorque(const glm::vec3 &torque) {
+	if (mActor)
+		mActor->setTorque(torque);
+	else
+		mTorque = torque;
 }
 
 void Sphere::setRadius(const F32 &radius) {
@@ -275,7 +303,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 //	IO::printf("T:  %f %f\n", torque.x, torque.y);
 
 	//Torque is based on the movement and yaw
-	glm::vec3 torqueRel = glm::vec3(glm::translate(deltaMat, torque)[3]);
+	glm::vec3 torqueRel = glm::vec3(glm::translate(deltaMat, torque)[3]) * getMass();
 	//Cross to convert 3d coordinates into torque
 	applyTorque(glm::cross(glm::vec3(0, 0, 1), torqueRel));
 
@@ -305,7 +333,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 		}
 	} else {
 		glm::vec3 moveRel = glm::vec3(glm::translate(deltaMat, move)[3]);
-		moveRel *= AirAcceleration * delta;
+		moveRel *= AirAcceleration * delta * getMass();
 
 		//If we're not touching the ground, apply slight air movement.
 		applyImpulse(moveRel, glm::vec3(0, 0, 0));
@@ -370,7 +398,7 @@ void Sphere::updateTick(const F64 &delta) {
 void Sphere::onAddToScene() {
 	mActor = mWorld->getPhysicsEngine()->createSphere(mRadius);
 	mActor->setPosition(mPosition);
-	mActor->setMass(1.0f);
+	mActor->setMass(mMass);
 	mActor->setWorld(mWorld);
 	mWorld->getPhysicsEngine()->addBody(mActor);
 }
@@ -386,6 +414,9 @@ bool Sphere::readClientPacket(CharStream &stream) {
 	setLinearVelocity(stream.pop<glm::vec3>());
 	setAngularVelocity(stream.pop<glm::vec3>());
 
+	setForce(stream.pop<glm::vec3>());
+	setTorque(stream.pop<glm::vec3>());
+
 	return true;
 }
 
@@ -399,6 +430,9 @@ bool Sphere::readServerPacket(CharStream &stream) {
 
 	setLinearVelocity(stream.pop<glm::vec3>());
 	setAngularVelocity(stream.pop<glm::vec3>());
+
+	setForce(stream.pop<glm::vec3>());
+	setTorque(stream.pop<glm::vec3>());
 
 	setRadius(stream.pop<F32>());
 	setMass(stream.pop<F32>());
@@ -417,6 +451,9 @@ bool Sphere::writeClientPacket(CharStream &stream) const {
 	stream.push<glm::vec3>(getLinearVelocity());
 	stream.push<glm::vec3>(getAngularVelocity());
 
+	stream.push<glm::vec3>(getForce());
+	stream.push<glm::vec3>(getTorque());
+
 	return true;
 }
 
@@ -430,6 +467,9 @@ bool Sphere::writeServerPacket(CharStream &stream) const {
 
 	stream.push<glm::vec3>(getLinearVelocity());
 	stream.push<glm::vec3>(getAngularVelocity());
+
+	stream.push<glm::vec3>(getForce());
+	stream.push<glm::vec3>(getTorque());
 
 	stream.push<F32>(getRadius());
 	stream.push<F32>(getMass());

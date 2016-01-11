@@ -296,6 +296,16 @@ public:
 		return m_invInertiaLocal;
 	};
 
+	void	setTotalForce(const btVector3& totalForce)
+	{
+		m_totalForce = totalForce;
+	}
+
+	void	setTotalTorque(const btVector3& totalTorque)
+	{
+		m_totalTorque = totalTorque;
+	}
+
 	void	setInvInertiaDiagLocal(const btVector3& diagInvInertia)
 	{
 		m_invInertiaLocal = diagInvInertia;

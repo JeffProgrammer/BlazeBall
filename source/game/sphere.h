@@ -32,13 +32,15 @@ class Sphere : public RenderedObject {
 
 protected:
 	PhysicsBody *mActor;
-	F32 mRadius;
 	F32 mMaxAngVel;
 	Material *mMaterial;
 
 	glm::vec3 mLinearVelocity;
 	glm::vec3 mAngularVelocity;
+	glm::vec3 mForce;
+	glm::vec3 mTorque;
 	F32 mMass;
+	F32 mRadius;
 
 	bool mGenerated;
 
@@ -67,6 +69,8 @@ public:
 	virtual Quat getRotation() const override;
 	glm::vec3 getLinearVelocity() const;
 	glm::vec3 getAngularVelocity() const;
+	glm::vec3 getForce() const;
+	glm::vec3 getTorque() const;
 	F32 getRadius() const;
 	F32 getMass() const;
 
@@ -74,6 +78,8 @@ public:
 	virtual void setRotation(const Quat &rot) override;
 	void setLinearVelocity(const glm::vec3 &vel);
 	void setAngularVelocity(const glm::vec3 &vel);
+	void setForce(const glm::vec3 &force);
+	void setTorque(const glm::vec3 &torque);
 	void setRadius(const F32 &radius);
 	void setMass(const F32 &mass);
 
