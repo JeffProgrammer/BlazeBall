@@ -102,6 +102,10 @@ bool NetClientGhostCreateEvent::read(CharStream &data) {
 		return false;
 	}
 
+	//Read the packet from the server.
+	if (!mObject->readServerPacket(data))
+		return false;
+
 	// This is a shitty way of doing this, but this is a level loader.
 	// If the object is a game object, add it to the scene.
 	GameObject *gameObject = dynamic_cast<GameObject *>(mObject);

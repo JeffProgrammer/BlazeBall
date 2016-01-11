@@ -79,7 +79,15 @@ bool NetServerGhostCreateEvent::write(CharStream &data) const {
 	data.push<U32>(mServer->getGhostIndex(mObject));
 	data.push<std::string>(mObject->getClassRep()->getName());
 
-	return mObject->write(data);
+	if (!mObject->write(data)) {
+		return false;
+	}
+
+	//Read the packet from the server.
+	if (!mObject->writeServerPacket(data))
+		return false;
+
+	return true;
 }
 
 bool NetServerGhostCreateEvent::read(CharStream &data) {
