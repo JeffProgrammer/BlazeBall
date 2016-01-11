@@ -33,8 +33,11 @@ void ClientConnection::createPlayer() {
 
 	//Create player
 	{
+		F32 temp = (mId + 1) * (mId + 1);
 		Sphere *player = static_cast<Sphere *>(AbstractClassRep::createFromName(mServer->getWorld(), "Sphere"));
 		player->setPosition(glm::vec3(0, 0, 20));
+		player->setRadius(0.8f / temp);
+		player->setMass(4.0f / temp);
 		mServer->getWorld()->addObject(player);
 		mServer->ghostObject(player);
 		mPlayer = player;
