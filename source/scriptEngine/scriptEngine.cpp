@@ -56,28 +56,28 @@ bool ScriptEngine::init(const std::string &mainScript) {
 	// init engine
 	mEngine = new chaiscript::ChaiScript(chaiscript::Std_Lib::library());
 
-	// Vector3 type
+	// Vec3 type
 	{
-		mEngine->add(chaiscript::user_type<Vector3>(), "Vector3");
-		mEngine->add(chaiscript::constructor<Vector3(const F32&, const F32&, const F32&)>(), "Vector3");
+		mEngine->add(chaiscript::user_type<Vec3>(), "Vec3");
+		mEngine->add(chaiscript::constructor<Vec3(const F32&, const F32&, const F32&)>(), "Vec3");
 
 		// Expose x, y, and z properties
-		mEngine->add(chaiscript::fun(&Vector3::x), "x");
-		mEngine->add(chaiscript::fun(&Vector3::y), "y");
-		mEngine->add(chaiscript::fun(&Vector3::z), "z");
+		mEngine->add(chaiscript::fun(&Vec3::x), "x");
+		mEngine->add(chaiscript::fun(&Vec3::y), "y");
+		mEngine->add(chaiscript::fun(&Vec3::z), "z");
 		
 		// expose operator overloading to script
-		mEngine->add(chaiscript::fun(&Vector3::operator+), "+");
-		mEngine->add(chaiscript::fun(&Vector3::operator-), "-");
-		mEngine->add(chaiscript::fun(&Vector3::operator*), "*");
-		mEngine->add(chaiscript::fun(&Vector3::operator/), "/");
-		mEngine->add(chaiscript::fun(&Vector3::operator+=), "+=");
-		mEngine->add(chaiscript::fun(&Vector3::operator-=), "-=");
-		mEngine->add(chaiscript::fun(&Vector3::operator*=), "*=");
-		mEngine->add(chaiscript::fun(&Vector3::operator/=), "/=");
+		mEngine->add(chaiscript::fun(&Vec3::operator+), "+");
+		mEngine->add(chaiscript::fun(&Vec3::operator-), "-");
+		mEngine->add(chaiscript::fun(&Vec3::operator*), "*");
+		mEngine->add(chaiscript::fun(&Vec3::operator/), "/");
+		mEngine->add(chaiscript::fun(&Vec3::operator+=), "+=");
+		mEngine->add(chaiscript::fun(&Vec3::operator-=), "-=");
+		mEngine->add(chaiscript::fun(&Vec3::operator*=), "*=");
+		mEngine->add(chaiscript::fun(&Vec3::operator/=), "/=");
 
 		// expose methods
-		mEngine->add(chaiscript::fun(&Vector3::toString), "toString");
+		mEngine->add(chaiscript::fun(&Vec3::toString), "toString");
 	}
 
 	// Quat type

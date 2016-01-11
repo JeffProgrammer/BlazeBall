@@ -34,7 +34,7 @@ protected:
 	/**
 	 * The position of the GameObject.
 	 */
-	Vector3 mPosition;
+	Vec3 mPosition;
 
 	/**
 	 * The rotation of the GameObject.
@@ -44,7 +44,7 @@ protected:
 	/**
 	 * The scale of the GameObject.
 	 */
-	Vector3 mScale;
+	Vec3 mScale;
 
 	/**
 	 * The world which contains the GameObject.
@@ -77,13 +77,13 @@ public:
 	 * Gets the position of the GameObject.
 	 * @return the position vector of the GameObject.
 	 */
-	virtual const Vector3 getPosition() const { return mPosition; }
+	virtual const Vec3 getPosition() const { return mPosition; }
 
 	/**
 	 * Sets the position of the GameObject.
 	 * @param position The position to set the GameObject.
 	 */
-	virtual void setPosition(const Vector3 &position) { mPosition = position; }
+	virtual void setPosition(const Vec3 &position) { mPosition = position; }
 
 	/**
 	 * Gets the rotation of the GameObject as a quaternion.
@@ -101,13 +101,13 @@ public:
 	 * Gets the scale of the GameObject.
 	 * @return the scale vector of the GameObject.
 	 */
-	virtual const Vector3 getScale() const { return mScale; }
+	virtual const Vec3 getScale() const { return mScale; }
 
 	/**
 	 * Sets the scale of the GameObject.
 	 * @param scale The scale vector of the GameObject.
 	 */
-	virtual void setScale(const Vector3 &scale) { mScale = scale; }
+	virtual void setScale(const Vec3 &scale) { mScale = scale; }
 
 	/**
 	 * Updates the camera.
