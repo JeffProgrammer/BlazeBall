@@ -64,3 +64,7 @@ void Camera::initFields() {
 	AddFieldSimple("yaw",   F32, offsetof(Camera, mYaw));
 	AddFieldSimple("pitch", F32, offsetof(Camera, mPitch));
 }
+
+void Camera::initScript(ScriptEngine *engine) {
+	// Nothing.
+}

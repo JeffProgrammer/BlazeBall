@@ -139,6 +139,10 @@ void Skybox::initFields() {
 	AddFieldSimple("face5", std::string, offsetof(Skybox, mFace5));
 }
 
+void Skybox::initScript(ScriptEngine *engine) {
+	// Nothing.
+}
+
 bool Skybox::read(CharStream &stream) {
 	if (!GameObject::read(stream)) {
 		return false;

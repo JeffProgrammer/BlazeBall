@@ -32,6 +32,12 @@ void ScriptObject::initFields() {
 	sConcreteClassRep.addSimpleField<std::string>("name", offsetof(ScriptObject, mName));
 }
 
+void ScriptObject::initScript(ScriptEngine *engine) {
+	engine->addClass<ScriptObject>("ScriptObject");
+	engine->addMethod(&ScriptObject::getName, "getName");
+	engine->addMethod(&ScriptObject::setName, "setName");
+}
+
 bool ScriptObject::getMemberField(const std::string &name, std::string &value) {
 	if (!getClassRep()->isField(name)) {
 		//Not a member field

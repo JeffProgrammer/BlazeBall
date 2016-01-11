@@ -29,3 +29,7 @@ bool NetObject::read(CharStream &stream) {
 bool NetObject::write(CharStream &stream) const {
 	return true;
 }
+
+void NetObject::initScript(ScriptEngine *engine) {
+	// Nothing.
+}

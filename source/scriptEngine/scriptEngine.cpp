@@ -6,9 +6,6 @@
 
 #include "scriptEngine/scriptEngine.h"
 
-#include <chaiscript/chaiscript.hpp>
-#include <chaiscript/chaiscript_stdlib.hpp>
-
 #include "scriptEngine/abstractClassRep.h"
 #include "scriptEngine/scriptFunctions.h"
 #include "game/gameObject.h"
@@ -95,27 +92,8 @@ bool ScriptEngine::init(const std::string &mainScript) {
 		mEngine->add(chaiscript::fun(&Quat::toString), "toString");
 	}
 
-	// Expose script object
-	{
-		mEngine->add(chaiscript::user_type<ScriptObject>(), "ScriptObject");
-		mEngine->add(chaiscript::constructor<ScriptObject()>(), "ScriptObject");
-		mEngine->add(chaiscript::fun(&ScriptObject::setName), "setName");
-		mEngine->add(chaiscript::fun(&ScriptObject::getName), "getName");
-	}
-
-	// Expose GameObject to script
-	{
-		mEngine->add(chaiscript::user_type<GameObject>(), "GameObject");
-		mEngine->add(chaiscript::constructor<GameObject()>(), "GameObject");
-		mEngine->add(chaiscript::base_class<ScriptObject, GameObject>());
-
-		mEngine->add(chaiscript::fun(&GameObject::getPosition), "getPosition");
-		mEngine->add(chaiscript::fun(&GameObject::setPosition), "setPosition");
-		mEngine->add(chaiscript::fun(&GameObject::getScale), "getScale");
-		mEngine->add(chaiscript::fun(&GameObject::setScale), "setScale");
-		mEngine->add(chaiscript::fun(&GameObject::getRotation), "getRotation");
-		mEngine->add(chaiscript::fun(&GameObject::setRotation), "setRotation");
-	}
+	// Expose all script objects
+	AbstractClassRep::initScriptAPI(this);
 
 	// Engine functions
 	{

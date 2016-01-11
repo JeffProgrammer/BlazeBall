@@ -53,9 +53,15 @@ public:
 	virtual bool write(CharStream &stream) const override;
 
 	/**
-	* Initializes the fields specific to the GameObject class.
-	*/
+	 * Initializes the fields specific to the GameObject class.
+	 */
 	static void initFields();
+
+	/**
+	 * Initializes the scripting API for the respective sript engine.
+	 * @param engine The script engine to initialize to.
+	 */
+	static void initScript(ScriptEngine *engine);
 };
 
 #endif /* skybox_h */

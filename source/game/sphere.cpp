@@ -392,6 +392,10 @@ void Sphere::initFields() {
 	// TODO
 }
 
+void Sphere::initScript(ScriptEngine *engine) {
+	// Nothing.
+}
+
 // OLD JUMP CODE
 //Make sure we're not trying to jump off a wall. Anything with a dot product > 0.1 is considered "not a wall"
 //glm::vec3 normal = getCollisionNormal();

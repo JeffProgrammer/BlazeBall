@@ -115,3 +115,7 @@ void Material::initFields() {
 	AddFieldSimple("normalTexture", std::string, offsetof(Material, mNormalTextureName));
 	AddFieldSimple("specularTexture", std::string, offsetof(Material, mSpecularTextureName));
 }
+
+void Material::initScript(ScriptEngine *engine) {
+	// Nothing.
+}

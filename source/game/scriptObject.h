@@ -14,7 +14,7 @@
 
 class AbstractClassRep;
 template<typename T> class ConcreteClassRep;
-
+class ScriptEngine;
 class ScriptObject;
 
 class ScriptObject {
@@ -25,6 +25,7 @@ public:
 	virtual ~ScriptObject();
 
 	static void initFields();
+	static void initScript(ScriptEngine *engine);
 
 	virtual AbstractClassRep* getClassRep() {
 		return mClassRep;

@@ -61,6 +61,12 @@ public:
 
 	virtual bool read(CharStream &stream); /* This is initially receiving the ghost from the server. */
 	virtual bool write(CharStream &stream) const; /* This is initally sending the ghost to the client. */
+
+	/**
+	 * Initializes the scripting API for the respective sript engine.
+	 * @param engine The script engine to initialize to.
+	 */
+	static void initScript(ScriptEngine *engine);
 };
 
 #endif

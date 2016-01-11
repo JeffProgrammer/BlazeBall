@@ -70,6 +70,10 @@ public:
 		}
 		T::initFields();
 	}
+
+	virtual void initScript(ScriptEngine *engine) {
+		T::initScript(engine);
+	}
 };
 
 #define DECLARE_SCRIPTOBJECT(className) \

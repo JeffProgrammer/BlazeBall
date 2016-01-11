@@ -27,6 +27,16 @@ void GameObject::initFields() {
 	AddFieldSimple("scale",    glm::vec3, offsetof(GameObject, mScale));
 }
 
+void GameObject::initScript(ScriptEngine *engine) {
+	engine->addClass<GameObject, ScriptObject>("GameObject");
+	engine->addMethod(&GameObject::getPosition, "getPosition");
+	engine->addMethod(&GameObject::setPosition, "setPosition");
+	engine->addMethod(&GameObject::getRotation, "getRotation");
+	engine->addMethod(&GameObject::setRotation, "setRotation");
+	engine->addMethod(&GameObject::getScale, "getScale");
+	engine->addMethod(&GameObject::setScale, "setScale");
+}
+
 bool GameObject::read(CharStream &stream) {
 	if (!NetObject::read(stream)) {
 		return false;

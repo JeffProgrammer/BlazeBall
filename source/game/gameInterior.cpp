@@ -189,3 +189,7 @@ bool GameInterior::write(CharStream &stream) const {
 	stream.push<std::string>(mInteriorFile);
 	return true;
 }
+
+void GameInterior::initScript(ScriptEngine *engine) {
+	// Nothing.
+}
