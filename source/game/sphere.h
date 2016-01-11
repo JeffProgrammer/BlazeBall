@@ -66,7 +66,7 @@ public:
 	virtual void setPosition(const Vec3 &pos) override;
 	virtual void setRotation(const Quat &rot) override;
 
-	F32 getRadius();
+	F32 getRadius() const;
 	void setRadius(const F32 &radius);
 
 	void setMaterial(Material *material) {

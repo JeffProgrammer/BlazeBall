@@ -185,7 +185,7 @@ void Sphere::setAngularVelocity(const glm::vec3 &vel) {
     mActor->setAngularVelocity(vel);
 }
 
-F32 Sphere::getRadius() {
+F32 Sphere::getRadius() const {
 	return dynamic_cast<PhysicsSphere *>(mActor)->getRadius();
 }
 
@@ -357,6 +357,8 @@ bool Sphere::readServerPacket(CharStream &stream) {
 	setLinearVelocity(stream.pop<glm::vec3>());
 	setAngularVelocity(stream.pop<glm::vec3>());
 
+	setRadius(getRadius());
+
 	return true;
 }
 
@@ -385,6 +387,8 @@ bool Sphere::writeServerPacket(CharStream &stream) const {
 	stream.push<glm::vec3>(getLinearVelocity());
 	stream.push<glm::vec3>(getAngularVelocity());
 
+	stream.push<F32>(getRadius());
+
 	return true;
 }
 
@@ -393,7 +397,8 @@ void Sphere::initFields() {
 }
 
 void Sphere::initScript(ScriptEngine *engine) {
-	// Nothing.
+	engine->addMethod(&Sphere::getRadius, "getRadius");
+	engine->addMethod(&Sphere::setRadius, "setRadius");
 }
 
 // OLD JUMP CODE
