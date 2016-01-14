@@ -21,4 +21,4 @@ public:
 	}
 };
 
-#endif // _BASE_MATH_VECTOR3_H_
+#endif // _BASE_MATH_QUAT_H_

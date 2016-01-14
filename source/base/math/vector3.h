@@ -8,6 +8,12 @@
 #define _BASE_MATH_VECTOR3_H_
 
 #include <glm/glm.hpp>
+#include <glm/gtx/projection.hpp>
+
+// SSE support
+#include <glm/gtx/simd_vec4.hpp>
+#define MATH_USE_SIMD
+
 #include "base/types.h"
 
 class Vec3 : public glm::vec3 {
@@ -68,9 +74,63 @@ public:
 		z /= scalar;
 	}
 
-	std::string toString() const {
-		return "[" + std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z) + "]";
+	std::string toString() const;
+
+	Vec3 cross(const Vec3 &vec);
+
+	Vec3 project(const Vec3 &vec);
+
+	F32 length() const;
+
+	/**
+	 * Optional SIMD support.
+	 * If we do not want to use it or our platform/compiler doesn't support it,
+	 * we simply fall back to using scalar representation.
+	*/
+#ifdef MATH_USE_SIMD
+	/**
+	 * Force inlining the functions here, as these deal with SIMD data.
+	 * we want SIMD to be as fast as possible.
+	 */
+	#ifdef _MSC_VER
+		#define MATH_SIMD_FORCE_INLINE __forceinline
+	#elif defined(__llvm__) || defined(__GNUC__)
+		// http://stackoverflow.com/questions/5223690/cs-inline-how-strong-a-hint-is-it-for-gcc-and-clang-llvm
+		#define MATH_SIMD_FORCE_INLINE __attribute__((always_inline))
+	#else
+		#warning "MATH_SIMD_FORCE_INLINE is not forcing inline. The regular inline specifier is used."
+		#define MATH_SIMD_FORCE_INLINE inline
+	#endif
+private:
+	/**
+	 * Create a Vec3 from a SIMD representation.
+	 */
+	Vec3(const glm::simdVec4 &vec) : glm::vec3(vec.Data.m128_f32[0], vec.Data.m128_f32[1], vec.Data.m128_f32[2]) {}
+
+	/**
+	 * Perform a SIMD<->Scalar cast.
+	 */
+	template<typename A, typename B>
+	MATH_SIMD_FORCE_INLINE A simd_cast(const B &vec);
+
+	/**
+	 * Casts a Vec3 to a SIMD vector.
+	 * @param vec The scalar vector to convert.
+	 * @return the SIMD vector.
+	 */
+	template<> MATH_SIMD_FORCE_INLINE glm::simdVec4 simd_cast(const Vec3 &vec) {
+		return glm::simdVec4(vec.x, vec.y, vec.z, 1.0f);
 	}
+
+	/**
+	 * Casts a SIMD vector to a Vec3.
+	 * @param vec The SIMD vector to convert.
+	 * @return the Scalar vector.
+	 */
+	template<> MATH_SIMD_FORCE_INLINE Vec3 simd_cast(const glm::simdVec4 &vec) {
+		return Vec3(vec.Data.m128_f32[0], vec.Data.m128_f32[1], vec.Data.m128_f32[2]);
+	}
+#endif
 };
 
 #endif // _BASE_MATH_VECTOR3_H_
