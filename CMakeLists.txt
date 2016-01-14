@@ -285,7 +285,8 @@ set (DIFVIEWERGAME_SRC
 	source/base/event.h
 	source/base/io.cpp
 	source/base/io.h
-	source/base/math.cpp
+	source/base/mathFunctions.cpp
+	source/base/mathFunctions.h
 	source/base/math.h
 	source/base/tree.h
 	source/base/types.h

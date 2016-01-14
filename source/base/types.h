@@ -53,6 +53,15 @@ public:
 	F32 maxY;
 	F32 maxZ;
 
+	BoxF() {
+		minX = 0.0f;
+		minY = 0.0f;
+		minZ = 0.0f;
+		maxX = 0.0f;
+		maxY = 0.0f;
+		maxZ = 0.0f;
+	}
+
 	inline glm::vec3 getMin() const {
 		return glm::vec3(minX, minY, minZ);
 	}
