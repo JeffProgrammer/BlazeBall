@@ -23,8 +23,8 @@ public:
 
 	static std::shared_ptr<NetServerEvent> deserialize(CharStream &data, Server *server, ClientConnection *client);
 
-	virtual bool write(CharStream &data) const;
-	virtual bool read(CharStream &data);
+	virtual bool write(CharStream &data) const override;
+	virtual bool read(CharStream &data) override;
 };
 
 class NetServerConnectEvent : public NetServerEvent {
@@ -42,8 +42,8 @@ class NetServerGhostCreateEvent : public NetServerEvent {
 public:
 	NetServerGhostCreateEvent(Server *server, ClientConnection *client, NetObject *object);
 
-	virtual bool write(CharStream &data) const;
-	virtual bool read(CharStream &data);
+	virtual bool write(CharStream &data) const override;
+	virtual bool read(CharStream &data) override;
 };
 
 class NetServerGhostEvent : public NetServerEvent {
@@ -52,24 +52,24 @@ protected:
 public:
 	NetServerGhostEvent(Type type, Server *server, ClientConnection *client, NetObject *object);
 
-	virtual bool write(CharStream &data) const;
-	virtual bool read(CharStream &data);
+	virtual bool write(CharStream &data) const override;
+	virtual bool read(CharStream &data) override;
 };
 
 class NetServerGhostUpdateEvent : public NetServerGhostEvent {
 public:
 	NetServerGhostUpdateEvent(Server *server, ClientConnection *client, NetObject *obj);
 
-	virtual bool write(CharStream &data) const;
-	virtual bool read(CharStream &data);
+	virtual bool write(CharStream &data) const override;
+	virtual bool read(CharStream &data) override;
 };
 
 class NetServerGhostControlObjectEvent : public NetServerGhostEvent {
 public:
 	NetServerGhostControlObjectEvent(Server *server, ClientConnection *client, NetObject *obj);
 
-	virtual bool write(CharStream &data) const;
-	virtual bool read(CharStream &data);
+	virtual bool write(CharStream &data) const override;
+	virtual bool read(CharStream &data) override;
 };
 
 
