@@ -45,11 +45,14 @@ void Client::pollEvents() {
 	};
 
 	auto onReceiveData = [this](const U8 *data, size_t size) {
-		CharStream stream(data, size);
-		const auto &event = NetClientEvent::deserialize(stream, this);
+		this->onReceivePacket(data, size);
 	};
 
 	mClient.consume_events(onConnect, onDisconnect, onReceiveData);
+
+void Client::onReceivePacket(const U8 *data, size_t size) {
+	CharStream stream(data, size);
+	const auto &event = NetClientEvent::deserialize(stream, this);
 }
 
 void Client::sendEvent(const std::shared_ptr<NetClientEvent> &event, ENetPacketFlag flag) {

@@ -90,9 +90,7 @@ void Server::run() {
 
 void Server::pollEvents() {
 	auto onClientConnect = [this](ClientConnection &client) {
-		IO::printf("Client %u with IP %s has joined the server.\n", client.get_id(), client.getAddress().c_str());
-		this->ghostAllObjects(client);
-		client.createPlayer();
+		this->onClientConnected(client);
 	};
 
 	auto onClientDisconnect = [](U32 clientId) {
@@ -100,8 +98,7 @@ void Server::pollEvents() {
 	};
 
 	auto onReceiveData = [this](ClientConnection &client, const U8 *data, size_t size) {
-		CharStream stream(data, size);
-		const auto &event = NetServerEvent::deserialize(stream, this, &client);
+		this->onReceivePacket(client, data, size);
 	};
 
 	mServer.consume_events(onClientConnect, onClientDisconnect, onReceiveData);
@@ -115,6 +112,17 @@ void Server::pollEvents() {
 			return obj != connection.getControlObject();
 		}, ENetPacketFlag::ENET_PACKET_FLAG_UNSEQUENCED);
 	}
+}
+
+void Server::onClientConnected(ClientConnection &client) {
+	IO::printf("Client %u with IP %s has joined the server.\n", client.get_id(), client.getAddress().c_str());
+	ghostAllObjects(client);
+	client.createPlayer();
+}
+
+void Server::onReceivePacket(ClientConnection &client, const U8 *data, size_t size) {
+	CharStream stream(data, size);
+	const auto &event = NetServerEvent::deserialize(stream, this, &client);
 }
 
 void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ENetPacketFlag flag) {

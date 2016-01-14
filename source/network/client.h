@@ -27,6 +27,7 @@ public:
 	void pollEvents();
 
 	void sendEvent(const std::shared_ptr<NetClientEvent> &event, ENetPacketFlag flag = ENET_PACKET_FLAG_RELIABLE);
+	void onReceivePacket(const U8 *data, size_t size);
 
 	NetObject *getGhostedObject(U32 index) {
 		return mGhostedObjects[index];

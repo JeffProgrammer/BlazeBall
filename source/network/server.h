@@ -33,6 +33,9 @@ public:
 	void sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection &connection, ENetPacketFlag flag = ENET_PACKET_FLAG_RELIABLE);
 	void sendEvent(const std::shared_ptr<NetServerEvent> &event, std::function<bool(const ClientConnection &)> predicate, ENetPacketFlag flag = ENET_PACKET_FLAG_RELIABLE);
 
+	void onClientConnected(ClientConnection &client);
+	void onReceivePacket(ClientConnection &client, const U8 *data, size_t size);
+
 	void addGhostedObject(NetObject *object);
 	void ghostObject(NetObject *object); //Global
 	void ghostObject(NetObject *object, ClientConnection &connection);
