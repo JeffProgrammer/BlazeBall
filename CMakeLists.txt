@@ -318,6 +318,8 @@ set (DIFVIEWERGAME_SRC
 	source/game/world.h
 	
 	# Networking
+	source/network/bitstream.h
+	source/network/charStream.h	
 	source/network/client.cpp
 	source/network/client.h
 	source/network/clientConnection.cpp
@@ -327,7 +329,6 @@ set (DIFVIEWERGAME_SRC
 	source/network/netObject.h
 	source/network/server.cpp
 	source/network/server.h
-	source/network/charStream.h
 
 	# Net events
 	source/network/event/netEvent.cpp
