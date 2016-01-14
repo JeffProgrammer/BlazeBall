@@ -16,7 +16,19 @@ Mat4 Mat4::translate(const Vec3 &vec) {
 }
 
 Mat4 Mat4::inverse() {
+#ifdef MATH_USE_SIMD
+	return glm::inverse(simd_cast<glm::simdMat4>(*this));
+#else
 	return glm::inverse(*this);
+#endif
+}
+
+void Mat4::operator*=(const Mat4 &mat) {
+#ifdef MATH_USE_SIMD
+	(*this) = glm::matrixCompMult(simd_cast<glm::simdMat4>(*this), simd_cast<glm::simdMat4>(mat));
+#else
+	(*this) = (*this) * mat;
+#endif
 }
 
 std::string Mat4::toString() const {
