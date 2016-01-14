@@ -17,10 +17,12 @@
 #include "scriptEngine/concreteClassRep.h"
 #include "game/world.h"
 
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
+#ifdef _WIN32
 #include <GL/glew.h>
+#elif __APPLE__
+#include <OpenGL/gl3.h>
+#elif EMSCRIPTEN
+#include <GLES3/gl3.h>
 #endif
 
 /**

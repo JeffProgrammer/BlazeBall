@@ -7,11 +7,14 @@
 #ifndef cubeMapTexture_h
 #define cubeMapTexture_h
 
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
+#ifdef _WIN32
 #include <GL/glew.h>
+#elif __APPLE__
+#include <OpenGL/gl3.h>
+#elif EMSCRIPTEN
+#include <GLES3/gl3.h>
 #endif
+
 #include <stdbool.h>
 #include "base/types.h"
 #include "bitmapTexture.h"

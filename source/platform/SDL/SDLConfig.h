@@ -8,10 +8,12 @@
 #ifndef _PLATFORMSDL_SDLCONFIG_H_
 #define _PLATFORMSDL_SDLCONFIG_H_
 
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
+#ifdef _WIN32
 #include <GL/glew.h>
+#elif __APPLE__
+#include <OpenGL/gl3.h>
+#elif EMSCRIPTEN
+#include <GLES3/gl3.h>
 #endif
 
 #include <SDL.h>
