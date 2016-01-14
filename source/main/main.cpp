@@ -24,28 +24,6 @@ int main(int argc, const char **argv) {
 	// Load the networking engine
 	Network::init();
 
-	std::vector<std::pair<U32, U32>>test;
-	BitStream stream;
-
-	for (U32 i = 0; i < 100; i ++) {
-		U32 bits = (rand() % 31) + 1;
-		U32 value = (rand() % 1000);
-
-		stream.push(value, bits);
-		value = value & (0xFFFFFFFF >> (32 - bits));
-		test.push_back(std::make_pair(value, bits));
-		IO::printf("Insert: %d / %d bits\n", value, bits);
-	}
-
-	stream.reset();
-
-	for (U32 i = 0; i < 100; i ++) {
-		auto pair = test[i];
-		assert(stream.peek(pair.second) == pair.first);
-		assert(stream.pop(pair.second) == pair.first);
-		IO::printf("Success: %d / %d bits\n", pair.first, pair.second);
-	}
-
 	// parse command line arguments.
 	state.parseArgs(argc, argv);
 
