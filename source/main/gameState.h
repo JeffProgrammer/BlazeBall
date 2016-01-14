@@ -40,6 +40,8 @@ public:
 
 	}
 
+	static std::unique_ptr<GameState> gState;
+
 	void parseArgs(int argc, const char **argv);
 
 	bool start();

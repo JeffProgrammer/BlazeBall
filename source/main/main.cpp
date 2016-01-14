@@ -15,23 +15,25 @@
 
 #include "network/bitStream.h"
 
+std::unique_ptr<GameState> GameState::gState = nullptr;
+
 int main(int argc, const char **argv) {
 	// Initialize the abstract class rep system
 	AbstractClassRep::init();
 
-	GameState state(std::make_unique<SDLPlatform>(std::make_unique<Platform::ConcretePhysicsEngineFactory<btPhysicsEngine>>()));
+	GameState::gState = std::make_unique<GameState>(std::make_unique<SDLPlatform>(std::make_unique<Platform::ConcretePhysicsEngineFactory<btPhysicsEngine>>()));
 
 	// Load the networking engine
 	Network::init();
 
 	// parse command line arguments.
-	state.parseArgs(argc, argv);
+	GameState::gState->parseArgs(argc, argv);
 
-	if (!state.start())
+	if (!GameState::gState->start())
 		return 1;
 
-	state.runLoop();
-	state.stop();
+	GameState::gState->runLoop();
+	GameState::gState->stop();
 
 	// destroy the networking engine
 	Network::destroy();
