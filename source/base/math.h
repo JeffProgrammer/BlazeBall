@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef math_h
-#define math_h
+#ifndef _BASE_MATH_H_
+#define _BASE_MATH_H_
 
 #include "base/types.h"
 #include "base/mathFunctions.h"
@@ -16,4 +16,4 @@
 #include "base/mathTypes.h"
 #include "base/math/triangle.h"
 
-#endif
+#endif // _BASE_MATH_H_
