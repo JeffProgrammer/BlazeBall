@@ -8,11 +8,7 @@
 #ifndef _PLATFORMSDL_SDLCONFIG_H_
 #define _PLATFORMSDL_SDLCONFIG_H_
 
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
-#include <GL/glew.h>
-#endif
+#include "platform/platformGL.h"
 
 #include <SDL.h>
 #undef main

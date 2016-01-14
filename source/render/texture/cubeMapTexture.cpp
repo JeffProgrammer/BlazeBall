@@ -4,18 +4,14 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
+#include "render/texture/cubeMapTexture.h"
+
 #include <stdio.h>
 #include <string>
 #include <stdlib.h>
 
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
-#include <GL/glew.h>
-#endif
-
+#include "platform/platformGL.h"
 #include "base/io.h"
-#include "render/texture/cubeMapTexture.h"
 #include "render/util.h"
 
 CubeMapTexture::CubeMapTexture(const std::vector<TextureInfo> &textureInfos) {

@@ -4,18 +4,14 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
+#include "bitmapTexture.h"
+
 #include <stdio.h>
 #include <string>
 #include <stdlib.h>
 
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
-#include <GL/glew.h>
-#endif
-
+#include "platform/platformGL.h"
 #include "base/io.h"
-#include "bitmapTexture.h"
 #include "render/util.h"
 
 BitmapTexture::BitmapTexture(U8 *pixels, const glm::ivec2 &extent, const Format &format) {

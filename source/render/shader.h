@@ -8,16 +8,10 @@
 #define shader_h
 
 #include <stdio.h>
-#include "base/types.h"
-
-#ifdef _WIN32
-#include <GL/glew.h>
-#else
-#include <OpenGL/gl3.h>
-#endif
-
 #include <string>
 #include <unordered_map>
+#include "base/types.h"
+#include "platform/platformGL.h"
 #include "scriptEngine/concreteClassRep.h"
 #include "game/scriptObject.h"
 

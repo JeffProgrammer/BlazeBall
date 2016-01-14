@@ -7,11 +7,8 @@
 #ifndef bitmapTexture_h
 #define bitmapTexture_h
 
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
-#include <GL/glew.h>
-#endif
+#include "platform/platformGL.h"
+
 #include "base/types.h"
 #include "texture.h"
 

@@ -49,6 +49,7 @@ void Client::pollEvents() {
 	};
 
 	mClient.consume_events(onConnect, onDisconnect, onReceiveData);
+}
 
 void Client::onReceivePacket(const U8 *data, size_t size) {
 	CharStream stream(data, size);

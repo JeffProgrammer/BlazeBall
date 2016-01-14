@@ -7,12 +7,7 @@
 #include "render/shader.h"
 #include "base/io.h"
 #include "render/util.h"
-
-#ifdef _WIN32
-#include <GL/glew.h>
-#else
-#include <OpenGL/gl3.h>
-#endif
+#include "platform/platformGL.h"
 
 std::unordered_map<std::string, Shader*> Shader::sShaderTable;
 Shader *Shader::defaultShader = nullptr;

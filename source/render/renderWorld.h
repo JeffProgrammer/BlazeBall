@@ -7,12 +7,6 @@
 #ifndef _RENDER_RENDERWORLD_H_
 #define _RENDER_RENDERWORLD_H_
 
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
-#include <GL/glew.h>
-#endif
-
 #include <stdio.h>
 #include <vector>
 #include <glm/matrix.hpp>

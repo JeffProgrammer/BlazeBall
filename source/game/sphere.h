@@ -9,18 +9,14 @@
 
 #include <stdio.h>
 #include <vector>
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
-#include <GL/glew.h>
-#endif
+#include <glm/matrix.hpp>
+#include "platform/platformGL.h"
 #include "gameObject.h"
 #include "base/types.h"
 #include "physics/physicsBody.h"
 #include "render/material.h"
 #include "game/movement.h"
 #include "renderedObject.h"
-#include <glm/matrix.hpp>
 
 class Sphere : public RenderedObject {
 	const F32 AppliedAcceleration = 150.f; //Maximum, lowers when reaching max roll velocity

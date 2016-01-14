@@ -16,12 +16,7 @@
 #include "network/netObject.h"
 #include "scriptEngine/concreteClassRep.h"
 #include "game/world.h"
-
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
-#include <GL/glew.h>
-#endif
+#include "platform/platformGL.h"
 
 /**
  * An class that forms the foundation for all world objects within the

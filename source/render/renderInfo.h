@@ -7,23 +7,17 @@
 #ifndef renderInfo_h
 #define renderInfo_h
 
-#include <glm/glm.hpp>
-
-#ifdef _WIN32
-#include <GL/glew.h>
-#else
-#include <OpenGL/gl3.h>
-#endif
-
-#include "render/shader.h"
-#include "render/material.h"
-#include "render/util.h"
-
 #define SRUTIL_DELEGATE_PREFERRED_SYNTAX
 
+#include <glm/glm.hpp>
 #include <unordered_map>
 #include <vector>
 #include <delegate/delegate.hpp>
+
+#include "platform/platformGL.h"
+#include "render/shader.h"
+#include "render/material.h"
+#include "render/util.h"
 
 using namespace srutil;
 
