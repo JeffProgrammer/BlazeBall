@@ -65,7 +65,7 @@ public:
 	 * @param OUT mat The camera matrix from the Camera's perspective.
 	 * @param OUT pos The position of the Camera.
 	 */
-	virtual void getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) override;
+	virtual void getCameraPosition(Mat4 &mat, Vec3 &pos) override;
 
 	/**
 	 * An update callback that is called every physics tick.

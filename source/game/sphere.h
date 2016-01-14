@@ -97,7 +97,7 @@ public:
     
 	virtual void updateCamera(const Movement &movement, const F64 &delta) override;
 	virtual void updateMove(const Movement &movement, const F64 &delta) override;
-	virtual void getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) override;
+	virtual void getCameraPosition(Mat4 &mat, Vec3 &pos) override;
 
 	virtual void updateTick(const F64 &delta) override;
 	virtual void onAddToScene() override;

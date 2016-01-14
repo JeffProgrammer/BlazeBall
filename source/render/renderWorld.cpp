@@ -42,15 +42,15 @@ RenderWorld::~RenderWorld() {
 
 void RenderWorld::render() {
 	//Get the camera transform from the marble
-	glm::mat4 cameraTransform(1);
-	glm::vec3 cameraPosition(0);
+	Mat4 cameraTransform(1.0f);
+	Vec3 cameraPosition(0.0f);
 
 	if (mClient->getControlObject())
 		mClient->getControlObject()->getCameraPosition(cameraTransform, cameraPosition);
 
 	//Camera
-	glm::mat4 viewMatrix = glm::mat4x4(1);
-	viewMatrix = glm::rotate(viewMatrix, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+	Mat4 viewMatrix = Mat4(1.0f);
+	viewMatrix = viewMatrix.rotate(glm::radians(-90.0f), Vec3(1, 0, 0));
 	viewMatrix *= cameraTransform;
 
 	RenderInfo info;

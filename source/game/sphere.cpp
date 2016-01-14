@@ -350,30 +350,30 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 	}
 }
 
-void Sphere::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
+void Sphere::getCameraPosition(Mat4 &mat, Vec3 &pos) {
 	//Reset the matrix
-	glm::mat4x4 rotation(1);
+	Mat4 rotation(1.0f);
 
 	//Rotate camera around the marble, also rotating the offset above
-	rotation = glm::rotate(rotation, mCameraPitch, glm::vec3(1, 0, 0));
-	rotation = glm::rotate(rotation, mCameraYaw, glm::vec3(0, 0, 1));
+	rotation = rotation.rotate(mCameraPitch, Vec3(1.0f, 0.0f, 0.0f));
+	rotation = rotation.rotate(mCameraYaw, Vec3(0.0f, 0.0f, 1.0f));
 
 	//Reset
-	mat = glm::mat4x4(1);
+	mat = Mat4(1.0f);
 
 	//Offset from marble; this is rotated by pitch and yaw
-	mat = glm::translate(mat, glm::vec3(0, 2.5, 0));
+	mat = mat.translate(Vec3(0.0f, 2.5f, 0.0f));
 
 	//Rotate the matrix
 	mat *= rotation;
 
 	//Offset the camera by the negative position to bring us into the center.
 	// This is not affected by pitch/yaw
-	mat = glm::translate(mat, -getPosition());
+	mat = mat.translate(-getPosition());
 
 	//Final position of the camera
-	glm::vec3 rot = glm::mat3(glm::inverse(mat)) * glm::vec3(0, -2.5, 0);
-	pos = static_cast<glm::vec3>(getPosition()) + rot;
+	Vec3 rot = glm::mat3(mat.inverse()) * Vec3(0, -2.5, 0);
+	pos = getPosition() + rot;
 
 	//Test camera for collisions
 	PhysicsEngine::RaycastInfo info;
@@ -385,7 +385,7 @@ void Sphere::getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos) {
 	//If we hit the ground, offset the camera so we can still see
 	if (info.hit) {
 		mat = rotation;
-		mat = glm::translate(mat, -info.point);
+		mat = mat.translate(-info.point);
 
 		pos = info.point;
 	}

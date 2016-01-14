@@ -19,7 +19,7 @@ Mat4 Mat4::inverse() {
 #ifdef MATH_USE_SIMD
 	return glm::inverse(simd_cast<glm::simdMat4>(*this));
 #else
-	return glm::inverse(*this);
+	return glm::inverse(static_cast<glm::mat4>(*this));
 #endif
 }
 
@@ -27,7 +27,7 @@ void Mat4::operator*=(const Mat4 &mat) {
 #ifdef MATH_USE_SIMD
 	(*this) = glm::matrixCompMult(simd_cast<glm::simdMat4>(*this), simd_cast<glm::simdMat4>(mat));
 #else
-	(*this) = (*this) * mat;
+	(*this) = static_cast<const glm::mat4 &>(*this) * static_cast<const glm::mat4 &>(mat);
 #endif
 }
 

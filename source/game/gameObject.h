@@ -10,8 +10,7 @@
 #include <glm/matrix.hpp>
 
 #include "base/types.h"
-#include "base/math/vector3.h"
-#include "base/math/quat.h"
+#include "base/math.h"
 #include "game/movement.h"
 #include "render/renderInfo.h"
 #include "network/netObject.h"
@@ -57,8 +56,8 @@ protected:
 	DECLARE_SCRIPTOBJECT(GameObject);
 	
 public:
-	GameObject() : mPosition(glm::vec3(0)), mRotation(glm::quat()), mScale(glm::vec3(1)), mWorld(nullptr) {};
-	GameObject(World *world) : mPosition(glm::vec3(0)), mRotation(glm::quat()), mScale(glm::vec3(1)), mWorld(world) {};
+	GameObject() : mPosition(Vec3(0.0f)), mRotation(Quat()), mScale(Vec3(1.0f)), mWorld(nullptr) {};
+	GameObject(World *world) : mPosition(Vec3(0.0f)), mRotation(Quat()), mScale(Vec3(1.0f)), mWorld(world) {};
 	virtual ~GameObject() {};
 
 	/**
@@ -128,7 +127,7 @@ public:
 	 * @param OUT mat The camera matrix from the GameObject's perspective.
 	 * @param OUT pos The position of the GameObject.
 	 */
-	virtual void getCameraPosition(glm::mat4x4 &mat, glm::vec3 &pos);
+	virtual void getCameraPosition(Mat4 &mat, Vec3 &pos);
 
 	/**
 	 * An update callback that is called every physics tick.
