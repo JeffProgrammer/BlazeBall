@@ -6,8 +6,8 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <glm/gtx/vector_angle.hpp>
 #include "base/math.h"
-#include <glm/ext.hpp>
 
 #define Sign3d(x) ((x) > 0 ? 1 : ((x) < 0 ? -1 : 0))
 

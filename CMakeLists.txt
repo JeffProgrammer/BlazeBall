@@ -288,6 +288,7 @@ set (DIFVIEWERGAME_SRC
 	source/base/mathFunctions.cpp
 	source/base/mathFunctions.h
 	source/base/math.h
+	source/base/mathTypes.h
 	source/base/tree.h
 	source/base/types.h
 	source/base/math/mat4.cpp

@@ -10,9 +10,10 @@
 #include "base/types.h"
 #include "base/mathFunctions.h"
 
-#include "base/math/triangle.h"
 #include "base/math/vector3.h"
 #include "base/math/quat.h"
 #include "base/math/mat4.h"
+#include "base/mathTypes.h"
+#include "base/math/triangle.h"
 
 #endif
