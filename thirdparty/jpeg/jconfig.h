@@ -10,6 +10,8 @@
 #include "jconfig_msvc.h"
 #elif __APPLE__
 #include "jconfig_mac.h"
+#elif EMSCRIPTEN
+#include "jconfig_mac.h"
 #else
 #error "Please define a configuration file for your platform
 #endif

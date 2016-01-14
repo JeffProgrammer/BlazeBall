@@ -37,6 +37,10 @@
 extern "C" {
 #endif
 
+#ifdef EMSCRIPTEN
+#include <unistd.h>
+#endif
+
 #define ZLIB_VERSION "1.2.8"
 #define ZLIB_VERNUM 0x1280
 #define ZLIB_VER_MAJOR 1
