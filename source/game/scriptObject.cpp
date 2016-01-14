@@ -11,7 +11,9 @@
 
 #ifdef __APPLE__
 #define stricmp strcasecmp
-#else
+#elif EMSCRIPTEN
+#define stricmp strcasecmp
+#elif _WIN32
 //#define stricmp stricmp
 #endif
 
