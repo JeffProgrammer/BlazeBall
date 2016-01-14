@@ -46,7 +46,7 @@ public:
 	/**
 	 * A callback that is called when the object is added to the scene.
 	 */
-	virtual void onAddToScene() {}
+	virtual void onAddToScene() override {}
 
 	/**
 	 * Initializes the fields specific to the GameObject class.
