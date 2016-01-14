@@ -7,7 +7,7 @@
 #include "render/renderWorld.h"
 #include "game/gameInterior.h"
 #include "game/camera.h"
-#include "game/shape.h"
+//#include "game/shape.h"
 #include "game/skybox.h"
 #include "render/util.h"
 #include "network/client.h"
@@ -23,7 +23,7 @@ glm::mat4 RenderInfo::inverseRotMat = (glm::mat4)Mat4(1.0f).rotate(toRadians(-90
 #define TICK_MS 16.6666666666666667
 
 RenderWorld::RenderWorld(PhysicsEngine *physics) : World(physics) {
-	mShapeShader = nullptr;
+//	mShapeShader = nullptr;
 
 	mDoDebugDraw = false;
 	mCaptureMouse = true;
@@ -86,7 +86,6 @@ void RenderWorld::renderScene(RenderInfo &info) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_MULTISAMPLE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Render all the mObjects in the scene
@@ -103,11 +102,11 @@ void RenderWorld::renderScene(RenderInfo &info) {
 	info.clearRenderMethods();
 
 	//TODO: Clean up shape rendering
-	mShapeShader->activate();
-	info.loadShader(mShapeShader);
-
-	MODELMGR->render(mShapeShader, info.viewMatrix, info.projectionMatrix);
-	mShapeShader->deactivate();
+//	mShapeShader->activate();
+//	info.loadShader(mShapeShader);
+//
+//	MODELMGR->render(mShapeShader, info.viewMatrix, info.projectionMatrix);
+//	mShapeShader->deactivate();
 
 	// check for opengl errors
 	GL_CHECKERRORS();
@@ -186,7 +185,7 @@ bool RenderWorld::init() {
 
 bool RenderWorld::initGL() {
 	Shader::initializeShaders();
-	mShapeShader = Shader::getShaderByName("Model");
+//	mShapeShader = Shader::getShaderByName("Model");
 
 	mMarbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
 	mMarbleCubemap->generateBuffer();
@@ -267,10 +266,10 @@ void RenderWorld::handleEvent(PlatformEvent *event) {
 				case KeyEvent::KEY_M:
 				{
 					// add a cube!
-					Shape *shape = new Shape(this, "cube.dae");
-					shape->loadShape();
-					shape->setPosition(glm::vec3(rand() % 10, rand() % 10, rand() % 10));
-					addObject(shape);
+//					Shape *shape = new Shape(this, "cube.dae");
+//					shape->loadShape();
+//					shape->setPosition(glm::vec3(rand() % 10, rand() % 10, rand() % 10));
+//					addObject(shape);
 					break;
 				}
 				case KeyEvent::KEY_G:
