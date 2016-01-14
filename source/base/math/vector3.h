@@ -11,8 +11,9 @@
 #include <glm/gtx/projection.hpp>
 
 // SSE support
+#ifdef MATH_USE_SIMD
 #include <glm/gtx/simd_vec4.hpp>
-#define MATH_USE_SIMD
+#endif
 
 #include "base/types.h"
 
@@ -80,7 +81,11 @@ public:
 
 	Vec3 project(const Vec3 &vec);
 
-	F32 length() const;
+	F32 distance(const Vec3 &vec);
+
+	F32 dot(const Vec3 &vec);
+
+	F32 length();
 
 	/**
 	 * Optional SIMD support.
