@@ -2,12 +2,24 @@ cmake_minimum_required (VERSION 3.0)
 include (CheckIncludeFiles)
 project (DifViewerGame C CXX)
 
-if (NOT MSVC)
-	# Force C++14 standard on compilers, MSVC already does this by default
+if (CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
+	message (" * C++ compiler: Emscripten")
+	set (EMSCRIPTEN 1)
+else ()
+	message (" * C++ cimpiler: ${CMAKE_CXX_COMPILER_ID}")
+endif ()
+
+
+if (EMSCRIPTEN)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-else()
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2")
+	set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_SDL=2 -o test.html")
+elseif (MSVC)
 	# Force multiple processors to be used to compile visual studio builds.
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+else ()
+	# Force C++14 standard on compilers, MSVC already does this by default
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 endif()
 
 # Enable Static Linking the C++ ABI directly into the executables and libraries
@@ -127,6 +139,10 @@ elseif (MSVC)
 	set(JPEG_SRC ${JPEG_SRC}
 		thirdparty/jpeg/jmemansi.c
 	)	
+else ()
+	set(JPEG_SRC ${JPEG_SRC}
+		thirdparty/jpeg/jmemnobs.c
+	)
 endif()
 
 add_library(Jpeg STATIC ${JPEG_SRC})
@@ -436,7 +452,9 @@ set (DIFVIEWERGAME_SRC
 # SDL
 #------------------------------------------------------------------------------
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
+if (NOT EMSCRIPTEN)
+	add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
+endif ()
 
 #------------------------------------------------------------------------------
 # Bullet Physics Library
@@ -448,10 +466,12 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
 # ENet Networking Library
 #------------------------------------------------------------------------------
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/enet" ENet)
-if (MSVC)
-	add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
-endif()
+if (NOT EMSCRIPTEN)
+	add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/enet" ENet)
+	if (MSVC)
+		add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
+	endif()
+endif ()
 
 #------------------------------------------------------------------------------
 
@@ -470,13 +490,17 @@ set (DIFVIEWERGAME_LIBRARIES
 
 	# DIF
 	Dif
-	
+)
+if (NOT EMSCRIPTEN)
+set (DIFVIEWERGAME_LIBRARIES
+	${DIFVIEWERGAME_LIBRARIES}
 	#SDL2
 	SDL2-static
 	
 	#Enet
 	enet
 )
+endif ()
 
 if (WIN32)
 set (DIFVIEWERGAME_LIBRARIES
@@ -499,7 +523,7 @@ set (DIFVIEWERGAME_LIBRARIES
 	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimpd.lib
 	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimp.lib
 )
-else()
+elseif (APPLE)
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
 	z
@@ -544,13 +568,12 @@ if (MSVC)
 	add_definitions(-D_CRT_NONSTDC_NO_WARNINGS)
 endif()
 
-if (APPLE)
+if (APPLE AND NOT EMSCRIPTEN)
 	ADD_FRAMEWORK(Game Cocoa)
 	ADD_FRAMEWORK(Game Carbon)
 	ADD_FRAMEWORK(Game OpenGL)
 	ADD_FRAMEWORK(Game IOKit)
 	ADD_FRAMEWORK(Game ForceFeedback)
-
 endif()
 
 set (BUILD_DIR_FILES
