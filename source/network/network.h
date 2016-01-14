@@ -11,15 +11,23 @@
 
 namespace Network {
 	inline void init() {
+#ifndef EMSCRIPTEN
 		enetpp::global_state::get().initialize();
+#endif
 	}
 
 	inline const bool isInitialized() {
+#ifndef EMSCRIPTEN
 		return enetpp::global_state::get().is_initialized();
+#else
+		return true;
+#endif
 	}
 
 	inline void destroy() {
+#ifndef EMSCRIPTEN
 		enetpp::global_state::get().deinitialize();
+#endif
 	}
 }
 

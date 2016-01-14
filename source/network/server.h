@@ -53,6 +53,9 @@ public:
 	World *getWorld() const {
 		return mWorld;
 	}
+	ClientConnection &getLocalClient() {
+		return mLocalClientConnection;
+	}
 
 private:
 	static U32 sUniqueId;
@@ -66,6 +69,8 @@ private:
 
 	std::unordered_map<U32, NetObject *> mGhostedObjects;
 	std::unordered_map<NetObject *, U32> mGhostedIndices;
+
+	ClientConnection mLocalClientConnection;
 
 	enetpp::server<ClientConnection> mServer;
 

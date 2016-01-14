@@ -7,6 +7,10 @@
 #include "network/client.h"
 #include "base/io.h"
 #include <enetpp/client_connect_params.h>
+#ifdef EMSCRIPTEN
+#include "main/gameState.h"
+#include "network/server.h"
+#endif
 
 Client::Client(World *world, const std::string &ipAddress, const U16 port) : mWorld(world) {
 	mServerAddress = ipAddress;
@@ -22,11 +26,15 @@ Client::~Client() {
 void Client::connect() {
 	IO::printf("Connecting to IP address: %s\n", mServerAddress.c_str());
 
+#ifndef EMSCRIPTEN
 	enetpp::client_connect_params params;
 	params.set_channel_count(1);
 	params.set_server_host_name_and_port(mServerAddress.c_str(), mPort);
 
 	mClient.connect(params);
+#else
+	GameState::gState->server->onClientConnected(GameState::gState->server->getLocalClient());
+#endif
 }
 
 void Client::disconnect() {
@@ -48,7 +56,10 @@ void Client::pollEvents() {
 		this->onReceivePacket(data, size);
 	};
 
+#ifndef EMSCRIPTEN
 	mClient.consume_events(onConnect, onDisconnect, onReceiveData);
+#endif
+}
 
 void Client::onReceivePacket(const U8 *data, size_t size) {
 	CharStream stream(data, size);
@@ -58,5 +69,9 @@ void Client::onReceivePacket(const U8 *data, size_t size) {
 void Client::sendEvent(const std::shared_ptr<NetClientEvent> &event, ENetPacketFlag flag) {
 	const std::vector<U8> &data = event->serialize().getBuffer();
 
+#ifndef EMSCRIPTEN
 	mClient.send_packet(0, reinterpret_cast<const U8 *>(&data[0]), data.size(), flag);
+#else
+	GameState::gState->server->onReceivePacket(GameState::gState->server->getLocalClient(), &data[0], data.size());
+#endif
 }

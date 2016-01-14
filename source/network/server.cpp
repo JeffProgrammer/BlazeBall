@@ -9,6 +9,10 @@
 #include <enetpp/server_listen_params.h>
 
 #include "physics/physicsEngine.h"
+#ifdef EMSCRIPTEN
+#include "main/gameState.h"
+#include "network/client.h"
+#endif
 
 // ~30 times a second
 #define SERVER_TIME 0.03333
@@ -39,6 +43,7 @@ void Server::start() {
 		addGhostedObject(object);
 	}
 
+#ifndef EMSCRIPTEN
 	enetpp::server_listen_params<ClientConnection> params;
 	params.set_max_client_count(16);
 	params.set_channel_count(1);
@@ -51,6 +56,12 @@ void Server::start() {
 		sUniqueId++;
 	});
 	mServer.start_listening(params);
+#else
+	mLocalClientConnection = ClientConnection();
+	mLocalClientConnection.mIpAddress = "localhost";
+	mLocalClientConnection.mId = 0;
+	mLocalClientConnection.mServer = this;
+#endif
 
 	mIsRunning = true;
 	mServerThread = std::thread(&Server::run, this);
@@ -58,7 +69,9 @@ void Server::start() {
 
 void Server::stop() {
 	// block this thread and wait for the server thread to finish before moving on
+#ifndef EMSCRIPTEN
 	mServer.stop_listening();
+#endif
 	mIsRunning = false;
 	mServerThread.join();
 	IO::printf("Stopping server process...\n");
@@ -101,7 +114,9 @@ void Server::pollEvents() {
 		this->onReceivePacket(client, data, size);
 	};
 
+#ifndef EMSCRIPTEN
 	mServer.consume_events(onClientConnect, onClientDisconnect, onReceiveData);
+#endif
 
 	for (const auto &pair : mGhostedObjects) {
 		const auto obj = pair.second;
@@ -127,17 +142,29 @@ void Server::onReceivePacket(ClientConnection &client, const U8 *data, size_t si
 
 void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ENetPacketFlag flag) {
 	const std::vector<U8> &data = event->serialize().getBuffer();
+#ifndef EMSCRIPTEN
 	mServer.send_packet_to_all_if(0, &data[0], data.size(), flag, [](const ClientConnection &){return true;});
+#else
+	GameState::gState->client->onReceivePacket(&data[0], data.size());
+#endif
 }
 
 void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ClientConnection &connection, ENetPacketFlag flag) {
 	const std::vector<U8> &data = event->serialize().getBuffer();
+#ifndef EMSCRIPTEN
 	mServer.send_packet_to(connection.get_id(), 0, &data[0], data.size(), flag);
+#else
+	GameState::gState->client->onReceivePacket(&data[0], data.size());
+#endif
 }
 
 void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, std::function<bool(const ClientConnection &)> predicate, ENetPacketFlag flag) {
 	const std::vector<U8> &data = event->serialize().getBuffer();
+#ifndef EMSCRIPTEN
 	mServer.send_packet_to_all_if(0, &data[0], data.size(), flag, predicate);
+#else
+	GameState::gState->client->onReceivePacket(&data[0], data.size());
+#endif
 }
 
 void Server::addGhostedObject(NetObject *object) {
