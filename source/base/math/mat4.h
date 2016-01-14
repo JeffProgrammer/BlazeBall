@@ -46,15 +46,15 @@ public:
 	 * Force inlining the functions here, as these deal with SIMD data.
 	 * we want SIMD to be as fast as possible.
 	*/
-#ifdef _MSC_VER
-#define MATH_SIMD_FORCE_INLINE __forceinline
-#elif defined(__llvm__) || defined(__GNUC__)
-	// http://stackoverflow.com/questions/5223690/cs-inline-how-strong-a-hint-is-it-for-gcc-and-clang-llvm
-#define MATH_SIMD_FORCE_INLINE __attribute__((always_inline))
-#else
-	#warning "MATH_SIMD_FORCE_INLINE is not forcing inline. The regular inline specifier is used."
-#define MATH_SIMD_FORCE_INLINE inline
-#endif
+	#ifdef _MSC_VER
+		#define MATH_SIMD_FORCE_INLINE __forceinline
+	#elif defined(__llvm__) || defined(__GNUC__)
+		// http://stackoverflow.com/questions/5223690/cs-inline-how-strong-a-hint-is-it-for-gcc-and-clang-llvm
+		#define MATH_SIMD_FORCE_INLINE __attribute__((always_inline))
+	#else
+		#warning "MATH_SIMD_FORCE_INLINE is not forcing inline. The regular inline specifier is used."
+		#define MATH_SIMD_FORCE_INLINE inline
+	#endif
 private:
 	/**
 	 * Perform a SIMD<->Scalar cast.
