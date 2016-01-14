@@ -28,8 +28,8 @@ int main(int argc, const char **argv) {
 	BitStream stream;
 
 	for (U32 i = 0; i < 100; i ++) {
-		U32 bits = arc4random_uniform(31) + 1;
-		U32 value = arc4random();
+		U32 bits = (rand() % 31) + 1;
+		U32 value = (rand() % 1000);
 
 		stream.push(value, bits);
 		value = value & (0xFFFFFFFF >> (32 - bits));
