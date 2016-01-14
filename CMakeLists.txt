@@ -11,9 +11,12 @@ endif ()
 
 
 if (EMSCRIPTEN)
+	set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s USE_SDL=2 -s USE_PTHREADS=1")
+	
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2")
-	set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_SDL=2 -o test.html")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2 -s USE_PTHREADS=1")
+
+	set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 -o test.html")
 elseif (MSVC)
 	# Force multiple processors to be used to compile visual studio builds.
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
