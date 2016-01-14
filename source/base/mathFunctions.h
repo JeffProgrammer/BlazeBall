@@ -10,9 +10,9 @@
 class PlaneF;
 class Vec3;
 
-glm::vec2 point3_project_plane(const glm::vec3 &point, const glm::vec3 &normal, const glm::vec3 &origin);
-F32 planeF_distance_to_point(const PlaneF &plane, const glm::vec3 &point);
-bool isCollinear(const glm::vec3 &up, const glm::vec3 &uq, const glm::vec3 &vp, const glm::vec3 &vq);
+glm::vec2 point3_project_plane(const Vec3 &point, const Vec3 &normal, const Vec3 &origin);
+F32 planeF_distance_to_point(const PlaneF &plane, const Vec3 &point);
+bool isCollinear(const Vec3 &up, const Vec3 &uq, const Vec3 &vp, const Vec3 &vq);
 
 inline F32 toRadians(F32 degrees) {
 	return glm::radians(degrees);
