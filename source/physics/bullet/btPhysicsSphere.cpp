@@ -9,7 +9,6 @@
 #include "physics/bullet/btPhysicsInterior.h"
 #include "game/gameInterior.h"
 #include "base/math/triangle.h"
-#include <glm/ext.hpp>
 
 #ifndef _WIN32
 #define stricmp strcasecmp

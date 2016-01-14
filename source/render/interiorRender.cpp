@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
-#include <glm/ext.hpp>
 #include "game/gameInterior.h"
 #include "base/math.h"
 #include "render/util.h"
