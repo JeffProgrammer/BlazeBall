@@ -122,7 +122,7 @@ void Server::onClientConnected(ClientConnection &client) {
 
 void Server::onReceivePacket(ClientConnection &client, const U8 *data, size_t size) {
 	CharStream stream(data, size);
-	const auto &event = NetServerEvent::deserialize(stream, this, &client);
+	NetServerEvent::deserialize(stream, this, &client);
 }
 
 void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ENetPacketFlag flag) {

@@ -53,7 +53,7 @@ void Client::pollEvents() {
 
 void Client::onReceivePacket(const U8 *data, size_t size) {
 	CharStream stream(data, size);
-	const auto &event = NetClientEvent::deserialize(stream, this);
+	NetClientEvent::deserialize(stream, this);
 }
 
 void Client::sendEvent(const std::shared_ptr<NetClientEvent> &event, ENetPacketFlag flag) {

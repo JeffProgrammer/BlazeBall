@@ -10,8 +10,6 @@
 #include "game/gameObject.h"
 #include "scriptEngine/abstractClassRep.h"
 
-const U8 Magic = 0x42;
-
 std::shared_ptr<NetClientEvent> NetClientEvent::deserialize(CharStream &data, Client *client) {
 	//Don't corrupt the stream if it's not a net event
 	if (data.peek<U8>() != NetEvent::Magic)
