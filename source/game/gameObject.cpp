@@ -34,6 +34,10 @@ void GameObject::initScript(ScriptEngine *engine) {
 	engine->addMethod(&GameObject::setRotation, "setRotation");
 	engine->addMethod(&GameObject::getScale, "getScale");
 	engine->addMethod(&GameObject::setScale, "setScale");
+
+	engine->addField(&GameObject::mPosition, "position");
+	engine->addField(&GameObject::mRotation, "rotation");
+	engine->addField(&GameObject::mScale, "scale");
 }
 
 bool GameObject::read(CharStream &stream) {

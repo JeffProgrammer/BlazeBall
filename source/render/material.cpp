@@ -117,5 +117,9 @@ void Material::initFields() {
 }
 
 void Material::initScript(ScriptEngine *engine) {
-	// Nothing.
+	engine->addClass<Material, ScriptObject>("Material");
+	engine->addField(&Material::mShaderName, "shader");
+	engine->addField(&Material::mDiffuseTextureName, "diffuseTexture");
+	engine->addField(&Material::mNormalTextureName, "normalTexture");
+	engine->addField(&Material::mSpecularTextureName, "specularTexture");
 }

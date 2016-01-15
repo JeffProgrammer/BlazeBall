@@ -66,5 +66,7 @@ void Camera::initFields() {
 }
 
 void Camera::initScript(ScriptEngine *engine) {
-	// Nothing.
+	engine->addClass<Camera, GameObject>("Camera");
+	engine->addField(&Camera::mYaw, "yaw");
+	engine->addField(&Camera::mPitch, "pitch");
 }

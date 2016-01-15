@@ -197,5 +197,6 @@ bool GameInterior::write(CharStream &stream) const {
 }
 
 void GameInterior::initScript(ScriptEngine *engine) {
-	// Nothing.
+	engine->addClass<GameInterior, RenderedObject>("GameInterior");
+	engine->addField(&GameInterior::mInteriorFile, "interiorFile");
 }
