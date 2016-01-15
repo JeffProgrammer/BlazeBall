@@ -76,6 +76,19 @@ public:
 	}
 };
 
+template <typename T, typename Class>
+inline ptrdiff_t getOffset(T Class:: *field) {
+	union {
+		T Class:: *m;
+		ptrdiff_t ptr;
+	} magicUnion;
+	magicUnion.m = field;
+	return magicUnion.ptr;
+}
+inline ptrdiff_t getOffset(long offset) {
+	return static_cast<ptrdiff_t>(offset);
+}
+
 #define DECLARE_SCRIPTOBJECT(className) \
 	static ConcreteClassRep<className> sConcreteClassRep
 
@@ -83,6 +96,6 @@ public:
 	ConcreteClassRep<className> className::sConcreteClassRep(#className, #parent)
 
 #define AddFieldSimple(name, type, offset) \
-	sConcreteClassRep.addSimpleField<type>(name, offset)
+	sConcreteClassRep.addSimpleField<type>(name, getOffset(offset))
 
 #endif // _SCRIPTENGINE_CONCRETECLASSREP_H_

@@ -21,9 +21,9 @@ void GameObject::getCameraPosition(Mat4 &mat, Vec3 &pos) {
 }
 
 void GameObject::initFields() {
-	AddFieldSimple("position", glm::vec3, offsetof(GameObject, mPosition));
-	AddFieldSimple("rotation", glm::quat, offsetof(GameObject, mRotation));
-	AddFieldSimple("scale",    glm::vec3, offsetof(GameObject, mScale));
+	AddFieldSimple("position", glm::vec3, &GameObject::mPosition);
+	AddFieldSimple("rotation", glm::quat, &GameObject::mRotation);
+	AddFieldSimple("scale",    glm::vec3, &GameObject::mScale);
 }
 
 void GameObject::initScript(ScriptEngine *engine) {

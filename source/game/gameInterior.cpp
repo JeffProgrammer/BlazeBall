@@ -14,7 +14,7 @@
 IMPLEMENT_SCRIPTOBJECT(GameInterior, RenderedObject);
 
 void GameInterior::initFields() {
-	AddFieldSimple("interiorFile", std::string, offsetof(GameInterior, mInteriorFile));
+	AddFieldSimple("interiorFile", std::string, &GameInterior::mInteriorFile);
 }
 
 GameInterior::GameInterior(World *world) : RenderedObject(world), mActor(nullptr) {

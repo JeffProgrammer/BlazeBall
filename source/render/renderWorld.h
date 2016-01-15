@@ -14,6 +14,7 @@
 #include <glm/vec3.hpp>
 #include <dif/objects/dif.h>
 
+#include "platform/platformGL.h"
 #include "base/math.h"
 #include "base/types.h"
 #include "base/io.h"

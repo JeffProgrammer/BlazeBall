@@ -131,12 +131,12 @@ void Skybox::onAddToScene() {
 
 void Skybox::initFields() {
 	// faces 0-5
-	AddFieldSimple("face0", std::string, offsetof(Skybox, mFace0));
-	AddFieldSimple("face1", std::string, offsetof(Skybox, mFace1));
-	AddFieldSimple("face2", std::string, offsetof(Skybox, mFace2));
-	AddFieldSimple("face3", std::string, offsetof(Skybox, mFace3));
-	AddFieldSimple("face4", std::string, offsetof(Skybox, mFace4));
-	AddFieldSimple("face5", std::string, offsetof(Skybox, mFace5));
+	AddFieldSimple("face0", std::string, &Skybox::mFace0);
+	AddFieldSimple("face1", std::string, &Skybox::mFace1);
+	AddFieldSimple("face2", std::string, &Skybox::mFace2);
+	AddFieldSimple("face3", std::string, &Skybox::mFace3);
+	AddFieldSimple("face4", std::string, &Skybox::mFace4);
+	AddFieldSimple("face5", std::string, &Skybox::mFace5);
 }
 
 void Skybox::initScript(ScriptEngine *engine) {

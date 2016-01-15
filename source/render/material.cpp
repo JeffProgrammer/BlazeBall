@@ -110,10 +110,10 @@ void Material::setTexture(Texture *texture, const GLuint &index) {
 }
 
 void Material::initFields() {
-	AddFieldSimple("shader", std::string, offsetof(Material, mShaderName));
-	AddFieldSimple("diffuseTexture", std::string, offsetof(Material, mDiffuseTextureName));
-	AddFieldSimple("normalTexture", std::string, offsetof(Material, mNormalTextureName));
-	AddFieldSimple("specularTexture", std::string, offsetof(Material, mSpecularTextureName));
+	AddFieldSimple("shader", std::string, &Material::mShaderName);
+	AddFieldSimple("diffuseTexture", std::string, &Material::mDiffuseTextureName);
+	AddFieldSimple("normalTexture", std::string, &Material::mNormalTextureName);
+	AddFieldSimple("specularTexture", std::string, &Material::mSpecularTextureName);
 }
 
 void Material::initScript(ScriptEngine *engine) {

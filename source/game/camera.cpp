@@ -61,8 +61,8 @@ void Camera::getCameraPosition(Mat4 &mat, Vec3 &pos) {
 }
 
 void Camera::initFields() {
-	AddFieldSimple("yaw",   F32, offsetof(Camera, mYaw));
-	AddFieldSimple("pitch", F32, offsetof(Camera, mPitch));
+	AddFieldSimple("yaw",   F32, &Camera::mYaw);
+	AddFieldSimple("pitch", F32, &Camera::mPitch);
 }
 
 void Camera::initScript(ScriptEngine *engine) {

@@ -29,7 +29,7 @@ ScriptObject::~ScriptObject() {
 }
 
 void ScriptObject::initFields() {
-	sConcreteClassRep.addSimpleField<std::string>("name", offsetof(ScriptObject, mName));
+	AddFieldSimple("name", std::string, &ScriptObject::mName);
 }
 
 void ScriptObject::initScript(ScriptEngine *engine) {
