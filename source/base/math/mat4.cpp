@@ -7,19 +7,19 @@
 #include "base/math/mat4.h"
 #include "base/math/vector3.h"
 
-Mat4 Mat4::rotate(const F32 &angle, const Vec3 &axis) {
-	return glm::rotate(*this, angle, axis);
+Mat4 Mat4::rotate(const Mat4 &mat, const F32 &angle, const Vec3 &axis) {
+	return glm::rotate(mat, angle, axis);
 }
 
-Mat4 Mat4::translate(const Vec3 &vec) {
-	return glm::translate(*this, vec);
+Mat4 Mat4::translate(const Mat4 &mat, const Vec3 &vec) {
+	return glm::translate(mat, vec);
 }
 
-Mat4 Mat4::inverse() {
+Mat4 Mat4::inverse(const Mat4 &mat) {
 #ifdef MATH_USE_SIMD
-	return glm::inverse(simd_cast<glm::simdMat4>(*this));
+	return glm::inverse(simd_cast<glm::simdMat4>(mat));
 #else
-	return glm::inverse(static_cast<glm::mat4>(*this));
+	return glm::inverse(mat);
 #endif
 }
 
@@ -33,9 +33,10 @@ void Mat4::operator*=(const Mat4 &mat) {
 
 std::string Mat4::toString() const {
 	std::string ret;
+	const Mat4 &mat = (*this);
 	for (U32 i = 0; i < 4; i++) {
-		ret += std::to_string((*this)[i].x) + " " + std::to_string((*this)[i].y) +
-			" " + std::to_string((*this)[i].z) + " " + std::to_string((*this)[i].w) + "\n";
+		ret += std::to_string(mat[i].x) + " " + std::to_string(mat[i].y) +
+			" " + std::to_string(mat[i].z) + " " + std::to_string(mat[i].w) + "\n";
 	}
 	return ret;
 }

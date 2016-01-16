@@ -26,11 +26,11 @@ public:
 	Mat4(const F32 &identity) : glm::mat4(1.0f) {}
 	Mat4(const glm::mat4 &mat) : glm::mat4(mat) {}
 
-	Mat4 rotate(const F32 &angle, const Vec3 &axis);
+	static Mat4 rotate(const Mat4 &mat, const F32 &angle, const Vec3 &axis);
 
-	Mat4 translate(const Vec3 &vec);
+	static Mat4 translate(const Mat4 &mat, const Vec3 &vec);
 
-	Mat4 inverse();
+	static Mat4 inverse(const Mat4 &mat);
 
 	void operator*=(const Mat4 &mat);
 
