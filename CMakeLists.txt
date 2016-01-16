@@ -409,6 +409,7 @@ set (DIFVIEWERGAME_SRC
 
 	# ScriptEngine
 	source/scriptEngine/abstractClassRep.h
+	source/scriptEngine/abstractClassRep.cpp
 	source/scriptEngine/concreteClassRep.h
 	source/scriptEngine/scriptEngine.cpp
 	source/scriptEngine/scriptEngine.h
