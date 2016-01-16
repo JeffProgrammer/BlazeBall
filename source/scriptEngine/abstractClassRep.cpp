@@ -46,6 +46,10 @@ void AbstractClassRep::initScriptAPI(ScriptEngine *engine) {
 	const auto &vec = tree.traverse();
 	for (auto classRep : vec) {
 		IO::printf("Initializing class %s to the script api.\n", classRep->data->getName().c_str());
+
+		if (classRep->parent != nullptr)
+			classRep->data->mFieldList.insert(classRep->parent->data->mFieldList.begin(), classRep->parent->data->mFieldList.end());
+
 		classRep->data->initScript(engine);
 	}
 }

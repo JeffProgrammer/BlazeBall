@@ -11,6 +11,7 @@
 #include <string>
 #include <unordered_map>
 #include "base/types.h"
+#include "base/math.h"
 #include "platform/platformGL.h"
 #include "game/scriptObject.h"
 

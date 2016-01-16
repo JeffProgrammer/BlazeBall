@@ -35,9 +35,10 @@ public:
 		mFieldList[name] = Field(offset, getterFunction, setterFunction);
 	}
 
-	template<typename T>
-	void addSimpleField(const std::string &name, ptrdiff_t offset) {
-		mFieldList[name] = Field(offset, scriptGetter<T>, scriptSetter<T>);
+	template<typename ClassType, typename FieldType>
+	void addSimpleField(ScriptEngine *scripting, FieldType ClassType:: *field, const std::string &name) {
+		mFieldList[name] = Field(getOffset(field), scriptGetter<FieldType>, scriptSetter<FieldType>);
+		scripting->addField(field, name);
 	}
 
 	virtual ScriptObject* create(World *world) = 0;

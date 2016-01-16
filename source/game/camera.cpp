@@ -62,6 +62,6 @@ void Camera::getCameraPosition(Mat4 &mat, Vec3 &pos) {
 
 void Camera::initScript(ScriptEngine *engine) {
 	engine->addClass<Camera, GameObject>("Camera");
-	engine->addField(&Camera::mYaw, "yaw");
-	engine->addField(&Camera::mPitch, "pitch");
+	sConcreteClassRep.addSimpleField(engine, &Camera::mYaw, "yaw");
+	sConcreteClassRep.addSimpleField(engine, &Camera::mPitch, "pitch");
 }

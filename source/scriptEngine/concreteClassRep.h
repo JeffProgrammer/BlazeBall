@@ -46,8 +46,9 @@ public:
 	}
 
 	template<typename FieldType>
-	void addSimpleField(FieldType ClassType:: *field, const std::string &name) {
+	void addSimpleField(ScriptEngine *scripting, FieldType ClassType:: *field, const std::string &name) {
 		mFieldList[name] = Field(getOffset(field), scriptGetter<FieldType>, scriptSetter<FieldType>);
+		scripting->addField(field, name);
 	}
 };
 

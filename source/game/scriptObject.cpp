@@ -34,7 +34,7 @@ void ScriptObject::initScript(ScriptEngine *engine) {
 	engine->addClass<ScriptObject>("ScriptObject");
 	engine->addMethod(&ScriptObject::getName, "getName");
 	engine->addMethod(&ScriptObject::setName, "setName");
-	engine->addField(&ScriptObject::mName, "name");
+	sConcreteClassRep.addSimpleField(engine, &ScriptObject::mName, "name");
 }
 
 bool ScriptObject::getMemberField(const std::string &name, std::string &value) {

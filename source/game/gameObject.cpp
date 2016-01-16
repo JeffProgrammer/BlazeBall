@@ -29,13 +29,9 @@ void GameObject::initScript(ScriptEngine *engine) {
 	engine->addMethod(&GameObject::getScale, "getScale");
 	engine->addMethod(&GameObject::setScale, "setScale");
 
-	engine->addField(&GameObject::mPosition, "position");
-	engine->addField(&GameObject::mRotation, "rotation");
-	engine->addField(&GameObject::mScale, "scale");
-
-	sConcreteClassRep.addSimpleField(&GameObject::mPosition, "position");
-	sConcreteClassRep.addSimpleField(&GameObject::mRotation, "rotation");
-	sConcreteClassRep.addSimpleField(&GameObject::mScale, "scale");
+	sConcreteClassRep.addSimpleField(engine, &GameObject::mPosition, "position");
+	sConcreteClassRep.addSimpleField(engine, &GameObject::mRotation, "rotation");
+	sConcreteClassRep.addSimpleField(engine, &GameObject::mScale, "scale");
 }
 
 bool GameObject::read(CharStream &stream) {
