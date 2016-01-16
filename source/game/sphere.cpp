@@ -485,6 +485,7 @@ bool Sphere::writeServerPacket(CharStream &stream) const {
 }
 
 void Sphere::initScript(ScriptEngine *engine) {
+	engine->addClass<Sphere, RenderedObject>("Sphere");
 	engine->addMethod(&Sphere::getRadius, "getRadius");
 	engine->addMethod(&Sphere::setRadius, "setRadius");
 }
