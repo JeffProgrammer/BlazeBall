@@ -36,14 +36,17 @@ bool ScriptEngine::init(const std::string &mainScript) {
 
 	// Vec3 type
 	{
-		mEngine->add(chaiscript::user_type<Vec3>(), "Vec3");
-		mEngine->add(chaiscript::constructor<Vec3(const F32&, const F32&, const F32&)>(), "Vec3");
+		mEngine->add(chaiscript::user_type<glm::vec3>(), "glmvec3");
 
 		// Expose x, y, and z properties
-		mEngine->add(chaiscript::fun(&Vec3::x), "x");
-		mEngine->add(chaiscript::fun(&Vec3::y), "y");
-		mEngine->add(chaiscript::fun(&Vec3::z), "z");
-		
+		mEngine->add(chaiscript::fun(&glm::vec3::x), "x");
+		mEngine->add(chaiscript::fun(&glm::vec3::y), "y");
+		mEngine->add(chaiscript::fun(&glm::vec3::z), "z");
+
+		mEngine->add(chaiscript::user_type<Vec3>(), "Vec3");
+		mEngine->add(chaiscript::base_class<glm::vec3, Vec3>());
+		mEngine->add(chaiscript::constructor<Vec3(const F32&, const F32&, const F32&)>(), "Vec3");
+
 		// expose operator overloading to script
 		mEngine->add(chaiscript::fun(&Vec3::operator+), "+");
 		mEngine->add(chaiscript::fun(&Vec3::operator-), "-");
