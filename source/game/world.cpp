@@ -15,6 +15,8 @@
 //#define stricmp stricmp
 #endif
 
+IMPLEMENT_SCRIPTOBJECT(World, ScriptObject);
+
 World::World(PhysicsEngine *physics, ScriptEngine *script) : mPhysicsEngine(physics), mScriptEngine(script) {
 	mPhysicsEngine->init();
 	mPhysicsEngine->setStepCallback([this](F64 delta){
@@ -135,4 +137,12 @@ bool World::loadLevel(const std::string &file) {
 void World::addObject(GameObject *object) {
 	mObjects.push_back(object);
 	object->onAddToScene();
+}
+
+void World::initScript(ScriptEngine *engine) {
+	engine->addClass<World, ScriptObject, false>("World");
+	engine->addMethod(&World::findGameObject, "findGameObject");
+	engine->addMethod(&World::addObject, "addObject");
+	sConcreteClassRep.addSimpleField(engine, &World::mSimulationSpeed, "simulationSpeed");
+	sConcreteClassRep.addSimpleField(engine, &World::mRunning, "running");
 }

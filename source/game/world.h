@@ -11,9 +11,10 @@
 
 #include "base/types.h"
 #include "physics/physicsEngine.h"
+#include "game/scriptObject.h"
 
 class GameObject;
-class World {
+class World : public ScriptObject {
 protected:
 	std::vector<GameObject *> mObjects;
 	PhysicsEngine *mPhysicsEngine;
@@ -24,7 +25,12 @@ protected:
 
 	F32 mSimulationSpeed;
 
+	DECLARE_SCRIPTOBJECT(World);
 public:
+	World() {
+		//Needed to make ConcreteClassRep shut up; don't use this
+		assert(false);
+	}
 	World(PhysicsEngine *physics, ScriptEngine *script);
 	virtual ~World();
 
@@ -42,6 +48,12 @@ public:
 	const std::vector<GameObject *> &getObjectList() { return mObjects; }
 	GameObject *findGameObject(const std::string &name);
 	virtual void addObject(GameObject *object);
+
+	/**
+	 * Initializes the scripting API for the respective sript engine.
+	 * @param engine The script engine to initialize to.
+	 */
+	static void initScript(ScriptEngine *engine);
 };
 
 #endif
