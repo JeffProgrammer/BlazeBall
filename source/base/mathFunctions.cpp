@@ -16,11 +16,11 @@ F32 planeF_distance_to_point(const PlaneF &plane, const Vec3 &point) {
 }
 
 glm::vec2 point_project_plane(const glm::vec3 &point, Vec3 normal, const Vec3 &origin) {
-	if (normal.cross(Vec3(0.0f, 0.0f, 1.0f)).length() == 0.0f) {
+	if (Vec3::cross(normal, Vec3(0.0f, 0.0f, 1.0f)).length() == 0.0f) {
 		return glm::vec2(point.x, point.y);
 	}
-	Vec3 xcross = normal.cross(Vec3(0.0f, 0.0f, 1.0f));
-	Vec3 ycross = normal.cross(xcross);
+	Vec3 xcross = Vec3::cross(normal, Vec3(0.0f, 0.0f, 1.0f));
+	Vec3 ycross = Vec3::cross(normal, xcross);
 
 	xcross = xcross * (1.0f / xcross.length());
 	ycross = ycross * (1.0f / ycross.length());
@@ -41,7 +41,7 @@ glm::vec2 point_project_plane(const glm::vec3 &point, Vec3 normal, const Vec3 &o
 }
 
 F32 point_distance_to_line(const Vec3 &p, const Vec3 &q, const glm::vec3 &point) {
-	return glm::length(glm::cross(q - p, p - point)) / glm::length(q - p);
+	return	(Vec3::cross(q - p, p - point)).length() / (q - p).length();
 }
 
 bool isCollinear(const Vec3 &up, const Vec3 &uq, const Vec3 &vp, const Vec3 &vq) {

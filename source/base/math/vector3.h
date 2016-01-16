@@ -78,13 +78,13 @@ public:
 
 	std::string toString() const;
 
-	Vec3 cross(const Vec3 &vec);
+	static Vec3 cross(const Vec3 &a, const Vec3 &b);
 
-	Vec3 project(const Vec3 &vec);
+	static Vec3 project(const Vec3 &a, const Vec3 &b);
 
-	F32 distance(const Vec3 &vec);
+	static F32 distance(const Vec3 &a, const Vec3 &b);
 
-	F32 dot(const Vec3 &vec);
+	static F32 dot(const Vec3 &a, const Vec3 &b);
 
 	F32 length();
 
