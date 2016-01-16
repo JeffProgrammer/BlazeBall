@@ -4,6 +4,7 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
+#include <glm/gtx/vector_angle.hpp>
 #include "base/math/vector3.h"
 
 std::string Vec3::toString() const {
@@ -21,6 +22,11 @@ Vec3 Vec3::cross(const Vec3 &a, const Vec3 &b) {
 Vec3 Vec3::project(const Vec3 &a, const Vec3 &b) {
 	// Currently GLM doesn't have any SIMD function for glm::proj
 	return glm::proj(static_cast<glm::vec3>(a), static_cast<glm::vec3>(b));
+}
+
+F32 Vec3::angle(const Vec3 &a, const Vec3 &b) {
+	// Currently GLM doesn't have any SIMD function for glm::angle
+	return glm::angle(static_cast<glm::vec3>(a), static_cast<glm::vec3>(b));
 }
 
 F32 Vec3::distance(const Vec3 &a, const Vec3 &b) {

@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include <math.h>
-#include <glm/gtx/vector_angle.hpp>
 #include "base/math.h"
 
 #define Sign3d(x) ((x) > 0 ? 1 : ((x) < 0 ? -1 : 0))
@@ -15,7 +14,7 @@ F32 planeF_distance_to_point(const PlaneF &plane, const Vec3 &point) {
 	return (plane.x * point.x + plane.y * point.y + plane.z * point.z) + plane.d;
 }
 
-glm::vec2 point_project_plane(const glm::vec3 &point, Vec3 normal, const Vec3 &origin) {
+glm::vec2 point_project_plane(const Vec3 &point, Vec3 normal, const Vec3 &origin) {
 	if (Vec3::cross(normal, Vec3(0.0f, 0.0f, 1.0f)).length() == 0.0f) {
 		return glm::vec2(point.x, point.y);
 	}
@@ -28,10 +27,10 @@ glm::vec2 point_project_plane(const glm::vec3 &point, Vec3 normal, const Vec3 &o
 	Vec3 distance = point - origin;
 	F32 hypotenuse = distance.length();
 
-	if (hypotenuse == 0)
+	if (hypotenuse == 0.0f)
 		return glm::vec2(0, 0);
 
-	F32 theta = glm::angle(static_cast<glm::vec3>(distance), xcross);
+	F32 theta = Vec3::angle(distance, xcross);
 	//cos theta = adjacent / hypotenuse
 	//adjacent = cos theta * hypotenuse
 	F32 adjacent = cosf(theta) * hypotenuse;
