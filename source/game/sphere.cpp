@@ -23,14 +23,6 @@ Sphere::Sphere() : RenderedObject(), mActor(nullptr) {
 
 	mCameraYaw = 0.0f;
 	mCameraPitch = 0.0f;
-
-//	RenderWorld *renderer = dynamic_cast<RenderWorld *>(world);
-//	if (renderer) {
-//		Material *material = new Material("marble.skin");
-//		material->setTexture(renderer->mMarbleCubemap, GL_TEXTURE3);
-//		material->setShader(Shader::getShaderByName("Sphere"));
-//		setMaterial(material);
-//	}
 }
 
 Sphere::~Sphere() {
@@ -286,7 +278,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 	//Linear velocity relative to camera yaw (for capping)
 	const Vec3 &linRel = Vec3(Mat4::translate(Mat4::inverse(deltaMat), mActor->getLinearVelocity())[3]);
 	const Vec3 &angRel = Vec3::cross(Vec3(Mat4::translate(Mat4::inverse(deltaMat), mActor->getAngularVelocity())[3]), Vec3(0, 0, 1));
-	Vec3 torque = move * AppliedAcceleration * F32(delta);
+	Vec3 torque = move * AppliedAcceleration * F32(delta) * getRadius();
 
 	if (getColliding()) {
 		//Don't let us go faster than the max velocity in any direction.
@@ -308,7 +300,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 //	IO::printf("T:  %f %f\n", torque.x, torque.y);
 
 	//Torque is based on the movement and yaw
-	Vec3 torqueRel = Vec3(Mat4::translate(deltaMat, torque)[3]) * getMass();
+	Vec3 torqueRel = Vec3(Mat4::translate(deltaMat, torque)[3]);
 	//Cross to convert 3d coordinates into torque
 	applyTorque(Vec3::cross(Vec3(0, 0, 1), torqueRel));
 
@@ -408,6 +400,14 @@ void Sphere::onAddToScene() {
 	mWorld->getPhysicsEngine()->addBody(mActor);
 
 	mActor->setActivationState(false);
+
+	RenderWorld *renderer = dynamic_cast<RenderWorld *>(mWorld);
+	if (renderer) {
+		Material *material = new Material("marble.skin");
+		material->setTexture(renderer->mMarbleCubemap, GL_TEXTURE3);
+		material->setShader(Shader::getShaderByName("Sphere"));
+		setMaterial(material);
+	}
 }
 
 bool Sphere::readClientPacket(CharStream &stream) {
