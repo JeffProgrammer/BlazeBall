@@ -12,7 +12,6 @@
 #include <unordered_map>
 #include "base/types.h"
 #include "platform/platformGL.h"
-#include "scriptEngine/concreteClassRep.h"
 #include "game/scriptObject.h"
 
 class Shader {

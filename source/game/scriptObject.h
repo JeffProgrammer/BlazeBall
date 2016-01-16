@@ -16,10 +16,12 @@ class AbstractClassRep;
 template<typename T> class ConcreteClassRep;
 class ScriptEngine;
 class ScriptObject;
+class World;
 
 class ScriptObject {
 	template<typename T>
 	friend class ConcreteClassRep;
+	friend class AbstractClassRep;
 public:
 	ScriptObject();
 	virtual ~ScriptObject();
@@ -57,8 +59,9 @@ protected:
 	 * They are stored as strings.
 	 */
 	std::unordered_map<std::string, std::string> mDynamicFieldList;
-
 	AbstractClassRep *mClassRep;
+
+	World *mWorld;
 
 	static ConcreteClassRep<ScriptObject> sConcreteClassRep;
 	

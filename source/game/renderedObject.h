@@ -16,7 +16,7 @@
 
 class RenderedObject : public GameObject {
 public:
-	RenderedObject(World *world) : GameObject(world) {}
+	RenderedObject() : GameObject() {}
 
 	/**
 	 * Render the object using OpenGL.

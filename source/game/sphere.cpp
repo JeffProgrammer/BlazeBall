@@ -18,19 +18,19 @@ IMPLEMENT_SCRIPTOBJECT(Sphere, RenderedObject);
 
 GLuint gSphereVBO = 0;
 
-Sphere::Sphere(World *world) : RenderedObject(world), mActor(nullptr) {
+Sphere::Sphere() : RenderedObject(), mActor(nullptr) {
 	mGenerated = false;
 
 	mCameraYaw = 0.0f;
 	mCameraPitch = 0.0f;
 
-	RenderWorld *renderer = dynamic_cast<RenderWorld *>(world);
-	if (renderer) {
-		Material *material = new Material("marble.skin");
-		material->setTexture(renderer->mMarbleCubemap, GL_TEXTURE3);
-		material->setShader(Shader::getShaderByName("Sphere"));
-		setMaterial(material);
-	}
+//	RenderWorld *renderer = dynamic_cast<RenderWorld *>(world);
+//	if (renderer) {
+//		Material *material = new Material("marble.skin");
+//		material->setTexture(renderer->mMarbleCubemap, GL_TEXTURE3);
+//		material->setShader(Shader::getShaderByName("Sphere"));
+//		setMaterial(material);
+//	}
 }
 
 Sphere::~Sphere() {

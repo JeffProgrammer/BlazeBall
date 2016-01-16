@@ -41,18 +41,12 @@ protected:
 	Vec3 mScale;
 
 	/**
-	 * The world which contains the GameObject.
-	 */
-	World *mWorld;
-
-	/**
 	 * The class rep representing the GameObject abstract class
 	 */
 	DECLARE_SCRIPTOBJECT(GameObject);
 	
 public:
-	GameObject() : mPosition(Vec3(0.0f)), mRotation(Quat()), mScale(Vec3(1.0f)), mWorld(nullptr) {};
-	GameObject(World *world) : mPosition(Vec3(0.0f)), mRotation(Quat()), mScale(Vec3(1.0f)), mWorld(world) {};
+	GameObject() : mPosition(Vec3(0.0f)), mRotation(Quat()), mScale(Vec3(1.0f)) {};
 	virtual ~GameObject() {};
 
 	/**

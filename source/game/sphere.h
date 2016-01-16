@@ -54,7 +54,7 @@ protected:
 	DECLARE_SCRIPTOBJECT(Sphere);
 
 public:
-	Sphere(World *world);
+	Sphere();
 	virtual ~Sphere();
 
 	virtual void calculateModelMatrix(const RenderInfo &info, Mat4 &modelMatrix) override;

@@ -9,7 +9,7 @@
 
 IMPLEMENT_SCRIPTOBJECT(Camera, GameObject);
 
-Camera::Camera(World *world) : GameObject(world) {
+Camera::Camera() : GameObject() {
 	mPitch = 0.0f;
 	mYaw = 0.0f;
 }

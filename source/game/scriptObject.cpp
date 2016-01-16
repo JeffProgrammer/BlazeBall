@@ -8,6 +8,7 @@
 #include "scriptEngine/abstractClassRep.h"
 #include "scriptEngine/concreteClassRep.h"
 #include "scriptEngine/scriptEngine.h"
+#include "game/world.h"
 
 #ifdef __APPLE__
 #define stricmp strcasecmp
@@ -19,6 +20,7 @@ ConcreteClassRep<ScriptObject> ScriptObject::sConcreteClassRep("ScriptObject", "
 
 ScriptObject::ScriptObject() {
 	mClassRep = nullptr;
+	mWorld = nullptr;
 	mName = "";
 
 	IO::printf("Constructed object %p\n", this);

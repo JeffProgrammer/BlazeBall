@@ -57,7 +57,7 @@ static GLfloat sVertices[] = {
 };
 static U32 sVertCount = sizeof(sVertices) / sizeof(GLfloat);
 
-Skybox::Skybox(World *world) : RenderedObject(world) {
+Skybox::Skybox() : RenderedObject() {
 	mGenerated = false;
 	mBuffer = 0;
 	mMaterial = nullptr;
