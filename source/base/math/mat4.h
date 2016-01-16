@@ -23,6 +23,7 @@ class Vec3;
 class Mat4 : public glm::mat4 {
 public:
 	Mat4() : glm::mat4() {}
+	Mat4(const glm::mat3 &mat3) : glm::mat4(mat3) {}
 	Mat4(const F32 &identity) : glm::mat4(1.0f) {}
 	Mat4(const glm::mat4 &mat) : glm::mat4(mat) {}
 
@@ -31,6 +32,8 @@ public:
 	static Mat4 translate(const Mat4 &mat, const Vec3 &vec);
 
 	static Mat4 inverse(const Mat4 &mat);
+
+	static Mat4 scale(const Mat4 &mat, const Vec3 &vec);
 
 	void operator*=(const Mat4 &mat);
 

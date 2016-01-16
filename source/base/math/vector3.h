@@ -21,6 +21,7 @@ class Vec3 : public glm::vec3 {
 public:
 	Vec3() : glm::vec3() {}
 	Vec3(const glm::vec3 &vec) : glm::vec3(vec) {}
+	Vec3(const glm::vec4 &vec) : glm::vec3(vec) {}
 	Vec3(const F32 &val) : glm::vec3(val, val, val) {}
 	Vec3(const F32 &x, const F32 &y, const F32 &z) : glm::vec3(x, y, z) {}
 

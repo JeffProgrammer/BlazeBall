@@ -23,6 +23,10 @@ Mat4 Mat4::inverse(const Mat4 &mat) {
 #endif
 }
 
+Mat4 Mat4::scale(const Mat4 &mat, const Vec3 &vec) {
+	return glm::scale(mat, vec);
+}
+
 void Mat4::operator*=(const Mat4 &mat) {
 #ifdef MATH_USE_SIMD
 	(*this) = glm::matrixCompMult(simd_cast<glm::simdMat4>(*this), simd_cast<glm::simdMat4>(mat));

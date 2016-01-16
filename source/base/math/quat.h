@@ -16,6 +16,14 @@ public:
 	Quat(const glm::quat &quat) : glm::quat(quat) {}
 	Quat(const F32 &x, const F32 &y, const F32 &z, const F32 &w) : glm::quat(x, y, z, w) {}
 
+	static F32 angle(const Quat &quat) {
+		return glm::angle(quat);
+	}
+
+	static Vec3 axis(const Quat &quat) {
+		return glm::axis(quat);
+	}
+
 	std::string toString() const {
 		return "[" + std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z) + std::to_string(w) + "]";
 	}
