@@ -78,7 +78,9 @@ bool ScriptEngine::init(const std::string &mainScript) {
 
 	// Engine functions
 	{
-		mEngine->add(chaiscript::fun(&echo), "echo");
+		mEngine->add(chaiscript::fun(&echo<std::string>), "echo");
+		mEngine->add(chaiscript::fun(&echo<float>), "echo");
+		mEngine->add(chaiscript::fun(&echo<int>), "echo");
 	}
 
 	// execute main.chai
