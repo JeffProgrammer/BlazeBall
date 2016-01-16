@@ -484,33 +484,7 @@ bool Sphere::writeServerPacket(CharStream &stream) const {
 	return true;
 }
 
-void Sphere::initFields() {
-	// TODO
-}
-
 void Sphere::initScript(ScriptEngine *engine) {
 	engine->addMethod(&Sphere::getRadius, "getRadius");
 	engine->addMethod(&Sphere::setRadius, "setRadius");
 }
-
-// OLD JUMP CODE
-//Make sure we're not trying to jump off a wall. Anything with a dot product > 0.1 is considered "not a wall"
-//Vec3 normal = getCollisionNormal();
-//if (movement.jump && glm::dot(normal, Vec3(0, 0, 1)) > 0.1) {
-//Jump takes the average of the collision normal and the up vector to provide a mostly upwards
-// jump but still taking the surface into account.
-//Vec3 jumpNormal = (normal + Vec3(0, 0, 1)) / 2.f;
-//Vec3 vel = Vec3(0, 0, 0);//mActor->getLinearVelocity();
-
-//Vec3 proj = jumpNormal * (glm::dot(vel, jumpNormal) * glm::dot(jumpNormal, jumpNormal));
-//Vec3 imp = jumpNormal * (JumpImpulse - glm::length(proj));
-//IO::printf("jump normal: %f %f %f\nvel: %f %f %f\nproj: %f %f %f\nimp: %f %f %f",
-// jumpNormal.x, jumpNormal.y, jumpNormal.z,
-//vel.x, vel.y, vel.z,
-// proj.x, proj.y, proj.z,
-//imp.x, imp.y, imp.z
-// );
-
-//if (glm::length(proj) < JumpImpulse) {
-//applyImpulse(imp, Vec3(0, 0, 0));
-//}
