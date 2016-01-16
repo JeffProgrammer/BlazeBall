@@ -8,26 +8,26 @@
 
 IMPLEMENT_SCRIPTOBJECT(RenderedObject, GameObject);
 
-void RenderedObject::calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix) {
-	glm::vec3 pos = getPosition();
-	glm::quat rot = getRotation();
-	glm::vec3 scale = getScale();
+void RenderedObject::calculateModelMatrix(const RenderInfo &info, Mat4 &modelMatrix) {
+	Vec3 pos = getPosition();
+	Quat rot = getRotation();
+	Vec3 scale = getScale();
 
 	//Model
-	modelMatrix = glm::mat4x4(1);
-	modelMatrix = glm::translate(modelMatrix, glm::vec3(pos.x, pos.y, pos.z));
-	modelMatrix = glm::rotate(modelMatrix, glm::angle(rot), glm::axis(rot));
-	modelMatrix = glm::scale(modelMatrix, scale);
+	modelMatrix = Mat4(1.0f);
+	modelMatrix = Mat4::translate(modelMatrix, Vec3(pos.x, pos.y, pos.z));
+	modelMatrix = Mat4::rotate(modelMatrix, Quat::angle(rot), Quat::axis(rot));
+	modelMatrix = Mat4::scale(modelMatrix, scale);
 }
 
 void RenderedObject::loadModelMatrix(const RenderInfo &info, Shader *shader) {
 	//Load the model matrix
-	glm::mat4 modelMatrix(1);
+	Mat4 modelMatrix(1.0f);
 	//Separate function call here because this is virtual (and overridden)
 	calculateModelMatrix(info, modelMatrix);
 
 	//Inverse (because some shaders need it)
-	glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
+	const Mat4 &inverseModelMatrix = Mat4::inverse(modelMatrix);
 
 	//Load it into the shader
 	shader->setUniformMatrix("modelMat", GL_FALSE, modelMatrix);

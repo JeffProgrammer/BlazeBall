@@ -93,7 +93,7 @@ void Skybox::render(RenderInfo &info) {
 	info.loadShader(shader);
 
 	//Strip any positional data from the camera, so we just have rotation
-	glm::mat4 skyboxView = glm::mat4(glm::mat3(info.viewMatrix));
+	Mat4 skyboxView = Mat4(glm::mat3(info.viewMatrix));
 	shader->setUniform("extent", 1000.f);
 	shader->setUniformMatrix("viewMat", GL_FALSE, skyboxView);
 

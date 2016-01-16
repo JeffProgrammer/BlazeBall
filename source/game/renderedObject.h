@@ -34,7 +34,7 @@ public:
 	 * @param info        A RenderInfo struct with all the render state information.
 	 * @param modelMatrix A reference to a matrix into which the model matrix will be loaded.
 	 */
-	virtual void calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix);
+	virtual void calculateModelMatrix(const RenderInfo &info, Mat4 &modelMatrix);
 
 	/**
 	 * Send the object's model matrix to OpenGL

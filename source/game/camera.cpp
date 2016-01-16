@@ -29,20 +29,20 @@ void Camera::updateCamera(const Movement &movement, const F64 &delta) {
 }
 
 void Camera::updateMove(const Movement &movement, const F64 &delta) {
-	glm::mat4x4 deltaMat = glm::mat4x4(1);
+	Mat4 deltaMat = Mat4(1.0f);
 
 	//Invert these because we are a free cam
-	deltaMat = glm::rotate(deltaMat, -mYaw, glm::vec3(0, 0, 1));
-	deltaMat = glm::rotate(deltaMat, -mPitch, glm::vec3(1, 0, 0));
+	deltaMat = Mat4::rotate(deltaMat, -mYaw, Vec3(0, 0, 1));
+	deltaMat = Mat4::rotate(deltaMat, -mPitch, Vec3(1, 0, 0));
 
 	//Move based on movement keys
-	if (movement.forward)  deltaMat = glm::translate(deltaMat, glm::vec3(0, 1, 0));
-	if (movement.backward) deltaMat = glm::translate(deltaMat, glm::vec3(0, -1, 0));
-	if (movement.left)     deltaMat = glm::translate(deltaMat, glm::vec3(-1, 0, 0));
-	if (movement.right)    deltaMat = glm::translate(deltaMat, glm::vec3(1, 0, 0));
+	if (movement.forward)  deltaMat = Mat4::translate(deltaMat, Vec3(0, 1, 0));
+	if (movement.backward) deltaMat = Mat4::translate(deltaMat, Vec3(0, -1, 0));
+	if (movement.left)     deltaMat = Mat4::translate(deltaMat, Vec3(-1, 0, 0));
+	if (movement.right)    deltaMat = Mat4::translate(deltaMat, Vec3(1, 0, 0));
 
 	//Move the origin
-	mPosition += glm::vec3(deltaMat[3]) * F32(delta / 0.016f);
+	mPosition += Vec3(deltaMat[3].x, deltaMat[3].y, deltaMat[3].z) * F32(delta / 0.016f);
 }
 
 void Camera::getCameraPosition(Mat4 &mat, Vec3 &pos) {
@@ -50,12 +50,12 @@ void Camera::getCameraPosition(Mat4 &mat, Vec3 &pos) {
 	mat = Mat4(1.0f);
 
 	//Rotate camera around the origin
-	mat = mat.rotate(mPitch, Vec3(1.0f, 0.0f, 0.0f));
-	mat = mat.rotate(mYaw, Vec3(0.0f, 0.0f, 1.0f));
+	mat = Mat4::rotate(mat, mPitch, Vec3(1.0f, 0.0f, 0.0f));
+	mat = Mat4::rotate(mat, mYaw, Vec3(0.0f, 0.0f, 1.0f));
 
 	//Offset the camera by the negative position to bring us into the center.
 	// This is not affected by pitch/yaw
-	mat = mat.translate(-mPosition);
+	mat = Mat4::translate(mat, -mPosition);
 
 	pos = mPosition;
 }
