@@ -24,6 +24,14 @@ Vec3 Vec3::project(const Vec3 &a, const Vec3 &b) {
 	return glm::proj(static_cast<glm::vec3>(a), static_cast<glm::vec3>(b));
 }
 
+Vec3 Vec3::normalize(const Vec3 &vec) {
+#ifdef MATH_USE_SIMD
+	return simd_cast<Vec3>(glm::normalize(simd_cast<glm::simdVec4>(vec)));
+#else
+	return glm::normalize(static_cast<glm::vec3>(vec));
+#endif
+}
+
 F32 Vec3::angle(const Vec3 &a, const Vec3 &b) {
 	// Currently GLM doesn't have any SIMD function for glm::angle
 	return glm::angle(static_cast<glm::vec3>(a), static_cast<glm::vec3>(b));

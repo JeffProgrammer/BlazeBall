@@ -82,6 +82,8 @@ public:
 
 	static Vec3 project(const Vec3 &a, const Vec3 &b);
 
+	static Vec3 normalize(const Vec3 &vec);
+
 	static F32 angle(const Vec3 &a, const Vec3 &b);
 
 	static F32 distance(const Vec3 &a, const Vec3 &b);
