@@ -19,15 +19,8 @@ namespace chaiscript {
 
 class ScriptEngine {
 public:
-	enum Engine {
-		SERVER,
-		CLIENT
-	};
-
 	ScriptEngine();
 	~ScriptEngine();
-
-	static ScriptEngine* get(Engine isServer);
 
 	bool init(const std::string &mainScript);
 

@@ -17,6 +17,7 @@ class World {
 protected:
 	std::vector<GameObject *> mObjects;
 	PhysicsEngine *mPhysicsEngine;
+	ScriptEngine *mScriptEngine;
 
 	bool mRunning;
 	bool mShouldSleep;
@@ -24,10 +25,11 @@ protected:
 	F32 mSimulationSpeed;
 
 public:
-	World(PhysicsEngine *physics);
+	World(PhysicsEngine *physics, ScriptEngine *script);
 	virtual ~World();
 
 	PhysicsEngine *getPhysicsEngine() { return mPhysicsEngine; }
+	ScriptEngine *getScriptEngine() { return mScriptEngine; }
 
 	bool getRunning() { return mRunning; }
 	void setRunning(bool running) { mRunning = running; }

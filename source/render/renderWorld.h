@@ -80,7 +80,7 @@ public:
 	
 	virtual void addObject(GameObject *object);
 
-	RenderWorld(PhysicsEngine *physics);
+	RenderWorld(PhysicsEngine *physics, ScriptEngine *script);
 	virtual ~RenderWorld();
 
 	void updateWindowSize(const glm::ivec2 &size);

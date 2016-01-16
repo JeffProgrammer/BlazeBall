@@ -15,7 +15,7 @@
 //#define stricmp stricmp
 #endif
 
-World::World(PhysicsEngine *physics) : mPhysicsEngine(physics) {
+World::World(PhysicsEngine *physics, ScriptEngine *script) : mPhysicsEngine(physics), mScriptEngine(script) {
 	mPhysicsEngine->init();
 	mPhysicsEngine->setStepCallback([this](F64 delta){
 		this->tick(delta);

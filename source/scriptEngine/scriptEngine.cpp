@@ -15,25 +15,6 @@
 AbstractClassRep *AbstractClassRep::sLast = nullptr;
 std::unordered_map<std::string, AbstractClassRep*> AbstractClassRep::sClassRepMap;
 
-// I hate global variables, but how else can we just randomly access the script
-// engine at any time. Also...server is seperate process from client. We need
-// to have separate engines running.
-// Make 2 script engines. One for client and one for server
-ScriptEngine *gClientScriptEngine = nullptr;
-ScriptEngine *gServerScriptEngine = nullptr;
-
-ScriptEngine* ScriptEngine::get(Engine isServer) {
-	if (isServer == SERVER) {
-		if (gServerScriptEngine == nullptr)
-			gServerScriptEngine = new ScriptEngine();
-		return gServerScriptEngine;
-	} else {
-		if (gClientScriptEngine == nullptr)
-			gClientScriptEngine = new ScriptEngine();
-		return gClientScriptEngine;
-	}
-}
-
 ScriptEngine::ScriptEngine() {
 	mEngine = nullptr;
 }

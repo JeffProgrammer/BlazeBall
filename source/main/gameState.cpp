@@ -27,23 +27,21 @@ void GameState::parseArgs(int argc, const char **argv) {
 
 bool GameState::start() {
 	if (runServer) {
-		// Init server scripting
-		if (!ScriptEngine::get(ScriptEngine::SERVER)->init("mainServer.chai"))
-			return false;
+		ScriptEngine *scripting = new ScriptEngine();
+		scripting->init("mainServer.chai");
 
-		serverWorld = new World(platform->createPhysicsEngine());
+		serverWorld = new World(platform->createPhysicsEngine(), scripting);
 		server = new Server(serverWorld);
 		serverWorld->loadLevel("bowl.json");
 		server->start();
 	}
 
 	if (runClient) {
-		// Init client scripting
-		if (!ScriptEngine::get(ScriptEngine::CLIENT)->init("mainClient.chai"))
-			return false;
+		ScriptEngine *scripting = new ScriptEngine();
+		scripting->init("mainClient.chai");
 
 		//Create us a new scene
-		RenderWorld *world = new RenderWorld(platform->createPhysicsEngine());
+		RenderWorld *world = new RenderWorld(platform->createPhysicsEngine(), scripting);
 		client = new Client(world, serverAddress, 28000);
 
 		world->setClient(client);
