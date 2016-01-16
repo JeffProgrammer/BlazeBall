@@ -10,32 +10,13 @@
 #include <type_traits>
 #include "scriptEngine/abstractClassRep.h"
 
-class GameObject;
-
-//Nasty template hacking
-template<bool=true>
-struct create_impl {
-	template<typename T>
-	static T *create(World *world) {
-		return new T(world);
-	}
-};
-
-template<>
-struct create_impl<false> {
-	template<typename T>
-	static T *create(World *world) {
-		return new T();
-	}
-};
-
 /**
  * The main purpose of a ConcreteClassRep is to be able to instantiate the
  * actual instance of the object from the string provided to the
  * AbstractClassRep. All classes instantiated from ConcreteClassReps must
  * inherit from ScriptObject.
  */
-template<typename T>
+template<typename ClassType>
 class ConcreteClassRep : public AbstractClassRep {
 public:
 	/**
@@ -55,36 +36,31 @@ public:
 	virtual ScriptObject* create(World *world) {
 		//For everything that is a subclass of GameObject, this will create it with
 		// the world parameter. Everything else will be created without that parameter.
-		T *obj = create_impl<std::is_base_of<GameObject, T>::value>::template create<T>(world);
+		ClassType *obj = new ClassType();
 		obj->mClassRep = this;
 		return obj;
 	}
 
-	virtual void initClass() {
-		// copy the parent's fields
-		// this will perform a deep copy of all fields since we call initClass on
-		// an ordered tree!
-		if (mParent != "") {
-			const auto &fields = sClassRepMap[mParent]->mFieldList;
-			mFieldList.insert(fields.begin(), fields.end());
-		}
-		T::initFields();
+	virtual void initScript(ScriptEngine *engine) {
+		ClassType::initScript(engine);
 	}
 
-	virtual void initScript(ScriptEngine *engine) {
-		T::initScript(engine);
+	template<typename FieldType>
+	void addSimpleField(FieldType ClassType:: *field, const std::string &name) {
+		mFieldList[name] = Field(getOffset(field), scriptGetter<FieldType>, scriptSetter<FieldType>);
 	}
 };
 
-template <typename T, typename Class>
-inline ptrdiff_t getOffset(T Class:: *field) {
+template <typename FieldType, typename Class>
+inline ptrdiff_t getOffset(FieldType Class:: *field) {
 	union {
-		T Class:: *m;
+		FieldType Class:: *m;
 		ptrdiff_t ptr;
 	} magicUnion;
 	magicUnion.m = field;
 	return magicUnion.ptr;
 }
+
 inline ptrdiff_t getOffset(long offset) {
 	return static_cast<ptrdiff_t>(offset);
 }
@@ -94,8 +70,5 @@ inline ptrdiff_t getOffset(long offset) {
 
 #define IMPLEMENT_SCRIPTOBJECT(className, parent) \
 	ConcreteClassRep<className> className::sConcreteClassRep(#className, #parent)
-
-#define AddFieldSimple(name, type, offset) \
-	sConcreteClassRep.addSimpleField<type>(name, getOffset(offset))
 
 #endif // _SCRIPTENGINE_CONCRETECLASSREP_H_

@@ -18,9 +18,6 @@
 std::unique_ptr<GameState> GameState::gState = nullptr;
 
 int main(int argc, const char **argv) {
-	// Initialize the abstract class rep system
-	AbstractClassRep::init();
-
 	GameState::gState = std::make_unique<GameState>(std::make_unique<SDLPlatform>(std::make_unique<Platform::ConcretePhysicsEngineFactory<btPhysicsEngine>>()));
 
 	// Load the networking engine

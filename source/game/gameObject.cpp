@@ -18,13 +18,7 @@ void GameObject::getCameraPosition(Mat4 &mat, Vec3 &pos) {
 	mat = Mat4(1.0f);
 	mat = Mat4::translate(mat, Vec3(-mPosition.x, -mPosition.y, -mPosition.z));
 	pos = mPosition;
-}
-
-void GameObject::initFields() {
-	AddFieldSimple("position", glm::vec3, &GameObject::mPosition);
-	AddFieldSimple("rotation", glm::quat, &GameObject::mRotation);
-	AddFieldSimple("scale",    glm::vec3, &GameObject::mScale);
-}
+}	
 
 void GameObject::initScript(ScriptEngine *engine) {
 	engine->addClass<GameObject, ScriptObject>("GameObject");
@@ -38,6 +32,10 @@ void GameObject::initScript(ScriptEngine *engine) {
 	engine->addField(&GameObject::mPosition, "position");
 	engine->addField(&GameObject::mRotation, "rotation");
 	engine->addField(&GameObject::mScale, "scale");
+
+	sConcreteClassRep.addSimpleField(&GameObject::mPosition, "position");
+	sConcreteClassRep.addSimpleField(&GameObject::mRotation, "rotation");
+	sConcreteClassRep.addSimpleField(&GameObject::mScale, "scale");
 }
 
 bool GameObject::read(CharStream &stream) {

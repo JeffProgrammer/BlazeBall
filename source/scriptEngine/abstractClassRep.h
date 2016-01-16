@@ -41,39 +41,6 @@ public:
 	}
 
 	virtual ScriptObject* create(World *world) = 0;
-	static void init() {
-		Tree<AbstractClassRep*> tree;
-		std::unordered_map<AbstractClassRep*, Tree<AbstractClassRep*>::Node*> map;
-
-		// store classreps
-		for (auto *rep = sLast; rep != nullptr; rep = rep->mNext) {
-			auto node = new Tree<AbstractClassRep*>::Node;
-			node->data = rep;
-
-			map[rep] = node;
-			sClassRepMap[rep->mName] = rep;
-		}
-
-		// sort the classes into their hiearchy
-		for (auto i : map) {
-			auto rep = i.first;
-			auto node = i.second;
-
-			// find parent rep and set it to the node
-			if (rep->mParent == "")
-				tree.push(node, nullptr);
-			else {
-				auto parentRep = sClassRepMap[rep->mParent];
-				tree.push(node, map[parentRep]);
-			}
-		}
-
-		// traverse the tree and initialize the fields (while having a party)
-		const auto &vec = tree.traverse();
-		for (auto classRep : vec) {
-			classRep->data->initClass();
-		}
-	}
 	struct Field {
 		Field() {
 			offset = 0;
@@ -100,8 +67,6 @@ public:
 	Field getField(const std::string &name) {
 		return mFieldList[name];
 	}
-
-	virtual void initClass() = 0;
 	virtual void initScript(ScriptEngine *engine) = 0;
 
 	std::string toString() {

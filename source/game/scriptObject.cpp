@@ -30,14 +30,11 @@ ScriptObject::~ScriptObject() {
 	IO::printf("Destructed object %p\n", this);
 }
 
-void ScriptObject::initFields() {
-	AddFieldSimple("name", std::string, &ScriptObject::mName);
-}
-
 void ScriptObject::initScript(ScriptEngine *engine) {
 	engine->addClass<ScriptObject>("ScriptObject");
 	engine->addMethod(&ScriptObject::getName, "getName");
 	engine->addMethod(&ScriptObject::setName, "setName");
+	engine->addField(&ScriptObject::mName, "name");
 }
 
 bool ScriptObject::getMemberField(const std::string &name, std::string &value) {

@@ -25,7 +25,7 @@ void ClientConnection::setControlObject(GameObject *object) {
 void ClientConnection::createPlayer() {
 	//Create camera
 	{
-		Camera *camera = static_cast<Camera *>(AbstractClassRep::createFromName(mServer->getWorld(), "Camera"));
+		Camera *camera = static_cast<Camera *>(AbstractClassRep::createFromName("Camera", mServer->getWorld()));
 		mServer->getWorld()->addObject(camera);
 		mServer->ghostObject(camera);
 		mCamera = camera;
@@ -33,7 +33,7 @@ void ClientConnection::createPlayer() {
 
 	//Create player
 	{
-		Sphere *player = static_cast<Sphere *>(AbstractClassRep::createFromName(mServer->getWorld(), "Sphere"));
+		Sphere *player = static_cast<Sphere *>(AbstractClassRep::createFromName("Sphere", mServer->getWorld()));
 		player->setPosition(glm::vec3(0, 0, 20));
 		player->setRadius(0.3f);
 		player->setMass(1);
