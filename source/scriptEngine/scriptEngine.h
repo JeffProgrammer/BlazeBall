@@ -42,10 +42,16 @@ public:
 		mEngine->add(chaiscript::constructor<Class()>(), className);
 	}
 
-	template<typename Class, typename Parent>
-	void addClass(const std::string &className) {
+	template<typename Class, typename Parent, bool isConstructable = true>
+	typename std::enable_if<isConstructable, void>::type addClass(const std::string &className) {
 		mEngine->add(chaiscript::user_type<Class>(), className);
 		mEngine->add(chaiscript::constructor<Class()>(), className);
+		mEngine->add(chaiscript::base_class<Parent, Class>());
+	}
+
+	template<typename Class, typename Parent, bool isConstructable = true>
+	typename std::enable_if<!isConstructable, void>::type addClass(const std::string &className) {
+		mEngine->add(chaiscript::user_type<Class>(), className);
 		mEngine->add(chaiscript::base_class<Parent, Class>());
 	}
 private:
