@@ -17,7 +17,7 @@ void GameInterior::initFields() {
 	AddFieldSimple("interiorFile", std::string, &GameInterior::mInteriorFile);
 }
 
-GameInterior::GameInterior(World *world) : RenderedObject(world), mActor(nullptr) {
+GameInterior::GameInterior() : RenderedObject(), mActor(nullptr) {
 
 }
 

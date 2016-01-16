@@ -91,7 +91,7 @@ bool World::loadLevel(const std::string &file) {
 		const char *klass = (*obj)["class"].GetString();
 
 		// create object here.
-		ScriptObject *scriptObject = AbstractClassRep::createFromName(this, klass);
+		ScriptObject *scriptObject = AbstractClassRep::createFromName(klass, this);
 
 		// loop through each field
 		for (auto field = obj->MemberBegin(); field != obj->MemberEnd(); ++field) {

@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 
 #include "render/shader.h"
+#include "base/math.h"
 
 void Shader::initializeShaders() {
 	// Interior shader
