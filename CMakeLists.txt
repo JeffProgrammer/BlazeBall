@@ -486,7 +486,7 @@ set (DIFVIEWERGAME_LIBRARIES
 	enet
 	
 	# Librocket things
-	FreeType
+	freetype
 	RocketCore
 	RocketControls
 	RocketDebugger
