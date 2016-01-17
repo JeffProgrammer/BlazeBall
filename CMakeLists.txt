@@ -270,6 +270,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/enetpp/include
 	thirdparty/compat
 	thirdparty/chaiscript/include
+	thirdparty/librocket/Include
 )
 
 # Main project source
@@ -446,6 +447,12 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
 
 #------------------------------------------------------------------------------
+# Bullet Physics Library
+#------------------------------------------------------------------------------
+
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/librocket/build" LibRocket)
+
+#------------------------------------------------------------------------------
 # ENet Networking Library
 #------------------------------------------------------------------------------
 
@@ -477,6 +484,12 @@ set (DIFVIEWERGAME_LIBRARIES
 	
 	#Enet
 	enet
+	
+	# Librocket things
+	FreeType
+	RocketCore
+	RocketControls
+	RocketDebugger
 )
 
 if (WIN32)
