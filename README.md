@@ -40,9 +40,11 @@ Third Party Libraries
 * ChaiScript - Scripting Language Library
 * ENet - Networking Library
 * ENetPP - Networking extensions library for ENet
+* FreeType - Font Library
 * GLEW - OpenGL Extensions Loader
 * GLM - Math Library
 * JPEG - Image Library
+* LibRocket - GUI library
 * MNG - Image Library
 * RapidJSON - JSON parser library
 * SDL2 - Window and Input System
