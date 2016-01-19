@@ -6,8 +6,11 @@
 
 #include "scriptEngine/scriptEngine.h"
 
+#include <glm/gtx/string_cast.hpp>
+
 #include "scriptEngine/abstractClassRep.h"
 #include "scriptEngine/scriptFunctions.h"
+#include "scriptEngine/scriptMath.h"
 #include "game/gameObject.h"
 
 // initialize the lined list for abstractclassrep
@@ -45,17 +48,17 @@ bool ScriptEngine::init(const std::string &mainScript) {
 
 
 		// expose operator overloading to script
-//		mEngine->add(chaiscript::fun(&glm::vec3::operator+), "+");
-//		mEngine->add(chaiscript::fun(&glm::vec3::operator-), "-");
-//		mEngine->add(chaiscript::fun(&glm::vec3::operator*), "*");
-//		mEngine->add(chaiscript::fun(&glm::vec3::operator/), "/");
-//		mEngine->add(chaiscript::fun(&glm::vec3::operator+=), "+=");
-//		mEngine->add(chaiscript::fun(&glm::vec3::operator-=), "-=");
-//		mEngine->add(chaiscript::fun(&glm::vec3::operator*=), "*=");
-//		mEngine->add(chaiscript::fun(&glm::vec3::operator/=), "/=");
+		mEngine->add(chaiscript::fun(&vec3_add_vec3), "+");
+		mEngine->add(chaiscript::fun(&vec3_sub_vec3), "-");
+		mEngine->add(chaiscript::fun(&vec3_mul_float), "*");
+		mEngine->add(chaiscript::fun(&vec3_div_float), "/");
+		mEngine->add(chaiscript::fun(&vec3_add_vec3_mutate), "+=");
+		mEngine->add(chaiscript::fun(&vec3_sub_vec3_mutate), "-=");
+		mEngine->add(chaiscript::fun(&vec3_mul_float_mutate), "*=");
+		mEngine->add(chaiscript::fun(&vec3_div_float_mutate), "/=");
 
 		// expose methods
-//		mEngine->add(chaiscript::fun(&glm::vec3::toString), "toString");
+		mEngine->add(chaiscript::fun(&vec3_to_string), "toString");
 	}
 
 	// glm::quat type
