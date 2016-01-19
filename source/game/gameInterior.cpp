@@ -99,13 +99,13 @@ void GameInterior::generateMesh() {
 void GameInterior::exportObj(FILE *file) {
 	for (U32 j = 0; j < mInterior.point.size(); j ++) {
 		//Build triangles
-		Vec3 point = mInterior.point[j];
+		glm::vec3 point = mInterior.point[j];
 		fprintf(file, "v %g %g %g\n", -point.x, point.z, point.y);
 	}
 
 	for (U32 j = 0; j < mInterior.normal.size(); j ++) {
 		//Build triangles
-		Vec3 point = mInterior.normal[j];
+		glm::vec3 point = mInterior.normal[j];
 		fprintf(file, "vn %g %g %g\n", -point.x, point.z, point.y);
 	}
 
@@ -114,7 +114,7 @@ void GameInterior::exportObj(FILE *file) {
 	for (U32 surfaceNum = 0; surfaceNum < mInterior.surface.size(); surfaceNum ++) {
 		const DIF::Interior::Surface &surface = mInterior.surface[surfaceNum];
 
-		Vec3 normal = mInterior.normal[mInterior.plane[surface.planeIndex].normalIndex];
+		glm::vec3 normal = mInterior.normal[mInterior.plane[surface.planeIndex].normalIndex];
 		if (surface.planeFlipped) {
 			normal *= -1;
 		}
@@ -142,35 +142,35 @@ void GameInterior::exportObj(FILE *file) {
 	}
 }
 
-Vec3 GameInterior::getPosition() const {
+glm::vec3 GameInterior::getPosition() const {
 	if (mActor == nullptr)
-		return Vec3(0.0f, 0.0f, 0.0f);
+		return glm::vec3(0.0f, 0.0f, 0.0f);
 	return mActor->getPosition();
 }
 
-Quat GameInterior::getRotation() const {
+glm::quat GameInterior::getRotation() const {
 	if (mActor == nullptr)
-			return Quat(0.0f, 0.0f, 0.0f, 0.0f);
+			return glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
 	return mActor->getRotation();
 }
 
-Vec3 GameInterior::getScale() const {
+glm::vec3 GameInterior::getScale() const {
 	if (mActor == nullptr)
-		return Vec3(1.0f, 1.0f, 1.0f);
+		return glm::vec3(1.0f, 1.0f, 1.0f);
 	return mActor->getScale();
 }
 
-void GameInterior::setPosition(const Vec3 &pos) {
+void GameInterior::setPosition(const glm::vec3 &pos) {
 	if (mActor != nullptr)
 		mActor->setPosition(pos);
 }
 
-void GameInterior::setRotation(const Quat &rot) {
+void GameInterior::setRotation(const glm::quat &rot) {
 	if (mActor != nullptr)
 		mActor->setRotation(rot);
 }
 
-void GameInterior::setScale(const Vec3 &scale) {
+void GameInterior::setScale(const glm::vec3 &scale) {
 	if (mActor != nullptr)
 		mActor->setScale(scale);
 }

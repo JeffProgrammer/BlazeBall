@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 
 #include "gameObject.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 IMPLEMENT_SCRIPTOBJECT(GameObject, ScriptObject);
 
@@ -14,9 +15,9 @@ void GameObject::updateCamera(const Movement &movement, const F64 &delta) {
 void GameObject::updateMove(const Movement &movement, const F64 &delta) {
 	//Nothing
 }
-void GameObject::getCameraPosition(Mat4 &mat, Vec3 &pos) {
-	mat = Mat4(1.0f);
-	mat = Mat4::translate(mat, Vec3(-mPosition.x, -mPosition.y, -mPosition.z));
+void GameObject::getCameraPosition(glm::mat4 &mat, glm::vec3 &pos) {
+	mat = glm::mat4(1.0f);
+	mat = glm::translate(mat, glm::vec3(-mPosition.x, -mPosition.y, -mPosition.z));
 	pos = mPosition;
 }	
 
@@ -39,9 +40,9 @@ bool GameObject::read(CharStream &stream) {
 		return false;
 	}
 
-	setPosition(stream.pop<Vec3>());
-	setRotation(stream.pop<Quat>());
-	setScale   (stream.pop<Vec3>());
+	setPosition(stream.pop<glm::vec3>());
+	setRotation(stream.pop<glm::quat>());
+	setScale   (stream.pop<glm::vec3>());
 
 	return true;
 }
@@ -50,9 +51,9 @@ bool GameObject::write(CharStream &stream) const {
 		return false;
 	}
 
-	stream.push<Vec3>(getPosition());
-	stream.push<Quat>(getRotation());
-	stream.push<Vec3>(getScale());
+	stream.push<glm::vec3>(getPosition());
+	stream.push<glm::quat>(getRotation());
+	stream.push<glm::vec3>(getScale());
 
 	return true;
 }

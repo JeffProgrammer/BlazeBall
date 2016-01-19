@@ -292,12 +292,7 @@ set (DIFVIEWERGAME_SRC
 	source/base/mathTypes.h
 	source/base/tree.h
 	source/base/types.h
-	source/base/math/mat4.cpp
-	source/base/math/mat4.h
-	source/base/math/quat.h
 	source/base/math/triangle.h
-	source/base/math/vector3.cpp
-	source/base/math/vector3.h
 
 	# Game folder
 	source/game/camera.cpp
@@ -416,7 +411,8 @@ set (DIFVIEWERGAME_SRC
 	source/scriptEngine/scriptEngine.h
 	source/scriptEngine/scriptEngine.inl
 	source/scriptEngine/scriptFunctions.h
-	
+	source/scriptEngine/scriptMath.h
+
 	# Shaders folder
 	source/shaders/defaultF.glsl
 	source/shaders/defaultV.glsl

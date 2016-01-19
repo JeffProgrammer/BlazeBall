@@ -20,7 +20,7 @@ void CubeMapFramebufferTexture::setExtent(const glm::ivec2 &extent) {
 	this->extent = extent;
 
 	//Cache the projection matrix for later
-	projectionMat = glm::perspective(90.f, (F32)extent.x / (F32)extent.y, 0.1f, 500.f);
+	projectionMat = glm::perspective(glm::radians(90.f), (F32)extent.x / (F32)extent.y, 0.1f, 500.f);
 
 	destroyBuffer();
 	generateBuffer();

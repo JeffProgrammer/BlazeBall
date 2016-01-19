@@ -28,17 +28,17 @@ protected:
 	/**
 	 * The position of the GameObject.
 	 */
-	Vec3 mPosition;
+	glm::vec3 mPosition;
 
 	/**
 	 * The rotation of the GameObject.
 	 */
-	Quat mRotation;
+	glm::quat mRotation;
 
 	/**
 	 * The scale of the GameObject.
 	 */
-	Vec3 mScale;
+	glm::vec3 mScale;
 
 	/**
 	 * The class rep representing the GameObject abstract class
@@ -46,7 +46,7 @@ protected:
 	DECLARE_SCRIPTOBJECT(GameObject);
 	
 public:
-	GameObject() : mPosition(Vec3(0.0f)), mRotation(Quat()), mScale(Vec3(1.0f)) {};
+	GameObject() : mPosition(glm::vec3(0.0f)), mRotation(glm::quat()), mScale(glm::vec3(1.0f)) {};
 	virtual ~GameObject() {};
 
 	/**
@@ -65,37 +65,37 @@ public:
 	 * Gets the position of the GameObject.
 	 * @return the position vector of the GameObject.
 	 */
-	virtual Vec3 getPosition() const { return mPosition; }
+	virtual glm::vec3 getPosition() const { return mPosition; }
 
 	/**
 	 * Sets the position of the GameObject.
 	 * @param position The position to set the GameObject.
 	 */
-	virtual void setPosition(const Vec3 &position) { mPosition = position; }
+	virtual void setPosition(const glm::vec3 &position) { mPosition = position; }
 
 	/**
 	 * Gets the rotation of the GameObject as a quaternion.
 	 * @return the rotation quaternion of the GameObject.
 	 */
-	virtual Quat getRotation() const { return mRotation; }
+	virtual glm::quat getRotation() const { return mRotation; }
 
 	/**
 	 * Sets the rotation of the GameObject as a quaternion.
 	 * @param rotation The quaternion rotation of the GameObject.
 	 */
-	virtual void setRotation(const Quat &rotation) { mRotation = rotation; }
+	virtual void setRotation(const glm::quat &rotation) { mRotation = rotation; }
 
 	/**
 	 * Gets the scale of the GameObject.
 	 * @return the scale vector of the GameObject.
 	 */
-	virtual Vec3 getScale() const { return mScale; }
+	virtual glm::vec3 getScale() const { return mScale; }
 
 	/**
 	 * Sets the scale of the GameObject.
 	 * @param scale The scale vector of the GameObject.
 	 */
-	virtual void setScale(const Vec3 &scale) { mScale = scale; }
+	virtual void setScale(const glm::vec3 &scale) { mScale = scale; }
 
 	/**
 	 * Updates the camera.
@@ -116,7 +116,7 @@ public:
 	 * @param OUT mat The camera matrix from the GameObject's perspective.
 	 * @param OUT pos The position of the GameObject.
 	 */
-	virtual void getCameraPosition(Mat4 &mat, Vec3 &pos);
+	virtual void getCameraPosition(glm::mat4 &mat, glm::vec3 &pos);
 
 	/**
 	 * An update callback that is called every physics tick.

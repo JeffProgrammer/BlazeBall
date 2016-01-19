@@ -11,8 +11,6 @@
 #include <vector>
 #include <deque>
 
-#include "base/math.h"
-
 class CharStream {
 	std::deque<U8> mData;
 public:
@@ -165,7 +163,7 @@ inline F32 CharStream::peek() {
 //-----------------------------------------------------------------------------
 
 template<>
-inline Vec3 CharStream::push(const Vec3 &value) {
+inline glm::vec3 CharStream::push(const glm::vec3 &value) {
 	push<F32>(value.x);
 	push<F32>(value.y);
 	push<F32>(value.z);
@@ -173,12 +171,12 @@ inline Vec3 CharStream::push(const Vec3 &value) {
 }
 
 template<>
-inline Vec3 CharStream::pop() {
+inline glm::vec3 CharStream::pop() {
 	F32 data[3];
 	data[0] = pop<F32>();
 	data[1] = pop<F32>();
 	data[2] = pop<F32>();
-	return Vec3(data[0], data[1], data[2]);
+	return glm::vec3(data[0], data[1], data[2]);
 }
 
 //-----------------------------------------------------------------------------
@@ -209,7 +207,7 @@ inline glm::vec4 CharStream::pop() {
 //-----------------------------------------------------------------------------
 
 template<>
-inline Quat CharStream::push(const Quat &value) {
+inline glm::quat CharStream::push(const glm::quat &value) {
 	push<F32>(value.x);
 	push<F32>(value.y);
 	push<F32>(value.z);
@@ -218,13 +216,13 @@ inline Quat CharStream::push(const Quat &value) {
 }
 
 template<>
-inline Quat CharStream::pop() {
+inline glm::quat CharStream::pop() {
 	F32 data[4];
 	data[0] = pop<F32>();
 	data[1] = pop<F32>();
 	data[2] = pop<F32>();
 	data[3] = pop<F32>();
-	return Quat(data[0], data[1], data[2], data[3]);
+	return glm::quat(data[0], data[1], data[2], data[3]);
 }
 
 //-----------------------------------------------------------------------------
@@ -232,7 +230,7 @@ inline Quat CharStream::pop() {
 //-----------------------------------------------------------------------------
 
 template<>
-inline Mat4 CharStream::push(const Mat4 &value) {
+inline glm::mat4 CharStream::push(const glm::mat4 &value) {
 	push<glm::vec4>(value[0]);
 	push<glm::vec4>(value[1]);
 	push<glm::vec4>(value[2]);
@@ -241,7 +239,7 @@ inline Mat4 CharStream::push(const Mat4 &value) {
 }
 
 template<>
-inline Mat4 CharStream::pop() {
+inline glm::mat4 CharStream::pop() {
 	glm::mat4 data;
 	data[0] = pop<glm::vec4>();
 	data[1] = pop<glm::vec4>();

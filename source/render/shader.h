@@ -232,7 +232,6 @@ template<> inline void Shader::setUniformVector(const std::string &name, const t
 
 ShaderUniformVector(glm::vec2, glUniform2fv);
 ShaderUniformVector(glm::vec3, glUniform3fv);
-ShaderUniformVector(Vec3, glUniform3fv);
 ShaderUniformVector(glm::vec4, glUniform4fv);
 
 ShaderUniformVector(glm::ivec2, glUniform2iv);
@@ -250,6 +249,5 @@ template<> inline void Shader::setUniformMatrix(const std::string &name, GLboole
 
 ShaderUniformMatrix(glm::mat3, glUniformMatrix3fv);
 ShaderUniformMatrix(glm::mat4, glUniformMatrix4fv);
-ShaderUniformMatrix(Mat4, glUniformMatrix4fv);
 
 #endif

@@ -49,29 +49,29 @@ EasyGetterSetter(std::string,,); //Strings work by default
 /**
  * Vectors
  */
-template<> inline std::string scriptGetter<Vec3>(void *ptr) {
-	const Vec3 &vec = *static_cast<Vec3 *>(ptr);
+template<> inline std::string scriptGetter<glm::vec3>(void *ptr) {
+	const glm::vec3 &vec = *static_cast<glm::vec3 *>(ptr);
 	char buff[64];
 	sprintf_s(buff, 64, "%g %g %g", vec.x, vec.y, vec.z);
 	return std::string(buff);
 }
-template<> inline bool scriptSetter<Vec3>(void *ptr, const std::string &value) {
-	Vec3 *vector = static_cast<Vec3 *>(ptr);
+template<> inline bool scriptSetter<glm::vec3>(void *ptr, const std::string &value) {
+	glm::vec3 *vector = static_cast<glm::vec3 *>(ptr);
 	sscanf(value.c_str(), "%g %g %g", &vector->x, &vector->y, &vector->z);
 	return true; 
 }
 
 /**
- * Quaternions
+ * glm::quaternions
  */
-template<> inline std::string scriptGetter<Quat>(void *ptr) {
-	const Quat &quat = *static_cast<Quat *>(ptr);
+template<> inline std::string scriptGetter<glm::quat>(void *ptr) {
+	const glm::quat &quat = *static_cast<glm::quat *>(ptr);
 	char buff[64];
 	sprintf_s(buff, 64, "%g %g %g %g", quat.x, quat.y, quat.z, quat.w);
 	return std::string(buff);
 }
-template<> inline bool scriptSetter<Quat>(void *ptr, const std::string &value) {
-	Quat *quat = static_cast<Quat *>(ptr);
+template<> inline bool scriptSetter<glm::quat>(void *ptr, const std::string &value) {
+	glm::quat *quat = static_cast<glm::quat *>(ptr);
 	sscanf(value.c_str(), "%g %g %g %g", &quat->x, &quat->y, &quat->z, &quat->w);
 	return true;
 }
