@@ -361,7 +361,7 @@ void Sphere::getCameraPosition(glm::mat4 &mat, glm::vec3 &pos) {
 
 	//Offset the camera by the negative position to bring us into the center.
 	// This is not affected by pitch/yaw
-	mat = glm::translate(mat, getPosition());
+	mat = glm::translate(mat, -getPosition());
 
 	//Final position of the camera
 	glm::vec3 rot = glm::mat3(glm::inverse(mat)) * glm::vec3(0, -2.5, 0);
@@ -377,7 +377,7 @@ void Sphere::getCameraPosition(glm::mat4 &mat, glm::vec3 &pos) {
 	//If we hit the ground, offset the camera so we can still see
 	if (info.hit) {
 		mat = rotation;
-		mat = glm::translate(mat, info.point);
+		mat = glm::translate(mat, -info.point);
 
 		pos = info.point;
 	}
