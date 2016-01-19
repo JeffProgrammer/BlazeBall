@@ -31,10 +31,10 @@ protected:
 	F32 mMaxAngVel;
 	Material *mMaterial;
 
-	Vec3 mLinearVelocity;
-	Vec3 mAngularVelocity;
-	Vec3 mForce;
-	Vec3 mTorque;
+	glm::vec3 mLinearVelocity;
+	glm::vec3 mAngularVelocity;
+	glm::vec3 mForce;
+	glm::vec3 mTorque;
 	F32 mMass;
 	F32 mRadius;
 
@@ -57,25 +57,25 @@ public:
 	Sphere();
 	virtual ~Sphere();
 
-	virtual void calculateModelMatrix(const RenderInfo &info, Mat4 &modelMatrix) override;
+	virtual void calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix) override;
 	virtual void render(RenderInfo &info) override;
 	void draw(Material *material, RenderInfo &info, void *userInfo);
 
 	virtual Vec3 getPosition() const override;
 	virtual Quat getRotation() const override;
-	Vec3 getLinearVelocity() const;
-	Vec3 getAngularVelocity() const;
-	Vec3 getForce() const;
-	Vec3 getTorque() const;
+	glm::vec3 getLinearVelocity() const;
+	glm::vec3 getAngularVelocity() const;
+	glm::vec3 getForce() const;
+	glm::vec3 getTorque() const;
 	F32 getRadius() const;
 	F32 getMass() const;
 
 	virtual void setPosition(const Vec3 &pos) override;
 	virtual void setRotation(const Quat &rot) override;
-	void setLinearVelocity(const Vec3 &vel);
-	void setAngularVelocity(const Vec3 &vel);
-	void setForce(const Vec3 &force);
-	void setTorque(const Vec3 &torque);
+	void setLinearVelocity(const glm::vec3 &vel);
+	void setAngularVelocity(const glm::vec3 &vel);
+	void setForce(const glm::vec3 &force);
+	void setTorque(const glm::vec3 &torque);
 	void setRadius(const F32 &radius);
 	void setMass(const F32 &mass);
 	void setActivationState(bool active);
@@ -84,12 +84,12 @@ public:
 		this->mMaterial = material;
 	}
 
-	void applyTorque(const Vec3 &torque);
-	void applyImpulse(const Vec3 &force, const Vec3 &origin);
-	void applyForce(const Vec3 &force, const Vec3 &origin);
+	void applyTorque(const glm::vec3 &torque);
+	void applyImpulse(const glm::vec3 &force, const glm::vec3 &origin);
+	void applyForce(const glm::vec3 &force, const glm::vec3 &origin);
 
 	bool getColliding();
-	Vec3 getCollisionNormal(Vec3 &toiVelocity);
+	glm::vec3 getCollisionNormal(glm::vec3 &toiVelocity);
     
 	virtual void updateCamera(const Movement &movement, const F64 &delta) override;
 	virtual void updateMove(const Movement &movement, const F64 &delta) override;

@@ -99,13 +99,13 @@ void GameInterior::generateMesh() {
 void GameInterior::exportObj(FILE *file) {
 	for (U32 j = 0; j < mInterior.point.size(); j ++) {
 		//Build triangles
-		Vec3 point = mInterior.point[j];
+		glm::vec3 point = mInterior.point[j];
 		fprintf(file, "v %g %g %g\n", -point.x, point.z, point.y);
 	}
 
 	for (U32 j = 0; j < mInterior.normal.size(); j ++) {
 		//Build triangles
-		Vec3 point = mInterior.normal[j];
+		glm::vec3 point = mInterior.normal[j];
 		fprintf(file, "vn %g %g %g\n", -point.x, point.z, point.y);
 	}
 
@@ -114,7 +114,7 @@ void GameInterior::exportObj(FILE *file) {
 	for (U32 surfaceNum = 0; surfaceNum < mInterior.surface.size(); surfaceNum ++) {
 		const DIF::Interior::Surface &surface = mInterior.surface[surfaceNum];
 
-		Vec3 normal = mInterior.normal[mInterior.plane[surface.planeIndex].normalIndex];
+		glm::vec3 normal = mInterior.normal[mInterior.plane[surface.planeIndex].normalIndex];
 		if (surface.planeFlipped) {
 			normal *= -1;
 		}

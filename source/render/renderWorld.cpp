@@ -16,7 +16,7 @@
 #include <algorithm>
 #include <ctime>
 
-glm::mat4 RenderInfo::inverseRotMat = Mat4::rotate(Mat4(1.0f), toRadians(-90.0f), Vec3(1, 0, 0));
+glm::mat4 RenderInfo::inverseRotMat = (glm::mat4)Mat4(1.0f).rotate(toRadians(-90.0f), Vec3(1, 0, 0));
 
 /// The amount of time that has to pass before a tick happens.
 /// Default is 16.6667 ms which means we tick at 60 frames per second
@@ -50,7 +50,7 @@ void RenderWorld::render() {
 
 	//Camera
 	Mat4 viewMatrix = Mat4(1.0f);
-	viewMatrix = Mat4::rotate(viewMatrix, toRadians(-90.0f), Vec3(1, 0, 0));
+	viewMatrix = viewMatrix.rotate(toRadians(-90.0f), Vec3(1, 0, 0));
 	viewMatrix *= cameraTransform;
 
 	RenderInfo info;

@@ -86,7 +86,7 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 		info.projectionMatrix = projectionMatrix;
 		info.viewMatrix = viewMatrix;
 
-		Mat4 modelMatrix = Mat4(1.0f);
+		glm::mat4x4 modelMatrix = glm::mat4x4(1);
 		shape->calculateModelMatrix(info, modelMatrix);
 		shapeShader->setUniformMatrix("modelMat", GL_FALSE, modelMatrix);
 
