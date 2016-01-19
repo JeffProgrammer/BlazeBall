@@ -27,7 +27,6 @@ RenderWorld::RenderWorld(PhysicsEngine *physics, ScriptEngine *script) : World(p
 //	mShapeShader = nullptr;
 
 	mDoDebugDraw = false;
-	mCaptureMouse = true;
 }
 
 RenderWorld::~RenderWorld() {
@@ -175,6 +174,9 @@ bool RenderWorld::init() {
 	if (!mWindow->createContext()) {
 		return false;
 	}
+
+	mCaptureMouse = true;
+	mWindow->lockCursor(true);
 
 	//Initialize OpenGL
 	if (!initGL()) {
@@ -375,9 +377,13 @@ void RenderWorld::handleEvent(PlatformEvent *event) {
 			break;
 		case PlatformEvent::WindowFocus:
 			mShouldSleep = false;
+			mWindow->lockCursor(true);
+			mCaptureMouse = true;
 			break;
 		case PlatformEvent::WindowBlur:
 			mShouldSleep = true;
+			mWindow->lockCursor(false);
+			mCaptureMouse = false;
 			break;
 		case PlatformEvent::WindowResize:
 			updateWindowSize(static_cast<WindowResizeEvent *>(event)->newSize);
