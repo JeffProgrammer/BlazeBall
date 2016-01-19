@@ -15,8 +15,9 @@
 #include <thread>
 #include <algorithm>
 #include <ctime>
+#include <glm/gtx/vector_angle.hpp>
 
-glm::mat4 RenderInfo::inverseRotMat = (glm::mat4)Mat4(1.0f).rotate(toRadians(-90.0f), Vec3(1, 0, 0));
+glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(1, 0, 0));
 
 /// The amount of time that has to pass before a tick happens.
 /// Default is 16.6667 ms which means we tick at 60 frames per second
@@ -42,15 +43,15 @@ RenderWorld::~RenderWorld() {
 
 void RenderWorld::render() {
 	//Get the camera transform from the marble
-	Mat4 cameraTransform(1.0f);
-	Vec3 cameraPosition(0.0f);
+	glm::mat4 cameraTransform(1.0f);
+	glm::vec3 cameraPosition(0.0f);
 
 	if (mClient->getControlObject())
 		mClient->getControlObject()->getCameraPosition(cameraTransform, cameraPosition);
 
 	//Camera
-	Mat4 viewMatrix = Mat4(1.0f);
-	viewMatrix = viewMatrix.rotate(toRadians(-90.0f), Vec3(1, 0, 0));
+	glm::mat4 viewMatrix = glm::mat4(1.0f);
+	viewMatrix = glm::rotate(viewMatrix, glm::radians(-90.0f), glm::vec3(1, 0, 0));
 	viewMatrix *= cameraTransform;
 
 	RenderInfo info;

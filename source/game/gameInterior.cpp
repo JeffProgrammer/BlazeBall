@@ -142,35 +142,35 @@ void GameInterior::exportObj(FILE *file) {
 	}
 }
 
-Vec3 GameInterior::getPosition() const {
+glm::vec3 GameInterior::getPosition() const {
 	if (mActor == nullptr)
-		return Vec3(0.0f, 0.0f, 0.0f);
+		return glm::vec3(0.0f, 0.0f, 0.0f);
 	return mActor->getPosition();
 }
 
-Quat GameInterior::getRotation() const {
+glm::quat GameInterior::getRotation() const {
 	if (mActor == nullptr)
-			return Quat(0.0f, 0.0f, 0.0f, 0.0f);
+			return glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
 	return mActor->getRotation();
 }
 
-Vec3 GameInterior::getScale() const {
+glm::vec3 GameInterior::getScale() const {
 	if (mActor == nullptr)
-		return Vec3(1.0f, 1.0f, 1.0f);
+		return glm::vec3(1.0f, 1.0f, 1.0f);
 	return mActor->getScale();
 }
 
-void GameInterior::setPosition(const Vec3 &pos) {
+void GameInterior::setPosition(const glm::vec3 &pos) {
 	if (mActor != nullptr)
 		mActor->setPosition(pos);
 }
 
-void GameInterior::setRotation(const Quat &rot) {
+void GameInterior::setRotation(const glm::quat &rot) {
 	if (mActor != nullptr)
 		mActor->setRotation(rot);
 }
 
-void GameInterior::setScale(const Vec3 &scale) {
+void GameInterior::setScale(const glm::vec3 &scale) {
 	if (mActor != nullptr)
 		mActor->setScale(scale);
 }

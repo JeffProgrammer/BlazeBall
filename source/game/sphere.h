@@ -61,8 +61,8 @@ public:
 	virtual void render(RenderInfo &info) override;
 	void draw(Material *material, RenderInfo &info, void *userInfo);
 
-	virtual Vec3 getPosition() const override;
-	virtual Quat getRotation() const override;
+	virtual glm::vec3 getPosition() const override;
+	virtual glm::quat getRotation() const override;
 	glm::vec3 getLinearVelocity() const;
 	glm::vec3 getAngularVelocity() const;
 	glm::vec3 getForce() const;
@@ -70,8 +70,8 @@ public:
 	F32 getRadius() const;
 	F32 getMass() const;
 
-	virtual void setPosition(const Vec3 &pos) override;
-	virtual void setRotation(const Quat &rot) override;
+	virtual void setPosition(const glm::vec3 &pos) override;
+	virtual void setRotation(const glm::quat &rot) override;
 	void setLinearVelocity(const glm::vec3 &vel);
 	void setAngularVelocity(const glm::vec3 &vel);
 	void setForce(const glm::vec3 &force);
@@ -93,7 +93,7 @@ public:
     
 	virtual void updateCamera(const Movement &movement, const F64 &delta) override;
 	virtual void updateMove(const Movement &movement, const F64 &delta) override;
-	virtual void getCameraPosition(Mat4 &mat, Vec3 &pos) override;
+	virtual void getCameraPosition(glm::mat4 &mat, glm::vec3 &pos) override;
 
 	virtual void updateTick(const F64 &delta) override;
 	virtual void onAddToScene() override;

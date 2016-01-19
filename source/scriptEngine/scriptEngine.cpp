@@ -9,7 +9,6 @@
 #include "scriptEngine/abstractClassRep.h"
 #include "scriptEngine/scriptFunctions.h"
 #include "game/gameObject.h"
-#include "base/math/vector3.h"
 
 // initialize the lined list for abstractclassrep
 AbstractClassRep *AbstractClassRep::sLast = nullptr;
@@ -34,46 +33,44 @@ bool ScriptEngine::init(const std::string &mainScript) {
 	// init engine
 	mEngine = new chaiscript::ChaiScript(chaiscript::Std_Lib::library());
 
-	// Vec3 type
+	// glm::vec3 type
 	{
-		mEngine->add(chaiscript::user_type<glm::vec3>(), "glmvec3");
+		mEngine->add(chaiscript::user_type<glm::vec3>(), "vec3");
+		mEngine->add(chaiscript::constructor<glm::vec3(const F32&, const F32&, const F32&)>(), "vec3");
 
 		// Expose x, y, and z properties
 		mEngine->add(chaiscript::fun(&glm::vec3::x), "x");
 		mEngine->add(chaiscript::fun(&glm::vec3::y), "y");
 		mEngine->add(chaiscript::fun(&glm::vec3::z), "z");
 
-		mEngine->add(chaiscript::user_type<Vec3>(), "Vec3");
-		mEngine->add(chaiscript::base_class<glm::vec3, Vec3>());
-		mEngine->add(chaiscript::constructor<Vec3(const F32&, const F32&, const F32&)>(), "Vec3");
 
 		// expose operator overloading to script
-		mEngine->add(chaiscript::fun(&Vec3::operator+), "+");
-		mEngine->add(chaiscript::fun(&Vec3::operator-), "-");
-		mEngine->add(chaiscript::fun(&Vec3::operator*), "*");
-		mEngine->add(chaiscript::fun(&Vec3::operator/), "/");
-		mEngine->add(chaiscript::fun(&Vec3::operator+=), "+=");
-		mEngine->add(chaiscript::fun(&Vec3::operator-=), "-=");
-		mEngine->add(chaiscript::fun(&Vec3::operator*=), "*=");
-		mEngine->add(chaiscript::fun(&Vec3::operator/=), "/=");
+//		mEngine->add(chaiscript::fun(&glm::vec3::operator+), "+");
+//		mEngine->add(chaiscript::fun(&glm::vec3::operator-), "-");
+//		mEngine->add(chaiscript::fun(&glm::vec3::operator*), "*");
+//		mEngine->add(chaiscript::fun(&glm::vec3::operator/), "/");
+//		mEngine->add(chaiscript::fun(&glm::vec3::operator+=), "+=");
+//		mEngine->add(chaiscript::fun(&glm::vec3::operator-=), "-=");
+//		mEngine->add(chaiscript::fun(&glm::vec3::operator*=), "*=");
+//		mEngine->add(chaiscript::fun(&glm::vec3::operator/=), "/=");
 
 		// expose methods
-		mEngine->add(chaiscript::fun(&Vec3::toString), "toString");
+//		mEngine->add(chaiscript::fun(&glm::vec3::toString), "toString");
 	}
 
-	// Quat type
+	// glm::quat type
 	{
-		mEngine->add(chaiscript::user_type<Quat>(), "Quat");
-		mEngine->add(chaiscript::constructor<Quat(const F32&, const F32&, const F32&, const F32&)>(), "Quat");
+		mEngine->add(chaiscript::user_type<glm::quat>(), "quat");
+		mEngine->add(chaiscript::constructor<glm::quat(const F32&, const F32&, const F32&, const F32&)>(), "quat");
 
 		// Expose x, y, z, and w properties
-		mEngine->add(chaiscript::fun(&Quat::x), "x");
-		mEngine->add(chaiscript::fun(&Quat::y), "y");
-		mEngine->add(chaiscript::fun(&Quat::z), "z");
-		mEngine->add(chaiscript::fun(&Quat::w), "w");
+		mEngine->add(chaiscript::fun(&glm::quat::x), "x");
+		mEngine->add(chaiscript::fun(&glm::quat::y), "y");
+		mEngine->add(chaiscript::fun(&glm::quat::z), "z");
+		mEngine->add(chaiscript::fun(&glm::quat::w), "w");
 
 		// expose methods
-		mEngine->add(chaiscript::fun(&Quat::toString), "toString");
+//		mEngine->add(chaiscript::fun(&glm::quat::toString), "toString");
 	}
 
 	// Expose all script objects

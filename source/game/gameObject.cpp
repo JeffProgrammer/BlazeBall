@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 
 #include "gameObject.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 IMPLEMENT_SCRIPTOBJECT(GameObject, ScriptObject);
 
@@ -14,9 +15,9 @@ void GameObject::updateCamera(const Movement &movement, const F64 &delta) {
 void GameObject::updateMove(const Movement &movement, const F64 &delta) {
 	//Nothing
 }
-void GameObject::getCameraPosition(Mat4 &mat, Vec3 &pos) {
-	mat = Mat4(1.0f);
-	mat = mat.translate(Vec3(-mPosition.x, -mPosition.y, -mPosition.z));
+void GameObject::getCameraPosition(glm::mat4 &mat, glm::vec3 &pos) {
+	mat = glm::mat4(1.0f);
+	mat = glm::translate(mat, glm::vec3(-mPosition.x, -mPosition.y, -mPosition.z));
 	pos = mPosition;
 }	
 
