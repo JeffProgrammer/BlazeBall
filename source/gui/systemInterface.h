@@ -25,6 +25,9 @@
 // THE SOFTWARE.
 //------------------------------------------------------------------------------
 
+#ifndef _GUI_SYSTEMINTERFACE_H_
+#define _GUI_SYSTEMINTERFACE_H_
+
 #include <Rocket/Core/SystemInterface.h>
 #include <Rocket/Core/Input.h>
 #include "platform/platformEvent.h"
@@ -49,3 +52,5 @@ public:
 	virtual F32 GetElapsedTime() override;
 	virtual bool LogMessage(Rocket::Core::Log::Type type, const Rocket::Core::String &message) override;
 };
+
+#endif // _GUI_SYSTEMINTERFACE_H_
