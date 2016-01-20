@@ -293,7 +293,7 @@ set (DIFVIEWERGAME_SRC
 	source/base/tree.h
 	source/base/types.h
 	source/base/math/triangle.h
-
+	
 	# Game folder
 	source/game/camera.cpp
 	source/game/camera.h
@@ -314,6 +314,12 @@ set (DIFVIEWERGAME_SRC
 	source/game/sphere.h
 	source/game/world.cpp
 	source/game/world.h
+	
+	# Gui
+	source/gui/renderInterface.cpp
+	source/gui/renderInterface.h
+	source/gui/systemInterface.cpp
+	source/gui/systemInterface.h
 	
 	# Networking
 	source/network/bitstream.h
@@ -545,6 +551,7 @@ source_group("assets\\shaders"       REGULAR_EXPRESSION shaders/.*)
 source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)
 source_group("network"               REGULAR_EXPRESSION network/.*)
 source_group("network\\event"        REGULAR_EXPRESSION network/event/.*)
+source_group("gui"                   REGULAR_EXPRESSION gui/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
