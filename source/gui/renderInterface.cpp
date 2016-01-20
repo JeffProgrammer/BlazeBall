@@ -38,10 +38,33 @@
 
 GuiRenderInterface::GuiRenderInterface(PlatformWindow *window) {
 	mWindow = window;
+	glGenBuffers(1, &mVBO);
+	glGenBuffers(1, &mIBO);
 }
 
-void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation) {
+GuiRenderInterface::~GuiRenderInterface() {
+	glDeleteBuffers(1, &mVBO);
+	glDeleteBuffers(1, &mIBO);
+}
 
+// TODO write and attach shader to renderer.
+void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation) {
+	auto glTexture = reinterpret_cast<BitmapTexture*>(texture);
+	glTexture->activate(GL_TEXTURE0);
+
+	// upload vertex data to the gl
+	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Rocket::Core::Vertex) * num_vertices, &vertices[0], GL_STREAM_DRAW);
+
+	// upload indices to the GL
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, &indices[0], GL_STREAM_DRAW);
+
+	// Draw
+	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
+
+	// unbind data
+	glTexture->deactivate();
 }
 
 void GuiRenderInterface::EnableScissorRegion(bool enabled) {
@@ -58,6 +81,7 @@ void GuiRenderInterface::SetScissorRegion(S32 x, S32 y, S32 width, S32 height) {
 
 bool GuiRenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source) {
 	auto texture = static_cast<BitmapTexture*>(IO::loadTexture(source.CString()));
+	texture->generateBuffer();
 	texture_dimensions.x = texture->extent.x;
 	texture_dimensions.y = texture->extent.y;
 	texture_handle = reinterpret_cast<Rocket::Core::TextureHandle>(texture);
@@ -65,6 +89,7 @@ bool GuiRenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle
 
 bool GuiRenderInterface::GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions) {
 	auto texture = new BitmapTexture(const_cast<U8*>(reinterpret_cast<const U8*>(source)), glm::ivec2(source_dimensions.x, source_dimensions.y), BitmapTexture::Format::FormatRGBA8);
+	texture->generateBuffer();
 	texture_handle = reinterpret_cast<Rocket::Core::TextureHandle>(texture);
 }
 
