@@ -47,7 +47,11 @@ GuiRenderInterface::~GuiRenderInterface() {
 	glDeleteBuffers(1, &mIBO);
 }
 
-// TODO write and attach shader to renderer.
+// TODO: write and attach shader to renderer.
+// TODO: have a pool of vertex buffers to stream draw. Using one is very slow
+//       and could cause sync points in the driver
+// TODO: implement buffer orphaning techniques to potentially trick the driver
+//       to use a ring buffer in constant allocations of vram.
 void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation) {
 	auto glTexture = reinterpret_cast<BitmapTexture*>(texture);
 	glTexture->activate(GL_TEXTURE0);
@@ -61,6 +65,9 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, &indices[0], GL_STREAM_DRAW);
 
 	// Draw
+	// Notice: We use unsigned ints here. They are potentially slower, so we need to check if we 
+	// can convert these to unsigned shorts if we hit a performance issue in our profiling.
+	// Also note that if we ever use OpenGLES, it does not support unsigned int in draw calls.
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
 
 	// unbind data
