@@ -41,6 +41,12 @@ public:
 	 * @return the delta between the timer calls.
 	 */
 	virtual F64 getDelta() const = 0;
+
+	/**
+	 * Gets the elapsed time since the start method was called.
+	 * @return the elapsed time in seconds since it was last called.
+	 */
+	virtual F64 getElapsedTimeSinceStart() = 0;
 };
 
 #endif
