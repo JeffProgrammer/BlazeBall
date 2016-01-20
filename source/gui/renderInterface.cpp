@@ -24,3 +24,44 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //------------------------------------------------------------------------------
+
+#include "gui/renderInterface.h"
+
+#ifdef _WIN32
+#include <GL/glew.h>
+#else
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/gl3.h>
+#endif
+
+GuiRenderInterface::GuiRenderInterface(PlatformWindow *window) {
+	mWindow = window;
+}
+
+void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation) {
+
+}
+
+void GuiRenderInterface::EnableScissorRegion(bool enabled) {
+	if (enabled)
+		glEnable(GL_SCISSOR_TEST);
+	else
+		glDisable(GL_SCISSOR_TEST);
+}
+
+void GuiRenderInterface::SetScissorRegion(S32 x, S32 y, S32 width, S32 height) {
+	const glm::ivec2 &size = mWindow->getWindowSize();
+	glScissor(x, size.x - (y + height), width, height);
+}
+
+bool GuiRenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source) {
+
+}
+
+bool GuiRenderInterface::GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions) {
+
+}
+
+void GuiRenderInterface::ReleaseTexture(Rocket::Core::TextureHandle textureHandle) {
+
+}
