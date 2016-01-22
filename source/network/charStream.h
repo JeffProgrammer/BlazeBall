@@ -76,6 +76,24 @@ inline U8 CharStream::peek() {
 }
 
 //-----------------------------------------------------------------------------
+// Bools can just become U8s
+//-----------------------------------------------------------------------------
+
+template<>
+inline bool CharStream::push(const bool &value) {
+	push<U8>(value);
+	return value;
+}
+
+template<>
+inline bool CharStream::pop() {
+	return pop<U8>();
+}
+
+template<>
+inline bool CharStream::peek() {
+	return peek<U8>();
+}
 
 //-----------------------------------------------------------------------------
 // U32 datatype stream

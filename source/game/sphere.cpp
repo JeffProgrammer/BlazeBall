@@ -264,82 +264,7 @@ void Sphere::updateCamera(const Movement &movement, const F64 &delta) {
 	mCameraYaw += movement.yaw * cameraSpeed;
 }
 void Sphere::updateMove(const Movement &movement, const F64 &delta) {
-	//Apply the camera yaw to a matrix so our rolling is based on the camera direction
-	glm::mat4x4 deltaMat = glm::mat4x4(1);
-	deltaMat = glm::rotate(deltaMat, -mCameraYaw, glm::vec3(0, 0, 1));
-
-	//Convert the movement into a vector
-	glm::vec3 move = glm::vec3();
-	if (movement.forward) move.y ++;
-	if (movement.backward) move.y --;
-	if (movement.left) move.x --;
-	if (movement.right) move.x ++;
-
-	//Linear velocity relative to camera yaw (for capping)
-	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(deltaMat), mActor->getLinearVelocity())[3]);
-	glm::vec3 angRel = glm::cross(glm::vec3(glm::translate(glm::inverse(deltaMat), mActor->getAngularVelocity())[3]), glm::vec3(0, 0, 1));
-	glm::vec3 torque = move * AppliedAcceleration * F32(delta) * getRadius();
-
-	if (getColliding()) {
-		//Don't let us go faster than the max velocity in any direction.
-		if (torque.x > 0 && torque.x + linRel.x >  MaxRollVelocity) torque.x = glm::max(0.f,  MaxRollVelocity - linRel.x);
-		if (torque.y > 0 && torque.y + linRel.y >  MaxRollVelocity) torque.y = glm::max(0.f,  MaxRollVelocity - linRel.y);
-		//Same for backwards
-		if (torque.x < 0 && torque.x + linRel.x < -MaxRollVelocity) torque.x = glm::min(0.f, -MaxRollVelocity - linRel.x);
-		if (torque.y < 0 && torque.y + linRel.y < -MaxRollVelocity) torque.y = glm::min(0.f, -MaxRollVelocity - linRel.y);
-	} else {
-		//Don't let us roll faster than the max air roll velocity
-		if (torque.x > 0 && torque.x + angRel.x >  MaxAirSpinVelocity) torque.x = glm::max(0.0f,  MaxAirSpinVelocity - angRel.x);
-		if (torque.y > 0 && torque.y + angRel.y >  MaxAirSpinVelocity) torque.y = glm::max(0.0f,  MaxAirSpinVelocity - angRel.y);
-		if (torque.x < 0 && torque.x + angRel.x < -MaxAirSpinVelocity) torque.x = glm::min(0.0f, -MaxAirSpinVelocity - angRel.x);
-		if (torque.y < 0 && torque.y + angRel.y < -MaxAirSpinVelocity) torque.y = glm::min(0.0f, -MaxAirSpinVelocity - angRel.y);
-	}
-
-//	IO::printf("LR: %f %f\n", linRel.x, linRel.y);
-//	IO::printf("AR: %f %f\n", angRel.x, angRel.y);
-//	IO::printf("T:  %f %f\n", torque.x, torque.y);
-
-	//Torque is based on the movement and yaw
-	glm::vec3 torqueRel = glm::vec3(glm::translate(deltaMat, torque)[3]) * getMass();
-	//Cross to convert 3d coordinates into torque
-	applyTorque(glm::cross(glm::vec3(0, 0, 1), torqueRel));
-
-	//If we are colliding with the ground, we have the chance to jump
-	if (getColliding()) {
-		//Impact velocity is stored when we collide so we can use it here
-		glm::vec3 impactVelocity;
-		//Get collision information
-		glm::vec3 normal = getCollisionNormal(impactVelocity);
-		glm::vec3 vel = mActor->getLinearVelocity();
-
-		// dot against up vector to determine if we can jump
-		// TODO: take gravities into account
-		glm::vec3 up = glm::vec3(0, 0, 1);
-		if (movement.jump && glm::dot(up, normal) > 0.001f) {
-			glm::vec3 currentVelocity = glm::proj(vel, normal);
-
-			glm::vec3 projVel = glm::proj(vel, normal);
-
-			if (glm::length(projVel) < JumpImpulse) {
-				glm::vec3 finalVelocity = vel - currentVelocity + (normal * JumpImpulse);
-				setLinearVelocity(finalVelocity);
-				IO::printf("Jump! Impact velocity: %f %f %f\n   final Velocity: %f %f %f\n    Projection velocity: %f %f %f\n    Dot: %f\n", vel.x, vel.y, vel.z, finalVelocity.x, finalVelocity.y, finalVelocity.z, projVel.x, projVel.y, projVel.z, glm::dot(up, normal));
-			} else {
-				IO::printf("No jump, projection velocity is %f %f %f\n", projVel.x, projVel.y, projVel.z);
-			}
-		}
-	} else {
-		glm::vec3 moveRel = glm::vec3(glm::translate(deltaMat, move)[3]);
-		moveRel *= AirAcceleration * delta * getMass();
-
-		//If we're not touching the ground, apply slight air movement.
-		applyImpulse(moveRel, glm::vec3(0, 0, 0));
-	}
-	//Crappy damping
-	if (movement.forward + movement.backward + movement.left + movement.right == 0 && getColliding()) {
-		F32 damping = 1.f - LinearRollDamping;
-		mActor->setAngularVelocity(mActor->getAngularVelocity() * damping);
-	}
+	mMovement = movement;
 }
 
 void Sphere::getCameraPosition(glm::mat4 &mat, glm::vec3 &pos) {
@@ -384,6 +309,83 @@ void Sphere::getCameraPosition(glm::mat4 &mat, glm::vec3 &pos) {
 }
 
 void Sphere::updateTick(const F64 &delta) {
+	//Apply the camera yaw to a matrix so our rolling is based on the camera direction
+	glm::mat4x4 deltaMat = glm::mat4x4(1);
+	deltaMat = glm::rotate(deltaMat, -mCameraYaw, glm::vec3(0, 0, 1));
+
+	//Convert the movement into a vector
+	glm::vec3 move = glm::vec3();
+	if (mMovement.forward) move.y ++;
+	if (mMovement.backward) move.y --;
+	if (mMovement.left) move.x --;
+	if (mMovement.right) move.x ++;
+
+	//Linear velocity relative to camera yaw (for capping)
+	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(deltaMat), mActor->getLinearVelocity())[3]);
+	glm::vec3 angRel = glm::cross(glm::vec3(glm::translate(glm::inverse(deltaMat), mActor->getAngularVelocity())[3]), glm::vec3(0, 0, 1));
+	glm::vec3 torque = move * AppliedAcceleration * F32(delta) * getRadius();
+
+	if (getColliding()) {
+		//Don't let us go faster than the max velocity in any direction.
+		if (torque.x > 0 && torque.x + linRel.x >  MaxRollVelocity) torque.x = glm::max(0.f,  MaxRollVelocity - linRel.x);
+		if (torque.y > 0 && torque.y + linRel.y >  MaxRollVelocity) torque.y = glm::max(0.f,  MaxRollVelocity - linRel.y);
+		//Same for backwards
+		if (torque.x < 0 && torque.x + linRel.x < -MaxRollVelocity) torque.x = glm::min(0.f, -MaxRollVelocity - linRel.x);
+		if (torque.y < 0 && torque.y + linRel.y < -MaxRollVelocity) torque.y = glm::min(0.f, -MaxRollVelocity - linRel.y);
+	} else {
+		//Don't let us roll faster than the max air roll velocity
+		if (torque.x > 0 && torque.x + angRel.x >  MaxAirSpinVelocity) torque.x = glm::max(0.0f,  MaxAirSpinVelocity - angRel.x);
+		if (torque.y > 0 && torque.y + angRel.y >  MaxAirSpinVelocity) torque.y = glm::max(0.0f,  MaxAirSpinVelocity - angRel.y);
+		if (torque.x < 0 && torque.x + angRel.x < -MaxAirSpinVelocity) torque.x = glm::min(0.0f, -MaxAirSpinVelocity - angRel.x);
+		if (torque.y < 0 && torque.y + angRel.y < -MaxAirSpinVelocity) torque.y = glm::min(0.0f, -MaxAirSpinVelocity - angRel.y);
+	}
+
+	//	IO::printf("LR: %f %f\n", linRel.x, linRel.y);
+	//	IO::printf("AR: %f %f\n", angRel.x, angRel.y);
+	//	IO::printf("T:  %f %f\n", torque.x, torque.y);
+
+	//Torque is based on the movement and yaw
+	glm::vec3 torqueRel = glm::vec3(glm::translate(deltaMat, torque)[3]) * getMass();
+	//Cross to convert 3d coordinates into torque
+	applyTorque(glm::cross(glm::vec3(0, 0, 1), torqueRel));
+
+	//If we are colliding with the ground, we have the chance to jump
+	if (getColliding()) {
+		//Impact velocity is stored when we collide so we can use it here
+		glm::vec3 impactVelocity;
+		//Get collision information
+		glm::vec3 normal = getCollisionNormal(impactVelocity);
+		glm::vec3 vel = mActor->getLinearVelocity();
+
+		// dot against up vector to determine if we can jump
+		// TODO: take gravities into account
+		glm::vec3 up = glm::vec3(0, 0, 1);
+		if (mMovement.jump && glm::dot(up, normal) > 0.001f) {
+			glm::vec3 currentVelocity = glm::proj(vel, normal);
+
+			glm::vec3 projVel = glm::proj(vel, normal);
+
+			if (glm::length(projVel) < JumpImpulse) {
+				glm::vec3 finalVelocity = vel - currentVelocity + (normal * JumpImpulse);
+				setLinearVelocity(finalVelocity);
+				IO::printf("Jump! Impact velocity: %f %f %f\n   final Velocity: %f %f %f\n    Projection velocity: %f %f %f\n    Dot: %f\n", vel.x, vel.y, vel.z, finalVelocity.x, finalVelocity.y, finalVelocity.z, projVel.x, projVel.y, projVel.z, glm::dot(up, normal));
+			} else {
+				IO::printf("No jump, projection velocity is %f %f %f\n", projVel.x, projVel.y, projVel.z);
+			}
+		}
+	} else {
+		glm::vec3 moveRel = glm::vec3(glm::translate(deltaMat, move)[3]);
+		moveRel *= AirAcceleration * delta * getMass();
+
+		//If we're not touching the ground, apply slight air movement.
+		applyImpulse(moveRel, glm::vec3(0, 0, 0));
+	}
+	//Crappy damping
+	if (mMovement.forward + mMovement.backward + mMovement.left + mMovement.right == 0 && getColliding()) {
+		F32 damping = 1.f - LinearRollDamping;
+		mActor->setAngularVelocity(mActor->getAngularVelocity() * damping);
+	}
+
 	//Temporary OOB solution for now
 	if (getPosition().z < -40) {
 		setPosition(glm::vec3(0, 0, 60));
@@ -407,7 +409,7 @@ void Sphere::onAddToScene() {
 		material->setTexture(renderer->mMarbleCubemap, GL_TEXTURE3);
 		material->setShader(Shader::getShaderByName("Sphere"));
 		setMaterial(material);
-}
+	}
 }
 
 bool Sphere::readClientPacket(CharStream &stream) {
@@ -423,6 +425,14 @@ bool Sphere::readClientPacket(CharStream &stream) {
 
 	setForce(stream.pop<glm::vec3>());
 	setTorque(stream.pop<glm::vec3>());
+
+	mCameraYaw = stream.pop<F32>();
+	mCameraPitch = stream.pop<F32>();
+
+	mMovement.forward = stream.pop<bool>();
+	mMovement.backward = stream.pop<bool>();
+	mMovement.left = stream.pop<bool>();
+	mMovement.right = stream.pop<bool>();
 
 	return true;
 }
@@ -444,6 +454,14 @@ bool Sphere::readServerPacket(CharStream &stream) {
 	setRadius(stream.pop<F32>());
 	setMass(stream.pop<F32>());
 
+	mCameraYaw = stream.pop<F32>();
+	mCameraPitch = stream.pop<F32>();
+
+	mMovement.forward = stream.pop<bool>();
+	mMovement.backward = stream.pop<bool>();
+	mMovement.left = stream.pop<bool>();
+	mMovement.right = stream.pop<bool>();
+
 	return true;
 }
 
@@ -460,6 +478,14 @@ bool Sphere::writeClientPacket(CharStream &stream) const {
 
 	stream.push<glm::vec3>(getForce());
 	stream.push<glm::vec3>(getTorque());
+
+	stream.push<F32>(mCameraYaw);
+	stream.push<F32>(mCameraPitch);
+
+	stream.push<bool>(mMovement.forward);
+	stream.push<bool>(mMovement.backward);
+	stream.push<bool>(mMovement.left);
+	stream.push<bool>(mMovement.right);
 
 	return true;
 }
@@ -480,6 +506,14 @@ bool Sphere::writeServerPacket(CharStream &stream) const {
 
 	stream.push<F32>(getRadius());
 	stream.push<F32>(getMass());
+
+	stream.push<F32>(mCameraYaw);
+	stream.push<F32>(mCameraPitch);
+
+	stream.push<bool>(mMovement.forward);
+	stream.push<bool>(mMovement.backward);
+	stream.push<bool>(mMovement.left);
+	stream.push<bool>(mMovement.right);
 
 	return true;
 }
