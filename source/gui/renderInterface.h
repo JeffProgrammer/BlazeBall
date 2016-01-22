@@ -30,6 +30,7 @@
 
 #include <Rocket/Core/RenderInterface.h>
 #include "platform/platformWindow.h"
+#include "platform/platformGL.h"
 
 class GuiRenderInterface : public Rocket::Core::RenderInterface {
 private:
