@@ -314,6 +314,14 @@ set (DIFVIEWERGAME_SRC
 	source/game/world.cpp
 	source/game/world.h
 	
+	# Graphics folder
+	source/graphics/gl.cpp
+	source/graphics/gl.h
+	source/graphics/GL21/gl21.cpp
+	source/graphics/GL21/gl21.h
+	source/graphics/GL33/gl33.cpp
+	source/graphics/GL33/gl33.h
+	
 	# Networking
 	source/network/bitstream.h
 	source/network/charStream.h	
@@ -532,6 +540,9 @@ source_group("assets\\shaders"       REGULAR_EXPRESSION shaders/.*)
 source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)
 source_group("network"               REGULAR_EXPRESSION network/.*)
 source_group("network\\event"        REGULAR_EXPRESSION network/event/.*)
+source_group("graphics"              REGULAR_EXPRESSION graphics/.*)
+source_group("graphics\\GL21"        REGULAR_EXPRESSION graphics/GL21/.*)
+source_group("graphics\\GL33"        REGULAR_EXPRESSION graphics/GL33/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
