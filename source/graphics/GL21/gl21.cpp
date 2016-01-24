@@ -5,11 +5,6 @@
 //------------------------------------------------------------------------------
 
 #include "graphics/GL21/gl21.h"
-#ifdef __APPLE__
-#include <OpenGL/OpenGL.h>
-#else
-#include <GL/glew.h>
-#endif
 
 void GL21::bindVertexArray(GLuint array) {
 #ifdef __APPLE__

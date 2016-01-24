@@ -5,11 +5,6 @@
 //------------------------------------------------------------------------------
 
 #include "graphics/GL33/gl33.h"
-#ifdef __APPLE__
-#include <OpenGL/OpenGL.h>
-#else
-#include <GL/glew.h>
-#endif
 
 void GL33::bindVertexArray(GLuint array) {
 	glBindVertexArray(array);

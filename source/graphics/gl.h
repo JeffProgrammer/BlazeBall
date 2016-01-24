@@ -10,6 +10,11 @@
 #include <memory>
 #include <string>
 
+#ifdef __APPLE__
+#include <OpenGL/OpenGL.h>
+#else
+#include <GL/glew.h>
+#endif
 class GL {
 public:
 	void bindBuffer(GLenum target, GLuint buffer);

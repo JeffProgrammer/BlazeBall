@@ -5,11 +5,6 @@
 //------------------------------------------------------------------------------
 
 #include "graphics/gl.h"
-#ifdef __APPLE__
-#include <OpenGL/OpenGL.h>
-#else
-#include <GL/glew.h>
-#endif
 
 void GL::bindBuffer(GLenum target, GLuint buffer) {
 	glBindBuffer(target, buffer);
