@@ -15,7 +15,12 @@
 #else
 #include <GL/glew.h>
 #endif
+
 class GL {
+public:
+	GL();
+
+	/* OpenGL API functions*/
 public:
 	void bindBuffer(GLenum target, GLuint buffer);
 	void bindFrameBuffer(GLenum target, GLuint frameBuffer);
@@ -88,6 +93,10 @@ public:
 	void vertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
 	void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
 
+/* Custom extensions*/
+public:
+	void getViewportEXT(GLint &x, GLint &y, GLsizei &width, GLsizei &height);
+
 /**
  * Public Static functions available from the GL "namespace"
  */
@@ -98,6 +107,17 @@ public:
 	static void createGL() {
 		sGL = std::make_unique<API>();
 	}
+
+protected:
+	struct Viewport {
+		GLint x;
+		GLint y;
+		GLsizei width;
+		GLsizei height;
+
+		Viewport(const GLint &x, const GLint &y, const GLsizei &width, const GLsizei &height) : x(x), y(y), width(width), height(height) {}
+		Viewport() {}
+	} mViewport;
 };
 
 #endif // _GRAPHICS_GL_GL_H_

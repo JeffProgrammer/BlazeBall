@@ -6,6 +6,10 @@
 
 #include "graphics/gl.h"
 
+GL::GL() {
+	mViewport = Viewport(0, 0, 0, 0);
+}
+
 void GL::bindBuffer(GLenum target, GLuint buffer) {
 	glBindBuffer(target, buffer);
 }
@@ -223,5 +227,15 @@ void GL::vertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean no
 }
 
 void GL::viewport(GLint x, GLint y, GLsizei width, GLsizei height) {
+	mViewport = Viewport(x, y, width, height);
 	glViewport(x, y, width, height);
+}
+
+// Custom Extensions
+
+void GL::getViewportEXT(GLint &x, GLint &y, GLsizei &width, GLsizei &height) {
+	x = mViewport.x;
+	y = mViewport.y;
+	width = mViewport.width;
+	height = mViewport.height;
 }
