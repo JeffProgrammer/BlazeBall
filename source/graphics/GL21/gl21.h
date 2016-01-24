@@ -7,7 +7,7 @@
 #ifndef _GRAPHICS_GL21_GL21_H_
 #define _GRAPHICS_GL21_GL21_H_
 
-#include "graphics/gl.h"
+#include "graphics/glImplementation.h"
 
 class GL21 : public GL {
 public:

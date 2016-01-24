@@ -303,8 +303,9 @@ set (DIFVIEWERGAME_SRC
 	source/game/world.h
 	
 	# Graphics folder
-	source/graphics/gl.cpp
 	source/graphics/gl.h
+	source/graphics/glImplementation.cpp
+	source/graphics/glImplementation.h
 	source/graphics/GL21/gl21.cpp
 	source/graphics/GL21/gl21.h
 	source/graphics/GL33/gl33.cpp

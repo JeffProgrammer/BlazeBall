@@ -7,7 +7,7 @@
 #ifndef _GRAPHICS_GL33_GL33_H_
 #define _GRAPHICS_GL33_GL33_H_
 
-#include "graphics/gl.h"
+#include "graphics/glImplementation.h"
 
 class GL33 : public GL {
 public:

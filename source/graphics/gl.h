@@ -1,126 +1,85 @@
-//------------------------------------------------------------------------------
-// Copyright (c) 2014-2016 Glenn Smith
-// Copyright (c) 2014-2016 Jeff Hutchinson
+#define gl//----------------------------------------------------------------------------- Copyright ( 2014-2016 Glenn Smit Copyright ( 2014-2016 Jeff Hutchinso GL::sGL->
 // All rights reserved.
 //------------------------------------------------------------------------------
 
 #ifndef _GRAPHICS_GL_GL_H_
 #define _GRAPHICS_GL_GL_H_
 
-#include <memory>
-#include <string>
+#include "graphics/glImplementation.h"
 
-#ifdef __APPLE__
-#include <OpenGL/OpenGL.h>
-#else
-#include <Windows.h>
-#include <GL/GL.h>
-#include <GL/glext.h>
-#include <GL/wglext.h>
-#endif
 
-class GL {
-public:
-	GL();
+#define glBindBuffer(target, buffer) GL::sGL->bindBuffer( buffer)
+#define glBindFrameBuffer(target, frameBuffer) GL::sGL->bindFrameBuffer(target, frameBuffer)
+#define glBindRenderBuffer(target, renderBuffer) GL::sGL->bindRenderBuffer(target, renderBuffer)
+#define glBindTexture(target, texture) GL::sGL->bindTexture(target, texture)
+#define glBindVertexArray(array) GL::sGL->bindVertexArray(array)
 
-	/* OpenGL API functions*/
-public:
-	void bindBuffer(GLenum target, GLuint buffer);
-	void bindFrameBuffer(GLenum target, GLuint frameBuffer);
-	void bindRenderBuffer(GLenum target, GLuint renderBuffer);
-	void bindTexture(GLenum target, GLuint texture);
-	virtual void bindVertexArray(GLuint array) = 0;
+#define glClear(bitField) GL::sGL->clear(bitField)
+#define glClearColor(red, green, blue, alpha) GL::sGL->clearColor(red, green, blue, alpha)
+#define glCompileShader(shader) GL::sGL->compileShader(shader)
+#define glCreateShader(shaderType) GL::sGL->createShader(shaderType)
+#define glCreateProgram() GL::sGL->createProgram()
 
-	void clear(GLbitfield bitField);
-	void clearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
-	void compileShader(GLuint shader);
-	GLuint createShader(GLenum shaderType);
-	GLuint createProgram();
+#define glDeleteBuffers(count, buffers) GL::sGL->deleteBuffers(count, buffers)
+#define glDeleteFramebuffers(count, frameBuffers) GL::sGL->deleteFrameBuffers(count, frameBuffers)
+#define glDeleteProgram(program) GL::sGL->deleteProgram(program)
+#define glDeleteRenderbuffers(count, renderbuffers) GL::sGL->deleteRenderbuffers(count, renderbuffers)
+#define glDeleteShader(shader) GL::sGL->deleteShader(shader)
+#define glDeleteTextures(count, textures) GL::sGL->deleteTextures(count, textures)
+#define glDeleteVertexArrays(count, array) GL::sGL->deleteVertexArrays(count, array)
+#define glDepthFunc(func) GL::sGL->depthFunc(func)
+#define glDisable(cap) GL::sGL->disable(cap)
+#define glDisableVertexAttribArray(index) GL::sGL->disableVertexAttribArray(index)
+#define glDrawArrays(mode, first, count) GL::sGL->drawArrays(mode, first, count)
+#define glDrawElements(mode, count, type, indices); GL::sGL->drawElements(mode, count, type, indices)
 
-	void deleteBuffers(GLsizei count, const GLuint *buffers);
-	void deleteFramebuffers(GLsizei count, const GLuint *frameBuffers);
-	void deleteProgram(GLuint program);
-	void deleteRenderbuffers(GLsizei count, GLuint *renderbuffers);
-	void deleteShader(GLuint shader);
-	void deleteTextures(GLsizei count, const GLuint *textures);
-	virtual void deleteVertexArrays(GLsizei count, const GLuint *array) = 0;
-	void depthFunc(GLenum func);
-	void disable(GLenum cap);
-	void disableVertexAttribArray(GLuint index);
-	void drawArrays(GLenum mode, GLint first, GLsizei count);
-	void drawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices); 
-	
-	void enable(GLenum cap);
-	void enableVertexAttribArray(GLuint index);
+#define glEnable(cap) GL::sGL->glEnable(cap)
+#define glEnableVertexAttribArray(index) GL::sGL->enableVertexAttribArray(index)
 
-	void framebufferRenderBuffer(GLenum target, GLenum attachment, GLenum renderbufferTarget, GLuint renderBuffer);
-	void framebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
+#define glFramebufferRenderBuffer(target, attachment, renderbufferTarget, renderBuffer) GL::sGL->framebufferRenderBuffer(target, attachment, renderbufferTarget, renderBuffer)
+#define glFramebufferTexture2D(target, attachment, textarget, texture, level) GL::sGL->framebufferTexture2D(target, attachment, textarget, texture, level)
 
-	void genBuffers(GLsizei count, GLuint *buffers);
-	void generateMipMap(GLenum target);
-	void genFrameBuffers(GLsizei count, GLuint *frameBuffers);
-	void genRenderBuffers(GLsizei count, GLuint *renderBuffers);
-	void genTextures(GLsizei count, GLuint *textures);
-	virtual void genVertexArrays(GLsizei count, GLuint *arrays) = 0;
-	GLenum getError();
-	void getIntegerv(GLenum pname, GLint *data);
-	void getProgramInfoLog(GLuint program, GLsizei maxLength, GLsizei *length, GLchar *infoLog);
-	void getProgramiv(GLuint program, GLenum pname, GLint *params);
-	void getShaderInfoLog(GLuint shader, GLsizei maxLength, GLsizei *length, GLchar *infoLog);
-	void getShaderiv(GLuint shader, GLenum pname, GLint *params);
-	void getUniformLocation(GLuint program, const GLchar *name);
-	
-	void linkProgram(GLuint program);
+#define glGenBuffers(count, buffers) GL::sGL->genBuffers(count, buffers)
+#define glGenerateMipMap(target) GL::sGL->generateMipMap(target)
+#define glGenFrameBuffers(count, frameBuffers) GL::sGL->genFrameBuffers(count, frameBuffers)
+#define glGenRenderBuffers(count, renderBuffers) GL::sGL->genRenderBuffers(count, renderBuffers)
+#define glGenTextures(count, textures) GL::sGL->genTextures(count, textures)
+#define glGenVertexArrays(count, arrays) GL::sGL->genVertexArrays(count, arrays)
+#define glGetError() GL::sGL->getError()
+#define glGetIntegerv(pname, data) GL::sGL->getIntegerv(pname, data)
+#define glGetProgramInfoLog(program, maxLength, length, infoLog) GL::sGL->getProgramInfoLog(program, maxLength, length, infoLog)
+#define glGetProgramiv(program, pname, params) GL::sGL->getProgramiv(program, pname, params)
+#define glGetShaderInfoLog(shader, maxLength, length, infoLog) GL::sGL->getShaderInfoLog(shader, maxLength, length, infoLog)
+#define glGetShaderiv(shader, pname, params) GL::sGL->getShaderiv(shader, pname, params)
+#define glGetUniformLocation(program, name) GL::sGL->getUniformLocation(program, name)
 
-	void pixelStorei(GLenum pname, GLint param);
+#define glLinkProgram(program) GL::sGL->linkProgram(program)
 
-	void renderbufferStorage(GLenum target, GLenum internalFormat, GLsizei width, GLsizei height);
+#define glPixelStorei(pname, param) GL::sGL->pixelStorei(pname, param)
 
-	void shaderSource(GLuint shader, GLsizei count, const GLchar **string, const GLint *length);
+#define glRenderbufferStorage(target, internalFormat, width, height) GL::sGL->renderBufferStorage(target, internalFormat, width, height)
 
-	void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *data);
-	void texParameteri(GLenum target, GLenum pname, GLint param);
+#define glShaderSource(shader, count, string, length) GL::sGL->shaderSource(shader, count, string, length)
 
-	void uniform1f(GLint location, GLfloat v0);
-	void uniform1i(GLint location, GLint v0);
-	void uniform2fv(GLint location, GLsizei count, const GLfloat *value);
-	void uniform3fv(GLint location, GLsizei count, const GLfloat *value);
-	void uniform4fv(GLint location, GLsizei count, const GLfloat *value);
-	void uniform2iv(GLint location, GLsizei count, const GLint *value);
-	void uniform3iv(GLint location, GLsizei count, const GLint *value);
-	void uniform4iv(GLint location, GLsizei count, const GLint *value);
-	void uniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-	void uniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-	void useProgram(GLuint program);
+#define glTexImage2D(target, level, internalFormat, width, height, border, format, type, data) GL::sGL->texImage2D(target, level, internalFormat, width, height, border, fromat, type, data)
+#define glTexParameteri(target, pname, param) GL::sGL->texParameteri(target, pname, param)
 
-	void vertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
-	void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
+#define glUniform1f(location, v0) GL::sGL->uniform1f(location, v0)
+#define glUniform1i(location, v0) GL::sGL->uniform1i(location, v0)
+#define glUniform2fv(location, count, value) GL::sGL->uniform2fv(location, count, value)
+#define glUniform3fv(location, count, value) GL::sGL->uniform3fv(location, count, value)
+#define glUniform4fv(location, count, value) GL::sGL->uniform4fv(location, count, value)
+#define glUniform2iv(location, count, value) GL::sGL->uniform2iv(location, count, value)
+#define glUniform3iv(location, count, value) GL::sGL->uniform3iv(location, count, value)
+#define glUniform4iv(location, count, value) GL::sGL->uniform4iv(location, count, value)
+#define glUniformMatrix3fv(location, count, transpose, value) GL::sGL->uniformMatrix3fv(location, count, transpose, value)
+#define glUniformMatrix4fv(location, count, transpose, value) GL::sGL->uniformMatrix4fv(location, count, transpose, value)
+#define glUseProgram(program) GL::sGL->useProgram(program)
 
-/* Custom extensions*/
-public:
-	void getViewportEXT(GLint &x, GLint &y, GLsizei &width, GLsizei &height);
+#define glVertexAttribPointer(index, size, type, normalized, stride, pointer) GL::sGL->vertexAttribPointer(index, type, normalized, stride, pointer)
+#define glViewport(x, y, width, height) GL::sGL->viewport(x, y, width, height)
 
-/**
- * Public Static functions available from the GL "namespace"
- */
-public:
-	static std::unique_ptr<GL> sGL;
-
-	template<typename API>
-	static void createGL() {
-		sGL = std::make_unique<API>();
-	}
-
-protected:
-	struct Viewport {
-		GLint x;
-		GLint y;
-		GLsizei width;
-		GLsizei height;
-
-		Viewport(const GLint &x, const GLint &y, const GLsizei &width, const GLsizei &height) : x(x), y(y), width(width), height(height) {}
-		Viewport() {}
-	} mViewport;
-};
+// Custom extensions
+#define glGetViewportEXT(x, y, width, height) GL::sGL->getViewportEXT(x, y, width, height)
 
 #endif // _GRAPHICS_GL_GL_H_
