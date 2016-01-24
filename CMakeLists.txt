@@ -184,18 +184,6 @@ add_library(Mng STATIC ${MNG_SRC})
 target_link_libraries(Mng Jpeg Zlib)
 set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
 
-if (MSVC)
-	#------------------------------------------------------------------------------
-	# GLEW Library
-	#------------------------------------------------------------------------------
-
-	add_library(GLEW STATIC thirdparty/glew/src/glew.c)
-	set_property(TARGET GLEW APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include")
-	target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
-
-	target_link_libraries(GLEW OpenGL32)
-endif()
-
 #------------------------------------------------------------------------------
 # DIF Library
 #------------------------------------------------------------------------------
@@ -255,7 +243,6 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	source
 	thirdparty/bullet
 	thirdparty/bullet/src
-	thirdparty/glew/include
 	thirdparty/glm/
 	thirdparty/jpeg
 	thirdparty/mng
@@ -270,6 +257,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/enetpp/include
 	thirdparty/compat
 	thirdparty/chaiscript/include
+	thirdparty/khronos
 )
 
 # Main project source
@@ -486,9 +474,6 @@ set (DIFVIEWERGAME_LIBRARIES
 if (WIN32)
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
-
-	# GLEW
-	GLEW
 
 	Zlib
 	

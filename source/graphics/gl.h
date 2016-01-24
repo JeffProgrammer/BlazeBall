@@ -13,7 +13,10 @@
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
 #else
-#include <GL/glew.h>
+#include <Windows.h>
+#include <GL/GL.h>
+#include <GL/glext.h>
+#include <GL/wglext.h>
 #endif
 
 class GL {
