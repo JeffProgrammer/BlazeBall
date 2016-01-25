@@ -87,12 +87,12 @@ inline bool CharStream::push(const bool &value) {
 
 template<>
 inline bool CharStream::pop() {
-	return pop<U8>();
+	return pop<U8>() ? true : false;
 }
 
 template<>
 inline bool CharStream::peek() {
-	return peek<U8>();
+	return peek<U8>() ? true : false;
 }
 
 //-----------------------------------------------------------------------------
