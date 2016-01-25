@@ -63,7 +63,7 @@ void CubeMapFramebufferTexture::generateBuffer() {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X, mBuffer, 0);
 
 #ifdef GRAPHICS_DEBUG
-	GL::checkFrameBufferStatus();
+	GLL::checkFrameBufferStatus();
 #endif
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -100,7 +100,7 @@ void CubeMapFramebufferTexture::generateBuffer(const glm::vec3 &center, const gl
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
 #ifdef GRAPHICS_DEBUG
-	GL::checkFrameBufferStatus();
+	GLL::checkFrameBufferStatus();
 #endif
 
 	//We've copied info so we should set this
@@ -115,7 +115,7 @@ void CubeMapFramebufferTexture::generateBuffer(const glm::vec3 &center, const gl
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, i, mBuffer, 0);
 
 #ifdef GRAPHICS_DEBUG
-		GL::checkFrameBufferStatus();
+		GLL::checkFrameBufferStatus();
 		GL_CHECKERRORS();
 #endif
 

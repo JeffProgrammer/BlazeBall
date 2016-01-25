@@ -11,12 +11,12 @@
 
 #ifndef NDEBUG
 #define GRAPHICS_DEBUG
-#define GL_CHECKERRORS() GL::checkErrors(__FILE__, __LINE__)
+#define GL_CHECKERRORS() GLL::checkErrors(__FILE__, __LINE__)
 #else
 #define GL_CHECKERRORS()
 #endif
 
-namespace GL {
+namespace GLL {
 	inline void checkErrors(const char *fileName, int lineNumber) {
 		GLenum error = GL_NO_ERROR;
 		while ((error = glGetError()) != GL_NO_ERROR) {
