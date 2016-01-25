@@ -388,6 +388,7 @@ set (DIFVIEWERGAME_SRC
 	# Platform folder
 	source/platform/platform.h
 	source/platform/platformEvent.h
+	source/platform/platformGL.h
 	source/platform/platformTimer.cpp
 	source/platform/platformTimer.h
 	source/platform/platformWindow.h
