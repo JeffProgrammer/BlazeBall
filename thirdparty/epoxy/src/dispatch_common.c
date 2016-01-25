@@ -293,7 +293,7 @@ epoxy_is_desktop_gl(void)
     if (api.begin_count)
         return true;
 
-    version = (const char *)glGetString(GL_VERSION);
+    version = (const char *)epoxy_glGetString(GL_VERSION);
 
     /* If we didn't get a version back, there are only two things that
      * could have happened: either malloc failure (which basically
@@ -309,7 +309,7 @@ epoxy_is_desktop_gl(void)
 static int
 epoxy_internal_gl_version(int error_version)
 {
-    const char *version = (const char *)glGetString(GL_VERSION);
+    const char *version = (const char *)epoxy_glGetString(GL_VERSION);
     GLint major, minor;
     int scanf_count;
 
@@ -367,7 +367,7 @@ static bool
 epoxy_internal_has_gl_extension(const char *ext, bool invalid_op_mode)
 {
     if (epoxy_gl_version() < 30) {
-        const char *exts = (const char *)glGetString(GL_EXTENSIONS);
+        const char *exts = (const char *)epoxy_glGetString(GL_EXTENSIONS);
         if (!exts)
             return invalid_op_mode;
         return epoxy_extension_in_string(exts, ext);
@@ -375,12 +375,12 @@ epoxy_internal_has_gl_extension(const char *ext, bool invalid_op_mode)
         int num_extensions;
         int i;
 
-        glGetIntegerv(GL_NUM_EXTENSIONS, &num_extensions);
+        epoxy_glGetIntegerv(GL_NUM_EXTENSIONS, &num_extensions);
         if (num_extensions == 0)
             return invalid_op_mode;
 
         for (i = 0; i < num_extensions; i++) {
-            const char *gl_ext = (const char *)glGetStringi(GL_EXTENSIONS, i);
+            const char *gl_ext = (const char *)epoxy_glGetStringi(GL_EXTENSIONS, i);
             if (strcmp(ext, gl_ext) == 0)
                 return true;
         }
