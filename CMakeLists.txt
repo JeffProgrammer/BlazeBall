@@ -289,7 +289,6 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/enetpp/include
 	thirdparty/compat
 	thirdparty/chaiscript/include
-	thirdparty/khronos
 	thirdparty/epoxy/include
 )
 
