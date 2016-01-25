@@ -19,10 +19,10 @@ Requirements
 -------------------
 
 C++11 support  
-OpenGL 3.3+
+OpenGL 2.1+ (3.0 extensions + GLSL 120)
 
-* Windows 7+
-* Mac OSX 10.9+
+* Windows XP+
+* Mac OSX 10.6.8+
 * Intel Core2Duo CPU @ 2.0ghz
 * GPU:
   * NVidia GeForce 8000 series
@@ -40,7 +40,7 @@ Third Party Libraries
 * ChaiScript - Scripting Language Library
 * ENet - Networking Library
 * ENetPP - Networking extensions library for ENet
-* GLEW - OpenGL Extensions Loader
+* Epoxy - OpenGL Extensions Loader
 * GLM - Math Library
 * JPEG - Image Library
 * MNG - Image Library
