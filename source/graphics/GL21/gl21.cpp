@@ -17,7 +17,7 @@ void GL21::bindVertexArray(GLuint array) {
 
 void GL21::deleteVertexArrays(GLsizei count, const GLuint *array) {
 #ifdef __APPLE__
-	epoxy_glDeleteVertexArraysAPPLE(count, arrays);
+	epoxy_glDeleteVertexArraysAPPLE(count, array);
 #else
 	// Requires OpenGL 3.0 or ARB_VERTEX_ARRAY_OBJECT
 	epoxy_glDeleteVertexArrays(count, array);

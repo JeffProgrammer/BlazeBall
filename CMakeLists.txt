@@ -12,7 +12,7 @@ endif()
 
 # Enable Static Linking the C++ ABI directly into the executables and libraries
 if (MSVC)
-	#---BEGIN COPY FROM BULLET CMAKE--- 
+	#---BEGIN COPY FROM BULLET CMAKE---
 	#We statically link to reduce dependancies
 	FOREACH(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO )
 		IF(${flag_var} MATCHES "/MD")
@@ -22,7 +22,7 @@ if (MSVC)
 			STRING(REGEX REPLACE "/MDd" "/MTd" ${flag_var} "${${flag_var}}")
 		ENDIF(${flag_var} MATCHES "/MDd")
 	ENDFOREACH(flag_var)
-	#---END COPY FROM BULLET CMAKE--- 
+	#---END COPY FROM BULLET CMAKE---
 endif()
 
 # http://stackoverflow.com/a/25286420/214063
@@ -123,10 +123,10 @@ if (APPLE)
 	set(JPEG_SRC ${JPEG_SRC}
 		thirdparty/jpeg/jmemnobs.c
 	)
-elseif (MSVC)	
+elseif (MSVC)
 	set(JPEG_SRC ${JPEG_SRC}
 		thirdparty/jpeg/jmemansi.c
-	)	
+	)
 endif()
 
 add_library(Jpeg STATIC ${JPEG_SRC})
@@ -195,15 +195,15 @@ set (EPOXY_SRC
 )
 if (WIN32)
 	#WGL
-	set (EPOXY_SRC 
-		${EPOXY_SRC} 
+	set (EPOXY_SRC
+		${EPOXY_SRC}
 		thirdparty/epoxy/src/dispatch_wgl.c
 		thirdparty/epoxy/src/wgl_generated_dispatch.c
 	)
 elseif (UNIX AND NOT APPLE)
 	#GLX
-	set (EPOXY_SRC 
-		${EPOXY_SRC} 
+	set (EPOXY_SRC
+		${EPOXY_SRC}
 		thirdparty/epoxy/src/dispatch_glx.c
 		thirdparty/epoxy/src/glx_generated_dispatch.c
 	)
@@ -333,7 +333,7 @@ set (DIFVIEWERGAME_SRC
 	source/game/sphere.h
 	source/game/world.cpp
 	source/game/world.h
-	
+
 	# Graphics folder
 	source/graphics/gl.h
 	source/graphics/glImplementation.cpp
@@ -342,10 +342,10 @@ set (DIFVIEWERGAME_SRC
 	source/graphics/GL21/gl21.h
 	source/graphics/GL33/gl33.cpp
 	source/graphics/GL33/gl33.h
-	
+
 	# Networking
 	source/network/bitstream.h
-	source/network/charStream.h	
+	source/network/charStream.h
 	source/network/client.cpp
 	source/network/client.h
 	source/network/clientConnection.cpp
@@ -401,7 +401,7 @@ set (DIFVIEWERGAME_SRC
 	source/platform/SDL/SDLTimer.h
 	source/platform/SDL/SDLWindow.cpp
 	source/platform/SDL/SDLWindow.h
-	
+
 	# Render folder
 	source/render/interiorRender.cpp
 	source/render/material.cpp
@@ -453,7 +453,7 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/skyboxV.glsl
 	source/shaders/sphereF.glsl
 	source/shaders/sphereV.glsl
-	
+
 	# Scripts folder
 	source/scripts/mainClient.chai
 	source/scripts/mainServer.chai
@@ -497,12 +497,15 @@ set (DIFVIEWERGAME_LIBRARIES
 
 	# DIF
 	Dif
-	
+
 	#SDL2
 	SDL2-static
-	
+
 	#Enet
 	enet
+
+	# epoxy for now
+	Epoxy
 )
 
 if (WIN32)
@@ -510,11 +513,11 @@ set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
 
 	Zlib
-	
+
 	Kernel32
 	User32
 	OpenGL32
-	
+
 	# These are for enet sockets
 	Winmm
 	ws2_32
@@ -522,15 +525,12 @@ set (DIFVIEWERGAME_LIBRARIES
 	# Assimp
 	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimpd.lib
 	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimp.lib
-	
-	# epoxy for now
-	Epoxy
 )
 else()
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
 	z
-	
+
 	# Assimp
 	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x64/Debug/libassimpd.a
 	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x64/Release/libassimp.a
@@ -587,7 +587,7 @@ set (BUILD_DIR_FILES
 	assets/DefaultNormal.png
 	assets/DefaultSpec.png
 	assets/noise.jpg
-	
+
 	assets/cube.dae
 	assets/grid.png
 	assets/grid.normal.png
@@ -597,7 +597,7 @@ set (BUILD_DIR_FILES
 	source/shaders/interiorV.glsl
 	source/shaders/modelV.glsl
 	source/shaders/modelF.glsl
-	
+
 	source/scripts/main.chai
 	source/levels/test.json
 )
