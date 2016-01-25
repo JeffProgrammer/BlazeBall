@@ -27,8 +27,7 @@ OpenGL 2.1+ (3.0 extensions + GLSL 120)
 * GPU:
   * NVidia GeForce 8000 series
   * ATI Radeon HD 2000 series
-  * Intel HD 3000 Graphics [OSX]
-  * Intel HD 4000 Graphics [Windows]
+  * Intel HD 3000 Graphics
   * 256MB VRAM
 * 2GB Ram
 
@@ -53,7 +52,7 @@ License
 -------------------
 
 ```
-Copyright (c) 2014-2015, Glenn Smith
-Copyright (c) 2014-2015, Jeff Hutchinson
+Copyright (c) 2014-2016, Glenn Smith
+Copyright (c) 2014-2016, Jeff Hutchinson
 All rights reserved.
 ```
