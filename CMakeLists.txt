@@ -185,6 +185,18 @@ target_link_libraries(Mng Jpeg Zlib)
 set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
 
 #------------------------------------------------------------------------------
+# Epoxy Library
+#------------------------------------------------------------------------------
+
+set (EPOXY_SRC
+	thirdparty/epoxy/src/dispatch_common.c
+	thirdparty/epoxy/src/dispatch_common.h
+	thirdparty/epoxy/src/gl_generated_dispatch.c
+)
+add_library(Epoxy STATIC ${EPOXY_SRC})
+set_property(TARGET Epoxy APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/epoxy/include")
+
+#------------------------------------------------------------------------------
 # DIF Library
 #------------------------------------------------------------------------------
 
@@ -258,6 +270,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/compat
 	thirdparty/chaiscript/include
 	thirdparty/khronos
+	thirdparty/epoxy/include
 )
 
 # Main project source
@@ -489,6 +502,9 @@ set (DIFVIEWERGAME_LIBRARIES
 	# Assimp
 	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimpd.lib
 	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x86/assimp.lib
+	
+	# epoxy for now
+	Epoxy
 )
 else()
 set (DIFVIEWERGAME_LIBRARIES
