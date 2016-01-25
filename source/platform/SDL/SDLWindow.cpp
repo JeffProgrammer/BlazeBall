@@ -6,6 +6,7 @@
 
 #include "platform/SDL/SDLWindow.h"
 #include "platform/SDL/SDLEvent.h"
+#include "graphics/GL33/gl33.h"
 
 bool SDLWindow::createContext() {
 	//Init SDL
@@ -47,6 +48,9 @@ bool SDLWindow::createContext() {
 #ifdef _WIN32
 	epoxy_handle_external_wglMakeCurrent();
 #endif
+
+	// Initialize the GL library
+	GL::createGL<GL33>();
 
 	IO::printf("Please note that your GPU may support a higher GL version or newer extensions.\n");
 	IO::printf("Extensions outside of the core may be used, but are not required.\n");
