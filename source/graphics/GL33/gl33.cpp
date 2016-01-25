@@ -7,13 +7,13 @@
 #include "graphics/GL33/gl33.h"
 
 void GL33::bindVertexArray(GLuint array) {
-	glBindVertexArray(array);
+	epoxy_glBindVertexArray(array);
 }
 
 void GL33::deleteVertexArrays(GLsizei count, const GLuint *array) {
-	glDeleteVertexArrays(count, array);
+	epoxy_glDeleteVertexArrays(count, array);
 }
 
 void GL33::genVertexArrays(GLsizei count, GLuint *arrays) {
-	glGenVertexArrays(count, arrays);
+	epoxy_glGenVertexArrays(count, arrays);
 }

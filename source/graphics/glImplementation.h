@@ -10,13 +10,11 @@
 #include <memory>
 #include <string>
 
-#ifdef __APPLE__
-#include <OpenGL/OpenGL.h>
-#else
-#include <Windows.h>
-#include <GL/GL.h>
-#include <GL/glext.h>
-#include <GL/wglext.h>
+#include <epoxy/gl.h>
+#if defined(_WIN32)
+#include <epoxy/wgl.h>
+#elif defined(__linux__) || defined(__FREEBSD__)
+#include <epoxy/glx.h>
 #endif
 
 class GL {
@@ -25,14 +23,20 @@ public:
 
 	/* OpenGL API functions*/
 public:
+	void activeTexture(GLenum texture);
+	void attachShader(GLuint program, GLuint shader);
+
 	void bindBuffer(GLenum target, GLuint buffer);
 	void bindFrameBuffer(GLenum target, GLuint frameBuffer);
 	void bindRenderBuffer(GLenum target, GLuint renderBuffer);
 	void bindTexture(GLenum target, GLuint texture);
 	virtual void bindVertexArray(GLuint array) = 0;
+	void blendFunc(GLenum sfactor, GLenum dfactor);
+	void bufferData(GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage);
 
 	void clear(GLbitfield bitField);
 	void clearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+	GLenum checkFrameBufferStatus(GLenum target);
 	void compileShader(GLuint shader);
 	GLuint createShader(GLenum shaderType);
 	GLuint createProgram();
@@ -62,13 +66,15 @@ public:
 	void genRenderBuffers(GLsizei count, GLuint *renderBuffers);
 	void genTextures(GLsizei count, GLuint *textures);
 	virtual void genVertexArrays(GLsizei count, GLuint *arrays) = 0;
+	GLint getAttribLocation(GLuint program, const GLchar *name);
 	GLenum getError();
 	void getIntegerv(GLenum pname, GLint *data);
 	void getProgramInfoLog(GLuint program, GLsizei maxLength, GLsizei *length, GLchar *infoLog);
 	void getProgramiv(GLuint program, GLenum pname, GLint *params);
 	void getShaderInfoLog(GLuint shader, GLsizei maxLength, GLsizei *length, GLchar *infoLog);
 	void getShaderiv(GLuint shader, GLenum pname, GLint *params);
-	void getUniformLocation(GLuint program, const GLchar *name);
+	const GLubyte *getString(GLenum name);
+	GLint getUniformLocation(GLuint program, const GLchar *name);
 	
 	void linkProgram(GLuint program);
 
