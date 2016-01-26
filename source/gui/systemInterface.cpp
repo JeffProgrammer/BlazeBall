@@ -39,11 +39,11 @@ GuiInterface::~GuiInterface() {
 }
 
 Rocket::Core::Input::KeyIdentifier GuiInterface::translateKey(KeyEvent::Key key) {
-
+	return Rocket::Core::Input::KeyIdentifier::KI_0; // for now
 }
 
 S32 GuiInterface::translateMouseButton(U8 button) {
-
+	return 0; //for now
 }
 
 F32 GuiInterface::GetElapsedTime() {

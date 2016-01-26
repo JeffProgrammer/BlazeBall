@@ -28,13 +28,7 @@
 #include "gui/renderInterface.h"
 #include "render/texture/bitmapTexture.h"
 #include "base/io.h"
-
-#ifdef _WIN32
-#include <GL/glew.h>
-#else
-#include <OpenGL/OpenGL.h>
-#include <OpenGL/gl3.h>
-#endif
+#include "platform/platformGL.h"
 
 GuiRenderInterface::GuiRenderInterface(PlatformWindow *window) {
 	mWindow = window;
@@ -92,12 +86,14 @@ bool GuiRenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle
 	texture_dimensions.x = texture->extent.x;
 	texture_dimensions.y = texture->extent.y;
 	texture_handle = reinterpret_cast<Rocket::Core::TextureHandle>(texture);
+	return true;
 }
 
 bool GuiRenderInterface::GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions) {
 	auto texture = new BitmapTexture(const_cast<U8*>(reinterpret_cast<const U8*>(source)), glm::ivec2(source_dimensions.x, source_dimensions.y), BitmapTexture::Format::FormatRGBA8);
 	texture->generateBuffer();
 	texture_handle = reinterpret_cast<Rocket::Core::TextureHandle>(texture);
+	return true;
 }
 
 void GuiRenderInterface::ReleaseTexture(Rocket::Core::TextureHandle textureHandle) {
