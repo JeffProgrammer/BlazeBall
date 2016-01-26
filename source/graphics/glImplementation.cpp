@@ -197,6 +197,10 @@ void GL::renderbufferStorage(GLenum target, GLenum internalFormat, GLsizei width
 	epoxy_glRenderbufferStorage(target, internalFormat, width, height);
 }
 
+void GL::scissor(GLint x, GLint y, GLsizei width, GLsizei height) {
+	epoxy_glScissor(x, y, width, height);
+}
+
 void GL::shaderSource(GLuint shader, GLsizei count, const GLchar **string, const GLint *length) {
 	epoxy_glShaderSource(shader, count, string, length);
 }

@@ -209,6 +209,10 @@ inline void glRenderbufferStorage(GLenum target, GLenum internalFormat, GLsizei 
 	GL::sGL->renderbufferStorage(target, internalFormat, width, height);
 }
 
+inline void glScissor(GLint x, GLint y, GLsizei width, GLsizei height) {
+	GL::sGL->scissor(x, y, width, height);
+}
+
 inline void glShaderSource(GLuint shader, GLsizei count, const GLchar **string, const GLint *length) {
 	GL::sGL->shaderSource(shader, count, string, length);
 }

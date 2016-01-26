@@ -82,6 +82,7 @@ public:
 
 	void renderbufferStorage(GLenum target, GLenum internalFormat, GLsizei width, GLsizei height);
 
+	void scissor(GLint x, GLint y, GLsizei width, GLsizei height);
 	void shaderSource(GLuint shader, GLsizei count, const GLchar **string, const GLint *length);
 
 	void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *data);
