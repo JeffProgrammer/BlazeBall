@@ -30,6 +30,7 @@ protected:
 	PhysicsBody *mActor;
 	F32 mMaxAngVel;
 	Material *mMaterial;
+	Movement mMovement;
 
 	glm::vec3 mLinearVelocity;
 	glm::vec3 mAngularVelocity;

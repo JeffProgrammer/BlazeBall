@@ -6,6 +6,7 @@
 
 #include "platform/SDL/SDLWindow.h"
 #include "platform/SDL/SDLEvent.h"
+#include "graphics/GL33/gl33.h"
 
 bool SDLWindow::createContext() {
 	//Init SDL
@@ -45,22 +46,12 @@ bool SDLWindow::createContext() {
 	}
 
 	SDL_GL_MakeCurrent(window, context);
-
 #ifdef _WIN32
-	glewExperimental = true;
-	GLenum error = glewInit();
-	if (error != GLEW_OK) {
-		fprintf(stderr, "GLEW failed to init. Error: %d\n", error);
-		return false;
-	}
-
-	// stew on the error, as GLEW actually generates an error in teh core profile.
-	// its known, and documented, on their github. and they refuse to do anything about it.
-	// pussies.
-	//
-	// Uncomment me if we are using the opengl core profile
-	while (glGetError() != GL_NO_ERROR);
+	epoxy_handle_external_wglMakeCurrent();
 #endif
+
+	// Initialize the GL library
+	GL::createGL<GL33>();
 
 	IO::printf("Please note that your GPU may support a higher GL version or newer extensions.\n");
 	IO::printf("Extensions outside of the core may be used, but are not required.\n");

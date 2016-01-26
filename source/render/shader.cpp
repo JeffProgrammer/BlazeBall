@@ -47,7 +47,7 @@ GLuint Shader::loadShader(const std::string &path, const GLenum &type) {
 	//Try to compile the shader
 	glShaderSource(shaderId, 1, (const GLchar **)&data, NULL);
 	glCompileShader(shaderId);
-	delete data;
+	delete[] data;
 	
 	//Check if we had any errors
 	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &result);

@@ -12,7 +12,7 @@ endif()
 
 # Enable Static Linking the C++ ABI directly into the executables and libraries
 if (MSVC)
-	#---BEGIN COPY FROM BULLET CMAKE--- 
+	#---BEGIN COPY FROM BULLET CMAKE---
 	#We statically link to reduce dependancies
 	FOREACH(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO )
 		IF(${flag_var} MATCHES "/MD")
@@ -22,7 +22,7 @@ if (MSVC)
 			STRING(REGEX REPLACE "/MDd" "/MTd" ${flag_var} "${${flag_var}}")
 		ENDIF(${flag_var} MATCHES "/MDd")
 	ENDFOREACH(flag_var)
-	#---END COPY FROM BULLET CMAKE--- 
+	#---END COPY FROM BULLET CMAKE---
 endif()
 
 # http://stackoverflow.com/a/25286420/214063
@@ -123,10 +123,10 @@ if (APPLE)
 	set(JPEG_SRC ${JPEG_SRC}
 		thirdparty/jpeg/jmemnobs.c
 	)
-elseif (MSVC)	
+elseif (MSVC)
 	set(JPEG_SRC ${JPEG_SRC}
 		thirdparty/jpeg/jmemansi.c
-	)	
+	)
 endif()
 
 add_library(Jpeg STATIC ${JPEG_SRC})
@@ -184,17 +184,37 @@ add_library(Mng STATIC ${MNG_SRC})
 target_link_libraries(Mng Jpeg Zlib)
 set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
 
-if (MSVC)
-	#------------------------------------------------------------------------------
-	# GLEW Library
-	#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# Epoxy Library
+#------------------------------------------------------------------------------
 
-	add_library(GLEW STATIC thirdparty/glew/src/glew.c)
-	set_property(TARGET GLEW APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include")
-	target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
-
-	target_link_libraries(GLEW OpenGL32)
+set (EPOXY_SRC
+	thirdparty/epoxy/src/dispatch_common.c
+	thirdparty/epoxy/src/dispatch_common.h
+	thirdparty/epoxy/src/gl_generated_dispatch.c
+)
+if (WIN32)
+	#WGL
+	set (EPOXY_SRC
+		${EPOXY_SRC}
+		thirdparty/epoxy/src/dispatch_wgl.c
+		thirdparty/epoxy/src/wgl_generated_dispatch.c
+	)
+elseif (UNIX AND NOT APPLE)
+	#GLX
+	set (EPOXY_SRC
+		${EPOXY_SRC}
+		thirdparty/epoxy/src/dispatch_glx.c
+		thirdparty/epoxy/src/glx_generated_dispatch.c
+	)
 endif()
+add_library(Epoxy STATIC ${EPOXY_SRC})
+if (WIN32)
+	target_compile_definitions(Epoxy PUBLIC BUILD_WGL)
+elseif (UNIX AND NOT APPLE)
+	target_compile_definitions(Epoxy PUBLIC BUILD_GLX)
+endif()
+set_property(TARGET Epoxy APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/epoxy/include")
 
 #------------------------------------------------------------------------------
 # DIF Library
@@ -255,7 +275,6 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	source
 	thirdparty/bullet
 	thirdparty/bullet/src
-	thirdparty/glew/include
 	thirdparty/glm/
 	thirdparty/jpeg
 	thirdparty/mng
@@ -271,6 +290,7 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/compat
 	thirdparty/chaiscript/include
 	thirdparty/librocket/Include
+	thirdparty/epoxy/include
 )
 
 # Main project source
@@ -320,10 +340,19 @@ set (DIFVIEWERGAME_SRC
 	source/gui/renderInterface.h
 	source/gui/systemInterface.cpp
 	source/gui/systemInterface.h
-	
+
+	# Graphics folder
+	source/graphics/gl.h
+	source/graphics/glImplementation.cpp
+	source/graphics/glImplementation.h
+	source/graphics/GL21/gl21.cpp
+	source/graphics/GL21/gl21.h
+	source/graphics/GL33/gl33.cpp
+	source/graphics/GL33/gl33.h
+
 	# Networking
 	source/network/bitstream.h
-	source/network/charStream.h	
+	source/network/charStream.h
 	source/network/client.cpp
 	source/network/client.h
 	source/network/clientConnection.cpp
@@ -365,6 +394,7 @@ set (DIFVIEWERGAME_SRC
 	# Platform folder
 	source/platform/platform.h
 	source/platform/platformEvent.h
+	source/platform/platformGL.h
 	source/platform/platformTimer.cpp
 	source/platform/platformTimer.h
 	source/platform/platformWindow.h
@@ -378,7 +408,7 @@ set (DIFVIEWERGAME_SRC
 	source/platform/SDL/SDLTimer.h
 	source/platform/SDL/SDLWindow.cpp
 	source/platform/SDL/SDLWindow.h
-	
+
 	# Render folder
 	source/render/interiorRender.cpp
 	source/render/material.cpp
@@ -430,7 +460,7 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/skyboxV.glsl
 	source/shaders/sphereF.glsl
 	source/shaders/sphereV.glsl
-	
+
 	# Scripts folder
 	source/scripts/mainClient.chai
 	source/scripts/mainServer.chai
@@ -480,10 +510,10 @@ set (DIFVIEWERGAME_LIBRARIES
 
 	# DIF
 	Dif
-	
+
 	#SDL2
 	SDL2-static
-	
+
 	#Enet
 	enet
 	
@@ -492,21 +522,21 @@ set (DIFVIEWERGAME_LIBRARIES
 	RocketCore
 	RocketControls
 	RocketDebugger
+
+	# epoxy for now
+	Epoxy
 )
 
 if (WIN32)
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
 
-	# GLEW
-	GLEW
-
 	Zlib
-	
+
 	Kernel32
 	User32
 	OpenGL32
-	
+
 	# These are for enet sockets
 	Winmm
 	ws2_32
@@ -519,7 +549,7 @@ else()
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
 	z
-	
+
 	# Assimp
 	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x64/Debug/libassimpd.a
 	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x64/Release/libassimp.a
@@ -552,6 +582,9 @@ source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)
 source_group("network"               REGULAR_EXPRESSION network/.*)
 source_group("network\\event"        REGULAR_EXPRESSION network/event/.*)
 source_group("gui"                   REGULAR_EXPRESSION gui/.*)
+source_group("graphics"              REGULAR_EXPRESSION graphics/.*)
+source_group("graphics\\GL21"        REGULAR_EXPRESSION graphics/GL21/.*)
+source_group("graphics\\GL33"        REGULAR_EXPRESSION graphics/GL33/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
@@ -574,7 +607,7 @@ set (BUILD_DIR_FILES
 	assets/DefaultNormal.png
 	assets/DefaultSpec.png
 	assets/noise.jpg
-	
+
 	assets/cube.dae
 	assets/grid.png
 	assets/grid.normal.png
@@ -584,7 +617,7 @@ set (BUILD_DIR_FILES
 	source/shaders/interiorV.glsl
 	source/shaders/modelV.glsl
 	source/shaders/modelF.glsl
-	
+
 	source/scripts/main.chai
 	source/levels/test.json
 )
