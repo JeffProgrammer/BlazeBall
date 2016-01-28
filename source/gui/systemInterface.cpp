@@ -27,6 +27,7 @@
 
 #include "gui/systemInterface.h"
 #include "platform/platform.h"
+#include "platform/platformEvent.h"
 #include "main/gameState.h"
 
 GuiInterface::GuiInterface() {

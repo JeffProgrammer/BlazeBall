@@ -65,13 +65,13 @@ public:
 class MouseDownEvent : public PlatformEvent {
 public:
 	glm::ivec2 position;
-	U8 button;
+	MouseButton button;
 
-	MouseDownEvent() : PlatformEvent(MouseDown), position(glm::ivec2(0, 0)), button(0) {};
+	MouseDownEvent() : PlatformEvent(MouseDown), position(glm::ivec2(0, 0)), button(MOUSE_BUTTON_LEFT) {};
 	glm::ivec2 getPosition() {
 		return position;
 	}
-	U8 getButton() {
+	MouseButton getButton() {
 		return button;
 	}
 };
@@ -79,15 +79,22 @@ public:
 class MouseUpEvent : public PlatformEvent {
 public:
 	glm::ivec2 position;
-	U8 button;
+	MouseButton button;
 
-	MouseUpEvent() : PlatformEvent(MouseUp), position(glm::ivec2(0, 0)), button(0) {};
+	MouseUpEvent() : PlatformEvent(MouseUp), position(glm::ivec2(0, 0)), button(MOUSE_BUTTON_LEFT) {};
 	glm::ivec2 getPosition() {
 		return position;
 	}
-	U8 getButton() {
+	MouseButton getButton() {
 		return button;
 	}
+};
+
+enum MouseButton {
+	MOUSE_BUTTON_INVALID = -1,
+	MOUSE_BUTTON_LEFT    = 1,
+	MOUSE_BUTTON_MIDDLE  = 2,
+	MOUSE_BUTTON_RIGHT   = 3
 };
 
 /*

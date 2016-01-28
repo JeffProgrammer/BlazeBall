@@ -355,9 +355,9 @@ void RenderWorld::handleEvent(PlatformEvent *event) {
 			break;
 		case PlatformEvent::MouseDown:
 			switch (((MouseDownEvent *)event)->button) {
-				case 1: mouseButtons.left   = true; break;
-				case 2: mouseButtons.middle = true; break;
-				case 3: mouseButtons.right  = true; break;
+				case MouseButton::MOUSE_BUTTON_LEFT: mouseButtons.left   = true; break;
+				case MouseButton::MOUSE_BUTTON_MIDDLE: mouseButtons.middle = true; break;
+				case MouseButton::MOUSE_BUTTON_RIGHT: mouseButtons.right  = true; break;
 				default: break;
 			}
 
@@ -369,9 +369,9 @@ void RenderWorld::handleEvent(PlatformEvent *event) {
 			break;
 		case PlatformEvent::MouseUp:
 			switch (((MouseDownEvent *)event)->button) {
-				case 1: mouseButtons.left   = false; break;
-				case 2: mouseButtons.middle = false; break;
-				case 3: mouseButtons.right  = false; break;
+				case MouseButton::MOUSE_BUTTON_LEFT: mouseButtons.left   = false; break;
+				case MouseButton::MOUSE_BUTTON_MIDDLE: mouseButtons.middle = false; break;
+				case MouseButton::MOUSE_BUTTON_RIGHT: mouseButtons.right  = false; break;
 				default: break;
 			}
 			break;

@@ -32,6 +32,19 @@ namespace SDLEvent {
 			default: return PlatformEvent::None;
 		}
 	}
+
+	inline MouseButton convertMouse(U8 button) {
+		switch (button) {
+		case SDL_BUTTON_LEFT:
+			return MouseButton::MOUSE_BUTTON_LEFT;
+		case SDL_BUTTON_RIGHT:
+			return MouseButton::MOUSE_BUTTON_RIGHT;
+		case SDL_BUTTON_MIDDLE:
+			return MouseButton::MOUSE_BUTTON_MIDDLE;
+		default:
+			return MouseButton::MOUSE_BUTTON_INVALID;
+		}
+	}
 };
 
 #endif

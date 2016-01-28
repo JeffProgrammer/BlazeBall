@@ -25,13 +25,13 @@ PlatformEvent *SDLEvent::convert(SDL_Event sdlevent) {
 		}
 		case PlatformEvent::MouseDown: {
 			MouseDownEvent *event = new MouseDownEvent();
-			event->button = sdlevent.button.button;
+			event->button = convertMouse(sdlevent.button.button);
 			event->position = glm::ivec2(sdlevent.button.x, sdlevent.button.y);
 			return event;
 		}
 		case PlatformEvent::MouseUp: {
 			MouseUpEvent *event = new MouseUpEvent();
-			event->button = sdlevent.button.button;
+			event->button = convertMouse(sdlevent.button.button);
 			event->position = glm::ivec2(sdlevent.button.x, sdlevent.button.y);
 			return event;
 		}
