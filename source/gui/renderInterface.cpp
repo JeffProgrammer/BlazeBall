@@ -67,9 +67,8 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 	mShader->setUniform<GLint>("hasTexture", (texture != NULL) ? 1 : 0);
 	mShader->activate();
 
-	BitmapTexture *glTexture = NULL;
-	if (texture != NULL) {
-		auto glTexture = reinterpret_cast<BitmapTexture*>(texture);
+	auto glTexture = reinterpret_cast<BitmapTexture*>(texture);
+	if (glTexture != nullptr) {
 		glTexture->activate(GL_TEXTURE0);
 		glDisable(GL_TEXTURE_2D);
 	}
@@ -83,7 +82,7 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 	// unbind data
 	mShader->disableAttributes();
 	mShader->deactivate();
-	if (texture != NULL) {
+	if (glTexture != nullptr) {
 		glTexture->deactivate();
 		glEnable(GL_TEXTURE_2D);
 	}
@@ -103,8 +102,10 @@ void GuiRenderInterface::SetScissorRegion(S32 x, S32 y, S32 width, S32 height) {
 
 bool GuiRenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source) {
 	auto texture = static_cast<BitmapTexture*>(IO::loadTexture(source.CString()));
-	if (texture == nullptr)
+	if (texture == nullptr) {
+		texture_handle = NULL;
 		return false;
+	}
 	texture->generateBuffer();
 	texture_dimensions.x = texture->extent.x;
 	texture_dimensions.y = texture->extent.y;
@@ -114,8 +115,10 @@ bool GuiRenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle
 
 bool GuiRenderInterface::GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions) {
 	auto texture = new BitmapTexture(const_cast<U8*>(reinterpret_cast<const U8*>(source)), glm::ivec2(source_dimensions.x, source_dimensions.y), BitmapTexture::Format::FormatRGBA8);
-	if (texture == nullptr)
+	if (texture == nullptr) {
+		texture_handle = NULL;
 		return false;
+	}
 	texture->generateBuffer();
 	texture_handle = reinterpret_cast<Rocket::Core::TextureHandle>(texture);
 	return true;
