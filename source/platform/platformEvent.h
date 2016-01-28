@@ -10,6 +10,13 @@
 #include "base/types.h"
 #include "base/event.h"
 
+enum MouseButton {
+	MOUSE_BUTTON_INVALID = -1,
+	MOUSE_BUTTON_LEFT = 1,
+	MOUSE_BUTTON_MIDDLE = 2,
+	MOUSE_BUTTON_RIGHT = 3
+};
+
 class PlatformEvent : public Event {
 public:
 	PlatformEvent(Type type) : Event(type) {};
@@ -88,13 +95,6 @@ public:
 	MouseButton getButton() {
 		return button;
 	}
-};
-
-enum MouseButton {
-	MOUSE_BUTTON_INVALID = -1,
-	MOUSE_BUTTON_LEFT    = 1,
-	MOUSE_BUTTON_MIDDLE  = 2,
-	MOUSE_BUTTON_RIGHT   = 3
 };
 
 /*
