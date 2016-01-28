@@ -185,6 +185,17 @@ target_link_libraries(Mng Jpeg Zlib)
 set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
 
 #------------------------------------------------------------------------------
+# TGALib library
+#------------------------------------------------------------------------------
+
+set (TGALIB_SRC
+	thirdparty/tgalib/tga.c
+)
+
+add_library(TGALib ${TGALIB_SRC})
+set_property (TARGET TGALib APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/tgalib")
+
+#------------------------------------------------------------------------------
 # Epoxy Library
 #------------------------------------------------------------------------------
 
@@ -275,8 +286,9 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	source
 	thirdparty/bullet
 	thirdparty/bullet/src
-	thirdparty/glm/
+	thirdparty/glm
 	thirdparty/jpeg
+	thirdparty/tgalib
 	thirdparty/mng
 	thirdparty/zlib
 	thirdparty/SDL2/include
@@ -428,6 +440,8 @@ set (DIFVIEWERGAME_SRC
 	source/render/bitmap/jpegSupport.h
 	source/render/bitmap/mngSupport.cpp
 	source/render/bitmap/mngSupport.h
+	source/render/bitmap/tgaSupport.cpp
+	source/render/bitmap/tgaSupport.h
 
 	# Texture folder
 	source/render/texture/bitmapTexture.cpp
@@ -509,6 +523,9 @@ set (DIFVIEWERGAME_LIBRARIES
 
 	# MNG
 	Mng
+
+	# TGALib
+	TGALib
 
 	# DIF
 	Dif
