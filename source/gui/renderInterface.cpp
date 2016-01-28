@@ -41,9 +41,9 @@ GuiRenderInterface::GuiRenderInterface(PlatformWindow *window) {
 	mShader = new Shader("Gui", "guiV.glsl", "guiF.glsl");
 	GL_CHECKERRORS();
 
-	mShader->addAttribute("vertexPosition", 2, GL_FLOAT, GL_FALSE, sizeof(Rocket::Core::Vector2f));
-	mShader->addAttribute("vertexUV", 2, GL_FLOAT, GL_FALSE, sizeof(Rocket::Core::Vector2f));
-	mShader->addAttribute("vertexColor", 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Rocket::Core::Colourb));
+	mShader->addAttribute("vertexPosition", 2, GL_FLOAT, GL_FALSE, sizeof(Rocket::Core::Vertex), (void *)offsetof(Rocket::Core::Vertex, position));
+	mShader->addAttribute("vertexUV", 2, GL_FLOAT, GL_FALSE, sizeof(Rocket::Core::Vertex), (void *)offsetof(Rocket::Core::Vertex, tex_coord));
+	mShader->addAttribute("vertexColor", 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Rocket::Core::Vertex), (void *)offsetof(Rocket::Core::Vertex, colour));
 	mShader->addUniformLocation("textureSampler", 0);
 }
 
