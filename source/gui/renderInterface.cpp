@@ -71,6 +71,7 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 	if (texture != NULL) {
 		auto glTexture = reinterpret_cast<BitmapTexture*>(texture);
 		glTexture->activate(GL_TEXTURE0);
+		glDisable(GL_TEXTURE_2D);
 	}
 
 	// Draw
@@ -84,6 +85,7 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 	mShader->deactivate();
 	if (texture != NULL) {
 		glTexture->deactivate();
+		glEnable(GL_TEXTURE_2D);
 	}
 }
 
