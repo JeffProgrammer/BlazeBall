@@ -206,12 +206,7 @@ bool RenderWorld::initGL() {
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 
 	// Initialize the gui library, librocket
-	// TODO: move this out of a 3D thing.
-	Rocket::Core::FontDatabase::LoadFontFace("Delicious-Bold.otf");
-	Rocket::Core::FontDatabase::LoadFontFace("Delicious-BoldItalic.otf");
-	Rocket::Core::FontDatabase::LoadFontFace("Delicious-Italic.otf");
-	Rocket::Core::FontDatabase::LoadFontFace("Delicious-Roman.otf");
-
+	// TODO: move this out of a 3D thing
 	mGuiInterface = new GuiInterface();
 	mGuiRenderInterface = new GuiRenderInterface(mWindow);
 	Rocket::Core::SetSystemInterface(mGuiInterface);
@@ -220,6 +215,11 @@ bool RenderWorld::initGL() {
 		IO::printf("Unable to initialize rocket.\n");
 		return false;
 	}
+
+	Rocket::Core::FontDatabase::LoadFontFace("Delicious-Bold.otf");
+	Rocket::Core::FontDatabase::LoadFontFace("Delicious-BoldItalic.otf");
+	Rocket::Core::FontDatabase::LoadFontFace("Delicious-Italic.otf");
+	Rocket::Core::FontDatabase::LoadFontFace("Delicious-Roman.otf");
 
 	// Initialize base gui
 	glm::ivec2 dims = mWindow->getWindowSize();
