@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 //------------------------------------------------------------------------------
 
+#include <glm/gtc/matrix_transform.hpp>
 #include "gui/renderInterface.h"
 #include "render/texture/bitmapTexture.h"
 #include "base/io.h"
@@ -57,6 +58,7 @@ GuiRenderInterface::~GuiRenderInterface() {
 // TODO: implement buffer orphaning techniques to potentially trick the driver
 //       to use a ring buffer in constant allocations of vram.
 void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation) {
+	glDisable(GL_DEPTH_TEST);
 	mShader->activate();
 	GL_CHECKERRORS();
 
@@ -83,6 +85,12 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 	GL_CHECKERRORS();
 	mShader->setUniform<GLint>("hasTexture", (glTexture != NULL) ? 1 : 0);
 	GL_CHECKERRORS();
+	auto vec = glm::vec2(translation.x, translation.y);
+	mShader->setUniformVector<glm::vec2>("translation", vec);
+	GL_CHECKERRORS();
+	glm::mat4 ortho = glm::ortho(0.0f, (float)mWindow->getWindowSize().x, (float)mWindow->getWindowSize().y, 0.0f);
+	mShader->setUniformMatrix<glm::mat4>("projectionMatrix", GL_FALSE, ortho);
+	GL_CHECKERRORS();
 
 	// Draw
 	// Notice: We use unsigned ints here. They are potentially slower, so we need to check if we 
@@ -100,6 +108,7 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 		GL_CHECKERRORS();
 	}
 	GL_CHECKERRORS();
+	glEnable(GL_DEPTH_TEST);
 }
 
 void GuiRenderInterface::EnableScissorRegion(bool enabled) {
