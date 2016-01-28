@@ -34,22 +34,26 @@ GuiRenderInterface::GuiRenderInterface(PlatformWindow *window) {
 	mWindow = window;
 	glGenBuffers(1, &mVBO);
 	glGenBuffers(1, &mIBO);
+
+	// Gui shader
+	mShader = new Shader("Gui", "guiV.glsl", "guiF.glsl");
+	mShader->addAttribute("vertexPosition", 2, GL_FLOAT, GL_FALSE, sizeof(Rocket::Core::Vector2f));
+	mShader->addAttribute("vertexUV", 2, GL_FLOAT, GL_FALSE, sizeof(Rocket::Core::Vector2f));
+	mShader->addAttribute("vertexColor", 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Rocket::Core::Colourb));
+	mShader->addUniformLocation("diffuseTexture", 0);
 }
 
 GuiRenderInterface::~GuiRenderInterface() {
 	glDeleteBuffers(1, &mVBO);
 	glDeleteBuffers(1, &mIBO);
+	delete mShader;
 }
 
-// TODO: write and attach shader to renderer.
 // TODO: have a pool of vertex buffers to stream draw. Using one is very slow
 //       and could cause sync points in the driver
 // TODO: implement buffer orphaning techniques to potentially trick the driver
 //       to use a ring buffer in constant allocations of vram.
 void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation) {
-	auto glTexture = reinterpret_cast<BitmapTexture*>(texture);
-	glTexture->activate(GL_TEXTURE0);
-
 	// upload vertex data to the gl
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Rocket::Core::Vertex) * num_vertices, &vertices[0], GL_STREAM_DRAW);
@@ -58,6 +62,17 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, &indices[0], GL_STREAM_DRAW);
 
+	// Bind shader
+	mShader->enableAttributes();
+	mShader->setUniform<GLint>("hasTexture", (texture != NULL) ? 1 : 0);
+	mShader->activate();
+
+	BitmapTexture *glTexture = NULL;
+	if (texture != NULL) {
+		auto glTexture = reinterpret_cast<BitmapTexture*>(texture);
+		glTexture->activate(GL_TEXTURE0);
+	}
+
 	// Draw
 	// Notice: We use unsigned ints here. They are potentially slower, so we need to check if we 
 	// can convert these to unsigned shorts if we hit a performance issue in our profiling.
@@ -65,7 +80,11 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
 
 	// unbind data
-	glTexture->deactivate();
+	mShader->disableAttributes();
+	mShader->deactivate();
+	if (texture != NULL) {
+		glTexture->deactivate();
+	}
 }
 
 void GuiRenderInterface::EnableScissorRegion(bool enabled) {

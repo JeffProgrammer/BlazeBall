@@ -31,10 +31,12 @@
 #include <Rocket/Core/RenderInterface.h>
 #include "platform/platformWindow.h"
 #include "platform/platformGL.h"
+#include "render/shader.h"
 
 class GuiRenderInterface : public Rocket::Core::RenderInterface {
 private:
 	PlatformWindow *mWindow;
+	Shader *mShader;
 
 	GLuint mVBO;
 	GLuint mIBO;
