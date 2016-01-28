@@ -30,14 +30,18 @@ RenderWorld::RenderWorld(PhysicsEngine *physics, ScriptEngine *script) : World(p
 }
 
 RenderWorld::~RenderWorld() {
+	//Destroy the SDL
+	mWindow->destroyContext();
+
 	delete mWindow;
 	delete mTimer;
 
 	// destroy all shaders
 	Shader::destroyAllShaders();
 
-	//Destroy the SDL
-	mWindow->destroyContext();
+	mRocketContext->UnloadAllDocuments();
+	mRocketContext->RemoveReference();
+	Rocket::Core::Shutdown();
 }
 
 void RenderWorld::render() {

@@ -66,11 +66,16 @@ void GameState::stop() {
 		client->disconnect();
 
 		// much hack, very wow
-		if (gSphereVBO)
+		if (gSphereVBO) {
 			glDeleteBuffers(1, &gSphereVBO);
+		}
+		delete client;
+		delete clientWorld;
 	}
 	if (runServer) {
 		server->stop();
+		delete server;
+		delete serverWorld;
 	}
 }
 

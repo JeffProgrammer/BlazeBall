@@ -32,6 +32,7 @@ World::~World() {
 		delete object;
 	}
 	delete mPhysicsEngine;
+	delete mScriptEngine;
 }
 
 void World::loop(const F64 &delta) {
