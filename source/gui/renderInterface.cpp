@@ -103,6 +103,8 @@ void GuiRenderInterface::SetScissorRegion(S32 x, S32 y, S32 width, S32 height) {
 
 bool GuiRenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source) {
 	auto texture = static_cast<BitmapTexture*>(IO::loadTexture(source.CString()));
+	if (texture == nullptr)
+		return false;
 	texture->generateBuffer();
 	texture_dimensions.x = texture->extent.x;
 	texture_dimensions.y = texture->extent.y;
@@ -112,6 +114,8 @@ bool GuiRenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle
 
 bool GuiRenderInterface::GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions) {
 	auto texture = new BitmapTexture(const_cast<U8*>(reinterpret_cast<const U8*>(source)), glm::ivec2(source_dimensions.x, source_dimensions.y), BitmapTexture::Format::FormatRGBA8);
+	if (texture == nullptr)
+		return false;
 	texture->generateBuffer();
 	texture_handle = reinterpret_cast<Rocket::Core::TextureHandle>(texture);
 	return true;
