@@ -44,7 +44,16 @@ Rocket::Core::Input::KeyIdentifier GuiInterface::translateKey(KeyEvent::Key key)
 }
 
 S32 GuiInterface::translateMouseButton(U8 button) {
-	return 0; //for now
+	switch (button) {
+		case MouseButton::MOUSE_BUTTON_LEFT:
+			return 0;
+		case MouseButton::MOUSE_BUTTON_RIGHT:
+			return 1;
+		case MouseButton::MOUSE_BUTTON_MIDDLE:
+			return 2;
+		default:
+			return 3;
+	}
 }
 
 F32 GuiInterface::GetElapsedTime() {
