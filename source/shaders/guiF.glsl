@@ -11,6 +11,6 @@ uniform int hasTexture;
 void main() {
 	vec4 finalColor = color;
 	if (hasTexture == 1)
-		finalColor += texture(textureSampler, uv);
+		finalColor = texture(textureSampler, uv);
 	fragColor = finalColor;
 }
