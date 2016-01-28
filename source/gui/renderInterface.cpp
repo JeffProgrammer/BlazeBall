@@ -29,6 +29,7 @@
 #include "render/texture/bitmapTexture.h"
 #include "base/io.h"
 #include "platform/platformGL.h"
+#include "render/util.h"
 
 GuiRenderInterface::GuiRenderInterface(PlatformWindow *window) {
 	mWindow = window;
@@ -37,10 +38,12 @@ GuiRenderInterface::GuiRenderInterface(PlatformWindow *window) {
 
 	// Gui shader
 	mShader = new Shader("Gui", "guiV.glsl", "guiF.glsl");
+	GL_CHECKERRORS();
+
 	mShader->addAttribute("vertexPosition", 2, GL_FLOAT, GL_FALSE, sizeof(Rocket::Core::Vector2f));
 	mShader->addAttribute("vertexUV", 2, GL_FLOAT, GL_FALSE, sizeof(Rocket::Core::Vector2f));
 	mShader->addAttribute("vertexColor", 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Rocket::Core::Colourb));
-	mShader->addUniformLocation("diffuseTexture", 0);
+	mShader->addUniformLocation("textureSampler", 0);
 }
 
 GuiRenderInterface::~GuiRenderInterface() {
@@ -54,38 +57,49 @@ GuiRenderInterface::~GuiRenderInterface() {
 // TODO: implement buffer orphaning techniques to potentially trick the driver
 //       to use a ring buffer in constant allocations of vram.
 void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation) {
+	mShader->activate();
+	GL_CHECKERRORS();
+
 	// upload vertex data to the gl
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Rocket::Core::Vertex) * num_vertices, &vertices[0], GL_STREAM_DRAW);
+	GL_CHECKERRORS();
+
 
 	// upload indices to the GL
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, &indices[0], GL_STREAM_DRAW);
+	GL_CHECKERRORS();
 
 	// Bind shader
 	mShader->enableAttributes();
-	mShader->setUniform<GLint>("hasTexture", (texture != NULL) ? 1 : 0);
-	mShader->activate();
+	GL_CHECKERRORS();
 
 	auto glTexture = reinterpret_cast<BitmapTexture*>(texture);
 	if (glTexture != nullptr) {
 		glTexture->activate(GL_TEXTURE0);
-		glDisable(GL_TEXTURE_2D);
+		GL_CHECKERRORS();
 	}
+	GL_CHECKERRORS();
+	mShader->setUniform<GLint>("hasTexture", (glTexture != NULL) ? 1 : 0);
+	GL_CHECKERRORS();
 
 	// Draw
 	// Notice: We use unsigned ints here. They are potentially slower, so we need to check if we 
 	// can convert these to unsigned shorts if we hit a performance issue in our profiling.
 	// Also note that if we ever use OpenGLES, it does not support unsigned int in draw calls.
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
+	GL_CHECKERRORS();
 
 	// unbind data
 	mShader->disableAttributes();
 	mShader->deactivate();
+	GL_CHECKERRORS();
 	if (glTexture != nullptr) {
 		glTexture->deactivate();
-		glEnable(GL_TEXTURE_2D);
+		GL_CHECKERRORS();
 	}
+	GL_CHECKERRORS();
 }
 
 void GuiRenderInterface::EnableScissorRegion(bool enabled) {

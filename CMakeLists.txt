@@ -452,6 +452,8 @@ set (DIFVIEWERGAME_SRC
 	# Shaders folder
 	source/shaders/defaultF.glsl
 	source/shaders/defaultV.glsl
+	source/shaders/guiF.glsl
+	source/shaders/guiV.glsl
 	source/shaders/interiorF.glsl
 	source/shaders/interiorV.glsl
 	source/shaders/modelF.glsl
