@@ -131,6 +131,10 @@ void RenderWorld::loop(const F64 &delta) {
 
 	render();
 
+	// render GUI
+	mRocketContext->Render();
+	mRocketContext->Update();
+
 	//Flip buffers
 	mWindow->swapBuffers();
 }
@@ -200,6 +204,33 @@ bool RenderWorld::initGL() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
+
+	// Initialize the gui library, librocket
+	// TODO: move this out of a 3D thing.
+	Rocket::Core::FontDatabase::LoadFontFace("Delicious-Bold.otf");
+	Rocket::Core::FontDatabase::LoadFontFace("Delicious-BoldItalic.otf");
+	Rocket::Core::FontDatabase::LoadFontFace("Delicious-Italic.otf");
+	Rocket::Core::FontDatabase::LoadFontFace("Delicious-Roman.otf");
+
+	mGuiInterface = new GuiInterface();
+	mGuiRenderInterface = new GuiRenderInterface(mWindow);
+	Rocket::Core::SetSystemInterface(mGuiInterface);
+	Rocket::Core::SetRenderInterface(mGuiRenderInterface);
+	if (!Rocket::Core::Initialise()) {
+		IO::printf("Unable to initialize rocket.\n");
+		return false;
+	}
+
+	// Initialize base gui
+	glm::ivec2 dims = mWindow->getWindowSize();
+	mRocketContext = Rocket::Core::CreateContext("demo", Rocket::Core::Vector2i(dims.x, dims.y));
+	mRocketDocument = mRocketContext->LoadDocument("demo.rml");
+	if (mRocketDocument) {
+		mRocketDocument->Show();
+		mRocketDocument->RemoveReference();
+	} else {
+		IO::printf("Unable to show document demo.rml\n");
+	}
 
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {

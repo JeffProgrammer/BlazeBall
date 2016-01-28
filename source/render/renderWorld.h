@@ -13,6 +13,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/vec3.hpp>
 #include <dif/objects/dif.h>
+#include <Rocket/Core.h>
+#include <Rocket/Core/Input.h>
+#include <Rocket/Core/ElementDocument.h>
 
 #include "platform/platformGL.h"
 #include "base/math.h"
@@ -33,6 +36,9 @@
 #include "renderInfo.h"
 #include "base/config.h"
 #include "game/world.h"
+#include "gui/renderInterface.h"
+#include "gui/systemInterface.h"
+
 
 class Client;
 
@@ -41,6 +47,11 @@ protected:
 	bool mPrintFPS = true;
 
 	glm::mat4 mScreenProjectionMatrix;
+
+	GuiInterface *mGuiInterface;
+	GuiRenderInterface *mGuiRenderInterface;
+	Rocket::Core::Context *mRocketContext;
+	Rocket::Core::ElementDocument *mRocketDocument;
 
 	struct {
 		bool hasSelection;
