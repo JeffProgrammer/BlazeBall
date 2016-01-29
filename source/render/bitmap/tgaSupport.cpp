@@ -24,7 +24,7 @@ bool tgaReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, Bitmap
 
 	dims.x = info->width;
 	dims.y = info->height;
-	format = (info->pixelDepth == 24 ? BitmapTexture::FormatRGBA8 : BitmapTexture::FormatRGBA8);
+	format = (info->pixelDepth == 24 ? BitmapTexture::FormatRGB8 : BitmapTexture::FormatRGBA8);
 
 	bitmap = new U8[info->width * info->height * (info->pixelDepth / 8)];
 	memcpy(bitmap, info->imageData, info->width * info->height * (info->pixelDepth / 8));
