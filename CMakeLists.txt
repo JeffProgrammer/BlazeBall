@@ -325,7 +325,7 @@ set (DIFVIEWERGAME_SRC
 	source/base/tree.h
 	source/base/types.h
 	source/base/math/triangle.h
-	
+
 	# Game folder
 	source/game/camera.cpp
 	source/game/camera.h
@@ -346,7 +346,7 @@ set (DIFVIEWERGAME_SRC
 	source/game/sphere.h
 	source/game/world.cpp
 	source/game/world.h
-	
+
 	# Gui
 	source/gui/renderInterface.cpp
 	source/gui/renderInterface.h
@@ -484,6 +484,16 @@ set (DIFVIEWERGAME_SRC
 	source/scripts/mainServer.chai
 )
 
+if (APPLE)
+	set (DIFVIEWERGAME_SRC
+		${DIFVIEWERGAME_SRC}
+
+		# OpenGL specific things
+		source/graphics/glMac.h
+		source/graphics/glMac.mm
+	)
+endif()
+
 #------------------------------------------------------------------------------
 # SDL
 #------------------------------------------------------------------------------
@@ -537,7 +547,7 @@ set (DIFVIEWERGAME_LIBRARIES
 
 	#Enet
 	enet
-	
+
 	# Librocket things
 	freetype
 	RocketCore

@@ -4,8 +4,11 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#define GL_NO_OVERRIDES
 #include "graphics/gl.h"
+
+//#ifdef __APPLE__
+#include "graphics/glMac.h"
+//#endif
 
 std::unique_ptr<GL> GL::sGL = nullptr;
 
@@ -282,8 +285,7 @@ void GL::bindContextEXT(void *context) {
 
 GLuint GL::getVideoRamEXT() {
 #ifdef __APPLE__
-#warning "Please implement GL::getVideoRamEXT() on Mac OSX."
-	return 0;
+	return (GLuint)getVideoMemoryAPPLE(mCurrentContext);
 #else
 	// NVidia cards
 	if (epoxy_has_gl_extension("GL_NVX_gpu_memory_info")) {
@@ -298,8 +300,9 @@ GLuint GL::getVideoRamEXT() {
 
 	// ATI cards
 	if (epoxy_has_gl_extension("GL_ATI_meminfo")) {
-		// TODO
-		return 0;
+		GLint memory[4];
+		epoxy_glGetIntegerv(GL_VBO_FREE_MEMORY_ATI, memory);
+		return memory[0] / 1024;
 	}
 
 	// TODO
