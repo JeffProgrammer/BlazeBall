@@ -106,6 +106,7 @@ public:
 /* Custom extensions*/
 public:
 	void getViewportEXT(GLint &x, GLint &y, GLsizei &width, GLsizei &height);
+	GLuint getVideoRamEXT();
 
 /**
  * Public Static functions available from the GL "namespace"

@@ -274,3 +274,33 @@ void GL::getViewportEXT(GLint &x, GLint &y, GLsizei &width, GLsizei &height) {
 	width = mViewport.width;
 	height = mViewport.height;
 }
+
+GLuint GL::getVideoRamEXT() {
+#ifdef __APPLE__
+#warning "Please implement GL::getVideoRamEXT() on Mac OSX."
+	return 0;
+#else
+	// NVidia cards
+	if (epoxy_has_gl_extension("GL_NVX_gpu_memory_info")) {
+		GLint memory;
+		epoxy_glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &memory);
+
+		// check for zero
+		if (memory == 0)
+			return 0;
+		return memory / 1024;
+	}
+
+	// ATI cards
+	if (epoxy_has_gl_extension("GL_ATI_meminfo")) {
+		// TODO
+		return 0;
+	}
+
+	// TODO
+	// Intel cards on Windows does not have a way of getting memory.
+	// However, Intel has values on their website we can use.
+	// for now, return 0.
+	return 0;
+#endif
+}

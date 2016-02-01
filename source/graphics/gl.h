@@ -293,4 +293,13 @@ inline void glGetViewportEXT(GLint &x, GLint &y, GLsizei &width, GLsizei &height
 	GL::sGL->getViewportEXT(x, y, width, height);
 }
 
+/**
+ * Get's the amount of dedicated video ram available to the GL.
+ * Note that dedicated video ram could be shared memory in iGPU systems.
+ * @return the amount of video ram, in MegaBytes, that the GL has access to.
+ */
+inline GLuint glGetVideoRamEXT() {
+	return GL::sGL->getVideoRamEXT();
+}
+
 #endif // _GRAPHICS_GL_GL_H_
