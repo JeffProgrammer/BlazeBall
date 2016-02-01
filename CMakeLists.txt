@@ -427,6 +427,8 @@ set (DIFVIEWERGAME_SRC
 	source/render/material.h
 	source/render/modelManager.cpp
 	source/render/modelManager.h
+	source/render/renderer.cpp
+	source/render/renderer.h
 	source/render/renderInfo.h
 	source/render/renderWorld.cpp
 	source/render/renderWorld.h

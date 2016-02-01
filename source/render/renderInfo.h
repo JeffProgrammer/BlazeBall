@@ -45,6 +45,8 @@ struct RenderInfo {
 	U32 specularExponent;
 
 	bool isReflectionPass;
+	glm::vec2 windowSize;
+	F32 pixelDensity;
 
 #ifdef SRUTIL_DELEGATE_PREFERRED_SYNTAX
 	typedef delegate<void(Material *, RenderInfo &, void *)> RenderMethod;

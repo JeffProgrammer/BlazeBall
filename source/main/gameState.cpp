@@ -48,13 +48,7 @@ bool GameState::start() {
 		client->connect();
 
 		//Init SDL
-		world->mWindow = platform->createWindow();
-		world->mTimer = platform->createTimer();
 		world->mConfig = new Config("config.txt");
-
-		if (!world->init()) {
-			return false;
-		}
 
 		clientWorld = world;
 	}
@@ -80,28 +74,6 @@ void GameState::stop() {
 }
 
 void GameState::runLoop() {
-	F64 lastDelta = 0.0;
-	PlatformTimer *timer = platform->createTimer();
-
-	while (true) {
-		//Profiling
-		timer->start();
-		{
-			if (runClient) {
-				clientWorld->loop(lastDelta);
-				client->pollEvents();
-
-				if (!clientWorld->getRunning()) {
-					break;
-				}
-			} else {
-				std::string input;
-				std::getline(std::cin, input);
-				if (input == "quit")
-					break;
-			}
-		}
-		timer->end();
-		lastDelta = timer->getDelta();
-	}
+	//TODO server quit events
+	client->start();
 }

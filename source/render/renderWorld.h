@@ -13,9 +13,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/vec3.hpp>
 #include <dif/objects/dif.h>
-#include <Rocket/Core.h>
-#include <Rocket/Core/Input.h>
-#include <Rocket/Core/ElementDocument.h>
 
 #include "platform/platformGL.h"
 #include "base/math.h"
@@ -27,7 +24,6 @@
 #include "render/shader.h"
 #include "platform/platformWindow.h"
 #include "platform/platformEvent.h"
-#include "platform/platformTimer.h"
 #include "game/movement.h"
 #include "game/camera.h"
 #include "game/skybox.h"
@@ -44,32 +40,6 @@ class Client;
 
 class RenderWorld : public World {
 protected:
-	bool mPrintFPS = true;
-
-	glm::mat4 mScreenProjectionMatrix;
-
-	GuiInterface *mGuiInterface;
-	GuiRenderInterface *mGuiRenderInterface;
-	Rocket::Core::Context *mRocketContext;
-	Rocket::Core::ElementDocument *mRocketDocument;
-
-	struct {
-		bool hasSelection;
-		U32 surfaceIndex;
-		GameInterior *interior;
-	} mSelection;
-
-	bool mCaptureMouse = false;
-	struct {
-		bool left;
-		bool middle;
-		bool right;
-	} mouseButtons;
-	Movement mMovement;
-
-	F32 mPixelDensity;
-
-	bool mDoDebugDraw;
 	Client *mClient;
 
 public:
@@ -83,10 +53,7 @@ public:
 	Skybox *mSkybox;
 	CubeMapFramebufferTexture *mMarbleCubemap;
 
-	PlatformTimer *mTimer;
-	PlatformWindow *mWindow;
 	Config *mConfig;
-
 	Shader *mShapeShader;
 	
 	virtual void addObject(GameObject *object);
@@ -94,17 +61,11 @@ public:
 	RenderWorld(PhysicsEngine *physics, ScriptEngine *script);
 	virtual ~RenderWorld();
 
-	void updateWindowSize(const glm::ivec2 &size);
-
 	void renderScene(RenderInfo &info);
-	void render();
+	void render(RenderInfo &info);
 
 	virtual void loop(const F64 &delta);
 	virtual void tick(const F64 &delta);
-	bool initGL();
-	bool init();
-	void performClick(S32 mouseX, S32 mouseY);
-	void handleEvent(PlatformEvent *event);
 
 	void createCamera(const glm::vec3 &position);
 	void createPlayer(const glm::vec3 &position, F32 radius);

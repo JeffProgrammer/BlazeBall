@@ -6,6 +6,7 @@
 
 #include "network/client.h"
 #include "base/io.h"
+#include "main/gameState.h"
 #include <enetpp/client_connect_params.h>
 
 Client::Client(World *world, const std::string &ipAddress, const U16 port) : mWorld(world) {
@@ -17,6 +18,38 @@ Client::Client(World *world, const std::string &ipAddress, const U16 port) : mWo
 
 Client::~Client() {
 
+}
+
+void Client::start() {
+	mRenderer = new Renderer(this);
+	mRenderer->setWindow(GameState::gState->platform->createWindow());
+	if (!mRenderer->init()) {
+		return;
+	}
+
+	PlatformTimer *timer = GameState::gState->platform->createTimer();
+
+	F64 lastDelta = 0.0;
+	while (true) {
+		timer->start();
+
+		mWorld->loop(lastDelta);
+		pollEvents();
+
+		if (!mWorld->getRunning()) {
+			stop();
+			return;
+		}
+
+		mRenderer->render(lastDelta);
+
+		timer->end();
+		lastDelta = timer->getDelta();
+	}
+}
+
+void Client::stop() {
+	//Todo?
 }
 
 void Client::connect() {

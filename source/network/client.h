@@ -15,11 +15,16 @@
 #include "network/netObject.h"
 #include "game/world.h"
 #include "game/sphere.h"
+#include "platform/platformTimer.h"
+#include "render/renderer.h"
 
 class Client {
 public:
 	Client(World *world, const std::string &serverAddress, const U16 port);
 	~Client();
+
+	void start();
+	void stop();
 
 	void connect();
 	void disconnect();
@@ -52,6 +57,7 @@ protected:
 	U16 mPort;
 	World *mWorld;
 	GameObject *mControlObject;
+	Renderer *mRenderer;
 
 	std::unordered_map<U32, NetObject *> mGhostedObjects;
 	std::unordered_map<NetObject *, U32> mGhostedIndices;
