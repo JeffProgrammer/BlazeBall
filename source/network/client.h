@@ -17,6 +17,7 @@
 #include "game/sphere.h"
 #include "platform/platformTimer.h"
 #include "render/renderer.h"
+#include "game/movement.h"
 
 class Client {
 public:
@@ -30,6 +31,7 @@ public:
 	void disconnect();
 
 	void pollEvents();
+	void updateMovement(const F64 &delta);
 
 	void sendEvent(const std::shared_ptr<NetClientEvent> &event, ENetPacketFlag flag = ENET_PACKET_FLAG_RELIABLE);
 	void onReceivePacket(const U8 *data, size_t size);
@@ -51,6 +53,8 @@ public:
 	GameObject *getControlObject() const { return mControlObject; }
 	void setControlObject(GameObject *object) { mControlObject = object; dynamic_cast<Sphere *>(object)->setActivationState(true); }
 
+	Movement &getMovement() { return mMovement; }
+
 protected:
 	enetpp::client mClient;
 	std::string mServerAddress;
@@ -59,6 +63,7 @@ protected:
 	GameObject *mControlObject;
 	Renderer *mRenderer;
 	bool mRunning;
+	Movement mMovement;
 
 	std::unordered_map<U32, NetObject *> mGhostedObjects;
 	std::unordered_map<NetObject *, U32> mGhostedIndices;

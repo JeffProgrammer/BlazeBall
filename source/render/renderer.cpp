@@ -59,35 +59,13 @@ void Renderer::render(const F64 &delta) {
 	//Flip buffers
 	mWindow->swapBuffers();
 
-
-	//TODO: Move all of this into client
-	GameObject *control = mClient->getControlObject();
-	if (control) {
-		// temp code
-		auto event = std::make_shared<NetClientGhostUpdateEvent>(mClient, control);
-		mClient->sendEvent(event, ENetPacketFlag::ENET_PACKET_FLAG_UNSEQUENCED);
-
-		if (control) {
-			control->updateCamera(mMovement, delta);
-			control->updateMove(mMovement, delta);
-		}
+	if (mDoDebugDraw) {
+		glDisable(GL_DEPTH_TEST);
+		mClient->getWorld()->getPhysicsEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Everything);
+		glEnable(GL_DEPTH_TEST);
+	} else {
+		mClient->getWorld()->getPhysicsEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Nothing);
 	}
-
-	mMovement.pitch = 0;
-	mMovement.yaw = 0;
-
-	if (mMovement.fire) {
-		
-	}
-
-	//TODO: Fix this
-//	if (mDoDebugDraw) {
-//		glDisable(GL_DEPTH_TEST);
-//		getPhysicsEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Everything);
-//		glEnable(GL_DEPTH_TEST);
-//	} else {
-//		getPhysicsEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Nothing);
-//	}
 }
 
 
@@ -107,8 +85,8 @@ bool Renderer::init() {
 		return false;
 	}
 
-	mCaptureMouse = false;
-	mWindow->lockCursor(false);
+	mCaptureMouse = true;
+	mWindow->lockCursor(true);
 
 	//Initialize OpenGL
 	if (!initGL()) {
@@ -174,67 +152,21 @@ void Renderer::handleEvent(PlatformEvent *event) {
 			break;
 		case PlatformEvent::KeyDown: {
 			KeyEvent::Key key = static_cast<KeyEvent::Key>(static_cast<KeyDownEvent *>(event)->key);
-			if (key == mConfig->getKey("forward"))  mMovement.forward  = true;
-			if (key == mConfig->getKey("backward")) mMovement.backward = true;
-			if (key == mConfig->getKey("left"))     mMovement.left     = true;
-			if (key == mConfig->getKey("right"))    mMovement.right    = true;
+			if (key == mConfig->getKey("forward"))  mClient->getMovement().forward  = true;
+			if (key == mConfig->getKey("backward")) mClient->getMovement().backward = true;
+			if (key == mConfig->getKey("left"))     mClient->getMovement().left     = true;
+			if (key == mConfig->getKey("right"))    mClient->getMovement().right    = true;
 			switch (key) {
-				case KeyEvent::KEY_UP:    mMovement.pitchUp   = true; break;
-				case KeyEvent::KEY_DOWN:  mMovement.pitchDown = true; break;
-				case KeyEvent::KEY_LEFT:  mMovement.yawLeft   = true; break;
-				case KeyEvent::KEY_RIGHT: mMovement.yawRight  = true; break;
-				case KeyEvent::KEY_SPACE: mMovement.jump      = true; break;
+				case KeyEvent::KEY_UP:    mClient->getMovement().pitchUp   = true; break;
+				case KeyEvent::KEY_DOWN:  mClient->getMovement().pitchDown = true; break;
+				case KeyEvent::KEY_LEFT:  mClient->getMovement().yawLeft   = true; break;
+				case KeyEvent::KEY_RIGHT: mClient->getMovement().yawRight  = true; break;
+				case KeyEvent::KEY_SPACE: mClient->getMovement().jump      = true; break;
 				case KeyEvent::KEY_V: mWindow->toggleVsync(); break;
-				case KeyEvent::KEY_Q: mMovement.fire = true; break;
-				case KeyEvent::KEY_C:
-				{
-					// swap control mObjects!
-					//TODO: Server this
-//					if (mControlObject == mPlayer)
-//						mControlObject = mCamera;
-//					else
-//						mControlObject = mPlayer;
-					break;
-				}
-				case KeyEvent::KEY_M:
-				{
-					// add a cube!
-//					Shape *shape = new Shape(this, "cube.dae");
-//					shape->loadShape();
-//					shape->setPosition(glm::vec3(rand() % 10, rand() % 10, rand() % 10));
-//					addObject(shape);
-					break;
-				}
-				case KeyEvent::KEY_G:
-				{
-					// mega / regular marble
-					//TODO: Server this
-//					if (mPlayer->getRadius() < 1.0f) {
-//						mPlayer->setRadius(1.0f);
-//						mMarbleCubemap->setExtent(glm::vec2(256, 256));
-//					} else {
-//						mPlayer->setRadius(0.2f);
-//						mMarbleCubemap->setExtent(glm::vec2(64, 64));
-//					}
-					break;
-				}
+				case KeyEvent::KEY_Q: mClient->getMovement().fire = true; break;
 				case KeyEvent::KEY_T:
 				{
 					mDoDebugDraw = !mDoDebugDraw;
-					break;
-				}
-				case KeyEvent::KEY_U:
-				{
-					// mbu / regular marble
-					//TODO: Server this
-//					if (mPlayer->getRadius() < 0.3f) {
-//						mPlayer->setRadius(0.3f);
-//						mMarbleCubemap->setExtent(glm::vec2(128, 128));
-//					}
-//					else {
-//						mPlayer->setRadius(0.2f);
-//						mMarbleCubemap->setExtent(glm::vec2(64, 64));
-//					}
 					break;
 				}
 				case KeyEvent::KEY_ESCAPE:
@@ -250,17 +182,17 @@ void Renderer::handleEvent(PlatformEvent *event) {
 		}
 		case PlatformEvent::KeyUp: {
 			KeyEvent::Key key = static_cast<KeyEvent::Key>(static_cast<KeyDownEvent *>(event)->key);
-			if (key == mConfig->getKey("forward"))  mMovement.forward  = false;
-			if (key == mConfig->getKey("backward")) mMovement.backward = false;
-			if (key == mConfig->getKey("left"))     mMovement.left     = false;
-			if (key == mConfig->getKey("right"))    mMovement.right    = false;
+			if (key == mConfig->getKey("forward"))  mClient->getMovement().forward  = false;
+			if (key == mConfig->getKey("backward")) mClient->getMovement().backward = false;
+			if (key == mConfig->getKey("left"))     mClient->getMovement().left     = false;
+			if (key == mConfig->getKey("right"))    mClient->getMovement().right    = false;
 			switch (key) {
-				case KeyEvent::KEY_UP:    mMovement.pitchUp   = false; break;
-				case KeyEvent::KEY_DOWN:  mMovement.pitchDown = false; break;
-				case KeyEvent::KEY_LEFT:  mMovement.yawLeft   = false; break;
-				case KeyEvent::KEY_RIGHT: mMovement.yawRight  = false; break;
-				case KeyEvent::KEY_SPACE: mMovement.jump      = false; break;
-				case KeyEvent::KEY_Q:     mMovement.fire      = false; break;
+				case KeyEvent::KEY_UP:    mClient->getMovement().pitchUp   = false; break;
+				case KeyEvent::KEY_DOWN:  mClient->getMovement().pitchDown = false; break;
+				case KeyEvent::KEY_LEFT:  mClient->getMovement().yawLeft   = false; break;
+				case KeyEvent::KEY_RIGHT: mClient->getMovement().yawRight  = false; break;
+				case KeyEvent::KEY_SPACE: mClient->getMovement().jump      = false; break;
+				case KeyEvent::KEY_Q:     mClient->getMovement().fire      = false; break;
 				default:
 					break;
 			}
@@ -269,10 +201,11 @@ void Renderer::handleEvent(PlatformEvent *event) {
 			//Mouse for rotation
 		case PlatformEvent::MouseMove:
 			if (mCaptureMouse) {
-				mMovement.yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x;
-				mMovement.pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y;
+				mClient->getMovement().yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x;
+				mClient->getMovement().pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y;
+			} else {
+				mRocketContext->ProcessMouseMove(static_cast<MouseMoveEvent *>(event)->position.x, static_cast<MouseMoveEvent *>(event)->position.x, 0);
 			}
-			mRocketContext->ProcessMouseMove(static_cast<MouseMoveEvent *>(event)->position.x, static_cast<MouseMoveEvent *>(event)->position.x, 0);
 			break;
 		case PlatformEvent::MouseDown:
 			switch (((MouseDownEvent *)event)->button) {
@@ -281,7 +214,9 @@ void Renderer::handleEvent(PlatformEvent *event) {
 				case MouseButton::MOUSE_BUTTON_RIGHT: mouseButtons.right  = true; break;
 				default: break;
 			}
-			mRocketContext->ProcessMouseButtonDown(static_cast<MouseDownEvent *>(event)->button, 0);
+			if (!mCaptureMouse) {
+				mRocketContext->ProcessMouseButtonDown(static_cast<MouseDownEvent *>(event)->button, 0);
+			}
 			break;
 		case PlatformEvent::MouseUp:
 			switch (((MouseDownEvent *)event)->button) {
@@ -290,17 +225,19 @@ void Renderer::handleEvent(PlatformEvent *event) {
 				case MouseButton::MOUSE_BUTTON_RIGHT: mouseButtons.right  = false; break;
 				default: break;
 			}
-			mRocketContext->ProcessMouseButtonUp(static_cast<MouseDownEvent *>(event)->button, 0);
+			if (!mCaptureMouse) {
+				mRocketContext->ProcessMouseButtonUp(static_cast<MouseDownEvent *>(event)->button, 0);
+			}
 			break;
 		case PlatformEvent::WindowFocus:
 			mShouldSleep = false;
-//			mWindow->lockCursor(true);
-//			mCaptureMouse = true;
+			mWindow->lockCursor(true);
+			mCaptureMouse = true;
 			break;
 		case PlatformEvent::WindowBlur:
 			mShouldSleep = true;
-//			mWindow->lockCursor(false);
-//			mCaptureMouse = false;
+			mWindow->lockCursor(false);
+			mCaptureMouse = false;
 			break;
 		case PlatformEvent::WindowResize:
 			updateWindowSize(static_cast<WindowResizeEvent *>(event)->newSize);

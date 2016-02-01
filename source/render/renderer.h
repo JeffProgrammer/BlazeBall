@@ -20,7 +20,6 @@
 #include "platform/platformWindow.h"
 #include "platform/platformEvent.h"
 #include "base/config.h"
-#include "game/movement.h"
 #include "render/renderInfo.h"
 #include "gui/renderInterface.h"
 #include "gui/systemInterface.h"
@@ -48,7 +47,6 @@ protected:
 	bool mShouldSleep;
 	bool mDoDebugDraw;
 
-	Movement mMovement;
 	F32 mPixelDensity;
 
 	glm::mat4 mScreenProjectionMatrix;

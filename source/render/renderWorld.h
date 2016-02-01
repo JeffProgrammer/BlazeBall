@@ -63,13 +63,6 @@ public:
 	void renderScene(RenderInfo &info);
 	void render(RenderInfo &info);
 
-	virtual void loop(const F64 &delta);
-	virtual void tick(const F64 &delta);
-
-	void createCamera(const glm::vec3 &position);
-	void createPlayer(const glm::vec3 &position, F32 radius);
-	void createInterior(const std::string &path);
-
 	Client *getClient() const { return mClient; }
 	void setClient(Client *client) { mClient = client; }
 };

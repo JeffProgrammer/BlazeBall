@@ -96,14 +96,6 @@ void RenderWorld::renderScene(RenderInfo &info) {
 	GL_CHECKERRORS();
 }
 
-void RenderWorld::loop(const F64 &delta) {
-	World::loop(delta);
-}
-
-void RenderWorld::tick(const F64 &delta) {
-	World::tick(delta);
-}
-
 void RenderWorld::addObject(GameObject *object) {
 	World::addObject(object);
 

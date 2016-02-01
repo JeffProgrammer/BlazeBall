@@ -42,6 +42,7 @@ void Client::start() {
 			return;
 		}
 
+		updateMovement(lastDelta);
 		mRenderer->render(lastDelta);
 
 		timer->end();
@@ -52,6 +53,27 @@ void Client::start() {
 
 void Client::stop() {
 	mRunning = false;
+}
+
+void Client::updateMovement(const F64 &delta) {
+	GameObject *control = getControlObject();
+	if (control) {
+		// temp code
+		auto event = std::make_shared<NetClientGhostUpdateEvent>(this, control);
+		sendEvent(event, ENetPacketFlag::ENET_PACKET_FLAG_UNSEQUENCED);
+
+		if (control) {
+			control->updateCamera(mMovement, delta);
+			control->updateMove(mMovement, delta);
+		}
+	}
+
+	mMovement.pitch = 0;
+	mMovement.yaw = 0;
+
+	if (mMovement.fire) {
+
+	}
 }
 
 void Client::connect() {
