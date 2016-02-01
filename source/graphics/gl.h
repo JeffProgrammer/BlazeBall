@@ -294,6 +294,14 @@ inline void glGetViewportEXT(GLint &x, GLint &y, GLsizei &width, GLsizei &height
 }
 
 /**
+ * Keeps a reference of the current context to the GL libery internally.
+ * @param context The current opengl context bound to the GL.
+ */
+inline void glBindContextEXT(void *context) {
+	GL::sGL->bindContextEXT(context);
+}
+
+/**
  * Get's the amount of dedicated video ram available to the GL.
  * Note that dedicated video ram could be shared memory in iGPU systems.
  * @return the amount of video ram, in MegaBytes, that the GL has access to.

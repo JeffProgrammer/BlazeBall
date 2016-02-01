@@ -11,6 +11,7 @@ std::unique_ptr<GL> GL::sGL = nullptr;
 
 GL::GL() {
 	mViewport = Viewport(0, 0, 0, 0);
+	mCurrentContext = nullptr;
 }
 
 void GL::activeTexture(GLenum texture) {
@@ -273,6 +274,10 @@ void GL::getViewportEXT(GLint &x, GLint &y, GLsizei &width, GLsizei &height) {
 	y = mViewport.y;
 	width = mViewport.width;
 	height = mViewport.height;
+}
+
+void GL::bindContextEXT(void *context) {
+	mCurrentContext = context;
 }
 
 GLuint GL::getVideoRamEXT() {

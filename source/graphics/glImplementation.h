@@ -106,6 +106,7 @@ public:
 /* Custom extensions*/
 public:
 	void getViewportEXT(GLint &x, GLint &y, GLsizei &width, GLsizei &height);
+	void bindContextEXT(void *context);
 	GLuint getVideoRamEXT();
 
 /**
@@ -129,6 +130,8 @@ protected:
 		Viewport(const GLint &x, const GLint &y, const GLsizei &width, const GLsizei &height) : x(x), y(y), width(width), height(height) {}
 		Viewport() {}
 	} mViewport;
+	
+	void *mCurrentContext;
 };
 
 #endif // _GRAPHICS_GL_GLIMPLEMENTATION_H_

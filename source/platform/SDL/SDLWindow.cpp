@@ -49,9 +49,11 @@ bool SDLWindow::createContext() {
 #ifdef _WIN32
 	epoxy_handle_external_wglMakeCurrent();
 #endif
-
 	// Initialize the GL library
 	GL::createGL<GL33>();
+	
+	// Let the GL library store this context.
+	glBindContextEXT(context);
 
 	IO::printf("Please note that your GPU may support a higher GL version or newer extensions.\n");
 	IO::printf("Extensions outside of the core may be used, but are not required.\n");
@@ -79,6 +81,8 @@ void SDLWindow::destroyContext() {
 	// clean up VAO
 	if (mVAO)
 		glDeleteVertexArrays(1, &mVAO);
+	SDL_GL_DeleteContext(context);
+	glBindContextEXT(nullptr);
 	SDL_Quit();
 }
 
