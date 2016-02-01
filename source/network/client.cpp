@@ -27,10 +27,11 @@ void Client::start() {
 		return;
 	}
 
-	PlatformTimer *timer = GameState::gState->platform->createTimer();
+	mRunning = true;
 
+	PlatformTimer *timer = GameState::gState->platform->createTimer();
 	F64 lastDelta = 0.0;
-	while (true) {
+	while (mRunning) {
 		timer->start();
 
 		mWorld->loop(lastDelta);
@@ -49,7 +50,7 @@ void Client::start() {
 }
 
 void Client::stop() {
-	//Todo?
+	mRunning = false;
 }
 
 void Client::connect() {

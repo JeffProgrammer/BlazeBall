@@ -12,6 +12,7 @@
 
 Renderer::Renderer(Client *client) : mClient(client) {
 	mDoDebugDraw = false;
+	mConfig = new Config("config.txt");
 }
 
 Renderer::~Renderer() {

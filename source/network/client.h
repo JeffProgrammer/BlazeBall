@@ -58,6 +58,7 @@ protected:
 	World *mWorld;
 	GameObject *mControlObject;
 	Renderer *mRenderer;
+	bool mRunning;
 
 	std::unordered_map<U32, NetObject *> mGhostedObjects;
 	std::unordered_map<NetObject *, U32> mGhostedIndices;

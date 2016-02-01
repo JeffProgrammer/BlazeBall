@@ -47,9 +47,6 @@ bool GameState::start() {
 		world->setClient(client);
 		client->connect();
 
-		//Init SDL
-		world->mConfig = new Config("config.txt");
-
 		clientWorld = world;
 	}
 	return true;

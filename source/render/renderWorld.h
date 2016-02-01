@@ -53,7 +53,6 @@ public:
 	Skybox *mSkybox;
 	CubeMapFramebufferTexture *mMarbleCubemap;
 
-	Config *mConfig;
 	Shader *mShapeShader;
 	
 	virtual void addObject(GameObject *object);
