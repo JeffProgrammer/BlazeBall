@@ -88,7 +88,9 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 	auto vec = glm::vec2(translation.x, translation.y);
 	mShader->setUniformVector<glm::vec2>("translation", vec);
 	GL_CHECKERRORS();
+	glViewport(0, 0, mWindow->getWindowSize().x, mWindow->getWindowSize().y);
 	glm::mat4 ortho = glm::ortho(0.0f, (float)mWindow->getWindowSize().x, (float)mWindow->getWindowSize().y, 0.0f, 0.0f, 1.0f);
+	ortho = glm::translate(ortho, glm::vec3(translation.x, translation.y, 0.0f));
 	mShader->setUniformMatrix<glm::mat4>("projectionMatrix", GL_FALSE, ortho);
 	GL_CHECKERRORS();
 
