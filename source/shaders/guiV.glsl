@@ -11,7 +11,7 @@ out vec2 uv;
 out vec4 color;
 
 void main() {
-	gl_Position = vec4(vertexPosition * translation, 0.0f, 1.0f) * projectionMatrix;
+	gl_Position = projectionMatrix * vec4(vertexPosition, 0.0f, 1.0f);
 	uv = vertexUV;
 	color = vertexColor;
 }
