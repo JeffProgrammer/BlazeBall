@@ -60,6 +60,7 @@ bool SDLWindow::createContext() {
 	IO::printf("     Vendor: %s\n", glGetString(GL_VENDOR));
 	IO::printf("   Renderer: %s\n", glGetString(GL_RENDERER));
 	IO::printf("    Shading: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	IO::printf("       VRAM: %uMB\n", glGetVideoRamEXT());
 
 	//Use Vsync
 	setVerticalSync(true);
