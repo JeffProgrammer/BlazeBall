@@ -50,8 +50,10 @@ class btDebugDrawer;
 class btPhysicsEngine : public PhysicsEngine {
 	btDiscreteDynamicsWorld *mWorld;
 	btCollisionDispatcher *mDispatcher;
+#ifdef DEBUG_PHYSICS
 	btDebugDrawer *mDebugDrawer;
-	
+#endif
+
 	F64 mExtraTime;
 
 	virtual void step(const F64 &delta);

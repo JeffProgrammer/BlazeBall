@@ -60,4 +60,4 @@ public:
 	virtual void ReleaseTexture(Rocket::Core::TextureHandle texture_handle);
 };
 
-#endif _GUI_RENDERINTERFACE_H_
+#endif //_GUI_RENDERINTERFACE_H_
