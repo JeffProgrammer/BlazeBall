@@ -11,6 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Renderer::Renderer(Client *client) : mClient(client) {
+	mRocketContext = nullptr;
 	mDoDebugDraw = false;
 	mConfig = new Config("config.txt");
 }
@@ -78,6 +79,9 @@ void Renderer::updateWindowSize(const glm::ivec2 &size) {
 
 	//Should be 2x if you have a retina display
 	mPixelDensity = static_cast<F32>(viewport[2] / size.x);
+
+	if (mRocketContext != nullptr)
+		mRocketContext->SetDimensions(Rocket::Core::Vector2i(size.x, size.y));
 }
 
 bool Renderer::init() {
@@ -125,7 +129,7 @@ bool Renderer::initGL() {
 	Rocket::Core::FontDatabase::LoadFontFace("Delicious-Roman.otf");
 
 	// Initialize base gui
-	mRocketContext = Rocket::Core::CreateContext("tutorial", Rocket::Core::Vector2i(screenSize.x * mPixelDensity, screenSize.y * mPixelDensity));
+	mRocketContext = Rocket::Core::CreateContext("tutorial", Rocket::Core::Vector2i(screenSize.x, screenSize.y));
 	mRocketDocument = mRocketContext->LoadDocument("tutorial.rml");
 
 	if (mRocketDocument) {
