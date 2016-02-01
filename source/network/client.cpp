@@ -17,7 +17,7 @@ Client::Client(World *world, const std::string &ipAddress, const U16 port) : mWo
 }
 
 Client::~Client() {
-
+	delete mRenderer;
 }
 
 void Client::start() {
@@ -47,6 +47,7 @@ void Client::start() {
 		timer->end();
 		lastDelta = timer->getDelta();
 	}
+	delete timer;
 }
 
 void Client::stop() {

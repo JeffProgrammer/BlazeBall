@@ -107,8 +107,8 @@ bool Renderer::init() {
 		return false;
 	}
 
-	mCaptureMouse = true;
-	mWindow->lockCursor(true);
+	mCaptureMouse = false;
+	mWindow->lockCursor(false);
 
 	//Initialize OpenGL
 	if (!initGL()) {
@@ -147,9 +147,9 @@ bool Renderer::initGL() {
 	Rocket::Core::FontDatabase::LoadFontFace("Delicious-Roman.otf");
 
 	// Initialize base gui
-	glm::ivec2 dims = mWindow->getWindowSize();
-	mRocketContext = Rocket::Core::CreateContext("tutorial", Rocket::Core::Vector2i(dims.x, dims.y));
+	mRocketContext = Rocket::Core::CreateContext("tutorial", Rocket::Core::Vector2i(screenSize.x * mPixelDensity, screenSize.y * mPixelDensity));
 	mRocketDocument = mRocketContext->LoadDocument("tutorial.rml");
+
 	if (mRocketDocument) {
 		mRocketDocument->Show();
 		mRocketDocument->RemoveReference();
@@ -163,32 +163,6 @@ bool Renderer::initGL() {
 		return false;
 	}
 	return true;
-}
-
-void Renderer::performClick(S32 mouseX, S32 mouseY) {
-	/*
-	 glm::ivec2 screenSize = mWindow->getWindowSize();
-	 //http://antongerdelan.net/opengl/raycasting.html
-	 //(x, y) are in device coordinates. We need to convert that to model coords
-
-	 //Device coords -> normalized device coords
-	 float x = (((F32)mouseX * 2.0f) / (F32)screenSize.x) - 1.0f;
-	 float y = 1.0f - (((F32)mouseY * 2.0f) / (F32)screenSize.y);
-	 float z = 1.0f;
-	 glm::vec3 ndc = glm::vec3(x, y, z);
-
-	 //Normalized device coords -> clip coordinates
-	 glm::vec4 clip = glm::vec4(ndc.x, ndc.y, -1.0f, 1.0f);
-
-	 //Clip coordinates -> eye coordinates
-	 glm::vec4 eye = glm::inverse(projectionMatrix) * clip;
-	 eye = glm::vec4(eye.x, eye.y, -1.0f, 0.0f);
-
-	 //Eye coordinates -> modelview coordinates
-	 glm::vec3 world = glm::vec3(glm::inverse(viewMatrix) * eye);
-
-	 selection.hasSelection = false;
-	 */
 }
 
 void Renderer::handleEvent(PlatformEvent *event) {
@@ -216,32 +190,32 @@ void Renderer::handleEvent(PlatformEvent *event) {
 				{
 					// swap control mObjects!
 					//TODO: Server this
-					//					if (mControlObject == mPlayer)
-					//						mControlObject = mCamera;
-					//					else
-					//						mControlObject = mPlayer;
+//					if (mControlObject == mPlayer)
+//						mControlObject = mCamera;
+//					else
+//						mControlObject = mPlayer;
 					break;
 				}
 				case KeyEvent::KEY_M:
 				{
 					// add a cube!
-					//					Shape *shape = new Shape(this, "cube.dae");
-					//					shape->loadShape();
-					//					shape->setPosition(glm::vec3(rand() % 10, rand() % 10, rand() % 10));
-					//					addObject(shape);
+//					Shape *shape = new Shape(this, "cube.dae");
+//					shape->loadShape();
+//					shape->setPosition(glm::vec3(rand() % 10, rand() % 10, rand() % 10));
+//					addObject(shape);
 					break;
 				}
 				case KeyEvent::KEY_G:
 				{
 					// mega / regular marble
 					//TODO: Server this
-					//					if (mPlayer->getRadius() < 1.0f) {
-					//						mPlayer->setRadius(1.0f);
-					//						mMarbleCubemap->setExtent(glm::vec2(256, 256));
-					//					} else {
-					//						mPlayer->setRadius(0.2f);
-					//						mMarbleCubemap->setExtent(glm::vec2(64, 64));
-					//					}
+//					if (mPlayer->getRadius() < 1.0f) {
+//						mPlayer->setRadius(1.0f);
+//						mMarbleCubemap->setExtent(glm::vec2(256, 256));
+//					} else {
+//						mPlayer->setRadius(0.2f);
+//						mMarbleCubemap->setExtent(glm::vec2(64, 64));
+//					}
 					break;
 				}
 				case KeyEvent::KEY_T:
@@ -253,14 +227,14 @@ void Renderer::handleEvent(PlatformEvent *event) {
 				{
 					// mbu / regular marble
 					//TODO: Server this
-					//					if (mPlayer->getRadius() < 0.3f) {
-					//						mPlayer->setRadius(0.3f);
-					//						mMarbleCubemap->setExtent(glm::vec2(128, 128));
-					//					}
-					//					else {
-					//						mPlayer->setRadius(0.2f);
-					//						mMarbleCubemap->setExtent(glm::vec2(64, 64));
-					//					}
+//					if (mPlayer->getRadius() < 0.3f) {
+//						mPlayer->setRadius(0.3f);
+//						mMarbleCubemap->setExtent(glm::vec2(128, 128));
+//					}
+//					else {
+//						mPlayer->setRadius(0.2f);
+//						mMarbleCubemap->setExtent(glm::vec2(64, 64));
+//					}
 					break;
 				}
 				case KeyEvent::KEY_ESCAPE:
@@ -298,6 +272,7 @@ void Renderer::handleEvent(PlatformEvent *event) {
 				mMovement.yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x;
 				mMovement.pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y;
 			}
+			mRocketContext->ProcessMouseMove(static_cast<MouseMoveEvent *>(event)->position.x, static_cast<MouseMoveEvent *>(event)->position.x, 0);
 			break;
 		case PlatformEvent::MouseDown:
 			switch (((MouseDownEvent *)event)->button) {
@@ -306,12 +281,7 @@ void Renderer::handleEvent(PlatformEvent *event) {
 				case MouseButton::MOUSE_BUTTON_RIGHT: mouseButtons.right  = true; break;
 				default: break;
 			}
-
-			if (((MouseDownEvent *)event)->button == 1) { //Left mouse: click
-				mWindow->lockCursor(true);
-				mCaptureMouse = true;
-				performClick(((MouseDownEvent *)event)->position.x, ((MouseDownEvent *)event)->position.y);
-			}
+			mRocketContext->ProcessMouseButtonDown(static_cast<MouseDownEvent *>(event)->button, 0);
 			break;
 		case PlatformEvent::MouseUp:
 			switch (((MouseDownEvent *)event)->button) {
@@ -320,16 +290,17 @@ void Renderer::handleEvent(PlatformEvent *event) {
 				case MouseButton::MOUSE_BUTTON_RIGHT: mouseButtons.right  = false; break;
 				default: break;
 			}
+			mRocketContext->ProcessMouseButtonUp(static_cast<MouseDownEvent *>(event)->button, 0);
 			break;
 		case PlatformEvent::WindowFocus:
 			mShouldSleep = false;
-			mWindow->lockCursor(true);
-			mCaptureMouse = true;
+//			mWindow->lockCursor(true);
+//			mCaptureMouse = true;
 			break;
 		case PlatformEvent::WindowBlur:
 			mShouldSleep = true;
-			mWindow->lockCursor(false);
-			mCaptureMouse = false;
+//			mWindow->lockCursor(false);
+//			mCaptureMouse = false;
 			break;
 		case PlatformEvent::WindowResize:
 			updateWindowSize(static_cast<WindowResizeEvent *>(event)->newSize);

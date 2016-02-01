@@ -63,7 +63,6 @@ public:
 
 	bool initGL();
 	bool init();
-	void performClick(S32 mouseX, S32 mouseY);
 	void handleEvent(PlatformEvent *event);
 
 	void updateWindowSize(const glm::ivec2 &size);
