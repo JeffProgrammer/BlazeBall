@@ -206,6 +206,7 @@ bool RenderWorld::initGL() {
 	updateWindowSize(screenSize);
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
 	glDepthFunc(GL_LESS);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 
@@ -227,8 +228,8 @@ bool RenderWorld::initGL() {
 
 	// Initialize base gui
 	glm::ivec2 dims = mWindow->getWindowSize();
-	mRocketContext = Rocket::Core::CreateContext("demo", Rocket::Core::Vector2i(dims.x, dims.y));
-	mRocketDocument = mRocketContext->LoadDocument("demo.rml");
+	mRocketContext = Rocket::Core::CreateContext("tutorial", Rocket::Core::Vector2i(dims.x, dims.y));
+	mRocketDocument = mRocketContext->LoadDocument("tutorial.rml");
 	if (mRocketDocument) {
 		mRocketDocument->Show();
 		mRocketDocument->RemoveReference();
