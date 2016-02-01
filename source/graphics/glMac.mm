@@ -5,6 +5,7 @@
 //-----------------------------------------------------------------------------
 
 #import <Cocoa/Cocoa.h>
+#import <availability.h>
 #include "graphics/glMac.h"
 
 // Reference: https://developer.apple.com/library/mac/qa/qa1168/_index.html
@@ -36,7 +37,12 @@ GLint getVideoMemoryAPPLE(void *context) {
 			continue;
 		
 		// Grab it
+#if __MAC_OS_X_VERSION_MAX_ALLOWED >= 1070
 		CGLDescribeRenderer(renderer, i, kCGLRPVideoMemoryMegabytes, &memory);
+#else
+		CGLDescribeRenderer(renderer, i, kCGLRPVideoMemory, &memory);
+		memory /= 1024 * 1024; // bytes -> megabytes
+#endif
 	}
 	
 	// Cleanup.
