@@ -352,6 +352,8 @@ set (DIFVIEWERGAME_SRC
 	source/gui/renderInterface.h
 	source/gui/systemInterface.cpp
 	source/gui/systemInterface.h
+	source/gui/elements/elementWorldView.cpp
+	source/gui/elements/elementWorldView.h
 
 	# Graphics folder
 	source/graphics/gl.h
@@ -613,6 +615,7 @@ source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)
 source_group("network"               REGULAR_EXPRESSION network/.*)
 source_group("network\\event"        REGULAR_EXPRESSION network/event/.*)
 source_group("gui"                   REGULAR_EXPRESSION gui/.*)
+source_group("gui\\elements"         REGULAR_EXPRESSION gui/elements/.*)
 source_group("graphics"              REGULAR_EXPRESSION graphics/.*)
 source_group("graphics\\GL21"        REGULAR_EXPRESSION graphics/GL21/.*)
 source_group("graphics\\GL33"        REGULAR_EXPRESSION graphics/GL33/.*)
