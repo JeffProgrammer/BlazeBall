@@ -74,6 +74,8 @@ void Renderer::updateWindowSize(const glm::ivec2 &size) {
 	GLfloat aspect = (GLfloat)size.x / (GLfloat)size.y;
 	mScreenProjectionMatrix = glm::perspective(glm::radians(90.f), aspect, 0.1f, 500.f);
 
+	// We use this instead of our extension because we don't have a way
+	// in software to get the pixel density.
 	GLint viewport[4]; //x y w h
 	glGetIntegerv(GL_VIEWPORT, viewport);
 
