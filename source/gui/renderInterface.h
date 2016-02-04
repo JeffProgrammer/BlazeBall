@@ -38,6 +38,8 @@ private:
 	PlatformWindow *mWindow;
 	Shader *mShader;
 
+	F32 mPixelDensity;
+
 	GLuint mVBO;
 	GLuint mIBO;
 public:

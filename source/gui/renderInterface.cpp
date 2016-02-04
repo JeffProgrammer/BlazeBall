@@ -33,6 +33,8 @@
 #include "render/util.h"
 
 GuiRenderInterface::GuiRenderInterface(PlatformWindow *window) {
+	mPixelDensity = 1;
+
 	mWindow = window;
 	glGenBuffers(1, &mVBO);
 	glGenBuffers(1, &mIBO);
@@ -88,8 +90,9 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 	auto vec = glm::vec2(translation.x, translation.y);
 	mShader->setUniformVector<glm::vec2>("translation", vec);
 	GL_CHECKERRORS();
-	glViewport(0, 0, mWindow->getWindowSize().x, mWindow->getWindowSize().y);
-	glm::mat4 ortho = glm::ortho(0.0f, (float)mWindow->getWindowSize().x, (float)mWindow->getWindowSize().y, 0.0f, 0.0f, 1.0f);
+	glViewport(0, 0, mWindow->getWindowSize().x * mPixelDensity, mWindow->getWindowSize().y * mPixelDensity);
+	glm::mat4 ortho = glm::ortho(0.0f, (float)mWindow->getWindowSize().x * mPixelDensity, (float)mWindow->getWindowSize().y * mPixelDensity, 0.0f, 0.0f, 1.0f);
+	ortho = glm::scale(ortho, glm::vec3(mPixelDensity));
 	ortho = glm::translate(ortho, glm::vec3(translation.x, translation.y, 0.0f));
 	mShader->setUniformMatrix<glm::mat4>("projectionMatrix", GL_FALSE, ortho);
 	GL_CHECKERRORS();
@@ -122,7 +125,7 @@ void GuiRenderInterface::EnableScissorRegion(bool enabled) {
 
 void GuiRenderInterface::SetScissorRegion(S32 x, S32 y, S32 width, S32 height) {
 	const auto &size = mWindow->getWindowSize();
-	glScissor(x, size.y - (y + height), width, height);
+	glScissor(x * mPixelDensity, (size.y - (y + height)) * mPixelDensity, width * mPixelDensity, height * mPixelDensity);
 }
 
 bool GuiRenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source) {
