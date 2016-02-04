@@ -176,6 +176,7 @@ void Renderer::handleEvent(PlatformEvent *event) {
 				default:
 					break;
 			}
+			mRocketContext->ProcessKeyDown(GuiInterface::translateKey(key), 0);
 			break;
 		}
 		case PlatformEvent::KeyUp: {
@@ -194,6 +195,7 @@ void Renderer::handleEvent(PlatformEvent *event) {
 				default:
 					break;
 			}
+			mRocketContext->ProcessKeyUp(GuiInterface::translateKey(key), 0);
 			break;
 		}
 			//Mouse for rotation
@@ -213,7 +215,7 @@ void Renderer::handleEvent(PlatformEvent *event) {
 				default: break;
 			}
 			if (!mCaptureMouse) {
-				mRocketContext->ProcessMouseButtonDown(static_cast<MouseDownEvent *>(event)->button, 0);
+				mRocketContext->ProcessMouseButtonDown(GuiInterface::translateMouseButton(static_cast<MouseDownEvent *>(event)->button), 0);
 			}
 			break;
 		case PlatformEvent::MouseUp:
@@ -224,18 +226,14 @@ void Renderer::handleEvent(PlatformEvent *event) {
 				default: break;
 			}
 			if (!mCaptureMouse) {
-				mRocketContext->ProcessMouseButtonUp(static_cast<MouseDownEvent *>(event)->button, 0);
+				mRocketContext->ProcessMouseButtonUp(GuiInterface::translateMouseButton(static_cast<MouseDownEvent *>(event)->button), 0);
 			}
 			break;
 		case PlatformEvent::WindowFocus:
 			mShouldSleep = false;
-			mWindow->lockCursor(true);
-			mCaptureMouse = true;
 			break;
 		case PlatformEvent::WindowBlur:
 			mShouldSleep = true;
-			mWindow->lockCursor(false);
-			mCaptureMouse = false;
 			break;
 		case PlatformEvent::WindowResize:
 			updateWindowSize(static_cast<WindowResizeEvent *>(event)->newSize);

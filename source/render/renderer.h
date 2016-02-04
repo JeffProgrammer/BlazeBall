@@ -21,6 +21,8 @@
 #include "platform/platformEvent.h"
 #include "base/config.h"
 #include "render/renderInfo.h"
+#include "gui/renderInterface.h"
+#include "gui/systemInterface.h"
 
 class Client;
 class Renderer {
