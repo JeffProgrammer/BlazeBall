@@ -4,9 +4,10 @@
 	<title>Window</title>
 </head>
 <body class="window">
-<WorldView class="fullscreen">
+<WorldView class="full">
 <div>
 Stuff in here is stuff
+<input type="text" />
 </div>
 </WorldView>
 </body>

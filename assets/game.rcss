@@ -25,9 +25,12 @@ div
     display: block;
 }
 
-WorldView {
+WorldView, .full {
+	position: absolute;
 	width: 400px;
 	height: 300px;
+	top: 200px;
+	left: 400px;
 	display: block;
 }
 body {
