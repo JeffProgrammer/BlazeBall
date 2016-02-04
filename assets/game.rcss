@@ -1,0 +1,37 @@
+body
+{
+	font-family: Delicious;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 15;
+	color: white;
+}
+
+body.window
+{
+	background-decorator: tiled-box;
+	background-top-left-image: invader.png 0px 0px 133px 140px;
+	background-top-right-image: invader.png 136px 0px 146px 140px;
+	background-top-image: invader.png stretch 134px 0px 135px 140px;
+	background-bottom-left-image: invader.png 0px 140px 11px 151px;
+	background-bottom-right-image: invader.png 136px 140px 146px 151px;
+	background-bottom-image: invader.png stretch 11px 140px 12px 151px;
+	background-left-image: invader.png stretch 0px 139px 10px 140px;
+	background-center-image: invader.png stretch 11px 139px 12px 140px;
+}
+
+div
+{
+    display: block;
+}
+
+WorldView {
+	width: 400px;
+	height: 300px;
+	display: block;
+}
+body {
+	width: 100%;
+	height: 100%;
+	display: block;
+}
