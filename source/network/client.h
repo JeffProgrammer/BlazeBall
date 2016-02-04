@@ -9,6 +9,9 @@
 
 #include <unordered_map>
 #include <enetpp/client.h>
+#include <Rocket/Core.h>
+#include <Rocket/Core/Input.h>
+#include <Rocket/Core/ElementDocument.h>
 
 #include "base/types.h"
 #include "network/event/netClientEvent.h"
@@ -18,6 +21,8 @@
 #include "platform/platformTimer.h"
 #include "render/renderer.h"
 #include "game/movement.h"
+#include "gui/renderInterface.h"
+#include "gui/systemInterface.h"
 
 class Client {
 public:
@@ -64,6 +69,9 @@ protected:
 	Renderer *mRenderer;
 	bool mRunning;
 	Movement mMovement;
+
+	GuiInterface *mGuiInterface;
+	GuiRenderInterface *mGuiRenderInterface;
 
 	std::unordered_map<U32, NetObject *> mGhostedObjects;
 	std::unordered_map<NetObject *, U32> mGhostedIndices;

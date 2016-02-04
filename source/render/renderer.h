@@ -21,8 +21,6 @@
 #include "platform/platformEvent.h"
 #include "base/config.h"
 #include "render/renderInfo.h"
-#include "gui/renderInterface.h"
-#include "gui/systemInterface.h"
 
 class Client;
 class Renderer {
@@ -31,8 +29,6 @@ protected:
 	PlatformWindow *mWindow;
 	Config *mConfig;
 
-	GuiInterface *mGuiInterface;
-	GuiRenderInterface *mGuiRenderInterface;
 	Rocket::Core::Context *mRocketContext;
 	Rocket::Core::ElementDocument *mRocketDocument;
 
@@ -58,6 +54,7 @@ public:
 
 	void render(const F64 &delta);
 
+	bool initGUI();
 	bool initGL();
 	bool init();
 	void handleEvent(PlatformEvent *event);

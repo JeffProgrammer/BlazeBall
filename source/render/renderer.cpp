@@ -26,7 +26,6 @@ Renderer::~Renderer() {
 
 	mRocketContext->UnloadAllDocuments();
 	mRocketContext->RemoveReference();
-	Rocket::Core::Shutdown();
 }
 
 void Renderer::render(const F64 &delta) {
@@ -105,16 +104,16 @@ bool Renderer::initGL() {
 	glDepthFunc(GL_LESS);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 
-	// Initialize the gui library, librocket
-	// TODO: move this out of a 3D thing
-	mGuiInterface = new GuiInterface();
-	mGuiRenderInterface = new GuiRenderInterface(mWindow);
-	Rocket::Core::SetSystemInterface(mGuiInterface);
-	Rocket::Core::SetRenderInterface(mGuiRenderInterface);
-	if (!Rocket::Core::Initialise()) {
-		IO::printf("Unable to initialize rocket.\n");
+	GLenum err = glGetError();
+	if (err != GL_NO_ERROR) {
+		fprintf(stderr, "Error in GL init: %d", err);
 		return false;
 	}
+	return true;
+}
+
+bool Renderer::initGUI() {
+	glm::ivec2 screenSize = mWindow->getWindowSize();
 
 	Rocket::Core::FontDatabase::LoadFontFace("Delicious-Bold.otf");
 	Rocket::Core::FontDatabase::LoadFontFace("Delicious-BoldItalic.otf");
@@ -122,19 +121,14 @@ bool Renderer::initGL() {
 	Rocket::Core::FontDatabase::LoadFontFace("Delicious-Roman.otf");
 
 	// Initialize base gui
-	mRocketContext = Rocket::Core::CreateContext("tutorial", Rocket::Core::Vector2i(screenSize.x, screenSize.y));
-	mRocketDocument = mRocketContext->LoadDocument("tutorial.rml");
+	mRocketContext = Rocket::Core::CreateContext("game", Rocket::Core::Vector2i(screenSize.x, screenSize.y));
+	mRocketDocument = mRocketContext->LoadDocument("game.rml");
 
 	if (mRocketDocument) {
 		mRocketDocument->Show();
 		mRocketDocument->RemoveReference();
 	} else {
 		IO::printf("Unable to show document demo.rml\n");
-	}
-
-	GLenum err = glGetError();
-	if (err != GL_NO_ERROR) {
-		fprintf(stderr, "Error in GL init: %d", err);
 		return false;
 	}
 	return true;

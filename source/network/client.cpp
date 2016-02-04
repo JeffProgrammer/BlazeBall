@@ -5,9 +5,12 @@
 //------------------------------------------------------------------------------
 
 #include "network/client.h"
+
+#include <enetpp/client_connect_params.h>
+#include <Rocket/Controls/Controls.h>
+
 #include "base/io.h"
 #include "main/gameState.h"
-#include <enetpp/client_connect_params.h>
 
 Client::Client(World *world, const std::string &ipAddress, const U16 port) : mWorld(world) {
 	mServerAddress = ipAddress;
@@ -18,16 +21,37 @@ Client::Client(World *world, const std::string &ipAddress, const U16 port) : mWo
 
 Client::~Client() {
 	delete mRenderer;
+	Rocket::Core::Shutdown();
 }
 
 void Client::start() {
 	mRenderer = new Renderer(this);
 	mRenderer->setWindow(GameState::gState->platform->createWindow());
+
+	//Load the base renderer and OpenGL
 	if (!mRenderer->init()) {
 		return;
 	}
 
+	// Initialize the gui library, librocket
+	mGuiInterface = new GuiInterface();
+	mGuiRenderInterface = new GuiRenderInterface(mRenderer->getWindow());
+	Rocket::Core::SetSystemInterface(mGuiInterface);
+	Rocket::Core::SetRenderInterface(mGuiRenderInterface);
+	if (!Rocket::Core::Initialise()) {
+		IO::printf("Unable to initialize rocket.\n");
+		return;
+	}
+
+	Rocket::Controls::Initialise();
+
+	//Load the GUI on the renderer
+	if (!mRenderer->initGUI()) {
+		return;
+	}
+
 	mRunning = true;
+
 
 	PlatformTimer *timer = GameState::gState->platform->createTimer();
 	F64 lastDelta = 0.0;
