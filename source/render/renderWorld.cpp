@@ -25,6 +25,7 @@ glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4(1.0f), glm::radians(
 
 RenderWorld::RenderWorld(PhysicsEngine *physics, ScriptEngine *script) : World(physics, script) {
 	mMarbleCubemap = nullptr;
+	mDoDebugDraw = false;
 }
 
 RenderWorld::~RenderWorld() {
@@ -64,6 +65,14 @@ void RenderWorld::render(RenderInfo &info) {
 
 	//Actually render everything
 	renderScene(info);
+
+	if (mDoDebugDraw) {
+		glDisable(GL_DEPTH_TEST);
+		mClient->getWorld()->getPhysicsEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Everything);
+		glEnable(GL_DEPTH_TEST);
+	} else {
+		mClient->getWorld()->getPhysicsEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Nothing);
+	}
 }
 
 void RenderWorld::renderScene(RenderInfo &info) {

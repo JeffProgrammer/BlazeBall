@@ -45,7 +45,6 @@ protected:
 	bool mCaptureMouse;
 	bool mPrintFPS;
 	bool mShouldSleep;
-	bool mDoDebugDraw;
 
 	F32 mPixelDensity;
 

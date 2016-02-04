@@ -12,7 +12,6 @@
 
 Renderer::Renderer(Client *client) : mClient(client) {
 	mRocketContext = nullptr;
-	mDoDebugDraw = false;
 	mConfig = new Config("config.txt");
 }
 
@@ -59,14 +58,6 @@ void Renderer::render(const F64 &delta) {
 
 	//Flip buffers
 	mWindow->swapBuffers();
-
-	if (mDoDebugDraw) {
-		glDisable(GL_DEPTH_TEST);
-		mClient->getWorld()->getPhysicsEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Everything);
-		glEnable(GL_DEPTH_TEST);
-	} else {
-		mClient->getWorld()->getPhysicsEngine()->debugDraw(info, PhysicsEngine::DebugDrawType::Nothing);
-	}
 }
 
 
@@ -172,7 +163,8 @@ void Renderer::handleEvent(PlatformEvent *event) {
 				case KeyEvent::KEY_Q: mClient->getMovement().fire = true; break;
 				case KeyEvent::KEY_T:
 				{
-					mDoDebugDraw = !mDoDebugDraw;
+					//TODO
+//					mDoDebugDraw = !mDoDebugDraw;
 					break;
 				}
 				case KeyEvent::KEY_ESCAPE:
