@@ -3,11 +3,9 @@
 	<link type="text/css" href="game.rcss"/>
 	<title>Window</title>
 </head>
-<body class="window">
+<body>
 <WorldView class="full">
-<div>
-Stuff in here is stuff
-<input type="text" />
+<div class="window" style="position: absolute; width: 50%; height: 50%; left: 25%; top: 25%;">
 </div>
 </WorldView>
 </body>

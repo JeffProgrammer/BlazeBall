@@ -1,14 +1,12 @@
-body
-{
+body {
 	font-family: Delicious;
 	font-weight: normal;
 	font-style: normal;
 	font-size: 15;
-	color: white;
+	color: black;
 }
 
-body.window
-{
+.window {
 	background-decorator: tiled-box;
 	background-top-left-image: invader.png 0px 0px 133px 140px;
 	background-top-right-image: invader.png 136px 0px 146px 140px;
@@ -19,18 +17,16 @@ body.window
 	background-left-image: invader.png stretch 0px 139px 10px 140px;
 	background-center-image: invader.png stretch 11px 139px 12px 140px;
 }
-
-div
-{
+div {
     display: block;
 }
 
-WorldView, .full {
+.full {
 	position: absolute;
-	width: 400px;
-	height: 300px;
-	top: 200px;
-	left: 400px;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
 	display: block;
 }
 body {
