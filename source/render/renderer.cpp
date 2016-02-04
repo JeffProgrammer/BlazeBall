@@ -60,7 +60,7 @@ RenderInfo Renderer::getRenderInfo(const glm::ivec2 &size) {
 
 	RenderInfo info;
 	info.projectionMatrix = glm::perspective(glm::radians(90.f), aspect, 0.1f, 500.f);
-	info.windowSize = mWindow->getWindowSize();
+	info.viewport.size = mWindow->getWindowSize();
 	info.pixelDensity = mPixelDensity;
 
 	return info;

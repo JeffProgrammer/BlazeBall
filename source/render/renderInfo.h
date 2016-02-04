@@ -45,7 +45,11 @@ struct RenderInfo {
 	U32 specularExponent;
 
 	bool isReflectionPass;
-	glm::vec2 windowSize;
+	struct {
+		glm::ivec2 position;
+		glm::ivec2 size;
+	} viewport;
+	
 	F32 pixelDensity;
 
 #ifdef SRUTIL_DELEGATE_PREFERRED_SYNTAX
@@ -112,6 +116,20 @@ struct RenderInfo {
 			//Deactivate the material before loading the next one
 			material->deactivate();
 		}
+	}
+
+	/**
+	 * Update OpenGL's viewport to only cover this RenderInfo
+	 */
+	void setViewport() {
+		glViewport(viewport.position.x * pixelDensity, viewport.position.y * pixelDensity, viewport.size.x * pixelDensity, viewport.size.y * pixelDensity);
+	}
+
+	/**
+	 * Update OpenGL's scissor region to only cover this RenderInfo
+	 */
+	void setScissor() {
+		glScissor(viewport.position.x * pixelDensity, viewport.position.y * pixelDensity, viewport.size.x * pixelDensity, viewport.size.y * pixelDensity);
 	}
 };
 

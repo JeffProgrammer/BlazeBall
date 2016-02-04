@@ -59,7 +59,7 @@ void RenderWorld::render(RenderInfo &info) {
 	info.isReflectionPass = false;
 
 	glm::vec3 position = (mClient->getControlObject() ? mClient->getControlObject()->getPosition() : glm::vec3(0));
-	mMarbleCubemap->generateBuffer(position, info.windowSize * info.pixelDensity, [&](RenderInfo &info) {
+	mMarbleCubemap->generateBuffer(position, [&](RenderInfo &info) {
 		this->renderScene(info);
 	}, info);
 

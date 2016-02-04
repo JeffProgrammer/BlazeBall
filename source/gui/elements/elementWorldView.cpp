@@ -23,9 +23,18 @@ void ElementWorldView::OnRender() {
 	//Optimize
 	if (size.x == 0 || size.y == 0)
 		return;
+	glEnable(GL_SCISSOR_TEST);
 
 	RenderInfo info = mClient->getRenderer()->getRenderInfo(size);
+	info.viewport.size = size;
+	info.viewport.position = glm::ivec2(GetClientLeft(), GetClientTop());
+
+	info.setViewport();
+	info.setScissor();
+
 	static_cast<RenderWorld *>(mClient->getWorld())->render(info);
+
+	glDisable(GL_SCISSOR_TEST);
 }
 
 ElementInstancerWorldView::ElementInstancerWorldView(Client *client) : mClient(client) {
