@@ -58,9 +58,9 @@ void Server::start() {
 
 void Server::stop() {
 	// block this thread and wait for the server thread to finish before moving on
-	mServer.stop_listening();
 	mIsRunning = false;
 	mServerThread.join();
+	mServer.stop_listening();
 	IO::printf("Stopping server process...\n");
 }
 

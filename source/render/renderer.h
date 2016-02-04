@@ -60,6 +60,7 @@ public:
 	void handleEvent(PlatformEvent *event);
 
 	void updateWindowSize(const glm::ivec2 &size);
+	RenderInfo getRenderInfo(const glm::ivec2 &size);
 };
 
 #endif

@@ -43,14 +43,6 @@ void Renderer::render(const F64 &delta) {
 		}
 	}
 
-	RenderInfo info;
-	info.projectionMatrix = mScreenProjectionMatrix;
-	info.windowSize = mWindow->getWindowSize();
-	info.pixelDensity = mPixelDensity;
-
-	//TODO: Have this in an element
-	dynamic_cast<RenderWorld *>(mClient->getWorld())->render(info);
-
 	// render GUI
 	mRocketContext->Render();
 	mRocketContext->Update();
@@ -59,6 +51,20 @@ void Renderer::render(const F64 &delta) {
 	mWindow->swapBuffers();
 }
 
+RenderInfo Renderer::getRenderInfo(const glm::ivec2 &size) {
+	GLfloat aspect = (GLfloat)size.x / (GLfloat)size.y;
+
+	//Weird behavior with windows that are too small
+	if (size.x == 0 || size.y == 0)
+		aspect = 1;
+
+	RenderInfo info;
+	info.projectionMatrix = glm::perspective(glm::radians(90.f), aspect, 0.1f, 500.f);
+	info.windowSize = mWindow->getWindowSize();
+	info.pixelDensity = mPixelDensity;
+
+	return info;
+}
 
 void Renderer::updateWindowSize(const glm::ivec2 &size) {
 	GLfloat aspect = (GLfloat)size.x / (GLfloat)size.y;

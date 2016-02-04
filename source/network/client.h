@@ -51,14 +51,14 @@ public:
 		mGhostedObjects[index] = object;
 		mGhostedIndices[object] = index;
 	}
-	World *getWorld() {
-		return mWorld;
-	}
+
+	//Read-only variables
+	World *getWorld() { return mWorld; }
+	Renderer *getRenderer() { return mRenderer; }
+	Movement &getMovement() { return mMovement; }
 
 	GameObject *getControlObject() const { return mControlObject; }
 	void setControlObject(GameObject *object) { mControlObject = object; dynamic_cast<Sphere *>(object)->setActivationState(true); }
-
-	Movement &getMovement() { return mMovement; }
 
 protected:
 	enetpp::client mClient;

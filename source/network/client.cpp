@@ -11,6 +11,7 @@
 
 #include "base/io.h"
 #include "main/gameState.h"
+#include "gui/elements/elementWorldView.h"
 
 Client::Client(World *world, const std::string &ipAddress, const U16 port) : mWorld(world) {
 	mServerAddress = ipAddress;
@@ -42,6 +43,11 @@ void Client::start() {
 		IO::printf("Unable to initialize rocket.\n");
 		return;
 	}
+
+	//Custom Rocket controls
+	ElementInstancerWorldView *instancerWorldView = new ElementInstancerWorldView(this);
+	Rocket::Core::Factory::RegisterElementInstancer("WorldView", instancerWorldView);
+	instancerWorldView->RemoveReference();
 
 	Rocket::Controls::Initialise();
 
