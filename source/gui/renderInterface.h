@@ -33,8 +33,10 @@
 #include "platform/platformGL.h"
 #include "render/shader.h"
 
+class Client;
 class GuiRenderInterface : public Rocket::Core::RenderInterface {
 private:
+	Client *mClient;
 	PlatformWindow *mWindow;
 	Shader *mShader;
 
@@ -43,7 +45,7 @@ private:
 	GLuint mVBO;
 	GLuint mIBO;
 public:
-	GuiRenderInterface(PlatformWindow *window);
+	GuiRenderInterface(Client *client, PlatformWindow *window);
 	~GuiRenderInterface();
 
 	/// Called by Rocket when it wants to render geometry that it does not wish to optimise.

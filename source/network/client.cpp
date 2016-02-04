@@ -36,7 +36,7 @@ void Client::start() {
 
 	// Initialize the gui library, librocket
 	mGuiInterface = new GuiInterface();
-	mGuiRenderInterface = new GuiRenderInterface(mRenderer->getWindow());
+	mGuiRenderInterface = new GuiRenderInterface(this, mRenderer->getWindow());
 	Rocket::Core::SetSystemInterface(mGuiInterface);
 	Rocket::Core::SetRenderInterface(mGuiRenderInterface);
 	if (!Rocket::Core::Initialise()) {

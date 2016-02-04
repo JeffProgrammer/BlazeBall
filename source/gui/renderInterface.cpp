@@ -31,11 +31,12 @@
 #include "base/io.h"
 #include "platform/platformGL.h"
 #include "render/util.h"
+#include "network/client.h"
+#include "render/renderer.h"
 
-GuiRenderInterface::GuiRenderInterface(PlatformWindow *window) {
-	mPixelDensity = 1;
+GuiRenderInterface::GuiRenderInterface(Client *client, PlatformWindow *window) : mClient(client), mWindow(window) {
+	mPixelDensity = mClient->getRenderer()->getRenderInfo(glm::ivec2()).pixelDensity;
 
-	mWindow = window;
 	glGenBuffers(1, &mVBO);
 	glGenBuffers(1, &mIBO);
 
