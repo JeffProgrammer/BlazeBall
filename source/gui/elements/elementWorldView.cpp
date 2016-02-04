@@ -27,7 +27,7 @@ void ElementWorldView::OnRender() {
 
 	RenderInfo info = mClient->getRenderer()->getRenderInfo(size);
 	info.viewport.size = size;
-	info.viewport.position = glm::ivec2(GetClientLeft(), GetClientTop());
+	info.viewport.position = glm::ivec2(GetAbsoluteLeft(), GetAbsoluteTop());
 
 	info.setViewport();
 	info.setScissor();
