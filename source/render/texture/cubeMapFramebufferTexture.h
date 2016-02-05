@@ -13,13 +13,13 @@
 
 class CubeMapFramebufferTexture : public CubeMapTexture {
 protected:
-	glm::ivec2 extent;
-	glm::mat4 projectionMat;
-	GLenum framebuffer;
-	GLenum depthBuffer;
-
+	glm::ivec2 mExtent;
+	glm::mat4 mProjectionMat;
+	GLenum mFramebuffer;
+	GLenum mDepthBuffer;
 public:
 	CubeMapFramebufferTexture(const glm::ivec2 &extent) : CubeMapTexture(std::vector<TextureInfo>()) {
+		mGenerated = false;
 		setExtent(extent);
 	}
 	virtual ~CubeMapFramebufferTexture();
@@ -27,7 +27,7 @@ public:
 	void setExtent(const glm::ivec2 &extent);
 
 	inline glm::ivec2 getExtent() const {
-		return this->extent;
+		return mExtent;
 	}
 
 	virtual void generateBuffer();

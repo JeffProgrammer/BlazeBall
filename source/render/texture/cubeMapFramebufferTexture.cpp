@@ -16,11 +16,10 @@ CubeMapFramebufferTexture::~CubeMapFramebufferTexture() {
 }
 
 void CubeMapFramebufferTexture::setExtent(const glm::ivec2 &extent) {
-	//Hardcoded but very changeable. Please try to use powers of 2 and squares.
-	this->extent = extent;
+	mExtent = extent;
 
 	//Cache the projection matrix for later
-	projectionMat = glm::perspective(glm::radians(90.f), (F32)extent.x / (F32)extent.y, 0.1f, 500.f);
+	mProjectionMat = glm::perspective(glm::radians(90.f), (F32)extent.x / (F32)extent.y, 0.1f, 500.f);
 
 	destroyBuffer();
 	generateBuffer();
@@ -42,22 +41,22 @@ void CubeMapFramebufferTexture::generateBuffer() {
 
 	for (int i = PositiveX; i <= NegativeZ; i ++) {
 		//Actually create the texture
-		glTexImage2D(i, 0, GL_RGBA8, extent.x, extent.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+		glTexImage2D(i, 0, GL_RGBA8, mExtent.x, mExtent.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 	}
 
 	//Create a framebuffer for capturing the scene
-	glGenFramebuffers(1, &framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glGenFramebuffers(1, &mFramebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
 
 	//Need a depth buffer so OpenGL knows what's in front. Otherwise the skybox
 	// will render in front of everything else.
-	glGenRenderbuffers(1, &depthBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, extent.x, extent.y);
+	glGenRenderbuffers(1, &mDepthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, mDepthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, mExtent.x, mExtent.y);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 	//Attach the depth buffer to the frame buffer
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, framebuffer);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mFramebuffer);
 
 	//Make sure we attach at least one color attachment so it completes the framebuffer
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X, mBuffer, 0);
@@ -78,11 +77,15 @@ void CubeMapFramebufferTexture::destroyBuffer() {
 	if (!mGenerated)
 		return;
 
-	glDeleteFramebuffers(1, &framebuffer);
-	glDeleteRenderbuffers(1, &depthBuffer);
+	glDeleteFramebuffers(1, &mFramebuffer);
+	glDeleteRenderbuffers(1, &mDepthBuffer);
 	glDeleteTextures(1, &mBuffer);
 }
 void CubeMapFramebufferTexture::generateBuffer(const glm::vec3 &center, const RenderInfo &info) {
+	if (!mGenerated) {
+		generateBuffer();
+	}
+
 	static std::map<int, glm::mat4> renderDirections;
 	if (renderDirections.size() == 0) {
 		//Obtained by strict trial+error. Should be the 6 ortho directions, rotated correctly.
@@ -102,14 +105,17 @@ void CubeMapFramebufferTexture::generateBuffer(const glm::vec3 &center, const Re
 	RenderInfo framebufferInfo(info);
 
 	framebufferInfo.isReflectionPass = true;
-	framebufferInfo.viewport.size = extent;
+	framebufferInfo.viewport.size = mExtent;
 	framebufferInfo.viewport.position = glm::ivec2(0, 0);
 	framebufferInfo.pixelDensity = 1.0f;
+
+	framebufferInfo.projectionMatrix = mProjectionMat;
+	framebufferInfo.cameraPosition = center;
 
 	framebufferInfo.setViewport();
 	glDisable(GL_SCISSOR_TEST);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
 
 	//Render each of the faces of the cubemap
 	for (int i = PositiveX; i <= NegativeZ; i ++) {
@@ -125,9 +131,7 @@ void CubeMapFramebufferTexture::generateBuffer(const glm::vec3 &center, const Re
 #endif
 
 		//Update the matrices on info (it's copied so this is ok)
-		framebufferInfo.projectionMatrix = projectionMat;
 		framebufferInfo.viewMatrix = viewMat;
-		framebufferInfo.cameraPosition = center;
 
 		//Let the scene render itself
 		framebufferInfo.renderWorld(framebufferInfo);
