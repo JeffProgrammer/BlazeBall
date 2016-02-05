@@ -27,7 +27,6 @@
 #include "game/movement.h"
 #include "game/camera.h"
 #include "game/skybox.h"
-#include "texture/cubeMapFramebufferTexture.h"
 #include "render/modelManager.h"
 #include "renderInfo.h"
 #include "base/config.h"
@@ -52,8 +51,6 @@ public:
 
 	std::vector<RenderedObject *> mRenderedObjects;
 	Skybox *mSkybox;
-	CubeMapFramebufferTexture *mMarbleCubemap;
-
 	Shader *mShapeShader;
 	
 	virtual void addObject(GameObject *object);

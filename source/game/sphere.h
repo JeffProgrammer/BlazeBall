@@ -17,6 +17,7 @@
 #include "render/material.h"
 #include "game/movement.h"
 #include "renderedObject.h"
+#include "render/texture/cubeMapFramebufferTexture.h"
 
 class Sphere : public RenderedObject {
 	const F32 AppliedAcceleration = 750.f; //Maximum, lowers when reaching max roll velocity
@@ -38,6 +39,8 @@ protected:
 	glm::vec3 mTorque;
 	F32 mMass;
 	F32 mRadius;
+
+	CubeMapFramebufferTexture *mCubemap;
 
 	bool mGenerated;
 

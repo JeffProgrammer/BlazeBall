@@ -20,10 +20,11 @@ GLuint gSphereVBO = 0;
 
 Sphere::Sphere() : RenderedObject(), mActor(nullptr) {
 	mGenerated = false;
+	mCubemap = nullptr;
 
 	mCameraYaw = 0.0f;
 	mCameraPitch = 0.0f;
-	}
+}
 
 Sphere::~Sphere() {
 	// todo: remove body from physics engine
@@ -84,6 +85,13 @@ void Sphere::generate() {
 	glGenBuffers(1, &gSphereVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * point, &points[0], GL_STATIC_DRAW);
+
+	mCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
+
+	Material *material = new Material("marble.skin");
+	material->setShader(Shader::getShaderByName("Sphere"));
+	material->setTexture(mCubemap, GL_TEXTURE3);
+	setMaterial(material);
 }
 
 void Sphere::calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix) {
@@ -113,6 +121,11 @@ void Sphere::render(RenderInfo &info) {
 
 	if (!mMaterial)
 		return;
+
+	//Generate the cubemap framebuffer texture from this sphere
+	if (!info.isReflectionPass) {
+		mCubemap->generateBuffer(getPosition(), info);
+	}
 
 	info.addRenderMethod(mMaterial, RenderInfo::RenderMethod::from_method<Sphere, &Sphere::draw>(this));
 }
@@ -402,14 +415,6 @@ void Sphere::onAddToScene() {
 	mWorld->getPhysicsEngine()->addBody(mActor);
 
 	mActor->setActivationState(false);
-
-	RenderWorld *renderer = dynamic_cast<RenderWorld *>(mWorld);
-	if (renderer) {
-		Material *material = new Material("marble.skin");
-		material->setTexture(renderer->mMarbleCubemap, GL_TEXTURE3);
-		material->setShader(Shader::getShaderByName("Sphere"));
-		setMaterial(material);
-	}
 }
 
 bool Sphere::readClientPacket(CharStream &stream) {

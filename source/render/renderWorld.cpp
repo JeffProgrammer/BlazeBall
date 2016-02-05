@@ -24,7 +24,6 @@ glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4(1.0f), glm::radians(
 #define TICK_MS 16.6666666666666667
 
 RenderWorld::RenderWorld(PhysicsEngine *physics, ScriptEngine *script) : World(physics, script) {
-	mMarbleCubemap = nullptr;
 	mDoDebugDraw = false;
 }
 
@@ -32,11 +31,6 @@ RenderWorld::~RenderWorld() {
 }
 
 void RenderWorld::render(RenderInfo &info) {
-	//TODO: Have this be on the marble somewhere, because this is just gross
-	if (mMarbleCubemap == nullptr) {
-		mMarbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
-	}
-	
 	//Get the camera transform from the marble
 	glm::mat4 cameraTransform(1.0f);
 	glm::vec3 cameraPosition(0.0f);
@@ -59,9 +53,6 @@ void RenderWorld::render(RenderInfo &info) {
 
 	info.isReflectionPass = false;
 	info.renderWorld = RenderInfo::RenderWorldMethod::from_method<RenderWorld, &RenderWorld::renderScene>(this);
-
-	glm::vec3 position = (mClient->getControlObject() ? mClient->getControlObject()->getPosition() : glm::vec3(0));
-	mMarbleCubemap->generateBuffer(position, info);
 
 	//Actually render everything
 	renderScene(info);
