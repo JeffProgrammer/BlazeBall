@@ -18,6 +18,7 @@ ElementWorldView::~ElementWorldView() {
 }
 
 void ElementWorldView::OnRender() {
+	//Get extent from the DOM
 	glm::ivec2 size(GetClientWidth(), GetClientHeight());
 
 	//Optimize
@@ -25,15 +26,21 @@ void ElementWorldView::OnRender() {
 		return;
 	glEnable(GL_SCISSOR_TEST);
 
+	//Get a RenderInfo so we can render the world
 	RenderInfo info = mClient->getRenderer()->getRenderInfo(size);
+
+	//Update viewport settings because we might be offset somewhat
 	info.viewport.size = size;
 	info.viewport.position = glm::ivec2(GetAbsoluteLeft(), GetAbsoluteTop());
 
+	//Focus on our region
 	info.setViewport();
 	info.setScissor();
 
+	//Actually render
 	static_cast<RenderWorld *>(mClient->getWorld())->render(info);
 
+	//Disable scissor for now
 	glDisable(GL_SCISSOR_TEST);
 }
 

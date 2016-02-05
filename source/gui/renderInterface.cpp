@@ -35,6 +35,7 @@
 #include "render/renderer.h"
 
 GuiRenderInterface::GuiRenderInterface(Client *client, PlatformWindow *window) : mClient(client), mWindow(window) {
+	//Get the screen's pixel density from our client
 	mPixelDensity = mClient->getRenderer()->getRenderInfo(glm::ivec2()).pixelDensity;
 
 	glGenBuffers(1, &mVBO);
@@ -91,6 +92,7 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 	auto vec = glm::vec2(translation.x, translation.y);
 	mShader->setUniformVector<glm::vec2>("translation", vec);
 	GL_CHECKERRORS();
+	//Should be the whole screen
 	glViewport(0, 0, mWindow->getWindowSize().x * mPixelDensity, mWindow->getWindowSize().y * mPixelDensity);
 	glm::mat4 ortho = glm::ortho(0.0f, (float)mWindow->getWindowSize().x * mPixelDensity, (float)mWindow->getWindowSize().y * mPixelDensity, 0.0f, 0.0f, 1.0f);
 	ortho = glm::scale(ortho, glm::vec3(mPixelDensity));
@@ -126,6 +128,7 @@ void GuiRenderInterface::EnableScissorRegion(bool enabled) {
 
 void GuiRenderInterface::SetScissorRegion(S32 x, S32 y, S32 width, S32 height) {
 	const auto &size = mWindow->getWindowSize();
+	//Need to scissor by pixel density because scaling
 	glScissor(x * mPixelDensity, (size.y - (y + height)) * mPixelDensity, width * mPixelDensity, height * mPixelDensity);
 }
 
