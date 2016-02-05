@@ -93,7 +93,7 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 	mShader->setUniformVector<glm::vec2>("translation", vec);
 	GL_CHECKERRORS();
 	//Should be the whole screen
-	glViewport(0, 0, mWindow->getWindowSize().x * mPixelDensity, mWindow->getWindowSize().y * mPixelDensity);
+	glViewport(0, 0, GLsizei(mWindow->getWindowSize().x * mPixelDensity), GLsizei(mWindow->getWindowSize().y * mPixelDensity));
 	glm::mat4 ortho = glm::ortho(0.0f, (float)mWindow->getWindowSize().x * mPixelDensity, (float)mWindow->getWindowSize().y * mPixelDensity, 0.0f, 0.0f, 1.0f);
 	ortho = glm::scale(ortho, glm::vec3(mPixelDensity));
 	ortho = glm::translate(ortho, glm::vec3(translation.x, translation.y, 0.0f));
@@ -129,7 +129,7 @@ void GuiRenderInterface::EnableScissorRegion(bool enabled) {
 void GuiRenderInterface::SetScissorRegion(S32 x, S32 y, S32 width, S32 height) {
 	const auto &size = mWindow->getWindowSize();
 	//Need to scissor by pixel density because scaling
-	glScissor(x * mPixelDensity, (size.y - (y + height)) * mPixelDensity, width * mPixelDensity, height * mPixelDensity);
+	glScissor(GLint(x * mPixelDensity), GLint((size.y - (y + height)) * mPixelDensity), GLsizei(width * mPixelDensity), GLsizei(height * mPixelDensity));
 }
 
 bool GuiRenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source) {
