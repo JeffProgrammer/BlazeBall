@@ -61,7 +61,7 @@ RenderInfo Renderer::getRenderInfo(const glm::ivec2 &size) {
 	RenderInfo info;
 	info.projectionMatrix = glm::perspective(glm::radians(90.f), aspect, 0.1f, 500.f);
 	info.viewport.size = mWindow->getWindowSize();
-	info.pixelDensity = mPixelDensity;
+	info.pixelDensity = glGetPixelDensityEXT();
 
 	return info;
 }
@@ -76,7 +76,7 @@ void Renderer::updateWindowSize(const glm::ivec2 &size) {
 	glGetIntegerv(GL_VIEWPORT, viewport);
 
 	//Should be 2x if you have a retina display
-	mPixelDensity = static_cast<F32>(viewport[2] / size.x);
+	glSetPixelDensityEXT(GLfloat(viewport[2] / size.x));
 
 	if (mRocketContext != nullptr)
 		mRocketContext->SetDimensions(Rocket::Core::Vector2i(size.x, size.y));

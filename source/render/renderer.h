@@ -44,8 +44,6 @@ protected:
 	bool mPrintFPS;
 	bool mShouldSleep;
 
-	F32 mPixelDensity;
-
 	glm::mat4 mScreenProjectionMatrix;
 public:
 	Renderer(Client *client);
