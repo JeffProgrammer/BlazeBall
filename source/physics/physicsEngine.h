@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef physicsEngine_h
-#define physicsEngine_h
+#ifndef _GAME_PHYSICS_PHYSICSENGINE_H_
+#define _GAME_PHYSICS_PHYSICSENGINE_H_
 
 #include <stdio.h>
 #include <functional>
@@ -65,4 +65,4 @@ public:
 
 };
 
-#endif
+#endif // _GAME_PHYSICS_PHYSICSENGINE_H_

@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef sphere_h
-#define sphere_h
+#ifndef _GAME_SPHERE_H_
+#define _GAME_SPHERE_H_
 
 #include <stdio.h>
 #include <vector>
@@ -114,4 +114,4 @@ public:
 	static void initScript(ScriptEngine *engine);
 };
 
-#endif
+#endif // _GAME_SPHERE_H_

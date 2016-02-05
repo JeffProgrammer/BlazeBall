@@ -31,4 +31,4 @@ public:
 	}
 };
 
-#endif
+#endif // _GAME_SHAPE_H_

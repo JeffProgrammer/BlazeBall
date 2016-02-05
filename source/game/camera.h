@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef camera_h
-#define camera_h
+#ifndef _GAME_CAMERA_H_
+#define _GAME_CAMERA_H_
 
 #include "base/types.h"
 #include "game/gameObject.h"
@@ -86,4 +86,4 @@ public:
 	static void initScript(ScriptEngine *engine);
 };
 
-#endif
+#endif // _GAME_CAMERA_H_

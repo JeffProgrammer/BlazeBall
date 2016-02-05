@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef RenderedObject_h
-#define RenderedObject_h
+#ifndef _GAME_RENDEREDOBJECT_H_
+#define _GAME_RENDEREDOBJECT_H_
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -63,4 +63,4 @@ protected:
 	DECLARE_SCRIPTOBJECT(RenderedObject);
 };
 
-#endif
+#endif // _GAME_RENDEREDOBJECT_H_

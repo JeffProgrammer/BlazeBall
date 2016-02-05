@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef skybox_h
-#define skybox_h
+#ifndef _GAME_SKYBOX_H_
+#define _GAME_SKYBOX_H_
 
 #include "gameObject.h"
 #include "render/material.h"
@@ -64,4 +64,4 @@ public:
 	static void initScript(ScriptEngine *engine);
 };
 
-#endif /* skybox_h */
+#endif // _GAME_SKYBOX_H_

@@ -56,4 +56,4 @@ public:
 	static void initScript(ScriptEngine *engine);
 };
 
-#endif
+#endif // _GAME_WORLD_H_

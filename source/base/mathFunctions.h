@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef mathfns_h
-#define mathfns_h
+#ifndef _BASE_MATHFUNCTIONS_H_
+#define _BASE_MATHFUNCTIONS_H_
 
 class PlaneF;
 
@@ -17,4 +17,4 @@ inline F32 toRadians(F32 degrees) {
 	return glm::radians(degrees);
 }
 
-#endif
+#endif // _BASE_MATHFUNCTIONS_H_

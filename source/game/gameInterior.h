@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef gameInterior_h
-#define gameInterior_h
+#ifndef _GAME_GAMEINTERIOR_H_
+#define _GAME_GAMEINTERIOR_H_
 
 #include "base/io.h"
 #include "base/types.h"
@@ -84,4 +84,4 @@ public:
 	static void initScript(ScriptEngine *engine);
 };
 
-#endif
+#endif // _GAME_GAMEINTERIOR_H_

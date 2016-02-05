@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef config_h
-#define config_h
+#ifndef _BASE_CONFIG_H_
+#define _BASE_CONFIG_H_
 
 #include "types.h"
 #include "io.h"
@@ -33,4 +33,4 @@ public:
 	}
 };
 
-#endif
+#endif // _BASE_CONFIG_H_

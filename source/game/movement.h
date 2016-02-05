@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef movement_h
-#define movement_h
+#ifndef _GAME_MOVEMENT_H_
+#define _GAME_MOVEMENT_H_
 
 #include "base/types.h"
 
@@ -31,4 +31,4 @@ struct Movement {
 	bool fire;
 };
 
-#endif
+#endif // _GAME_MOVEMENT_H_

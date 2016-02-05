@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef btPhysicsEngine_h
-#define btPhysicsEngine_h
+#ifndef _GAME_PHYSICS_BULLET_BTPHYSICSENGINE_H_
+#define _GAME_PHYSICS_BULLET_BTPHYSICSENGINE_H_
 
 #include <stdio.h>
 #include "base/types.h"
@@ -91,4 +91,4 @@ inline static const glm::quat btConvert(const btQuaternion &point) {
 	return glm::quat(point.w(), point.x(), point.y(), point.z());
 }
 
-#endif
+#endif // _GAME_PHYSICS_BULLET_BTPHYSICSENGINE_H_

@@ -75,4 +75,4 @@ struct Point {
 	}
 };
 
-#endif
+#endif // _BASE_MATHTYPES_H_

@@ -122,4 +122,4 @@ private:
 	Node *mRoot;
 };
 
-#endif
+#endif // _BASE_TREE_H_

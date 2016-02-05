@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef gameObject_h
-#define gameObject_h
+#ifndef _GAME_GAMEOBJECT_H_
+#define _GAME_GAMEOBJECT_H_
 
 #include <glm/matrix.hpp>
 
@@ -145,4 +145,4 @@ public:
 	static void initScript(ScriptEngine *engine);
 };
 
-#endif
+#endif // _GAME_GAMEOBJECT_H_

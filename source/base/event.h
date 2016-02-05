@@ -44,4 +44,4 @@ public:
 	}
 };
 
-#endif
+#endif // _BASE_EVENT_H_

@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef physicsSphere_h
-#define physicsSphere_h
+#ifndef _GAME_PHYSICS_PHYSICSSPHERE_H_
+#define _GAME_PHYSICS_PHYSICSSPHERE_H_
 
 #include "base/types.h"
 
@@ -18,4 +18,4 @@ public:
 	virtual void setRadius(const F32 &radius) = 0;
 };
 
-#endif
+#endif // _GAME_PHYSICS_PHYSICSSPHERE_H_

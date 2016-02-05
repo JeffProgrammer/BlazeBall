@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef btDebugDrawer_h
-#define btDebugDrawer_h
+#ifndef _GAME_PHYSICS_BULLET_BTDEBUGDRAWER_H_
+#define _GAME_PHYSICS_BULLET_BTDEBUGDRAWER_H_
 
 #include "btPhysicsEngine.h"
 #include "render/shader.h"
@@ -33,4 +33,4 @@ public:
 	void draw(RenderInfo &info, const PhysicsEngine::DebugDrawType &drawType);
 };
 
-#endif /* btDebugDrawer_h */
+#endif // _GAME_PHYSICS_BULLET_BTDEBUGDRAWER_H_

@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef btPhysicsBody_h
-#define btPhysicsBody_h
+#ifndef _GAME_PHYSICS_BULLET_BTPHYSICSBODY_H_
+#define _GAME_PHYSICS_BULLET_BTPHYSICSBODY_H_
 
 #include "physics/bullet/btPhysicsEngine.h"
 #include "physics/physicsBody.h"
@@ -49,4 +49,4 @@ public:
 	}
 };
 
-#endif /* btPhysicsBody_h */
+#endif // _GAME_PHYSICS_BULLET_BTPHYSICSBODY_H_
