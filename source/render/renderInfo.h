@@ -61,10 +61,26 @@ struct RenderInfo {
 	typedef delegate<void, RenderInfo &> RenderWorldMethod;
 #endif
 	std::unordered_map<Material *, std::vector<std::pair<RenderMethod, void *>>> renderMethods;
-
 	RenderWorldMethod renderWorld;
 
-	RenderInfo() : projectionMatrix(1), viewMatrix(1), cameraPosition(0), lightColor(0), ambientColor(0), sunPosition(0), specularExponent(1), isReflectionPass(false), viewport{glm::ivec2(0), glm::ivec2(0)}, pixelDensity(1), renderMethods(0) {
+	RenderInfo() : projectionMatrix(1), viewMatrix(1), cameraPosition(0), lightColor(0), ambientColor(0), sunPosition(0), specularExponent(1), isReflectionPass(false), viewport{glm::ivec2(0), glm::ivec2(0)}, pixelDensity(1), renderMethods(0), renderWorld() {
+
+	}
+
+	RenderInfo(const RenderInfo &other) :
+		//Copy every variable from the other info except for its RenderMethods
+		projectionMatrix(other.projectionMatrix),
+		viewMatrix(other.viewMatrix),
+		cameraPosition(other.cameraPosition),
+		lightColor(other.lightColor),
+		ambientColor(other.ambientColor),
+		sunPosition(other.sunPosition),
+		specularExponent(other.specularExponent),
+		isReflectionPass(other.isReflectionPass),
+		viewport(other.viewport),
+		pixelDensity(other.pixelDensity),
+		renderMethods(0), //Make sure to reset this to have nothing in it when we copy
+		renderWorld(other.renderWorld) {
 
 	}
 
