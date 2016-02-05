@@ -1,5 +1,11 @@
 #version 330 core
 
+//------------------------------------------------------------------------------
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
+// All rights reserved.
+//------------------------------------------------------------------------------
+
 layout(location = 0) in vec3 vertexPosition;
 layout(location = 1) in vec2 vertexUV;
 
