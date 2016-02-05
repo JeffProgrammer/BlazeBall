@@ -82,10 +82,7 @@ void CubeMapFramebufferTexture::destroyBuffer() {
 	glDeleteRenderbuffers(1, &depthBuffer);
 	glDeleteTextures(1, &mBuffer);
 }
-void CubeMapFramebufferTexture::generateBuffer(const glm::vec3 &center, std::function<void(RenderInfo &info)> renderMethod, RenderInfo info) {
-	//Need to set viewport size otherwise it will only get the corner part of the frame
-	glViewport(0, 0, extent.x, extent.y);
-
+void CubeMapFramebufferTexture::generateBuffer(const glm::vec3 &center, const RenderInfo &info) {
 	static std::map<int, glm::mat4> renderDirections;
 	if (renderDirections.size() == 0) {
 		//Obtained by strict trial+error. Should be the 6 ortho directions, rotated correctly.
@@ -97,14 +94,22 @@ void CubeMapFramebufferTexture::generateBuffer(const glm::vec3 &center, std::fun
 		renderDirections[NegativeZ] = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, -1, 0));
 	}
 
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
 #ifdef GRAPHICS_DEBUG
 	GLL::checkFrameBufferStatus();
 #endif
 
 	//We've copied info so we should set this
-	info.isReflectionPass = true;
+	RenderInfo framebufferInfo(info);
+
+	framebufferInfo.isReflectionPass = true;
+	framebufferInfo.viewport.size = extent;
+	framebufferInfo.viewport.position = glm::ivec2(0, 0);
+	framebufferInfo.pixelDensity = 1.0f;
+
+	framebufferInfo.setViewport();
+	glDisable(GL_SCISSOR_TEST);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
 	//Render each of the faces of the cubemap
 	for (int i = PositiveX; i <= NegativeZ; i ++) {
@@ -120,15 +125,17 @@ void CubeMapFramebufferTexture::generateBuffer(const glm::vec3 &center, std::fun
 #endif
 
 		//Update the matrices on info (it's copied so this is ok)
-		info.projectionMatrix = projectionMat;
-		info.viewMatrix = viewMat;
-		info.cameraPosition = center;
+		framebufferInfo.projectionMatrix = projectionMat;
+		framebufferInfo.viewMatrix = viewMat;
+		framebufferInfo.cameraPosition = center;
 
 		//Let the scene render itself
-		renderMethod(info);
+		framebufferInfo.renderWorld(framebufferInfo);
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	glEnable(GL_SCISSOR_TEST);
 	info.setViewport();
+	info.setScissor();
 }

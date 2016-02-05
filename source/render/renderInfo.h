@@ -32,6 +32,7 @@ using namespace srutil;
 #define SUN_POSITION_UNIFORM_NAME "sunPosition"
 #define SPECULAR_EXPONENT_UNIFORM_NAME "specularExponent"
 
+class RenderWorld;
 struct RenderInfo {
 	static glm::mat4 inverseRotMat;
 
@@ -54,10 +55,14 @@ struct RenderInfo {
 
 #ifdef SRUTIL_DELEGATE_PREFERRED_SYNTAX
 	typedef delegate<void(Material *, RenderInfo &, void *)> RenderMethod;
+	typedef delegate<void(RenderInfo &)> RenderWorldMethod;
 #else
 	typedef delegate<void, Material *, RenderInfo &> RenderMethod;
+	typedef delegate<void, RenderInfo &> RenderWorldMethod;
 #endif
 	std::unordered_map<Material *, std::vector<std::pair<RenderMethod, void *>>> renderMethods;
+
+	RenderWorldMethod renderWorld;
 
 	RenderInfo() : projectionMatrix(1), viewMatrix(1), cameraPosition(0), lightColor(0), ambientColor(0), sunPosition(0), specularExponent(1), isReflectionPass(false), viewport{glm::ivec2(0), glm::ivec2(0)}, pixelDensity(1), renderMethods(0) {
 
@@ -125,14 +130,14 @@ struct RenderInfo {
 	/**
 	 * Update OpenGL's viewport to only cover this RenderInfo
 	 */
-	void setViewport() {
+	void setViewport() const {
 		glViewport(GLint(viewport.position.x * pixelDensity), GLint(viewport.position.y * pixelDensity), GLsizei(viewport.size.x * pixelDensity), GLsizei(viewport.size.y * pixelDensity));
 	}
 
 	/**
 	 * Update OpenGL's scissor region to only cover this RenderInfo
 	 */
-	void setScissor() {
+	void setScissor() const {
 		glScissor(GLint(viewport.position.x * pixelDensity), GLint(viewport.position.y * pixelDensity), GLsizei(viewport.size.x * pixelDensity), GLsizei(viewport.size.y * pixelDensity));
 	}
 };

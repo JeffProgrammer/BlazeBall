@@ -32,7 +32,7 @@ public:
 
 	virtual void generateBuffer();
 	void destroyBuffer();
-	void generateBuffer(const glm::vec3 &center, std::function<void(RenderInfo &info)> renderMethod, RenderInfo info);
+	void generateBuffer(const glm::vec3 &center, const RenderInfo &info);
 };
 
 #endif /* cubeMapFramebufferTexture_h */

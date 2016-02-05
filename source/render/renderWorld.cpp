@@ -32,6 +32,7 @@ RenderWorld::~RenderWorld() {
 }
 
 void RenderWorld::render(RenderInfo &info) {
+	//TODO: Have this be on the marble somewhere, because this is just gross
 	if (mMarbleCubemap == nullptr) {
 		mMarbleCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
 	}
@@ -57,11 +58,10 @@ void RenderWorld::render(RenderInfo &info) {
 	info.specularExponent = specularExponent;
 
 	info.isReflectionPass = false;
+	info.renderWorld = RenderInfo::RenderWorldMethod::from_method<RenderWorld, &RenderWorld::renderScene>(this);
 
 	glm::vec3 position = (mClient->getControlObject() ? mClient->getControlObject()->getPosition() : glm::vec3(0));
-	mMarbleCubemap->generateBuffer(position, [&](RenderInfo &info) {
-		this->renderScene(info);
-	}, info);
+	mMarbleCubemap->generateBuffer(position, info);
 
 	//Actually render everything
 	renderScene(info);
