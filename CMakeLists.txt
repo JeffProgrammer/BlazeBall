@@ -622,7 +622,7 @@ source_group("graphics\\GL33"        REGULAR_EXPRESSION graphics/GL33/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
-target_compile_definitions(Game PUBLIC GLEW_STATIC GLM_FORCE_RADIANS)
+target_compile_definitions(Game PUBLIC GLEW_STATIC GLM_FORCE_RADIANS ROCKET_STATIC_LIB)
 
 if (MSVC)
 	add_definitions(-D_CRT_NONSTDC_NO_WARNINGS)

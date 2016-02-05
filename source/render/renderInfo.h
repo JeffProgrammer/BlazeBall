@@ -122,14 +122,14 @@ struct RenderInfo {
 	 * Update OpenGL's viewport to only cover this RenderInfo
 	 */
 	void setViewport() {
-		glViewport(viewport.position.x * pixelDensity, viewport.position.y * pixelDensity, viewport.size.x * pixelDensity, viewport.size.y * pixelDensity);
+		glViewport(GLint(viewport.position.x * pixelDensity), GLint(viewport.position.y * pixelDensity), GLsizei(viewport.size.x * pixelDensity), GLsizei(viewport.size.y * pixelDensity));
 	}
 
 	/**
 	 * Update OpenGL's scissor region to only cover this RenderInfo
 	 */
 	void setScissor() {
-		glScissor(viewport.position.x * pixelDensity, viewport.position.y * pixelDensity, viewport.size.x * pixelDensity, viewport.size.y * pixelDensity);
+		glScissor(GLint(viewport.position.x * pixelDensity), GLint(viewport.position.y * pixelDensity), GLsizei(viewport.size.x * pixelDensity), GLsizei(viewport.size.y * pixelDensity));
 	}
 };
 
