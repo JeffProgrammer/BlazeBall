@@ -69,4 +69,4 @@ public:
 	static void initScript(ScriptEngine *engine);
 };
 
-#endif
+#endif // _NETWORK_NETOBJECT_H_

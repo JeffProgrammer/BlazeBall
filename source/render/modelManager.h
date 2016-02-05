@@ -85,4 +85,4 @@ public:
 	}
 };
 
-#endif 
+#endif // _RENDER_MODELMANAGER_H_

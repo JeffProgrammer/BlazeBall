@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef SDLWindow_h
-#define SDLWindow_h
+#ifndef _PLATFORM_SDL_SDLWINDOW_H_
+#define _PLATFORM_SDL_SDLWINDOW_H_
 
 #include <stdio.h>
 #include "base/io.h"
@@ -35,4 +35,4 @@ public:
 	virtual bool pollEvents(PlatformEvent *&event);
 };
 
-#endif
+#endif // _PLATFORM_SDL_SDLWINDOW_H_

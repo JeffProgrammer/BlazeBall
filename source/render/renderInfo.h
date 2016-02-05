@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef renderInfo_h
-#define renderInfo_h
+#ifndef _RENDER_RENDERINFO_H_
+#define _RENDER_RENDERINFO_H_
 
 #define SRUTIL_DELEGATE_PREFERRED_SYNTAX
 
@@ -158,4 +158,4 @@ struct RenderInfo {
 	}
 };
 
-#endif 
+#endif  // _RENDER_RENDERINFO_H_

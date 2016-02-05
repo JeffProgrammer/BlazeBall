@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef timer_h
-#define timer_h
+#ifndef _PLATFORM_PLATFORMTIMER_H_
+#define _PLATFORM_PLATFORMTIMER_H_
 
 #include "base/types.h"
 #include <mutex>
@@ -49,4 +49,4 @@ public:
 	virtual F64 getElapsedTimeSinceStart() = 0;
 };
 
-#endif
+#endif // _PLATFORM_PLATFORMTIMER_H_

@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef texture_h
-#define texture_h
+#ifndef _RENDER_TEXTURE_TEXTURE_H_
+#define _RENDER_TEXTURE_TEXTURE_H_
 
 #include "platform/platformGL.h"
 #include "base/types.h"
@@ -43,5 +43,4 @@ public:
 	static std::string find(const std::string &fullName);
 };
 
-
-#endif /* texture_h */
+#endif // _RENDER_TEXTURE_TEXTURE_H_

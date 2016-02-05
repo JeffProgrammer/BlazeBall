@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef event_h
-#define event_h
+#ifndef _PLATFORM_PLATFORMEVENT_H_
+#define _PLATFORM_PLATFORMEVENT_H_
 
 #include "base/types.h"
 #include "base/event.h"
@@ -353,4 +353,4 @@ public:
 	WindowResizeEvent() : PlatformEvent(WindowResize), newSize(glm::ivec2(0, 0)) {};
 };
 
-#endif
+#endif // _PLATFORM_PLATFORMEVENT_H_

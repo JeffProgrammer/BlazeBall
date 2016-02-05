@@ -49,4 +49,4 @@ public:
 	void runLoop();
 };
 
-#endif
+#endif // _MAIN_GAMESTATE_H_

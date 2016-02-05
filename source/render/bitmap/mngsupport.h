@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef mngsupport_h
-#define mngsupport_h
+#ifndef _RENDER_BITMAP_MNGSUPPORT_H_
+#define _RENDER_BITMAP_MNGSUPPORT_H_
 
 #include <stdbool.h>
 #include "base/types.h"
@@ -21,4 +21,4 @@
  */
 bool mngReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, BitmapTexture::Format &format);
 
-#endif
+#endif // _RENDER_BITMAP_MNGSUPPORT_H_

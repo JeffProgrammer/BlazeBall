@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef tgasupport_h
-#define tgasupport_h
+#ifndef _RENDER_BITMAP_TGASUPPORT_H_
+#define _RENDER_BITMAP_TGASUPPORT_H_
 
 #include <stdbool.h>
 #include "base/types.h"
@@ -21,4 +21,4 @@
  */
 bool tgaReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, BitmapTexture::Format &format);
 
-#endif
+#endif // _RENDER_BITMAP_TGASUPPORT_H_

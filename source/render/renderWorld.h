@@ -65,4 +65,4 @@ public:
 	void setClient(Client *client) { mClient = client; }
 };
 
-#endif
+#endif // _RENDER_RENDERWORLD_H_

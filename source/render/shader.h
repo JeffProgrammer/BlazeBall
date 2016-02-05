@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef shader_h
-#define shader_h
+#ifndef _RENDER_SHADER_H_
+#define _RENDER_SHADER_H_
 
 #include <stdio.h>
 #include <string>
@@ -250,4 +250,4 @@ template<> inline void Shader::setUniformMatrix(const std::string &name, GLboole
 ShaderUniformMatrix(glm::mat3, glUniformMatrix3fv);
 ShaderUniformMatrix(glm::mat4, glUniformMatrix4fv);
 
-#endif
+#endif // _RENDER_SHADER_H_

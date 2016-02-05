@@ -41,4 +41,4 @@ public:
 	};
 };
 
-#endif
+#endif // _PLATFORM_PLATFORM_H_

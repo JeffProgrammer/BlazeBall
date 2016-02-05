@@ -298,4 +298,4 @@ inline std::string CharStream::pop() {
 	return data;
 }
 
-#endif
+#endif // _NETWORK_CHARSTREAM_H_

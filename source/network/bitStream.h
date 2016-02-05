@@ -170,5 +170,4 @@ public:
 	T peek() const;
 };
 
-
-#endif
+#endif // _NETWORK_BITSTREAM_H_

@@ -43,4 +43,4 @@ public:
 	void createPlayer();
 };
 
-#endif
+#endif // _NETWORK_CLIENTCONNECTION_H_

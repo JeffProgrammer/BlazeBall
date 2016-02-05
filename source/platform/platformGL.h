@@ -9,4 +9,4 @@
 
 #include "graphics/gl.h"
 
-#endif
+#endif // _PLATFORM_PLATFORMGL_H_

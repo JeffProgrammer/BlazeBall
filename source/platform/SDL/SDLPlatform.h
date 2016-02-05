@@ -16,4 +16,4 @@ public:
 	SDLPlatform(std::unique_ptr<PhysicsEngineFactory> &&physFactory) : Platform(std::move(physFactory)) {}
 };
 
-#endif
+#endif // _PLATFORM_SDL_SDLPLATFORM_H_

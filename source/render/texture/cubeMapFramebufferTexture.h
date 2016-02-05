@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef cubeMapFramebufferTexture_h
-#define cubeMapFramebufferTexture_h
+#ifndef _RENDER_TEXTURE_CUBEMAPFRAMEBUFFERTEXTURE_H_
+#define _RENDER_TEXTURE_CUBEMAPFRAMEBUFFERTEXTURE_H_
 
 #include "cubeMapTexture.h"
 #include "render/renderInfo.h"
@@ -35,4 +35,4 @@ public:
 	void generateBuffer(const glm::vec3 &center, const RenderInfo &info);
 };
 
-#endif /* cubeMapFramebufferTexture_h */
+#endif // _RENDER_TEXTURE_CUBEMAPFRAMEBUFFERTEXTURE_H_

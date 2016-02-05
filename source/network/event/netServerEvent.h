@@ -72,5 +72,4 @@ public:
 	virtual bool read(CharStream &data) override;
 };
 
-
-#endif
+#endif // _NETWORK_EVENT_NETSERVEREVENT_H_

@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef bitmapTexture_h
-#define bitmapTexture_h
+#ifndef _RENDER_TEXTURE_BITMAPTEXTURE_H_
+#define _RENDER_TEXTURE_BITMAPTEXTURE_H_
 
 #include "platform/platformGL.h"
 
@@ -55,4 +55,4 @@ public:
 	virtual void deactivate();
 };
 
-#endif
+#endif // _RENDER_TEXTURE_BITMAPTEXTURE_H_

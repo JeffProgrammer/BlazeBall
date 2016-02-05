@@ -23,4 +23,4 @@ namespace Network {
 	}
 }
 
-#endif
+#endif // _PLATFORM_NETWORK_H_

@@ -37,5 +37,4 @@ std::string vec3_to_string(const glm::vec3 &vec) {
 	return glm::to_string(vec);
 }
 
-
-#endif
+#endif _SCRIPTENGINE_SCRIPTMATH_H_

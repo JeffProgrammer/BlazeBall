@@ -5,8 +5,8 @@
 //------------------------------------------------------------------------------
 
 
-#ifndef _PLATFORMSDL_SDLCONFIG_H_
-#define _PLATFORMSDL_SDLCONFIG_H_
+#ifndef _PLATFORM_SDL_SDLCONFIG_H_
+#define _PLATFORM_SDL_SDLCONFIG_H_
 
 #include "platform/platformGL.h"
 
@@ -22,4 +22,4 @@
 /// The minor opengl version required
 #define SDL_CONFIG_MINOR_GL_VERSION 3
 
-#endif // _PLATFORMSDL_SDLCONFIG_H_
+#endif // _PLATFORM_SDL_SDLCONFIG_H_

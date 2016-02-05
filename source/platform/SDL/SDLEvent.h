@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef SDLEvent_h
-#define SDLEvent_h
+#ifndef _PLATFORM_SDL_SDLEVENT_H_
+#define _PLATFORM_SDL_SDLEVENT_H_
 
 #include <stdio.h>
 #include "platform/platformEvent.h"
@@ -47,4 +47,4 @@ namespace SDLEvent {
 	}
 };
 
-#endif
+#endif // _PLATFORM_SDL_SDLEVENT_H_

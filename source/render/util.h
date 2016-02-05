@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef _GRAPHICS_UTIL_H_
-#define _GRAPHICS_UTIL_H_
+#ifndef _RENDER_UTIL_H_
+#define _RENDER_UTIL_H_
 
 #include "base/io.h"
 
@@ -45,4 +45,4 @@ namespace GLL {
 	}
 }
 
-#endif // _GRAPHICS_UTIL_H_
+#endif // _RENDER_UTIL_H_

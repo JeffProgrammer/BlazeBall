@@ -77,4 +77,4 @@ protected:
 	std::unordered_map<NetObject *, U32> mGhostedIndices;
 };
 
-#endif
+#endif // _NETWORK_CLIENT_H_

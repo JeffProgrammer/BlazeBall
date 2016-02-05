@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef cubeMapTexture_h
-#define cubeMapTexture_h
+#ifndef _RENDER_TEXTURE_CUBEMAPTEXTURE_H_
+#define _RENDER_TEXTURE_CUBEMAPTEXTURE_H_
 
 #include <stdbool.h>
 #include "platform/platformGL.h"
@@ -121,4 +121,4 @@ public:
 	virtual void deactivate();
 };
 
-#endif
+#endif // _RENDER_TEXTURE_CUBEMAPTEXTURE_H_

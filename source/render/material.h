@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef material_h
-#define material_h
+#ifndef _RENDER_MATERIAL_H_
+#define _RENDER_MATERIAL_H_
 
 #include <stdio.h>
 #include <unordered_map>
@@ -175,4 +175,4 @@ public:
 	static void initScript(ScriptEngine *engine);
 };
 
-#endif 
+#endif // _RENDER_MATERIAL_H_

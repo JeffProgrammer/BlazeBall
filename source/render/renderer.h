@@ -65,4 +65,4 @@ public:
 	RenderInfo getRenderInfo(const glm::ivec2 &size);
 };
 
-#endif
+#endif _RENDER_RENDERER_H_

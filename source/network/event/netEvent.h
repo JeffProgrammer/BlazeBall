@@ -54,4 +54,4 @@ protected:
 	virtual bool read(CharStream &data);
 };
 
-#endif
+#endif // _NETWORK_EVENT_NETEVENT_H_

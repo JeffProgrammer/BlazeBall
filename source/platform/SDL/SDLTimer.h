@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef SDLTimer_h
-#define SDLTimer_h
+#ifndef _PLATFORM_SDL_SDLTIMER_H_
+#define _PLATFORM_SDL_SDLTIMER_H_
 
 #include <stdio.h>
 #include "platform/platformTimer.h"
@@ -89,4 +89,4 @@ public:
 	}
 };
 
-#endif
+#endif // _PLATFORM_SDL_SDLTIMER_H_
