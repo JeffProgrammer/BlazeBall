@@ -108,6 +108,8 @@ public:
 	void getViewportEXT(GLint &x, GLint &y, GLsizei &width, GLsizei &height);
 	void bindContextEXT(void *context);
 	GLuint getVideoRamEXT();
+	void setPixelDensityEXT(GLfloat pixelDensity);
+	GLfloat getPixelDensityEXT();
 
 /**
  * Public Static functions available from the GL "namespace"
@@ -132,6 +134,8 @@ protected:
 	} mViewport;
 	
 	void *mCurrentContext;
+
+	GLfloat mPixelDensity;
 };
 
 #endif // _GRAPHICS_GL_GLIMPLEMENTATION_H_

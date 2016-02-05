@@ -15,6 +15,7 @@ std::unique_ptr<GL> GL::sGL = nullptr;
 GL::GL() {
 	mViewport = Viewport(0, 0, 0, 0);
 	mCurrentContext = nullptr;
+	mPixelDensity = 1.0f;
 }
 
 void GL::activeTexture(GLenum texture) {
@@ -311,4 +312,15 @@ GLuint GL::getVideoRamEXT() {
 	// for now, return 0.
 	return 0;
 #endif
+}
+
+void GL::setPixelDensityEXT(GLfloat pixelDensity) {
+	if (mPixelDensity < 0.0f) {
+		return;
+	}
+	mPixelDensity = pixelDensity;
+}
+
+GLfloat GL::getPixelDensityEXT() {
+	return mPixelDensity;
 }

@@ -310,4 +310,20 @@ inline GLuint glGetVideoRamEXT() {
 	return GL::sGL->getVideoRamEXT();
 }
 
+/**
+ * Set's the pixel density. This is used for high dpi and/or retina displays.
+ * @param pixelDensity The density for high resolution.
+ */
+inline void glSetPixelDensityEXT(GLfloat pixelDensity) {
+	GL::sGL->setPixelDensityEXT(pixelDensity);
+}
+
+/**
+ * Get's the pixel density of the GL.
+ * @return the density.
+ */
+inline GLfloat glGetPixelDensityEXT() {
+	return GL::sGL->getPixelDensityEXT();
+}
+
 #endif // _GRAPHICS_GL_GL_H_
