@@ -26,7 +26,7 @@ glm::vec2 point_project_plane(const glm::vec3 &point, glm::vec3 normal, const gl
 	ycross = ycross * (1.0f / ycross.length());
 
 	glm::vec3 distance = point - origin;
-	F32 hypotenuse = distance.length();
+	F32 hypotenuse = F32(distance.length());
 
 	if (hypotenuse == 0.0f)
 		return glm::vec2(0, 0);
@@ -41,7 +41,7 @@ glm::vec2 point_project_plane(const glm::vec3 &point, glm::vec3 normal, const gl
 }
 
 F32 point_distance_to_line(const glm::vec3 &p, const glm::vec3 &q, const glm::vec3 &point) {
-	return (glm::cross(q - p, p - point)).length() / (q - p).length();
+	return F32((glm::cross(q - p, p - point)).length() / (q - p).length());
 }
 
 bool isCollinear(const glm::vec3 &up, const glm::vec3 &uq, const glm::vec3 &vp, const glm::vec3 &vq) {
