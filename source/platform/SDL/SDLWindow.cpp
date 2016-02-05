@@ -58,11 +58,11 @@ bool SDLWindow::createContext() {
 	IO::printf("Please note that your GPU may support a higher GL version or newer extensions.\n");
 	IO::printf("Extensions outside of the core may be used, but are not required.\n");
 	IO::printf("OpenGL Core Profile Info\n");
-	IO::printf("    Version: %s\n", glGetString(GL_VERSION));
-	IO::printf("     Vendor: %s\n", glGetString(GL_VENDOR));
+	IO::printf("   Version:  %s\n", glGetString(GL_VERSION));
+	IO::printf("   Vendor:   %s\n", glGetString(GL_VENDOR));
 	IO::printf("   Renderer: %s\n", glGetString(GL_RENDERER));
-	IO::printf("    Shading: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-	IO::printf("       VRAM: %uMB\n", glGetVideoRamEXT());
+	IO::printf("   Shading:  %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	IO::printf("   VRAM:     %uMB\n", glGetVideoRamEXT());
 
 	//Use Vsync
 	setVerticalSync(true);
