@@ -59,6 +59,10 @@ struct RenderInfo {
 #endif
 	std::unordered_map<Material *, std::vector<std::pair<RenderMethod, void *>>> renderMethods;
 
+	RenderInfo() : projectionMatrix(1), viewMatrix(1), cameraPosition(0), lightColor(0), ambientColor(0), sunPosition(0), specularExponent(1), isReflectionPass(false), viewport{glm::ivec2(0), glm::ivec2(0)}, pixelDensity(1), renderMethods(0) {
+
+	}
+
 	void loadShader(Shader *shader) const {
 		if (shader == nullptr)
 			shader = Shader::defaultShader;
