@@ -5,8 +5,6 @@
 </head>
 <body>
 <WorldView class="full">
-<div class="window" style="position: absolute; width: 50%; height: 50%; left: 25%; top: 25%;">
-</div>
 </WorldView>
 </body>
 </rml>
