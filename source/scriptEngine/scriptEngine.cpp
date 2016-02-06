@@ -80,10 +80,9 @@ bool ScriptEngine::init(const std::string &mainScript) {
 	AbstractClassRep::initScriptAPI(this);
 
 	// Engine functions
-	{
-		mEngine->add(chaiscript::fun(&echo<std::string>), "echo");
-		mEngine->add(chaiscript::fun(&echo<float>), "echo");
-		mEngine->add(chaiscript::fun(&echo<int>), "echo");
+	for (ScriptConsoleFunction *fn = ScriptConsoleFunction::sLast; fn != nullptr; fn = fn->mNext) {
+		// Bind each function.
+		mEngine->add(fn->getFunction(), fn->getName());
 	}
 
 	// execute main.chai
