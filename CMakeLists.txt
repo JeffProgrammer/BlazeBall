@@ -481,10 +481,6 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/skyboxV.glsl
 	source/shaders/sphereF.glsl
 	source/shaders/sphereV.glsl
-
-	# Scripts folder
-	source/scripts/mainClient.chai
-	source/scripts/mainServer.chai
 )
 
 if (APPLE)
