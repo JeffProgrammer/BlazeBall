@@ -300,7 +300,6 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/enet/include
 	thirdparty/enetpp/include
 	thirdparty/compat
-	thirdparty/chaiscript/include
 	thirdparty/librocket/Include
 	thirdparty/epoxy/include
 )

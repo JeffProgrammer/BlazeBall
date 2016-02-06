@@ -36,7 +36,6 @@ Third Party Libraries
 
 * Assimp - Model Importer
 * Bullet3D - Physics Library
-* ChaiScript - Scripting Language Library
 * ENet - Networking Library
 * ENetPP - Networking extensions library for ENet
 * FreeType - Font Library
