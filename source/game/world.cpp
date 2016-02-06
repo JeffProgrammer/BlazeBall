@@ -17,7 +17,7 @@
 
 IMPLEMENT_SCRIPTOBJECT(World, ScriptObject);
 
-World::World(PhysicsEngine *physics, ScriptEngine *script) : mPhysicsEngine(physics), mScriptEngine(script) {
+World::World(PhysicsEngine *physics) : mPhysicsEngine(physics) {
 	mPhysicsEngine->init();
 	mPhysicsEngine->setStepCallback([this](F64 delta){
 		this->tick(delta);
@@ -32,7 +32,6 @@ World::~World() {
 		delete object;
 	}
 	delete mPhysicsEngine;
-	delete mScriptEngine;
 }
 
 void World::loop(const F64 &delta) {
@@ -140,10 +139,7 @@ void World::addObject(GameObject *object) {
 	object->onAddToScene();
 }
 
-void World::initScript(ScriptEngine *engine) {
-	engine->addClass<World, ScriptObject, false>("World");
-	engine->addMethod(&World::findGameObject, "findGameObject");
-	engine->addMethod(&World::addObject, "addObject");
-	sConcreteClassRep.addSimpleField(engine, &World::mSimulationSpeed, "simulationSpeed");
-	sConcreteClassRep.addSimpleField(engine, &World::mRunning, "running");
+void World::initFields() {
+	AddField(World::mSimulationSpeed, "simulationSpeed");
+	AddField(World::mRunning, "running");
 }

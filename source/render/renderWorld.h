@@ -55,7 +55,7 @@ public:
 	
 	virtual void addObject(GameObject *object);
 
-	RenderWorld(PhysicsEngine *physics, ScriptEngine *script);
+	RenderWorld(PhysicsEngine *physics);
 	virtual ~RenderWorld();
 
 	void renderScene(RenderInfo &info);

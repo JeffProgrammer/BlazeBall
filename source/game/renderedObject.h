@@ -53,12 +53,6 @@ public:
 	 */
 	static void initFields();
 
-	/**
-	 * Initializes the scripting API for the respective sript engine.
-	 * @param engine The script engine to initialize to.
-	 */
-	static void initScript(ScriptEngine *engine);
-
 protected:
 	DECLARE_SCRIPTOBJECT(RenderedObject);
 };

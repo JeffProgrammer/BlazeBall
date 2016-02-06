@@ -23,7 +23,7 @@ glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4(1.0f), glm::radians(
 /// Default is 16.6667 ms which means we tick at 60 frames per second
 #define TICK_MS 16.6666666666666667
 
-RenderWorld::RenderWorld(PhysicsEngine *physics, ScriptEngine *script) : World(physics, script) {
+RenderWorld::RenderWorld(PhysicsEngine *physics) : World(physics) {
 	mDoDebugDraw = false;
 }
 

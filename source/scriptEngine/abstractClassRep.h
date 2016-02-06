@@ -11,7 +11,8 @@
 #include <string>
 #include "base/Tree.h"
 #include "game/scriptObject.h"
-#include "scriptEngine/scriptEngine.h"
+
+#include "scriptEngine/scriptTypes.inl"
 
 class World;
 class AbstractClassRep {
@@ -36,9 +37,8 @@ public:
 	}
 
 	template<typename ClassType, typename FieldType>
-	void addSimpleField(ScriptEngine *scripting, FieldType ClassType:: *field, const std::string &name) {
+	void addSimpleField(FieldType ClassType:: *field, const std::string &name) {
 		mFieldList[name] = Field(getOffset(field), scriptGetter<FieldType>, scriptSetter<FieldType>);
-		scripting->addField(field, name);
 	}
 
 	virtual ScriptObject* create(World *world) = 0;
@@ -68,7 +68,8 @@ public:
 	Field getField(const std::string &name) {
 		return mFieldList[name];
 	}
-	virtual void initScript(ScriptEngine *engine) = 0;
+
+	virtual void initFields() = 0;
 
 	std::string toString() {
 		return mName;
@@ -79,7 +80,7 @@ public:
 	}
 
 	static ScriptObject* createFromName(const std::string &name, World *world = nullptr);
-	static void initScriptAPI(ScriptEngine *engine);
+	static void init();
 
 protected:
 	static std::unordered_map<std::string, AbstractClassRep*> sClassRepMap;

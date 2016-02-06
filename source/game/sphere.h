@@ -107,11 +107,7 @@ public:
 	virtual bool writeClientPacket(CharStream &stream) const override;
 	virtual bool writeServerPacket(CharStream &stream) const override;
 
-	/**
-	 * Initializes the scripting API for the respective sript engine.
-	 * @param engine The script engine to initialize to.
-	 */
-	static void initScript(ScriptEngine *engine);
+	static void initFields();
 };
 
 #endif // _GAME_SPHERE_H_

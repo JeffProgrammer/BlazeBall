@@ -8,7 +8,7 @@
 #include <cstdlib>
 
 #include "physics/bullet/btPhysicsEngine.h"
-#include "scriptEngine/scriptEngine.h"
+#include "scriptEngine/abstractClassRep.h"
 #include "platform/SDL/SDLPlatform.h"
 #include "network/network.h"
 #include "main/gameState.h"
@@ -19,6 +19,9 @@ std::unique_ptr<GameState> GameState::gState = nullptr;
 
 int main(int argc, const char **argv) {
 	GameState::gState = std::make_unique<GameState>(std::make_unique<SDLPlatform>(std::make_unique<Platform::ConcretePhysicsEngineFactory<btPhysicsEngine>>()));
+
+	// Initialize JSON fields
+	AbstractClassRep::init();
 
 	// Load the networking engine
 	Network::init();

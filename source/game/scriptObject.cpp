@@ -7,7 +7,6 @@
 #include "game/scriptObject.h"
 #include "scriptEngine/abstractClassRep.h"
 #include "scriptEngine/concreteClassRep.h"
-#include "scriptEngine/scriptEngine.h"
 #include "game/world.h"
 
 #ifdef __APPLE__
@@ -30,11 +29,8 @@ ScriptObject::~ScriptObject() {
 	IO::printf("Destructed object %p\n", this);
 }
 
-void ScriptObject::initScript(ScriptEngine *engine) {
-	engine->addClass<ScriptObject>("ScriptObject");
-	engine->addMethod(&ScriptObject::getName, "getName");
-	engine->addMethod(&ScriptObject::setName, "setName");
-	sConcreteClassRep.addSimpleField(engine, &ScriptObject::mName, "name");
+void ScriptObject::initFields() {
+	AddField(ScriptObject::mName, "name");
 }
 
 bool ScriptObject::getMemberField(const std::string &name, std::string &value) {

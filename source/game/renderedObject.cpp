@@ -37,7 +37,3 @@ void RenderedObject::loadModelMatrix(const RenderInfo &info, Shader *shader) {
 void RenderedObject::initFields() {
 	// Nothing at the moment.
 }
-
-void RenderedObject::initScript(ScriptEngine *engine) {
-	// Nothing.
-}

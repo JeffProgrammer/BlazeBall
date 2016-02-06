@@ -30,6 +30,6 @@ bool NetObject::write(CharStream &stream) const {
 	return true;
 }
 
-void NetObject::initScript(ScriptEngine *engine) {
+void NetObject::initFields() {
 	// Nothing.
 }

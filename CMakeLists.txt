@@ -460,13 +460,7 @@ set (DIFVIEWERGAME_SRC
 	source/scriptEngine/abstractClassRep.h
 	source/scriptEngine/abstractClassRep.cpp
 	source/scriptEngine/concreteClassRep.h
-	source/scriptEngine/scriptAPI.cpp
-	source/scriptEngine/scriptAPI.h
-	source/scriptEngine/scriptEngine.cpp
-	source/scriptEngine/scriptEngine.h
-	source/scriptEngine/scriptEngine.inl
-	source/scriptEngine/scriptFunctions.h
-	source/scriptEngine/scriptMath.h
+	source/scriptEngine/scriptTypes.inl
 
 	# Shaders folder
 	source/shaders/defaultF.glsl

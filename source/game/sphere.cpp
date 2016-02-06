@@ -523,10 +523,8 @@ bool Sphere::writeServerPacket(CharStream &stream) const {
 	return true;
 }
 
-void Sphere::initScript(ScriptEngine *engine) {
-	engine->addClass<Sphere, RenderedObject>("Sphere");
-	engine->addMethod(&Sphere::getRadius, "getRadius");
-	engine->addMethod(&Sphere::setRadius, "setRadius");
+void Sphere::initFields() {
+	// TODO
 }
 
 // OLD JUMP CODE

@@ -129,14 +129,13 @@ void Skybox::onAddToScene() {
 	mMaterial = skyMaterial;
 }
 
-void Skybox::initScript(ScriptEngine *engine) {
-	engine->addClass<Skybox, RenderedObject>("skybox");
-	sConcreteClassRep.addSimpleField(engine, &Skybox::mFace0, "face0");
-	sConcreteClassRep.addSimpleField(engine, &Skybox::mFace1, "face1");
-	sConcreteClassRep.addSimpleField(engine, &Skybox::mFace2, "face2");
-	sConcreteClassRep.addSimpleField(engine, &Skybox::mFace3, "face3");
-	sConcreteClassRep.addSimpleField(engine, &Skybox::mFace4, "face4");
-	sConcreteClassRep.addSimpleField(engine, &Skybox::mFace5, "face5");
+void Skybox::initFields() {
+	AddField(Skybox::mFace0, "face0");
+	AddField(Skybox::mFace1, "face1");
+	AddField(Skybox::mFace2, "face2");
+	AddField(Skybox::mFace3, "face3");
+	AddField(Skybox::mFace4, "face4");
+	AddField(Skybox::mFace5, "face5");
 }
 
 bool Skybox::read(CharStream &stream) {

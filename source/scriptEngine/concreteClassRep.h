@@ -41,14 +41,13 @@ public:
 		return obj;
 	}
 
-	virtual void initScript(ScriptEngine *engine) {
-		ClassType::initScript(engine);
+	virtual void initFields() {
+		ClassType::initFields();
 	}
 
 	template<typename FieldType>
-	void addSimpleField(ScriptEngine *scripting, FieldType ClassType:: *field, const std::string &name) {
+	void addSimpleField(FieldType ClassType:: *field, const std::string &name) {
 		mFieldList[name] = Field(getOffset(field), scriptGetter<FieldType>, scriptSetter<FieldType>);
-		scripting->addField(field, name);
 	}
 };
 
@@ -71,5 +70,8 @@ inline ptrdiff_t getOffset(long offset) {
 
 #define IMPLEMENT_SCRIPTOBJECT(className, parent) \
 	ConcreteClassRep<className> className::sConcreteClassRep(#className, #parent)
+
+#define AddField(field, name) \
+	sConcreteClassRep.addSimpleField(&field, name)
 
 #endif // _SCRIPTENGINE_CONCRETECLASSREP_H_

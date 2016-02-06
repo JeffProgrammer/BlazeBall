@@ -109,10 +109,9 @@ void Material::setTexture(Texture *texture, const GLuint &index) {
 	this->mTextures[index] = texture;
 }
 
-void Material::initScript(ScriptEngine *engine) {
-	engine->addClass<Material, ScriptObject>("Material");
-	sConcreteClassRep.addSimpleField(engine, &Material::mShaderName, "shader");
-	sConcreteClassRep.addSimpleField(engine, &Material::mDiffuseTextureName, "diffuseTexture");
-	sConcreteClassRep.addSimpleField(engine, &Material::mNormalTextureName, "normalTexture");
-	sConcreteClassRep.addSimpleField(engine, &Material::mSpecularTextureName, "specularTexture");
+void Material::initFields() {
+	AddField(Material::mShaderName, "shader");
+	AddField(Material::mDiffuseTextureName, "diffuseTexture");
+	AddField(Material::mNormalTextureName, "normalTexture");
+	AddField(Material::mSpecularTextureName, "specularTexture");
 }

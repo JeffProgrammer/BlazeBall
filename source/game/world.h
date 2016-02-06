@@ -18,7 +18,6 @@ class World : public ScriptObject {
 protected:
 	std::vector<GameObject *> mObjects;
 	PhysicsEngine *mPhysicsEngine;
-	ScriptEngine *mScriptEngine;
 
 	bool mRunning;
 	bool mShouldSleep;
@@ -31,11 +30,10 @@ public:
 		//Needed to make ConcreteClassRep shut up; don't use this
 		assert(false);
 	}
-	World(PhysicsEngine *physics, ScriptEngine *script);
+	World(PhysicsEngine *physics);
 	virtual ~World();
 
 	PhysicsEngine *getPhysicsEngine() { return mPhysicsEngine; }
-	ScriptEngine *getScriptEngine() { return mScriptEngine; }
 
 	bool getRunning() { return mRunning; }
 	void setRunning(bool running) { mRunning = running; }
@@ -49,11 +47,7 @@ public:
 	GameObject *findGameObject(const std::string &name);
 	virtual void addObject(GameObject *object);
 
-	/**
-	 * Initializes the scripting API for the respective sript engine.
-	 * @param engine The script engine to initialize to.
-	 */
-	static void initScript(ScriptEngine *engine);
+	static void initFields();
 };
 
 #endif // _GAME_WORLD_H_

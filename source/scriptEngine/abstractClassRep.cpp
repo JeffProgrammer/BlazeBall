@@ -7,6 +7,10 @@
 #include "abstractClassRep.h"
 #include "game/gameObject.h"
 
+// initialize the lined list for abstractclassrep
+AbstractClassRep *AbstractClassRep::sLast = nullptr;
+std::unordered_map<std::string, AbstractClassRep*> AbstractClassRep::sClassRepMap;
+
 ScriptObject *AbstractClassRep::createFromName(const std::string &name, World *world) {
 	ScriptObject *obj = sClassRepMap[name]->create(world);
 	if (world) {
@@ -14,7 +18,8 @@ ScriptObject *AbstractClassRep::createFromName(const std::string &name, World *w
 	}
 	return obj;
 }
-void AbstractClassRep::initScriptAPI(ScriptEngine *engine) {
+
+void AbstractClassRep::init() {
 	Tree<AbstractClassRep*> tree;
 	std::unordered_map<AbstractClassRep*, Tree<AbstractClassRep*>::Node*> map;
 
@@ -50,6 +55,6 @@ void AbstractClassRep::initScriptAPI(ScriptEngine *engine) {
 		if (classRep->parent != nullptr)
 			classRep->data->mFieldList.insert(classRep->parent->data->mFieldList.begin(), classRep->parent->data->mFieldList.end());
 
-		classRep->data->initScript(engine);
+		classRep->data->initFields();
 	}
 }
