@@ -25,8 +25,8 @@ static void echo(const std::string &in) {
 	IO::printf("%s\n", in.c_str());
 }
 
-BindTemplateScriptFunction(echo, string, echo<std::string>);
-BindTemplateScriptFunction(echo, F32, echo<F32>);
-BindTemplateScriptFunction(echo, S32, echo<S32>);
+BindOverloadedScriptFunction(echo, string, echo<std::string>);
+BindOverloadedScriptFunction(echo, F32, echo<F32>);
+BindOverloadedScriptFunction(echo, S32, echo<S32>);
 
 #endif // _SCRIPTENGINE_SCRIPTFUNCTION_H_
