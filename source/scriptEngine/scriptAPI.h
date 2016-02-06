@@ -23,10 +23,7 @@
  *   int add_fn(int a, int b) { return a + b; }
  *   BindScriptFunction(add, add_fn);
  *
- * To expose a templated or overloaded function, use the following macro:
- *    BindOverloadedScriptFunction(function_api_here_in_script,
- *                                 one_different_type_here_used_internally,
- *                                 function_c++_name_here);
+ * To expose a templated or overloaded function, use the following macros:
  * Template exmaple:
  *
  *    template<typename T>
@@ -36,6 +33,13 @@
  *    BindOverloadedScriptFunction(echo, string, echo<std::string>);
  *    BindOverloadedScriptFunction(echo, F32, echo<F32>);
  *    BindOverloadedScriptFunction(echo, S32, echo<S32>);
+ *
+ * Overloaded example:
+ *
+ *    static void print(S32 x) { IO::printf("%d\n", x); }
+ *    static void print(F32 x) { IO::printf("%f\n", x); }
+ *    BindOverloadedScriptFunction(print, int_fn, void, (S32), print);
+ *    BindOverlaodedScriptFunction(print, float_fn, void, (F32), print);
  */
 class ScriptConsoleFunction {
 public:
@@ -111,7 +115,22 @@ private:
  *  object.
  * @param function The c++ function.
  */
-#define BindOverloadedScriptFunction(name, type, function) \
+#define BindTemplatedScriptFunction(name, type, function) \
 	ScriptConsoleFunction scf_##name##type(#name, chaiscript::fun(&function))
+
+/**
+ * Binds a overloaded or templated c++ function to the script layer.
+ * @param name The script API name of the function.
+ * @param internalName The specialized type of the function. Note that this
+ *  does not affect the scripting layer at all, as this is just used
+ *  internally to use as part of the unique object name. Since it is
+ *  overloaded, we have to have some way of specifying a unique
+ *  object.
+ * @param returnType The return type of the function.
+ * @param args The argument list of the function, in parenthesis.
+ * @param function The c++ function.
+ */
+#define BindOverloadedScriptFunction(name, internalName, returnType, args, function) \
+	ScriptConsoleFunction scf_##name##internalName(#name, chaiscript::fun(static_cast<returnType (*)args>(&function)))
 
 #endif // _SCRIPTENGINE_SCRIPTAPI_H_

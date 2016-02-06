@@ -25,8 +25,26 @@ static void echo(const std::string &in) {
 	IO::printf("%s\n", in.c_str());
 }
 
-BindOverloadedScriptFunction(echo, string, echo<std::string>);
-BindOverloadedScriptFunction(echo, F32, echo<F32>);
-BindOverloadedScriptFunction(echo, S32, echo<S32>);
+void printAdd(S32 a, S32 b) {
+	IO::printf("%d + %d = %d\n", a, b, a + b);
+}
+
+void printAdd(F64 a, F64 b) {
+	IO::printf("%f + %f = %f\n", a, b, a + b);
+}
+
+void printAdd(F32 a, F32 b) {
+	IO::printf("%f + %f = %f\n", a, b, a + b);
+}
+
+// Echo
+BindTemplatedScriptFunction(echo, string, echo<std::string>);
+BindTemplatedScriptFunction(echo, F32, echo<F32>);
+BindTemplatedScriptFunction(echo, S32, echo<S32>);
+
+// printAdd
+BindOverloadedScriptFunction(printAdd, int_fn, void, (S32, S32), printAdd);
+BindOverloadedScriptFunction(printAdd, float_fn, void, (F32, F32), printAdd);
+BindOverloadedScriptFunction(printAdd, double_fn, void, (F64, F64), printAdd);
 
 #endif // _SCRIPTENGINE_SCRIPTFUNCTION_H_
