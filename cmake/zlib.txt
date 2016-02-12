@@ -1,0 +1,31 @@
+set (ZLIB_SRC
+	thirdparty/zlib/adler32.c
+	thirdparty/zlib/compress.c
+	thirdparty/zlib/crc32.c
+	thirdparty/zlib/crc32.h
+	thirdparty/zlib/deflate.c
+	thirdparty/zlib/deflate.h
+	thirdparty/zlib/gzclose.c
+	thirdparty/zlib/gzguts.h
+	thirdparty/zlib/gzlib.c
+	thirdparty/zlib/gzread.c
+	thirdparty/zlib/gzwrite.c
+	thirdparty/zlib/infback.c
+	thirdparty/zlib/inffast.c
+	thirdparty/zlib/inffast.h
+	thirdparty/zlib/inffixed.h
+	thirdparty/zlib/inflate.c
+	thirdparty/zlib/inflate.h
+	thirdparty/zlib/inftrees.c
+	thirdparty/zlib/inftrees.h
+	thirdparty/zlib/trees.c
+	thirdparty/zlib/trees.h
+	thirdparty/zlib/uncompr.c
+	thirdparty/zlib/zconf.h
+	thirdparty/zlib/zlib.h
+	thirdparty/zlib/zutil.c
+	thirdparty/zlib/zutil.h
+)
+
+add_library(Zlib STATIC ${ZLIB_SRC})
+set_property (TARGET Zlib APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/zlib")

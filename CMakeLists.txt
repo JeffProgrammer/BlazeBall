@@ -32,250 +32,23 @@ macro(ADD_FRAMEWORK appname fwname)
 endmacro(ADD_FRAMEWORK)
 
 #------------------------------------------------------------------------------
-# Zlib
+# Third party projects
 #------------------------------------------------------------------------------
 
-set (ZLIB_SRC
-	thirdparty/zlib/adler32.c
-	thirdparty/zlib/compress.c
-	thirdparty/zlib/crc32.c
-	thirdparty/zlib/crc32.h
-	thirdparty/zlib/deflate.c
-	thirdparty/zlib/deflate.h
-	thirdparty/zlib/gzclose.c
-	thirdparty/zlib/gzguts.h
-	thirdparty/zlib/gzlib.c
-	thirdparty/zlib/gzread.c
-	thirdparty/zlib/gzwrite.c
-	thirdparty/zlib/infback.c
-	thirdparty/zlib/inffast.c
-	thirdparty/zlib/inffast.h
-	thirdparty/zlib/inffixed.h
-	thirdparty/zlib/inflate.c
-	thirdparty/zlib/inflate.h
-	thirdparty/zlib/inftrees.c
-	thirdparty/zlib/inftrees.h
-	thirdparty/zlib/trees.c
-	thirdparty/zlib/trees.h
-	thirdparty/zlib/uncompr.c
-	thirdparty/zlib/zconf.h
-	thirdparty/zlib/zlib.h
-	thirdparty/zlib/zutil.c
-	thirdparty/zlib/zutil.h
-)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/zlib.txt)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/jpeg.txt)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/mng.txt)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/tga.txt)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/dif.txt)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/epoxy.txt)
 
-add_library(Zlib STATIC ${ZLIB_SRC})
-set_property (TARGET Zlib APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/zlib")
-
-#------------------------------------------------------------------------------
-# JPEG Library
-#------------------------------------------------------------------------------
-
-set (JPEG_SRC
-	thirdparty/jpeg/jaricom.c
-	thirdparty/jpeg/jcapimin.c
-	thirdparty/jpeg/jcapistd.c
-	thirdparty/jpeg/jcarith.c
-	thirdparty/jpeg/jccoefct.c
-	thirdparty/jpeg/jccolor.c
-	thirdparty/jpeg/jcdctmgr.c
-	thirdparty/jpeg/jchuff.c
-	thirdparty/jpeg/jcinit.c
-	thirdparty/jpeg/jcmainct.c
-	thirdparty/jpeg/jcmarker.c
-	thirdparty/jpeg/jcmaster.c
-	thirdparty/jpeg/jcomapi.c
-	thirdparty/jpeg/jcparam.c
-	thirdparty/jpeg/jcprepct.c
-	thirdparty/jpeg/jcsample.c
-	thirdparty/jpeg/jctrans.c
-	thirdparty/jpeg/jdapimin.c
-	thirdparty/jpeg/jdapistd.c
-	thirdparty/jpeg/jdarith.c
-	thirdparty/jpeg/jdatadst.c
-	thirdparty/jpeg/jdatasrc.c
-	thirdparty/jpeg/jdcoefct.c
-	thirdparty/jpeg/jdcolor.c
-	thirdparty/jpeg/jddctmgr.c
-	thirdparty/jpeg/jdhuff.c
-	thirdparty/jpeg/jdinput.c
-	thirdparty/jpeg/jdmainct.c
-	thirdparty/jpeg/jdmarker.c
-	thirdparty/jpeg/jdmaster.c
-	thirdparty/jpeg/jdmerge.c
-	thirdparty/jpeg/jdpostct.c
-	thirdparty/jpeg/jdsample.c
-	thirdparty/jpeg/jdtrans.c
-	thirdparty/jpeg/jerror.c
-	thirdparty/jpeg/jfdctflt.c
-	thirdparty/jpeg/jfdctfst.c
-	thirdparty/jpeg/jfdctint.c
-	thirdparty/jpeg/jidctflt.c
-	thirdparty/jpeg/jidctfst.c
-	thirdparty/jpeg/jidctint.c
-	thirdparty/jpeg/jquant1.c
-	thirdparty/jpeg/jquant2.c
-	thirdparty/jpeg/jutils.c
-	thirdparty/jpeg/jmemmgr.c
-)
-
-if (APPLE)
-	set(JPEG_SRC ${JPEG_SRC}
-		thirdparty/jpeg/jmemnobs.c
-	)
-elseif (MSVC)
-	set(JPEG_SRC ${JPEG_SRC}
-		thirdparty/jpeg/jmemansi.c
-	)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/librocket/build" LibRocket)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/enet" ENet)
+if (MSVC)
+	add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
 endif()
-
-add_library(Jpeg STATIC ${JPEG_SRC})
-set_property (TARGET Jpeg APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
-add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-
-#------------------------------------------------------------------------------
-# MNG Library
-#------------------------------------------------------------------------------
-
-set (MNG_SRC
-	thirdparty/mng/libmng_callback_xs.c
-	thirdparty/mng/libmng_chunk_descr.c
-	thirdparty/mng/libmng_chunk_descr.h
-	thirdparty/mng/libmng_chunk_io.c
-	thirdparty/mng/libmng_chunk_io.h
-	thirdparty/mng/libmng_chunk_prc.c
-	thirdparty/mng/libmng_chunk_prc.h
-	thirdparty/mng/libmng_chunk_xs.c
-	thirdparty/mng/libmng_cms.c
-	thirdparty/mng/libmng_cms.h
-	thirdparty/mng/libmng_conf.h
-	thirdparty/mng/libmng_data.h
-	thirdparty/mng/libmng_display.c
-	thirdparty/mng/libmng_display.h
-	thirdparty/mng/libmng_dither.c
-	thirdparty/mng/libmng_dither.h
-	thirdparty/mng/libmng_error.c
-	thirdparty/mng/libmng_error.h
-	thirdparty/mng/libmng_filter.c
-	thirdparty/mng/libmng_filter.h
-	thirdparty/mng/libmng_hlapi.c
-	thirdparty/mng/libmng_jpeg.c
-	thirdparty/mng/libmng_jpeg.h
-	thirdparty/mng/libmng_memory.h
-	thirdparty/mng/libmng_object_prc.c
-	thirdparty/mng/libmng_object_prc.h
-	thirdparty/mng/libmng_objects.h
-	thirdparty/mng/libmng_pixels.c
-	thirdparty/mng/libmng_pixels.h
-	thirdparty/mng/libmng_prop_xs.c
-	thirdparty/mng/libmng_read.c
-	thirdparty/mng/libmng_read.h
-	thirdparty/mng/libmng_trace.c
-	thirdparty/mng/libmng_trace.h
-	thirdparty/mng/libmng_types.h
-	thirdparty/mng/libmng_write.c
-	thirdparty/mng/libmng_write.h
-	thirdparty/mng/libmng_zlib.c
-	thirdparty/mng/libmng_zlib.h
-	thirdparty/mng/libmng.h
-)
-
-add_library(Mng STATIC ${MNG_SRC})
-target_link_libraries(Mng Jpeg Zlib)
-set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
-
-#------------------------------------------------------------------------------
-# TGALib library
-#------------------------------------------------------------------------------
-
-set (TGALIB_SRC
-	thirdparty/tgalib/tga.c
-)
-
-add_library(TGALib ${TGALIB_SRC})
-set_property (TARGET TGALib APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/tgalib")
-
-#------------------------------------------------------------------------------
-# Epoxy Library
-#------------------------------------------------------------------------------
-
-set (EPOXY_SRC
-	thirdparty/epoxy/src/dispatch_common.c
-	thirdparty/epoxy/src/dispatch_common.h
-	thirdparty/epoxy/src/gl_generated_dispatch.c
-)
-if (WIN32)
-	#WGL
-	set (EPOXY_SRC
-		${EPOXY_SRC}
-		thirdparty/epoxy/src/dispatch_wgl.c
-		thirdparty/epoxy/src/wgl_generated_dispatch.c
-	)
-elseif (UNIX AND NOT APPLE)
-	#GLX
-	set (EPOXY_SRC
-		${EPOXY_SRC}
-		thirdparty/epoxy/src/dispatch_glx.c
-		thirdparty/epoxy/src/glx_generated_dispatch.c
-	)
-endif()
-add_library(Epoxy STATIC ${EPOXY_SRC})
-if (WIN32)
-	target_compile_definitions(Epoxy PUBLIC BUILD_WGL)
-elseif (UNIX AND NOT APPLE)
-	target_compile_definitions(Epoxy PUBLIC BUILD_GLX)
-endif()
-set_property(TARGET Epoxy APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/epoxy/include")
-
-#------------------------------------------------------------------------------
-# DIF Library
-#------------------------------------------------------------------------------
-
-set (DIF_SRC
-	############################################################################
-	# Sources
-	############################################################################
-
-	# Base
-	dif/src/dif/base/io.cpp
-
-	# Objects
-	dif/src/dif/objects/aiSpecialNode.cpp
-	dif/src/dif/objects/dif.cpp
-	dif/src/dif/objects/forceField.cpp
-	dif/src/dif/objects/gameEntity.cpp
-	dif/src/dif/objects/interior.cpp
-	dif/src/dif/objects/interiorPathFollower.cpp
-	dif/src/dif/objects/staticMesh.cpp
-	dif/src/dif/objects/trigger.cpp
-	dif/src/dif/objects/vehicleCollision.cpp
-
-	############################################################################
-	# Headers
-	############################################################################
-
-	# Base
-	dif/include/dif/base/color.h
-	dif/include/dif/base/io.h
-	dif/include/dif/base/point2.h
-	dif/include/dif/base/point3.h
-	dif/include/dif/base/types.h
-
-	# Objects
-	dif/include/dif/objects/aiSpecialNode.h
-	dif/include/dif/objects/dif.h
-	dif/include/dif/objects/forceField.h
-	dif/include/dif/objects/gameEntity.h
-	dif/include/dif/objects/interior.h
-	dif/include/dif/objects/interiorPathFollower.h
-	dif/include/dif/objects/staticMesh.h
-	dif/include/dif/objects/trigger.h
-	dif/include/dif/objects/vehicleCollision.h
-)
-
-# Create the library
-add_library(Dif STATIC ${DIF_SRC})
-set_property(TARGET Dif APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/dif/include")
 
 #------------------------------------------------------------------------------
 # Main Project Executable
@@ -486,35 +259,6 @@ if (APPLE)
 		source/graphics/glMac.mm
 	)
 endif()
-
-#------------------------------------------------------------------------------
-# SDL
-#------------------------------------------------------------------------------
-
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
-
-#------------------------------------------------------------------------------
-# Bullet Physics Library
-#------------------------------------------------------------------------------
-
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
-
-#------------------------------------------------------------------------------
-# Bullet Physics Library
-#------------------------------------------------------------------------------
-
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/librocket/build" LibRocket)
-
-#------------------------------------------------------------------------------
-# ENet Networking Library
-#------------------------------------------------------------------------------
-
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/enet" ENet)
-if (MSVC)
-	add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
-endif()
-
-#------------------------------------------------------------------------------
 
 set (DIFVIEWERGAME_LIBRARIES
 	# Bullet

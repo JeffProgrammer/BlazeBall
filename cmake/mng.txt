@@ -1,0 +1,46 @@
+set (MNG_SRC
+	thirdparty/mng/libmng_callback_xs.c
+	thirdparty/mng/libmng_chunk_descr.c
+	thirdparty/mng/libmng_chunk_descr.h
+	thirdparty/mng/libmng_chunk_io.c
+	thirdparty/mng/libmng_chunk_io.h
+	thirdparty/mng/libmng_chunk_prc.c
+	thirdparty/mng/libmng_chunk_prc.h
+	thirdparty/mng/libmng_chunk_xs.c
+	thirdparty/mng/libmng_cms.c
+	thirdparty/mng/libmng_cms.h
+	thirdparty/mng/libmng_conf.h
+	thirdparty/mng/libmng_data.h
+	thirdparty/mng/libmng_display.c
+	thirdparty/mng/libmng_display.h
+	thirdparty/mng/libmng_dither.c
+	thirdparty/mng/libmng_dither.h
+	thirdparty/mng/libmng_error.c
+	thirdparty/mng/libmng_error.h
+	thirdparty/mng/libmng_filter.c
+	thirdparty/mng/libmng_filter.h
+	thirdparty/mng/libmng_hlapi.c
+	thirdparty/mng/libmng_jpeg.c
+	thirdparty/mng/libmng_jpeg.h
+	thirdparty/mng/libmng_memory.h
+	thirdparty/mng/libmng_object_prc.c
+	thirdparty/mng/libmng_object_prc.h
+	thirdparty/mng/libmng_objects.h
+	thirdparty/mng/libmng_pixels.c
+	thirdparty/mng/libmng_pixels.h
+	thirdparty/mng/libmng_prop_xs.c
+	thirdparty/mng/libmng_read.c
+	thirdparty/mng/libmng_read.h
+	thirdparty/mng/libmng_trace.c
+	thirdparty/mng/libmng_trace.h
+	thirdparty/mng/libmng_types.h
+	thirdparty/mng/libmng_write.c
+	thirdparty/mng/libmng_write.h
+	thirdparty/mng/libmng_zlib.c
+	thirdparty/mng/libmng_zlib.h
+	thirdparty/mng/libmng.h
+)
+
+add_library(Mng STATIC ${MNG_SRC})
+target_link_libraries(Mng Jpeg Zlib)
+set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
