@@ -26,8 +26,8 @@
  */
 
 #include "../precompiled.h"
-#include "FontFace.h"
-#include "FontFaceHandle.h"
+#include "BFFontFace.h"
+#include "BFFontFaceHandle.h"
 #include <Rocket/Core/Log.h>
 
 namespace Rocket {

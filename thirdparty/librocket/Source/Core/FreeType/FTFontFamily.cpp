@@ -26,8 +26,8 @@
  */
 
 #include "../precompiled.h"
-#include "FontFamily.h"
-#include "FontFace.h"
+#include "FTFontFamily.h"
+#include "FTFontFace.h"
 
 namespace Rocket {
 namespace Core {

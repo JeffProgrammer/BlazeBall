@@ -27,9 +27,9 @@
 
 #include "../precompiled.h"
 #include <Rocket/Core/FreeType/FTFontProvider.h>
-#include "FontFaceHandle.h"
+#include "FTFontFaceHandle.h"
 #include <Rocket/Core/FontDatabase.h>
-#include "FontFamily.h"
+#include "FTFontFamily.h"
 #include <Rocket/Core.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H

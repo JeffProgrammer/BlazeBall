@@ -26,7 +26,7 @@
  */
 
 #include "../precompiled.h"
-#include "FontParser.h"
+#include "BFFontParser.h"
 
 namespace Rocket {
 namespace Core {

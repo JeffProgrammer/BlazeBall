@@ -30,10 +30,10 @@
 #include "../FontFaceHandle.h"
 #include <Rocket/Core/FontDatabase.h>
 #include <Rocket/Core/StreamMemory.h>
-#include "FontFamily.h"
+#include "BFFontFamily.h"
 #include <Rocket/Core.h>
 #include "BitmapFontDefinitions.h"
-#include "FontParser.h"
+#include "BFFontParser.h"
 
 namespace Rocket {
 namespace Core {

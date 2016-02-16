@@ -26,8 +26,8 @@
  */
 
 #include "../precompiled.h"
-#include "FontFaceHandle.h"
-#include "FontFaceLayer.h"
+#include "BFFontFaceHandle.h"
+#include "BFFontFaceLayer.h"
 #include <algorithm>
 #include "../TextureLayout.h"
 
