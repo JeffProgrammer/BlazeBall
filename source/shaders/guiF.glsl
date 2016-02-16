@@ -6,17 +6,16 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-in vec2 uv;
-in vec4 color;
+in vec2 outUV;
+in vec4 outColor;
 
-out vec4 fragColor;
+out vec4 outFragColor;
 
-uniform sampler2D textureSampler;
-uniform int hasTexture;
+uniform sampler2D inTextureSampler;
+uniform int inHasTexture;
 
 void main() {
-	vec4 finalColor = color;
-	if (hasTexture == 1)
-		finalColor = texture(textureSampler, uv);
-	fragColor = finalColor;
+	outFragColor = outColor;
+	if (inHasTexture == 1)
+		outFragColor = texture(inTextureSampler, outUV);
 }

@@ -6,14 +6,12 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-in vec2 UV;
-out vec4 fragColor;
+in vec2 outUV;
+out vec4 outFragColor;
 
-uniform sampler2D textureSampler;
-uniform sampler2D normalSampler;
-uniform sampler2D specularSampler;
+uniform sampler2D inTextureSampler;
 
 void main() {
-	vec3 materialColor = texture(textureSampler, UV).rgb;
-	fragColor = vec4(materialColor, 1.0);
+	vec3 materialColor = texture(inTextureSampler, outUV).rgb;
+	outFragColor = vec4(materialColor, 1.0);
 }

@@ -6,12 +6,12 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-in vec3 UV;
-out vec4 fragColor;
+in vec3 outUV;
+out vec4 outFragColor;
 
-uniform samplerCube cubemapSampler;
+uniform samplerCube inCubemapSampler;
 
 void main() {
-	vec3 materialColor = texture(cubemapSampler, UV).rgb;
-	fragColor = vec4(materialColor, 1.0);
+	vec3 materialColor = texture(inCubemapSampler, outUV).rgb;
+	outFragColor = vec4(materialColor, 1.0);
 }

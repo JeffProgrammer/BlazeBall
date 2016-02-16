@@ -30,8 +30,8 @@ void RenderedObject::loadModelMatrix(const RenderInfo &info, Shader *shader) {
 	glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
 
 	//Load it into the shader
-	shader->setUniformMatrix("modelMat", GL_FALSE, modelMatrix);
-	shader->setUniformMatrix("inverseModelMat", GL_FALSE, inverseModelMatrix);
+	shader->setUniformMatrix(UNIFORM_MODEL_MATRIX_NAME, GL_FALSE, modelMatrix);
+	shader->setUniformMatrix(UNIFORM_INVERSE_MODEL_MATRIX_NAME, GL_FALSE, inverseModelMatrix);
 }
 
 void RenderedObject::initFields() {

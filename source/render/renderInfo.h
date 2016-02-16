@@ -22,15 +22,30 @@
 using namespace srutil;
 
 //todo: vector also per-shader
-#define PROJECTION_MATRIX_UNIFORM_NAME "projectionMat"
-#define VIEW_MATRIX_UNIFORM_NAME "viewMat"
-#define INVERSE_VIEW_MATRIX_UNIFORM_NAME "inverseViewMat"
-#define CAMERA_POSITION_UNIFORM_NAME "cameraPos"
+#define UNIFORM_PROJECTION_MATRIX_NAME    "inProjectionMat"
+#define UNIFORM_VIEW_MATRIX_NAME          "inViewMat"
+#define UNIFORM_MODEL_MATRIX_NAME         "inModelMat"
+#define UNIFORM_INVERSE_MODEL_MATRIX_NAME "inInverseModelMat"
+#define UNIFORM_INVERSE_VIEW_MATRIX_NAME  "inInverseViewMat"
+#define UNIFORM_CAMERA_POSITION_NAME      "inCameraPos"
 
-#define LIGHT_COLOR_UNIFORM_NAME "lightColor"
-#define AMBIENT_LIGHT_COLOR_UNIFORM_NAME "ambientColor"
-#define SUN_POSITION_UNIFORM_NAME "sunDirection"
-#define SPECULAR_EXPONENT_UNIFORM_NAME "specularExponent"
+#define UNIFORM_LIGHT_COLOR_NAME          "inLightColor"
+#define UNIFORM_AMBIENT_LIGHT_COLOR_NAME  "inAmbientColor"
+#define UNIFORM_SUN_DIRECTION_NAME        "inSunDirection"
+#define UNIFORM_SPECULAR_EXPONENT_NAME    "inSpecularExponent"
+
+#define ATTRIBUTE_POSITION_NAME           "inVertexPosition"
+#define ATTRIBUTE_UV_NAME                 "inVertexUV"
+#define ATTRIBUTE_NORMAL_NAME             "inVertexNormal"
+#define ATTRIBUTE_TANGENT_NAME            "inVertexTangent"
+#define ATTRIBUTE_BITANGENT_NAME          "inVertexBitangent"
+#define ATTRIBUTE_COLOR_NAME              "inVertexColor"
+
+#define SAMPLER_TEXTURE_NAME              "inTextureSampler"
+#define SAMPLER_NORMAL_NAME               "inNormalSampler"
+#define SAMPLER_SPECULAR_NAME             "inSpecularSampler"
+#define SAMPLER_NOISE_NAME                "inNoiseSampler"
+#define SAMPLER_CUBEMAP_NAME              "inCubemapSampler"
 
 class RenderWorld;
 struct RenderInfo {
@@ -88,14 +103,14 @@ struct RenderInfo {
 		if (shader == nullptr)
 			shader = Shader::defaultShader;
 		
-		shader->setUniformMatrix(PROJECTION_MATRIX_UNIFORM_NAME,   GL_FALSE, projectionMatrix);
-		shader->setUniformMatrix(VIEW_MATRIX_UNIFORM_NAME,         GL_FALSE, viewMatrix);
-		shader->setUniformMatrix(INVERSE_VIEW_MATRIX_UNIFORM_NAME, GL_FALSE, inverseRotMat);
-		shader->setUniformVector(CAMERA_POSITION_UNIFORM_NAME,     cameraPosition);
-		shader->setUniformVector(LIGHT_COLOR_UNIFORM_NAME,         lightColor);
-		shader->setUniformVector(AMBIENT_LIGHT_COLOR_UNIFORM_NAME, ambientColor);
-		shader->setUniformVector(SUN_POSITION_UNIFORM_NAME,        sunDirection);
-		shader->setUniform      (SPECULAR_EXPONENT_UNIFORM_NAME,   static_cast<F32>(specularExponent));
+		shader->setUniformMatrix(UNIFORM_PROJECTION_MATRIX_NAME,   GL_FALSE, projectionMatrix);
+		shader->setUniformMatrix(UNIFORM_VIEW_MATRIX_NAME,         GL_FALSE, viewMatrix);
+		shader->setUniformMatrix(UNIFORM_INVERSE_VIEW_MATRIX_NAME, GL_FALSE, inverseRotMat);
+		shader->setUniformVector(UNIFORM_CAMERA_POSITION_NAME,     cameraPosition);
+		shader->setUniformVector(UNIFORM_LIGHT_COLOR_NAME,         lightColor);
+		shader->setUniformVector(UNIFORM_AMBIENT_LIGHT_COLOR_NAME, ambientColor);
+		shader->setUniformVector(UNIFORM_SUN_DIRECTION_NAME,       sunDirection);
+		shader->setUniform      (UNIFORM_SPECULAR_EXPONENT_NAME,   static_cast<F32>(specularExponent));
 	}
 
 	/**

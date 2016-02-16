@@ -88,7 +88,7 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 
 		glm::mat4x4 modelMatrix = glm::mat4x4(1);
 		shape->calculateModelMatrix(info, modelMatrix);
-		shapeShader->setUniformMatrix("modelMat", GL_FALSE, modelMatrix);
+		shapeShader->setUniformMatrix(UNIFORM_MODEL_MATRIX_NAME, GL_FALSE, modelMatrix);
 
 		for (const auto &mesh : meshes) {
 			mesh.material->activate();
@@ -99,10 +99,10 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 			// note: a VBO must be bound before the layout can be bound
 			if (firstRender) {
 				firstRender = false;
-				glEnableVertexAttribArray(shapeShader->getAttributeLocation("vertexPosition"));
-				glEnableVertexAttribArray(shapeShader->getAttributeLocation("vertexUV"));
-				glVertexAttribPointer(shapeShader->getAttributeLocation("vertexPosition"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, position)));
-				glVertexAttribPointer(shapeShader->getAttributeLocation("vertexUV"), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, textureCoords)));
+				glEnableVertexAttribArray(shapeShader->getAttributeLocation(ATTRIBUTE_POSITION_NAME));
+				glEnableVertexAttribArray(shapeShader->getAttributeLocation(ATTRIBUTE_UV_NAME));
+				glVertexAttribPointer(shapeShader->getAttributeLocation(ATTRIBUTE_POSITION_NAME), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, position)));
+				glVertexAttribPointer(shapeShader->getAttributeLocation(ATTRIBUTE_UV_NAME), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(ModelVertex, textureCoords)));
 				GL_CHECKERRORS();
 			}
 
@@ -114,8 +114,8 @@ void ModelManager::render(Shader *shapeShader, const glm::mat4 &viewMatrix, cons
 
 	//Disable arrays if any models were drawn.
 	if (firstRender == false) {
-		glDisableVertexAttribArray(shapeShader->getAttributeLocation("vertexPosition"));
-		glDisableVertexAttribArray(shapeShader->getAttributeLocation("vertexUV"));
+		glDisableVertexAttribArray(shapeShader->getAttributeLocation(ATTRIBUTE_POSITION_NAME));
+		glDisableVertexAttribArray(shapeShader->getAttributeLocation(ATTRIBUTE_UV_NAME));
 	}
 	GL_CHECKERRORS();
 }

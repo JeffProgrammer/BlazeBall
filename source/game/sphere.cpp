@@ -102,7 +102,7 @@ void Sphere::calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix
 
 void Sphere::draw(Material *material, RenderInfo &info, void *userInfo) {
 	loadModelMatrix(info, material->getShader());
-	material->getShader()->setUniform("reflectivity", 0.3f);
+	material->getShader()->setUniform("inReflectivity", 0.3f);
 
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
 	material->getShader()->enableAttributes();

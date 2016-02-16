@@ -6,22 +6,21 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-layout(location = 0) in vec3 vertexPosition;
-layout(location = 1) in vec2 vertexUV;
+layout(location = 0) in vec3 inVertexPosition;
+layout(location = 1) in vec2 inVertexUV;
 
-out vec2 UV;
+out vec2 outUV;
 
-uniform mat4 projectionMat;
-uniform mat4 modelMat;
-uniform mat4 viewMat;
+uniform mat4 inProjectionMat;
+uniform mat4 inModelMat;
+uniform mat4 inViewMat;
 
 void main() {
-	mat4 modelViewProjectionMat = projectionMat * viewMat * modelMat;
+	mat4 modelViewProjectionMat = inProjectionMat * inViewMat * inModelMat;
 
 	//Worldspace position
-	vec4 v = vec4(vertexPosition, 1);
-	gl_Position = modelViewProjectionMat * v;
+	gl_Position = modelViewProjectionMat * vec4(inVertexPosition, 1);
 
 	//Send to fragment shader
-	UV = vertexUV;
+	outUV = inVertexUV;
 }
