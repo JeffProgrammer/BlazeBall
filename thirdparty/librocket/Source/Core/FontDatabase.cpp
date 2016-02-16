@@ -29,8 +29,8 @@
 #include <Rocket/Core/FontDatabase.h>
 #include <Rocket/Core/FontFamily.h>
 #include <Rocket/Core.h>
-#include <Rocket/Core/FreeType/FontProvider.h>
-#include <Rocket/Core/BitmapFont/FontProvider.h>
+#include <Rocket/Core/FreeType/FTFontProvider.h>
+#include <Rocket/Core/BitmapFont/BFFontProvider.h>
 
 namespace Rocket {
 namespace Core {

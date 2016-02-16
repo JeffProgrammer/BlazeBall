@@ -38,15 +38,15 @@ set(Core_HDR_FILES
     ${PROJECT_SOURCE_DIR}/Source/Core/FontEffectShadowInstancer.h
     ${PROJECT_SOURCE_DIR}/Source/Core/FontFaceHandle.h
     ${PROJECT_SOURCE_DIR}/Source/Core/FontFaceLayer.h
-    ${PROJECT_SOURCE_DIR}/Source/Core/FreeType/FontFace.h
-    ${PROJECT_SOURCE_DIR}/Source/Core/FreeType/FontFaceHandle.h
-    ${PROJECT_SOURCE_DIR}/Source/Core/FreeType/FontFamily.h
+    ${PROJECT_SOURCE_DIR}/Source/Core/FreeType/FTFontFace.h
+    ${PROJECT_SOURCE_DIR}/Source/Core/FreeType/FTFontFaceHandle.h
+    ${PROJECT_SOURCE_DIR}/Source/Core/FreeType/FTFontFamily.h
     ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/BitmapFontDefinitions.h
-    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/FontParser.h
-    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/FontFace.h
-    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/FontFaceHandle.h
-    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/FontFaceLayer.h
-    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/FontFamily.h
+    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/BFFontParser.h
+    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/BFFontFace.h
+    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/BFFontFaceHandle.h
+    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/BFFontFaceLayer.h
+    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/BFFontFamily.h
     ${PROJECT_SOURCE_DIR}/Source/Core/GeometryDatabase.h
     ${PROJECT_SOURCE_DIR}/Source/Core/LayoutBlockBox.h
     ${PROJECT_SOURCE_DIR}/Source/Core/LayoutBlockBoxSpace.h
@@ -139,8 +139,8 @@ set(Core_PUB_HDR_FILES
     ${PROJECT_SOURCE_DIR}/Include/Rocket/Core/FontFamily.h
     ${PROJECT_SOURCE_DIR}/Include/Rocket/Core/FontGlyph.h
     ${PROJECT_SOURCE_DIR}/Include/Rocket/Core/FontProvider.h
-    ${PROJECT_SOURCE_DIR}/Include/Rocket/Core/FreeType/FontProvider.h
-    ${PROJECT_SOURCE_DIR}/Include/Rocket/Core/BitmapFont/FontProvider.h
+    ${PROJECT_SOURCE_DIR}/Include/Rocket/Core/FreeType/FTFontProvider.h
+    ${PROJECT_SOURCE_DIR}/Include/Rocket/Core/BitmapFont/BFFontProvider.h
     ${PROJECT_SOURCE_DIR}/Include/Rocket/Core/Geometry.h
     ${PROJECT_SOURCE_DIR}/Include/Rocket/Core/GeometryUtilities.h
     ${PROJECT_SOURCE_DIR}/Include/Rocket/Core/Header.h
@@ -246,16 +246,16 @@ set(Core_SRC_FILES
     ${PROJECT_SOURCE_DIR}/Source/Core/FontFaceLayer.cpp
     ${PROJECT_SOURCE_DIR}/Source/Core/FontFamily.cpp
     ${PROJECT_SOURCE_DIR}/Source/Core/FontProvider.cpp
-    ${PROJECT_SOURCE_DIR}/Source/Core/FreeType/FontFace.cpp
-    ${PROJECT_SOURCE_DIR}/Source/Core/FreeType/FontFaceHandle.cpp
-    ${PROJECT_SOURCE_DIR}/Source/Core/FreeType/FontFamily.cpp
-    ${PROJECT_SOURCE_DIR}/Source/Core/FreeType/FontProvider.cpp
-    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/FontParser.cpp
-    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/FontFace.cpp
-    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/FontFaceHandle.cpp
-    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/FontFaceLayer.cpp
-    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/FontFamily.cpp
-    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/FontProvider.cpp
+    ${PROJECT_SOURCE_DIR}/Source/Core/FreeType/FTFontFace.cpp
+    ${PROJECT_SOURCE_DIR}/Source/Core/FreeType/FTFontFaceHandle.cpp
+    ${PROJECT_SOURCE_DIR}/Source/Core/FreeType/FTFontFamily.cpp
+    ${PROJECT_SOURCE_DIR}/Source/Core/FreeType/FTFontProvider.cpp
+    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/BFFontParser.cpp
+    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/BFFontFace.cpp
+    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/BFFontFaceHandle.cpp
+    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/BFFontFaceLayer.cpp
+    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/BFFontFamily.cpp
+    ${PROJECT_SOURCE_DIR}/Source/Core/BitmapFont/BFFontProvider.cpp
     ${PROJECT_SOURCE_DIR}/Source/Core/Geometry.cpp
     ${PROJECT_SOURCE_DIR}/Source/Core/GeometryDatabase.cpp
     ${PROJECT_SOURCE_DIR}/Source/Core/GeometryUtilities.cpp
