@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef camera_h
-#define camera_h
+#ifndef _GAME_CAMERA_H_
+#define _GAME_CAMERA_H_
 
 #include "base/types.h"
 #include "game/gameObject.h"
@@ -43,7 +43,7 @@ protected:
 	DECLARE_SCRIPTOBJECT(Camera);
 
 public:
-	Camera(World *world);
+	Camera();
 	virtual ~Camera() {};
 
 	/**
@@ -65,7 +65,7 @@ public:
 	 * @param OUT mat The camera matrix from the Camera's perspective.
 	 * @param OUT pos The position of the Camera.
 	 */
-	virtual void getCameraPosition(Mat4 &mat, Vec3 &pos) override;
+	virtual void getCameraPosition(glm::mat4 &mat, glm::vec3 &pos) override;
 
 	/**
 	 * An update callback that is called every physics tick.
@@ -78,12 +78,6 @@ public:
 	 * Initializes the fields specific to the GameObject class.
 	 */
 	static void initFields();
-
-	/**
-	 * Initializes the scripting API for the respective sript engine.
-	 * @param engine The script engine to initialize to.
-	 */
-	static void initScript(ScriptEngine *engine);
 };
 
-#endif
+#endif // _GAME_CAMERA_H_

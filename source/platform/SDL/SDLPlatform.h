@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -16,4 +16,4 @@ public:
 	SDLPlatform(std::unique_ptr<PhysicsEngineFactory> &&physFactory) : Platform(std::move(physFactory)) {}
 };
 
-#endif
+#endif // _PLATFORM_SDL_SDLPLATFORM_H_

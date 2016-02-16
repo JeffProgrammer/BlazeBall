@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef config_h
-#define config_h
+#ifndef _BASE_CONFIG_H_
+#define _BASE_CONFIG_H_
 
 #include "types.h"
 #include "io.h"
@@ -33,4 +33,4 @@ public:
 	}
 };
 
-#endif
+#endif // _BASE_CONFIG_H_

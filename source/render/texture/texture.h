@@ -1,20 +1,13 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef texture_h
-#define texture_h
+#ifndef _RENDER_TEXTURE_TEXTURE_H_
+#define _RENDER_TEXTURE_TEXTURE_H_
 
-#ifdef _WIN32
-#include <GL/glew.h>
-#elif __APPLE__
-#include <OpenGL/gl3.h>
-#elif EMSCRIPTEN
-#include <GLES3/gl3.h>
-#endif
-
+#include "platform/platformGL.h"
 #include "base/types.h"
 
 class Texture {
@@ -50,5 +43,4 @@ public:
 	static std::string find(const std::string &fullName);
 };
 
-
-#endif /* texture_h */
+#endif // _RENDER_TEXTURE_TEXTURE_H_

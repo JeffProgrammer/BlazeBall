@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef material_h
-#define material_h
+#ifndef _RENDER_MATERIAL_H_
+#define _RENDER_MATERIAL_H_
 
 #include <stdio.h>
 #include <unordered_map>
@@ -167,12 +167,6 @@ public:
 	void deactivate();
 
 	static void initFields();
-
-	/**
-	 * Initializes the scripting API for the respective sript engine.
-	 * @param engine The script engine to initialize to.
-	 */
-	static void initScript(ScriptEngine *engine);
 };
 
-#endif 
+#endif // _RENDER_MATERIAL_H_

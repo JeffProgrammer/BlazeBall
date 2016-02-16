@@ -1,0 +1,45 @@
+set (DIF_SRC
+	############################################################################
+	# Sources
+	############################################################################
+
+	# Base
+	dif/src/dif/base/io.cpp
+
+	# Objects
+	dif/src/dif/objects/aiSpecialNode.cpp
+	dif/src/dif/objects/dif.cpp
+	dif/src/dif/objects/forceField.cpp
+	dif/src/dif/objects/gameEntity.cpp
+	dif/src/dif/objects/interior.cpp
+	dif/src/dif/objects/interiorPathFollower.cpp
+	dif/src/dif/objects/staticMesh.cpp
+	dif/src/dif/objects/trigger.cpp
+	dif/src/dif/objects/vehicleCollision.cpp
+
+	############################################################################
+	# Headers
+	############################################################################
+
+	# Base
+	dif/include/dif/base/color.h
+	dif/include/dif/base/io.h
+	dif/include/dif/base/point2.h
+	dif/include/dif/base/point3.h
+	dif/include/dif/base/types.h
+
+	# Objects
+	dif/include/dif/objects/aiSpecialNode.h
+	dif/include/dif/objects/dif.h
+	dif/include/dif/objects/forceField.h
+	dif/include/dif/objects/gameEntity.h
+	dif/include/dif/objects/interior.h
+	dif/include/dif/objects/interiorPathFollower.h
+	dif/include/dif/objects/staticMesh.h
+	dif/include/dif/objects/trigger.h
+	dif/include/dif/objects/vehicleCollision.h
+)
+
+# Create the library
+add_library(Dif STATIC ${DIF_SRC})
+set_property(TARGET Dif APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/dif/include")

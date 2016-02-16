@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef skybox_h
-#define skybox_h
+#ifndef _GAME_SKYBOX_H_
+#define _GAME_SKYBOX_H_
 
 #include "gameObject.h"
 #include "render/material.h"
@@ -31,7 +31,7 @@ protected:
 
 	DECLARE_SCRIPTOBJECT(Skybox);
 public:
-	Skybox(World *world);
+	Skybox();
 	virtual ~Skybox();
 
 	void generate();
@@ -56,12 +56,6 @@ public:
 	 * Initializes the fields specific to the GameObject class.
 	 */
 	static void initFields();
-
-	/**
-	 * Initializes the scripting API for the respective sript engine.
-	 * @param engine The script engine to initialize to.
-	 */
-	static void initScript(ScriptEngine *engine);
 };
 
-#endif /* skybox_h */
+#endif // _GAME_SKYBOX_H_

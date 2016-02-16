@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -11,9 +11,10 @@
 
 #include "base/types.h"
 #include "physics/physicsEngine.h"
+#include "game/scriptObject.h"
 
 class GameObject;
-class World {
+class World : public ScriptObject {
 protected:
 	std::vector<GameObject *> mObjects;
 	PhysicsEngine *mPhysicsEngine;
@@ -23,7 +24,12 @@ protected:
 
 	F32 mSimulationSpeed;
 
+	DECLARE_SCRIPTOBJECT(World);
 public:
+	World() {
+		//Needed to make ConcreteClassRep shut up; don't use this
+		assert(false);
+	}
 	World(PhysicsEngine *physics);
 	virtual ~World();
 
@@ -40,6 +46,8 @@ public:
 	const std::vector<GameObject *> &getObjectList() { return mObjects; }
 	GameObject *findGameObject(const std::string &name);
 	virtual void addObject(GameObject *object);
+
+	static void initFields();
 };
 
-#endif
+#endif // _GAME_WORLD_H_

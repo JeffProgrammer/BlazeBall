@@ -1,13 +1,13 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
 #include "game/scriptObject.h"
 #include "scriptEngine/abstractClassRep.h"
 #include "scriptEngine/concreteClassRep.h"
-#include "scriptEngine/scriptEngine.h"
+#include "game/world.h"
 
 #ifdef __APPLE__
 #define stricmp strcasecmp
@@ -21,6 +21,7 @@ ConcreteClassRep<ScriptObject> ScriptObject::sConcreteClassRep("ScriptObject", "
 
 ScriptObject::ScriptObject() {
 	mClassRep = nullptr;
+	mWorld = nullptr;
 	mName = "";
 
 	IO::printf("Constructed object %p\n", this);
@@ -31,13 +32,7 @@ ScriptObject::~ScriptObject() {
 }
 
 void ScriptObject::initFields() {
-	sConcreteClassRep.addSimpleField<std::string>("name", offsetof(ScriptObject, mName));
-}
-
-void ScriptObject::initScript(ScriptEngine *engine) {
-	engine->addClass<ScriptObject>("ScriptObject");
-	engine->addMethod(&ScriptObject::getName, "getName");
-	engine->addMethod(&ScriptObject::setName, "setName");
+	AddField(ScriptObject::mName, "name");
 }
 
 bool ScriptObject::getMemberField(const std::string &name, std::string &value) {

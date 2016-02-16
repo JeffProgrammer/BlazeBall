@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef cubeMapFramebufferTexture_h
-#define cubeMapFramebufferTexture_h
+#ifndef _RENDER_TEXTURE_CUBEMAPFRAMEBUFFERTEXTURE_H_
+#define _RENDER_TEXTURE_CUBEMAPFRAMEBUFFERTEXTURE_H_
 
 #include "cubeMapTexture.h"
 #include "render/renderInfo.h"
@@ -13,13 +13,13 @@
 
 class CubeMapFramebufferTexture : public CubeMapTexture {
 protected:
-	glm::ivec2 extent;
-	glm::mat4 projectionMat;
-	GLenum framebuffer;
-	GLenum depthBuffer;
-
+	glm::ivec2 mExtent;
+	glm::mat4 mProjectionMat;
+	GLenum mFramebuffer;
+	GLenum mDepthBuffer;
 public:
 	CubeMapFramebufferTexture(const glm::ivec2 &extent) : CubeMapTexture(std::vector<TextureInfo>()) {
+		mGenerated = false;
 		setExtent(extent);
 	}
 	virtual ~CubeMapFramebufferTexture();
@@ -27,12 +27,12 @@ public:
 	void setExtent(const glm::ivec2 &extent);
 
 	inline glm::ivec2 getExtent() const {
-		return this->extent;
+		return mExtent;
 	}
 
 	virtual void generateBuffer();
 	void destroyBuffer();
-	void generateBuffer(const glm::vec3 &center, const glm::ivec2 &screenSize, std::function<void(RenderInfo &info)> renderMethod, RenderInfo info);
+	void generateBuffer(const glm::vec3 &center, const RenderInfo &info);
 };
 
-#endif /* cubeMapFramebufferTexture_h */
+#endif // _RENDER_TEXTURE_CUBEMAPFRAMEBUFFERTEXTURE_H_

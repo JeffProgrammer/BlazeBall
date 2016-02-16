@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -30,14 +30,10 @@ void RenderedObject::loadModelMatrix(const RenderInfo &info, Shader *shader) {
 	glm::mat4 inverseModelMatrix = glm::inverse(modelMatrix);
 
 	//Load it into the shader
-	shader->setUniformMatrix("modelMat", GL_FALSE, modelMatrix);
-	shader->setUniformMatrix("inverseModelMat", GL_FALSE, inverseModelMatrix);
+	shader->setUniformMatrix(UNIFORM_MODEL_MATRIX_NAME, GL_FALSE, modelMatrix);
+	shader->setUniformMatrix(UNIFORM_INVERSE_MODEL_MATRIX_NAME, GL_FALSE, inverseModelMatrix);
 }
 
 void RenderedObject::initFields() {
 	// Nothing at the moment.
-}
-
-void RenderedObject::initScript(ScriptEngine *engine) {
-	// Nothing.
 }

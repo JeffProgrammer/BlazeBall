@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ static GLfloat sVertices[] = {
 };
 static U32 sVertCount = sizeof(sVertices) / sizeof(GLfloat);
 
-Skybox::Skybox(World *world) : RenderedObject(world) {
+Skybox::Skybox() : RenderedObject() {
 	mGenerated = false;
 	mBuffer = 0;
 	mMaterial = nullptr;
@@ -94,8 +94,8 @@ void Skybox::render(RenderInfo &info) {
 
 	//Strip any positional data from the camera, so we just have rotation
 	glm::mat4 skyboxView = glm::mat4(glm::mat3(info.viewMatrix));
-	shader->setUniform("extent", 1000.f);
-	shader->setUniformMatrix("viewMat", GL_FALSE, skyboxView);
+	shader->setUniform("inExtent", 1000.f);
+	shader->setUniformMatrix(UNIFORM_VIEW_MATRIX_NAME, GL_FALSE, skyboxView);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	shader->enableAttributes();
@@ -130,17 +130,12 @@ void Skybox::onAddToScene() {
 }
 
 void Skybox::initFields() {
-	// faces 0-5
-	AddFieldSimple("face0", std::string, offsetof(Skybox, mFace0));
-	AddFieldSimple("face1", std::string, offsetof(Skybox, mFace1));
-	AddFieldSimple("face2", std::string, offsetof(Skybox, mFace2));
-	AddFieldSimple("face3", std::string, offsetof(Skybox, mFace3));
-	AddFieldSimple("face4", std::string, offsetof(Skybox, mFace4));
-	AddFieldSimple("face5", std::string, offsetof(Skybox, mFace5));
-}
-
-void Skybox::initScript(ScriptEngine *engine) {
-	// Nothing.
+	AddField(Skybox::mFace0, "face0");
+	AddField(Skybox::mFace1, "face1");
+	AddField(Skybox::mFace2, "face2");
+	AddField(Skybox::mFace3, "face3");
+	AddField(Skybox::mFace4, "face4");
+	AddField(Skybox::mFace5, "face5");
 }
 
 bool Skybox::read(CharStream &stream) {

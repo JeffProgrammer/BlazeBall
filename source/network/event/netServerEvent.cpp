@@ -1,14 +1,12 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
 #include "netServerEvent.h"
 #include "network/server.h"
 #include "base/io.h"
-
-const U8 Magic = 0x42;
 
 std::shared_ptr<NetServerEvent> NetServerEvent::deserialize(CharStream &data, Server *server, ClientConnection *client) {
 	//Don't corrupt the stream if it's not a net event

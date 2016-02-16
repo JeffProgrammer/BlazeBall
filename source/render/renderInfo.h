@@ -1,45 +1,53 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef renderInfo_h
-#define renderInfo_h
-
-#include <glm/glm.hpp>
-
-#ifdef _WIN32
-#include <GL/glew.h>
-#elif __APPLE__
-#include <OpenGL/gl3.h>
-#elif EMSCRIPTEN
-#include <GLES3/gl3.h>
-#endif
-
-#include "render/shader.h"
-#include "render/material.h"
-#include "render/util.h"
+#ifndef _RENDER_RENDERINFO_H_
+#define _RENDER_RENDERINFO_H_
 
 #define SRUTIL_DELEGATE_PREFERRED_SYNTAX
 
+#include <glm/glm.hpp>
 #include <unordered_map>
 #include <vector>
 #include <delegate/delegate.hpp>
 
+#include "platform/platformGL.h"
+#include "render/shader.h"
+#include "render/material.h"
+#include "render/util.h"
+
 using namespace srutil;
 
 //todo: vector also per-shader
-#define PROJECTION_MATRIX_UNIFORM_NAME "projectionMat"
-#define VIEW_MATRIX_UNIFORM_NAME "viewMat"
-#define INVERSE_VIEW_MATRIX_UNIFORM_NAME "inverseViewMat"
-#define CAMERA_POSITION_UNIFORM_NAME "cameraPos"
+#define UNIFORM_PROJECTION_MATRIX_NAME    "inProjectionMat"
+#define UNIFORM_VIEW_MATRIX_NAME          "inViewMat"
+#define UNIFORM_MODEL_MATRIX_NAME         "inModelMat"
+#define UNIFORM_INVERSE_MODEL_MATRIX_NAME "inInverseModelMat"
+#define UNIFORM_INVERSE_VIEW_MATRIX_NAME  "inInverseViewMat"
+#define UNIFORM_CAMERA_POSITION_NAME      "inCameraPos"
 
-#define LIGHT_COLOR_UNIFORM_NAME "lightColor"
-#define AMBIENT_LIGHT_COLOR_UNIFORM_NAME "ambientColor"
-#define SUN_POSITION_UNIFORM_NAME "sunPosition"
-#define SPECULAR_EXPONENT_UNIFORM_NAME "specularExponent"
+#define UNIFORM_LIGHT_COLOR_NAME          "inLightColor"
+#define UNIFORM_AMBIENT_LIGHT_COLOR_NAME  "inAmbientColor"
+#define UNIFORM_SUN_DIRECTION_NAME        "inSunDirection"
+#define UNIFORM_SPECULAR_EXPONENT_NAME    "inSpecularExponent"
 
+#define ATTRIBUTE_POSITION_NAME           "inVertexPosition"
+#define ATTRIBUTE_UV_NAME                 "inVertexUV"
+#define ATTRIBUTE_NORMAL_NAME             "inVertexNormal"
+#define ATTRIBUTE_TANGENT_NAME            "inVertexTangent"
+#define ATTRIBUTE_BITANGENT_NAME          "inVertexBitangent"
+#define ATTRIBUTE_COLOR_NAME              "inVertexColor"
+
+#define SAMPLER_TEXTURE_NAME              "inTextureSampler"
+#define SAMPLER_NORMAL_NAME               "inNormalSampler"
+#define SAMPLER_SPECULAR_NAME             "inSpecularSampler"
+#define SAMPLER_NOISE_NAME                "inNoiseSampler"
+#define SAMPLER_CUBEMAP_NAME              "inCubemapSampler"
+
+class RenderWorld;
 struct RenderInfo {
 	static glm::mat4 inverseRotMat;
 
@@ -49,30 +57,60 @@ struct RenderInfo {
 
 	glm::vec4 lightColor;
 	glm::vec4 ambientColor;
-	glm::vec3 sunPosition;
+	glm::vec3 sunDirection;
 	U32 specularExponent;
 
 	bool isReflectionPass;
+	struct {
+		glm::ivec2 position;
+		glm::ivec2 size;
+	} viewport;
+	
+	F32 pixelDensity;
 
 #ifdef SRUTIL_DELEGATE_PREFERRED_SYNTAX
 	typedef delegate<void(Material *, RenderInfo &, void *)> RenderMethod;
+	typedef delegate<void(RenderInfo &)> RenderWorldMethod;
 #else
 	typedef delegate<void, Material *, RenderInfo &> RenderMethod;
+	typedef delegate<void, RenderInfo &> RenderWorldMethod;
 #endif
 	std::unordered_map<Material *, std::vector<std::pair<RenderMethod, void *>>> renderMethods;
+	RenderWorldMethod renderWorld;
+
+	RenderInfo() : projectionMatrix(1), viewMatrix(1), cameraPosition(0), lightColor(0), ambientColor(0), sunDirection(0), specularExponent(1), isReflectionPass(false), viewport{glm::ivec2(0), glm::ivec2(0)}, pixelDensity(1), renderMethods(0), renderWorld() {
+
+	}
+
+	RenderInfo(const RenderInfo &other) :
+		//Copy every variable from the other info except for its RenderMethods
+		projectionMatrix(other.projectionMatrix),
+		viewMatrix(other.viewMatrix),
+		cameraPosition(other.cameraPosition),
+		lightColor(other.lightColor),
+		ambientColor(other.ambientColor),
+		sunDirection(other.sunDirection),
+		specularExponent(other.specularExponent),
+		isReflectionPass(other.isReflectionPass),
+		viewport(other.viewport),
+		pixelDensity(other.pixelDensity),
+		renderMethods(0), //Make sure to reset this to have nothing in it when we copy
+		renderWorld(other.renderWorld) {
+
+	}
 
 	void loadShader(Shader *shader) const {
 		if (shader == nullptr)
 			shader = Shader::defaultShader;
 		
-		shader->setUniformMatrix(PROJECTION_MATRIX_UNIFORM_NAME,   GL_FALSE, projectionMatrix);
-		shader->setUniformMatrix(VIEW_MATRIX_UNIFORM_NAME,         GL_FALSE, viewMatrix);
-		shader->setUniformMatrix(INVERSE_VIEW_MATRIX_UNIFORM_NAME, GL_FALSE, inverseRotMat);
-		shader->setUniformVector(CAMERA_POSITION_UNIFORM_NAME,     cameraPosition);
-		shader->setUniformVector(LIGHT_COLOR_UNIFORM_NAME,         lightColor);
-		shader->setUniformVector(AMBIENT_LIGHT_COLOR_UNIFORM_NAME, ambientColor);
-		shader->setUniformVector(SUN_POSITION_UNIFORM_NAME,        sunPosition);
-		shader->setUniform      (SPECULAR_EXPONENT_UNIFORM_NAME,   static_cast<F32>(specularExponent));
+		shader->setUniformMatrix(UNIFORM_PROJECTION_MATRIX_NAME,   GL_FALSE, projectionMatrix);
+		shader->setUniformMatrix(UNIFORM_VIEW_MATRIX_NAME,         GL_FALSE, viewMatrix);
+		shader->setUniformMatrix(UNIFORM_INVERSE_VIEW_MATRIX_NAME, GL_FALSE, inverseRotMat);
+		shader->setUniformVector(UNIFORM_CAMERA_POSITION_NAME,     cameraPosition);
+		shader->setUniformVector(UNIFORM_LIGHT_COLOR_NAME,         lightColor);
+		shader->setUniformVector(UNIFORM_AMBIENT_LIGHT_COLOR_NAME, ambientColor);
+		shader->setUniformVector(UNIFORM_SUN_DIRECTION_NAME,       sunDirection);
+		shader->setUniform      (UNIFORM_SPECULAR_EXPONENT_NAME,   static_cast<F32>(specularExponent));
 	}
 
 	/**
@@ -119,6 +157,20 @@ struct RenderInfo {
 			material->deactivate();
 		}
 	}
+
+	/**
+	 * Update OpenGL's viewport to only cover this RenderInfo
+	 */
+	void setViewport() const {
+		glViewport(GLint(viewport.position.x * pixelDensity), GLint(viewport.position.y * pixelDensity), GLsizei(viewport.size.x * pixelDensity), GLsizei(viewport.size.y * pixelDensity));
+	}
+
+	/**
+	 * Update OpenGL's scissor region to only cover this RenderInfo
+	 */
+	void setScissor() const {
+		glScissor(GLint(viewport.position.x * pixelDensity), GLint(viewport.position.y * pixelDensity), GLsizei(viewport.size.x * pixelDensity), GLsizei(viewport.size.y * pixelDensity));
+	}
 };
 
-#endif 
+#endif  // _RENDER_RENDERINFO_H_

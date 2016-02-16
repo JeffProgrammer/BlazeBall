@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -11,7 +11,8 @@
 #include <string>
 #include "base/Tree.h"
 #include "game/scriptObject.h"
-#include "scriptEngine/scriptEngine.h"
+
+#include "scriptEngine/scriptTypes.inl"
 
 class World;
 class AbstractClassRep {
@@ -35,87 +36,12 @@ public:
 		mFieldList[name] = Field(offset, getterFunction, setterFunction);
 	}
 
-	template<typename T>
-	void addSimpleField(const std::string &name, ptrdiff_t offset) {
-		mFieldList[name] = Field(offset, scriptGetter<T>, scriptSetter<T>);
+	template<typename ClassType, typename FieldType>
+	void addSimpleField(FieldType ClassType:: *field, const std::string &name) {
+		mFieldList[name] = Field(getOffset(field), scriptGetter<FieldType>, scriptSetter<FieldType>);
 	}
 
 	virtual ScriptObject* create(World *world) = 0;
-
-	static ScriptObject* createFromName(World *world, const std::string &name) {
-		return sClassRepMap[name]->create(world);
-	}
-
-	static void init() {
-		Tree<AbstractClassRep*> tree;
-		std::unordered_map<AbstractClassRep*, Tree<AbstractClassRep*>::Node*> map;
-
-		// store classreps
-		for (auto *rep = sLast; rep != nullptr; rep = rep->mNext) {
-			auto node = new Tree<AbstractClassRep*>::Node;
-			node->data = rep;
-
-			map[rep] = node;
-			sClassRepMap[rep->mName] = rep;
-		}
-
-		// sort the classes into their hiearchy
-		for (auto i : map) {
-			auto rep = i.first;
-			auto node = i.second;
-
-			// find parent rep and set it to the node
-			if (rep->mParent == "")
-				tree.push(node, nullptr);
-			else {
-				auto parentRep = sClassRepMap[rep->mParent];
-				tree.push(node, map[parentRep]);
-			}
-		}
-
-		// traverse the tree and initialize the fields (while having a party)
-		const auto &vec = tree.traverse();
-		for (auto classRep : vec) {
-			classRep->data->initClass();
-		}
-	}
-
-	static void initScriptAPI(ScriptEngine *engine) {
-		Tree<AbstractClassRep*> tree;
-		std::unordered_map<AbstractClassRep*, Tree<AbstractClassRep*>::Node*> map;
-
-		// store classreps
-		for (auto *rep = sLast; rep != nullptr; rep = rep->mNext) {
-			auto node = new Tree<AbstractClassRep*>::Node;
-			node->data = rep;
-
-			map[rep] = node;
-			sClassRepMap[rep->mName] = rep;
-		}
-
-		// sort the classes into their hiearchy
-		for (auto i : map) {
-			auto rep = i.first;
-			auto node = i.second;
-
-			// find parent rep and set it to the node
-			if (rep->mParent == "")
-				tree.push(node, nullptr);
-			else {
-				auto parentRep = sClassRepMap[rep->mParent];
-				tree.push(node, map[parentRep]);
-			}
-		}
-
-		// traverse the tree and initialize the fields and methods to the script
-		// engine (while having a party)
-		const auto &vec = tree.traverse();
-		for (auto classRep : vec) {
-			IO::printf("Initializing class %s to the script api.\n", classRep->data->getName().c_str());
-			classRep->data->initScript(engine);
-		}
-	}
-
 	struct Field {
 		Field() {
 			offset = 0;
@@ -143,8 +69,7 @@ public:
 		return mFieldList[name];
 	}
 
-	virtual void initClass() = 0;
-	virtual void initScript(ScriptEngine *engine) = 0;
+	virtual void initFields() = 0;
 
 	std::string toString() {
 		return mName;
@@ -153,6 +78,9 @@ public:
 	std::string getName() const {
 		return mName;
 	}
+
+	static ScriptObject* createFromName(const std::string &name, World *world = nullptr);
+	static void init();
 
 protected:
 	static std::unordered_map<std::string, AbstractClassRep*> sClassRepMap;

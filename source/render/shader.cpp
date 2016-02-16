@@ -1,20 +1,13 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
 #include "render/shader.h"
 #include "base/io.h"
 #include "render/util.h"
-
-#ifdef _WIN32
-#include <GL/glew.h>
-#elif __APPLE__
-#include <OpenGL/gl3.h>
-#elif EMSCRIPTEN
-#include <GLES3/gl3.h>
-#endif
+#include "platform/platformGL.h"
 
 std::unordered_map<std::string, Shader*> Shader::sShaderTable;
 Shader *Shader::defaultShader = nullptr;
@@ -54,7 +47,7 @@ GLuint Shader::loadShader(const std::string &path, const GLenum &type) {
 	//Try to compile the shader
 	glShaderSource(shaderId, 1, (const GLchar **)&data, NULL);
 	glCompileShader(shaderId);
-	delete data;
+	delete[] data;
 	
 	//Check if we had any errors
 	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &result);

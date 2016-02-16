@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef io_h
-#define io_h
+#ifndef _BASE_IO_H_
+#define _BASE_IO_H_
 
 //#ifdef _WIN32
 //#define DIR_SEP '\\'
@@ -68,4 +68,4 @@ public:
 	static void printf(const char *format, ...);
 };
 
-#endif
+#endif // _BASE_IO_H_

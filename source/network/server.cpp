@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -69,11 +69,11 @@ void Server::start() {
 
 void Server::stop() {
 	// block this thread and wait for the server thread to finish before moving on
+	mIsRunning = false;
+	mServerThread.join();
 #ifndef EMSCRIPTEN
 	mServer.stop_listening();
 #endif
-	mIsRunning = false;
-	mServerThread.join();
 	IO::printf("Stopping server process...\n");
 }
 
@@ -137,7 +137,7 @@ void Server::onClientConnected(ClientConnection &client) {
 
 void Server::onReceivePacket(ClientConnection &client, const U8 *data, size_t size) {
 	CharStream stream(data, size);
-	const auto &event = NetServerEvent::deserialize(stream, this, &client);
+	NetServerEvent::deserialize(stream, this, &client);
 }
 
 void Server::sendEvent(const std::shared_ptr<NetServerEvent> &event, ENetPacketFlag flag) {

@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef btPhysicsEngine_h
-#define btPhysicsEngine_h
+#ifndef _GAME_PHYSICS_BULLET_BTPHYSICSENGINE_H_
+#define _GAME_PHYSICS_BULLET_BTPHYSICSENGINE_H_
 
 #include <stdio.h>
 #include "base/types.h"
@@ -50,8 +50,10 @@ class btDebugDrawer;
 class btPhysicsEngine : public PhysicsEngine {
 	btDiscreteDynamicsWorld *mWorld;
 	btCollisionDispatcher *mDispatcher;
+#ifdef DEBUG_PHYSICS
 	btDebugDrawer *mDebugDrawer;
-	
+#endif
+
 	F64 mExtraTime;
 
 	virtual void step(const F64 &delta);
@@ -89,4 +91,4 @@ inline static const glm::quat btConvert(const btQuaternion &point) {
 	return glm::quat(point.w(), point.x(), point.y(), point.z());
 }
 
-#endif
+#endif // _GAME_PHYSICS_BULLET_BTPHYSICSENGINE_H_

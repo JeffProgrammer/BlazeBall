@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -18,19 +18,12 @@ IMPLEMENT_SCRIPTOBJECT(Sphere, RenderedObject);
 
 GLuint gSphereVBO = 0;
 
-Sphere::Sphere(World *world) : RenderedObject(world), mActor(nullptr) {
+Sphere::Sphere() : RenderedObject(), mActor(nullptr) {
 	mGenerated = false;
+	mCubemap = nullptr;
 
 	mCameraYaw = 0.0f;
 	mCameraPitch = 0.0f;
-
-	RenderWorld *renderer = dynamic_cast<RenderWorld *>(world);
-	if (renderer) {
-		Material *material = new Material("marble.skin");
-		material->setTexture(renderer->mMarbleCubemap, GL_TEXTURE3);
-		material->setShader(Shader::getShaderByName("Sphere"));
-		setMaterial(material);
-	}
 }
 
 Sphere::~Sphere() {
@@ -92,6 +85,13 @@ void Sphere::generate() {
 	glGenBuffers(1, &gSphereVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * point, &points[0], GL_STATIC_DRAW);
+
+	mCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
+
+	Material *material = new Material("marble.skin");
+	material->setShader(Shader::getShaderByName("Sphere"));
+	material->setTexture(mCubemap, GL_TEXTURE3);
+	setMaterial(material);
 }
 
 void Sphere::calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix) {
@@ -102,7 +102,7 @@ void Sphere::calculateModelMatrix(const RenderInfo &info, glm::mat4 &modelMatrix
 
 void Sphere::draw(Material *material, RenderInfo &info, void *userInfo) {
 	loadModelMatrix(info, material->getShader());
-	material->getShader()->setUniform("reflectivity", 0.2f);
+	material->getShader()->setUniform("inReflectivity", 0.3f);
 
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
 	material->getShader()->enableAttributes();
@@ -121,6 +121,11 @@ void Sphere::render(RenderInfo &info) {
 
 	if (!mMaterial)
 		return;
+
+	//Generate the cubemap framebuffer texture from this sphere
+	if (!info.isReflectionPass) {
+		mCubemap->generateBuffer(getPosition(), info);
+	}
 
 	info.addRenderMethod(mMaterial, RenderInfo::RenderMethod::from_method<Sphere, &Sphere::draw>(this));
 }
@@ -145,14 +150,14 @@ glm::vec3 Sphere::getCollisionNormal(glm::vec3 &toiVelocity) {
 	return dynamic_cast<PhysicsSphere *>(mActor)->getCollisionNormal(toiVelocity);
 }
 
-Vec3 Sphere::getPosition() const {
+glm::vec3 Sphere::getPosition() const {
 	if (mActor)
 		return mActor->getPosition();
 	else
 		return GameObject::getPosition();
 }
 
-Quat Sphere::getRotation() const {
+glm::quat Sphere::getRotation() const {
 	if (mActor)
 		return mActor->getRotation();
 	else
@@ -201,14 +206,14 @@ F32 Sphere::getMass() const {
 		return mMass;
 }
 
-void Sphere::setPosition(const Vec3 &pos) {
+void Sphere::setPosition(const glm::vec3 &pos) {
 	if (mActor)
 		mActor->setPosition(pos);
 	else
 		GameObject::setPosition(pos);
 }
 
-void Sphere::setRotation(const Quat &rot) {
+void Sphere::setRotation(const glm::quat &rot) {
 	if (mActor)
 		mActor->setRotation(rot);
 	else
@@ -272,21 +277,66 @@ void Sphere::updateCamera(const Movement &movement, const F64 &delta) {
 	mCameraYaw += movement.yaw * cameraSpeed;
 }
 void Sphere::updateMove(const Movement &movement, const F64 &delta) {
+	mMovement = movement;
+}
+
+void Sphere::getCameraPosition(glm::mat4 &mat, glm::vec3 &pos) {
+	//Reset the matrix
+	glm::mat4 rotation(1.0f);
+
+	//Rotate camera around the marble, also rotating the offset above
+	rotation = glm::rotate(rotation, mCameraPitch, glm::vec3(1.0f, 0.0f, 0.0f));
+	rotation = glm::rotate(rotation, mCameraYaw, glm::vec3(0.0f, 0.0f, 1.0f));
+
+	//Reset
+	mat = glm::mat4(1.0f);
+
+	//Offset from marble; this is rotated by pitch and yaw
+	mat = glm::translate(mat, glm::vec3(0.0f, 2.5f, 0.0f));
+
+	//Rotate the matrix
+	mat *= rotation;
+
+	//Offset the camera by the negative position to bring us into the center.
+	// This is not affected by pitch/yaw
+	mat = glm::translate(mat, -getPosition());
+
+	//Final position of the camera
+	glm::vec3 rot = glm::mat3(glm::inverse(mat)) * glm::vec3(0, -2.5, 0);
+	pos = getPosition() + rot;
+
+	//Test camera for collisions
+	PhysicsEngine::RaycastInfo info;
+	info.from = getPosition();
+	info.to = pos;
+
+	mWorld->getPhysicsEngine()->raycast(info);
+
+	//If we hit the ground, offset the camera so we can still see
+	if (info.hit) {
+		mat = rotation;
+		mat = glm::translate(mat, -info.point);
+
+		pos = info.point;
+	}
+}
+
+void Sphere::updateTick(const F64 &delta) {
 	//Apply the camera yaw to a matrix so our rolling is based on the camera direction
 	glm::mat4x4 deltaMat = glm::mat4x4(1);
 	deltaMat = glm::rotate(deltaMat, -mCameraYaw, glm::vec3(0, 0, 1));
 
 	//Convert the movement into a vector
 	glm::vec3 move = glm::vec3();
-	if (movement.forward) move.y ++;
-	if (movement.backward) move.y --;
-	if (movement.left) move.x --;
-	if (movement.right) move.x ++;
+	if (mMovement.forward) move.y ++;
+	if (mMovement.backward) move.y --;
+	if (mMovement.left) move.x --;
+	if (mMovement.right) move.x ++;
 
 	//Linear velocity relative to camera yaw (for capping)
 	glm::vec3 linRel = glm::vec3(glm::translate(glm::inverse(deltaMat), mActor->getLinearVelocity())[3]);
 	glm::vec3 angRel = glm::cross(glm::vec3(glm::translate(glm::inverse(deltaMat), mActor->getAngularVelocity())[3]), glm::vec3(0, 0, 1));
-	glm::vec3 torque = move * AppliedAcceleration * F32(delta);
+	glm::vec3 torque = move * AppliedAcceleration * F32(delta) * getRadius();
 
 	if (getColliding()) {
 		//Don't let us go faster than the max velocity in any direction.
@@ -303,9 +353,9 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 		if (torque.y < 0 && torque.y + angRel.y < -MaxAirSpinVelocity) torque.y = glm::min(0.0f, -MaxAirSpinVelocity - angRel.y);
 	}
 
-//	IO::printf("LR: %f %f\n", linRel.x, linRel.y);
-//	IO::printf("AR: %f %f\n", angRel.x, angRel.y);
-//	IO::printf("T:  %f %f\n", torque.x, torque.y);
+	//	IO::printf("LR: %f %f\n", linRel.x, linRel.y);
+	//	IO::printf("AR: %f %f\n", angRel.x, angRel.y);
+	//	IO::printf("T:  %f %f\n", torque.x, torque.y);
 
 	//Torque is based on the movement and yaw
 	glm::vec3 torqueRel = glm::vec3(glm::translate(deltaMat, torque)[3]) * getMass();
@@ -323,7 +373,7 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 		// dot against up vector to determine if we can jump
 		// TODO: take gravities into account
 		glm::vec3 up = glm::vec3(0, 0, 1);
-		if (movement.jump && glm::dot(up, normal) > 0.001f) {
+		if (mMovement.jump && glm::dot(up, normal) > 0.001f) {
 			glm::vec3 currentVelocity = glm::proj(vel, normal);
 
 			glm::vec3 projVel = glm::proj(vel, normal);
@@ -344,54 +394,11 @@ void Sphere::updateMove(const Movement &movement, const F64 &delta) {
 		applyImpulse(moveRel, glm::vec3(0, 0, 0));
 	}
 	//Crappy damping
-	if (movement.forward + movement.backward + movement.left + movement.right == 0 && getColliding()) {
+	if (mMovement.forward + mMovement.backward + mMovement.left + mMovement.right == 0 && getColliding()) {
 		F32 damping = 1.f - LinearRollDamping;
 		mActor->setAngularVelocity(mActor->getAngularVelocity() * damping);
 	}
-}
 
-void Sphere::getCameraPosition(Mat4 &mat, Vec3 &pos) {
-	//Reset the matrix
-	Mat4 rotation(1.0f);
-
-	//Rotate camera around the marble, also rotating the offset above
-	rotation = rotation.rotate(mCameraPitch, Vec3(1.0f, 0.0f, 0.0f));
-	rotation = rotation.rotate(mCameraYaw, Vec3(0.0f, 0.0f, 1.0f));
-
-	//Reset
-	mat = Mat4(1.0f);
-
-	//Offset from marble; this is rotated by pitch and yaw
-	mat = mat.translate(Vec3(0.0f, 2.5f, 0.0f));
-
-	//Rotate the matrix
-	mat *= rotation;
-
-	//Offset the camera by the negative position to bring us into the center.
-	// This is not affected by pitch/yaw
-	mat = mat.translate(-getPosition());
-
-	//Final position of the camera
-	Vec3 rot = glm::mat3(mat.inverse()) * Vec3(0, -2.5, 0);
-	pos = getPosition() + rot;
-
-	//Test camera for collisions
-	PhysicsEngine::RaycastInfo info;
-	info.from = getPosition();
-	info.to = pos;
-
-	mWorld->getPhysicsEngine()->raycast(info);
-
-	//If we hit the ground, offset the camera so we can still see
-	if (info.hit) {
-		mat = rotation;
-		mat = mat.translate(-info.point);
-
-		pos = info.point;
-	}
-}
-
-void Sphere::updateTick(const F64 &delta) {
 	//Temporary OOB solution for now
 	if (getPosition().z < -40) {
 		setPosition(glm::vec3(0, 0, 60));
@@ -424,6 +431,14 @@ bool Sphere::readClientPacket(CharStream &stream) {
 	setForce(stream.pop<glm::vec3>());
 	setTorque(stream.pop<glm::vec3>());
 
+	mCameraYaw = stream.pop<F32>();
+	mCameraPitch = stream.pop<F32>();
+
+	mMovement.forward = stream.pop<bool>();
+	mMovement.backward = stream.pop<bool>();
+	mMovement.left = stream.pop<bool>();
+	mMovement.right = stream.pop<bool>();
+
 	return true;
 }
 
@@ -444,6 +459,14 @@ bool Sphere::readServerPacket(CharStream &stream) {
 	setRadius(stream.pop<F32>());
 	setMass(stream.pop<F32>());
 
+	mCameraYaw = stream.pop<F32>();
+	mCameraPitch = stream.pop<F32>();
+
+	mMovement.forward = stream.pop<bool>();
+	mMovement.backward = stream.pop<bool>();
+	mMovement.left = stream.pop<bool>();
+	mMovement.right = stream.pop<bool>();
+
 	return true;
 }
 
@@ -460,6 +483,14 @@ bool Sphere::writeClientPacket(CharStream &stream) const {
 
 	stream.push<glm::vec3>(getForce());
 	stream.push<glm::vec3>(getTorque());
+
+	stream.push<F32>(mCameraYaw);
+	stream.push<F32>(mCameraPitch);
+
+	stream.push<bool>(mMovement.forward);
+	stream.push<bool>(mMovement.backward);
+	stream.push<bool>(mMovement.left);
+	stream.push<bool>(mMovement.right);
 
 	return true;
 }
@@ -481,16 +512,19 @@ bool Sphere::writeServerPacket(CharStream &stream) const {
 	stream.push<F32>(getRadius());
 	stream.push<F32>(getMass());
 
+	stream.push<F32>(mCameraYaw);
+	stream.push<F32>(mCameraPitch);
+
+	stream.push<bool>(mMovement.forward);
+	stream.push<bool>(mMovement.backward);
+	stream.push<bool>(mMovement.left);
+	stream.push<bool>(mMovement.right);
+
 	return true;
 }
 
 void Sphere::initFields() {
 	// TODO
-}
-
-void Sphere::initScript(ScriptEngine *engine) {
-	engine->addMethod(&Sphere::getRadius, "getRadius");
-	engine->addMethod(&Sphere::setRadius, "setRadius");
 }
 
 // OLD JUMP CODE

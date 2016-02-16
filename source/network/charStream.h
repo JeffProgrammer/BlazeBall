@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -76,6 +76,24 @@ inline U8 CharStream::peek() {
 }
 
 //-----------------------------------------------------------------------------
+// Bools can just become U8s
+//-----------------------------------------------------------------------------
+
+template<>
+inline bool CharStream::push(const bool &value) {
+	push<U8>(value);
+	return value;
+}
+
+template<>
+inline bool CharStream::pop() {
+	return pop<U8>() ? true : false;
+}
+
+template<>
+inline bool CharStream::peek() {
+	return peek<U8>() ? true : false;
+}
 
 //-----------------------------------------------------------------------------
 // U32 datatype stream
@@ -280,4 +298,4 @@ inline std::string CharStream::pop() {
 	return data;
 }
 
-#endif
+#endif // _NETWORK_CHARSTREAM_H_

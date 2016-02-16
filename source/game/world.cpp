@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -16,6 +16,8 @@
 #elif _WIN32
 //#define stricmp stricmp
 #endif
+
+IMPLEMENT_SCRIPTOBJECT(World, ScriptObject);
 
 World::World(PhysicsEngine *physics) : mPhysicsEngine(physics) {
 	mPhysicsEngine->init();
@@ -93,7 +95,7 @@ bool World::loadLevel(const std::string &file) {
 		const char *klass = (*obj)["class"].GetString();
 
 		// create object here.
-		ScriptObject *scriptObject = AbstractClassRep::createFromName(this, klass);
+		ScriptObject *scriptObject = AbstractClassRep::createFromName(klass, this);
 
 		// loop through each field
 		for (auto field = obj->MemberBegin(); field != obj->MemberEnd(); ++field) {
@@ -137,4 +139,9 @@ bool World::loadLevel(const std::string &file) {
 void World::addObject(GameObject *object) {
 	mObjects.push_back(object);
 	object->onAddToScene();
+}
+
+void World::initFields() {
+	AddField(World::mSimulationSpeed, "simulationSpeed");
+	AddField(World::mRunning, "running");
 }

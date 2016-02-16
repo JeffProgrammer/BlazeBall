@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef btPhysicsSphere_h
-#define btPhysicsSphere_h
+#ifndef _GAME_PHYSICS_BULLET_BTPHYSICSSPHERE_H_
+#define _GAME_PHYSICS_BULLET_BTPHYSICSSPHERE_H_
 
 #include "physics/bullet/btPhysicsBody.h"
 #include "physics/physicsSphere.h"
@@ -24,4 +24,4 @@ public:
 	virtual void notifyContact(ContactCallbackInfo &info, bool isBody0);
 };
 
-#endif /* btPhysicsSphere_h */
+#endif // _GAME_PHYSICS_BULLET_BTPHYSICSSPHERE_H_

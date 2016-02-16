@@ -1,20 +1,14 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
 
-#ifndef _PLATFORMSDL_SDLCONFIG_H_
-#define _PLATFORMSDL_SDLCONFIG_H_
+#ifndef _PLATFORM_SDL_SDLCONFIG_H_
+#define _PLATFORM_SDL_SDLCONFIG_H_
 
-#ifdef _WIN32
-#include <GL/glew.h>
-#elif __APPLE__
-#include <OpenGL/gl3.h>
-#elif EMSCRIPTEN
-#include <GLES3/gl3.h>
-#endif
+#include "platform/platformGL.h"
 
 #include <SDL.h>
 #undef main
@@ -28,4 +22,4 @@
 /// The minor opengl version required
 #define SDL_CONFIG_MINOR_GL_VERSION 3
 
-#endif // _PLATFORMSDL_SDLCONFIG_H_
+#endif // _PLATFORM_SDL_SDLCONFIG_H_

@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef physicsBody_h
-#define physicsBody_h
+#ifndef _GAME_PHYSICS_PHYSICSBODY_H_
+#define _GAME_PHYSICS_PHYSICSBODY_H_
 
 #include "base/types.h"
 #include "game/world.h"
@@ -42,4 +42,4 @@ public:
 	virtual void applyForce(const glm::vec3 &force, const glm::vec3 &origin) = 0;
 };
 
-#endif
+#endif // _GAME_PHYSICS_PHYSICSBODY_H_

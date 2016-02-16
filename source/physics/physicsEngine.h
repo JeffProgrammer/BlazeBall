@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef physicsEngine_h
-#define physicsEngine_h
+#ifndef _GAME_PHYSICS_PHYSICSENGINE_H_
+#define _GAME_PHYSICS_PHYSICSENGINE_H_
 
 #include <stdio.h>
 #include <functional>
@@ -65,4 +65,4 @@ public:
 
 };
 
-#endif
+#endif // _GAME_PHYSICS_PHYSICSENGINE_H_

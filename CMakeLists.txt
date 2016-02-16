@@ -27,7 +27,7 @@ endif()
 
 # Enable Static Linking the C++ ABI directly into the executables and libraries
 if (MSVC)
-	#---BEGIN COPY FROM BULLET CMAKE--- 
+	#---BEGIN COPY FROM BULLET CMAKE---
 	#We statically link to reduce dependancies
 	FOREACH(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO )
 		IF(${flag_var} MATCHES "/MD")
@@ -37,7 +37,7 @@ if (MSVC)
 			STRING(REGEX REPLACE "/MDd" "/MTd" ${flag_var} "${${flag_var}}")
 		ENDIF(${flag_var} MATCHES "/MDd")
 	ENDFOREACH(flag_var)
-	#---END COPY FROM BULLET CMAKE--- 
+	#---END COPY FROM BULLET CMAKE---
 endif()
 
 # http://stackoverflow.com/a/25286420/214063
@@ -47,223 +47,23 @@ macro(ADD_FRAMEWORK appname fwname)
 endmacro(ADD_FRAMEWORK)
 
 #------------------------------------------------------------------------------
-# Zlib
+# Third party projects
 #------------------------------------------------------------------------------
 
-set (ZLIB_SRC
-	thirdparty/zlib/adler32.c
-	thirdparty/zlib/compress.c
-	thirdparty/zlib/crc32.c
-	thirdparty/zlib/crc32.h
-	thirdparty/zlib/deflate.c
-	thirdparty/zlib/deflate.h
-	thirdparty/zlib/gzclose.c
-	thirdparty/zlib/gzguts.h
-	thirdparty/zlib/gzlib.c
-	thirdparty/zlib/gzread.c
-	thirdparty/zlib/gzwrite.c
-	thirdparty/zlib/infback.c
-	thirdparty/zlib/inffast.c
-	thirdparty/zlib/inffast.h
-	thirdparty/zlib/inffixed.h
-	thirdparty/zlib/inflate.c
-	thirdparty/zlib/inflate.h
-	thirdparty/zlib/inftrees.c
-	thirdparty/zlib/inftrees.h
-	thirdparty/zlib/trees.c
-	thirdparty/zlib/trees.h
-	thirdparty/zlib/uncompr.c
-	thirdparty/zlib/zconf.h
-	thirdparty/zlib/zlib.h
-	thirdparty/zlib/zutil.c
-	thirdparty/zlib/zutil.h
-)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/zlib.txt)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/jpeg.txt)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/mng.txt)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/tga.txt)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/dif.txt)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/epoxy.txt)
 
-add_library(Zlib STATIC ${ZLIB_SRC})
-set_property (TARGET Zlib APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/zlib")
-
-#------------------------------------------------------------------------------
-# JPEG Library
-#------------------------------------------------------------------------------
-
-set (JPEG_SRC
-	thirdparty/jpeg/jaricom.c
-	thirdparty/jpeg/jcapimin.c
-	thirdparty/jpeg/jcapistd.c
-	thirdparty/jpeg/jcarith.c
-	thirdparty/jpeg/jccoefct.c
-	thirdparty/jpeg/jccolor.c
-	thirdparty/jpeg/jcdctmgr.c
-	thirdparty/jpeg/jchuff.c
-	thirdparty/jpeg/jcinit.c
-	thirdparty/jpeg/jcmainct.c
-	thirdparty/jpeg/jcmarker.c
-	thirdparty/jpeg/jcmaster.c
-	thirdparty/jpeg/jcomapi.c
-	thirdparty/jpeg/jcparam.c
-	thirdparty/jpeg/jcprepct.c
-	thirdparty/jpeg/jcsample.c
-	thirdparty/jpeg/jctrans.c
-	thirdparty/jpeg/jdapimin.c
-	thirdparty/jpeg/jdapistd.c
-	thirdparty/jpeg/jdarith.c
-	thirdparty/jpeg/jdatadst.c
-	thirdparty/jpeg/jdatasrc.c
-	thirdparty/jpeg/jdcoefct.c
-	thirdparty/jpeg/jdcolor.c
-	thirdparty/jpeg/jddctmgr.c
-	thirdparty/jpeg/jdhuff.c
-	thirdparty/jpeg/jdinput.c
-	thirdparty/jpeg/jdmainct.c
-	thirdparty/jpeg/jdmarker.c
-	thirdparty/jpeg/jdmaster.c
-	thirdparty/jpeg/jdmerge.c
-	thirdparty/jpeg/jdpostct.c
-	thirdparty/jpeg/jdsample.c
-	thirdparty/jpeg/jdtrans.c
-	thirdparty/jpeg/jerror.c
-	thirdparty/jpeg/jfdctflt.c
-	thirdparty/jpeg/jfdctfst.c
-	thirdparty/jpeg/jfdctint.c
-	thirdparty/jpeg/jidctflt.c
-	thirdparty/jpeg/jidctfst.c
-	thirdparty/jpeg/jidctint.c
-	thirdparty/jpeg/jquant1.c
-	thirdparty/jpeg/jquant2.c
-	thirdparty/jpeg/jutils.c
-	thirdparty/jpeg/jmemmgr.c
-)
-
-if (APPLE)
-	set(JPEG_SRC ${JPEG_SRC}
-		thirdparty/jpeg/jmemnobs.c
-	)
-elseif (MSVC)	
-	set(JPEG_SRC ${JPEG_SRC}
-		thirdparty/jpeg/jmemansi.c
-	)	
-else ()
-	set(JPEG_SRC ${JPEG_SRC}
-		thirdparty/jpeg/jmemnobs.c
-	)
-endif()
-
-add_library(Jpeg STATIC ${JPEG_SRC})
-set_property (TARGET Jpeg APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
-add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-
-#------------------------------------------------------------------------------
-# MNG Library
-#------------------------------------------------------------------------------
-
-set (MNG_SRC
-	thirdparty/mng/libmng_callback_xs.c
-	thirdparty/mng/libmng_chunk_descr.c
-	thirdparty/mng/libmng_chunk_descr.h
-	thirdparty/mng/libmng_chunk_io.c
-	thirdparty/mng/libmng_chunk_io.h
-	thirdparty/mng/libmng_chunk_prc.c
-	thirdparty/mng/libmng_chunk_prc.h
-	thirdparty/mng/libmng_chunk_xs.c
-	thirdparty/mng/libmng_cms.c
-	thirdparty/mng/libmng_cms.h
-	thirdparty/mng/libmng_conf.h
-	thirdparty/mng/libmng_data.h
-	thirdparty/mng/libmng_display.c
-	thirdparty/mng/libmng_display.h
-	thirdparty/mng/libmng_dither.c
-	thirdparty/mng/libmng_dither.h
-	thirdparty/mng/libmng_error.c
-	thirdparty/mng/libmng_error.h
-	thirdparty/mng/libmng_filter.c
-	thirdparty/mng/libmng_filter.h
-	thirdparty/mng/libmng_hlapi.c
-	thirdparty/mng/libmng_jpeg.c
-	thirdparty/mng/libmng_jpeg.h
-	thirdparty/mng/libmng_memory.h
-	thirdparty/mng/libmng_object_prc.c
-	thirdparty/mng/libmng_object_prc.h
-	thirdparty/mng/libmng_objects.h
-	thirdparty/mng/libmng_pixels.c
-	thirdparty/mng/libmng_pixels.h
-	thirdparty/mng/libmng_prop_xs.c
-	thirdparty/mng/libmng_read.c
-	thirdparty/mng/libmng_read.h
-	thirdparty/mng/libmng_trace.c
-	thirdparty/mng/libmng_trace.h
-	thirdparty/mng/libmng_types.h
-	thirdparty/mng/libmng_write.c
-	thirdparty/mng/libmng_write.h
-	thirdparty/mng/libmng_zlib.c
-	thirdparty/mng/libmng_zlib.h
-	thirdparty/mng/libmng.h
-)
-
-add_library(Mng STATIC ${MNG_SRC})
-target_link_libraries(Mng Jpeg Zlib)
-set_property (TARGET Mng APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jpeg")
-
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/librocket/build" LibRocket)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/enet" ENet)
 if (MSVC)
-	#------------------------------------------------------------------------------
-	# GLEW Library
-	#------------------------------------------------------------------------------
-
-	add_library(GLEW STATIC thirdparty/glew/src/glew.c)
-	set_property(TARGET GLEW APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include")
-	target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
-
-	target_link_libraries(GLEW OpenGL32)
+	add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
 endif()
-
-#------------------------------------------------------------------------------
-# DIF Library
-#------------------------------------------------------------------------------
-
-set (DIF_SRC
-	############################################################################
-	# Sources
-	############################################################################
-
-	# Base
-	dif/src/dif/base/io.cpp
-
-	# Objects
-	dif/src/dif/objects/aiSpecialNode.cpp
-	dif/src/dif/objects/dif.cpp
-	dif/src/dif/objects/forceField.cpp
-	dif/src/dif/objects/gameEntity.cpp
-	dif/src/dif/objects/interior.cpp
-	dif/src/dif/objects/interiorPathFollower.cpp
-	dif/src/dif/objects/staticMesh.cpp
-	dif/src/dif/objects/trigger.cpp
-	dif/src/dif/objects/vehicleCollision.cpp
-
-	############################################################################
-	# Headers
-	############################################################################
-
-	# Base
-	dif/include/dif/base/color.h
-	dif/include/dif/base/io.h
-	dif/include/dif/base/point2.h
-	dif/include/dif/base/point3.h
-	dif/include/dif/base/types.h
-
-	# Objects
-	dif/include/dif/objects/aiSpecialNode.h
-	dif/include/dif/objects/dif.h
-	dif/include/dif/objects/forceField.h
-	dif/include/dif/objects/gameEntity.h
-	dif/include/dif/objects/interior.h
-	dif/include/dif/objects/interiorPathFollower.h
-	dif/include/dif/objects/staticMesh.h
-	dif/include/dif/objects/trigger.h
-	dif/include/dif/objects/vehicleCollision.h
-)
-
-# Create the library
-add_library(Dif STATIC ${DIF_SRC})
-set_property(TARGET Dif APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/dif/include")
 
 #------------------------------------------------------------------------------
 # Main Project Executable
@@ -274,9 +74,9 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	source
 	thirdparty/bullet
 	thirdparty/bullet/src
-	thirdparty/glew/include
-	thirdparty/glm/
+	thirdparty/glm
 	thirdparty/jpeg
+	thirdparty/tgalib
 	thirdparty/mng
 	thirdparty/zlib
 	thirdparty/SDL2/include
@@ -288,7 +88,8 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/enet/include
 	thirdparty/enetpp/include
 	thirdparty/compat
-	thirdparty/chaiscript/include
+	thirdparty/librocket/Include
+	thirdparty/epoxy/include
 )
 
 # Main project source
@@ -310,12 +111,7 @@ set (DIFVIEWERGAME_SRC
 	source/base/mathTypes.h
 	source/base/tree.h
 	source/base/types.h
-	source/base/math/mat4.cpp
-	source/base/math/mat4.h
-	source/base/math/quat.h
 	source/base/math/triangle.h
-	source/base/math/vector3.cpp
-	source/base/math/vector3.h
 
 	# Game folder
 	source/game/camera.cpp
@@ -337,10 +133,27 @@ set (DIFVIEWERGAME_SRC
 	source/game/sphere.h
 	source/game/world.cpp
 	source/game/world.h
-	
+
+	# Gui
+	source/gui/renderInterface.cpp
+	source/gui/renderInterface.h
+	source/gui/systemInterface.cpp
+	source/gui/systemInterface.h
+	source/gui/elements/elementWorldView.cpp
+	source/gui/elements/elementWorldView.h
+
+	# Graphics folder
+	source/graphics/gl.h
+	source/graphics/glImplementation.cpp
+	source/graphics/glImplementation.h
+	source/graphics/GL21/gl21.cpp
+	source/graphics/GL21/gl21.h
+	source/graphics/GL33/gl33.cpp
+	source/graphics/GL33/gl33.h
+
 	# Networking
 	source/network/bitstream.h
-	source/network/charStream.h	
+	source/network/charStream.h
 	source/network/client.cpp
 	source/network/client.h
 	source/network/clientConnection.cpp
@@ -382,6 +195,7 @@ set (DIFVIEWERGAME_SRC
 	# Platform folder
 	source/platform/platform.h
 	source/platform/platformEvent.h
+	source/platform/platformGL.h
 	source/platform/platformTimer.cpp
 	source/platform/platformTimer.h
 	source/platform/platformWindow.h
@@ -395,13 +209,15 @@ set (DIFVIEWERGAME_SRC
 	source/platform/SDL/SDLTimer.h
 	source/platform/SDL/SDLWindow.cpp
 	source/platform/SDL/SDLWindow.h
-	
+
 	# Render folder
 	source/render/interiorRender.cpp
 	source/render/material.cpp
 	source/render/material.h
 	source/render/modelManager.cpp
 	source/render/modelManager.h
+	source/render/renderer.cpp
+	source/render/renderer.h
 	source/render/renderInfo.h
 	source/render/renderWorld.cpp
 	source/render/renderWorld.h
@@ -415,6 +231,8 @@ set (DIFVIEWERGAME_SRC
 	source/render/bitmap/jpegSupport.h
 	source/render/bitmap/mngSupport.cpp
 	source/render/bitmap/mngSupport.h
+	source/render/bitmap/tgaSupport.cpp
+	source/render/bitmap/tgaSupport.h
 
 	# Texture folder
 	source/render/texture/bitmapTexture.cpp
@@ -428,15 +246,15 @@ set (DIFVIEWERGAME_SRC
 
 	# ScriptEngine
 	source/scriptEngine/abstractClassRep.h
+	source/scriptEngine/abstractClassRep.cpp
 	source/scriptEngine/concreteClassRep.h
-	source/scriptEngine/scriptEngine.cpp
-	source/scriptEngine/scriptEngine.h
-	source/scriptEngine/scriptEngine.inl
-	source/scriptEngine/scriptFunctions.h
-	
+	source/scriptEngine/scriptTypes.inl
+
 	# Shaders folder
 	source/shaders/defaultF.glsl
 	source/shaders/defaultV.glsl
+	source/shaders/guiF.glsl
+	source/shaders/guiV.glsl
 	source/shaders/interiorF.glsl
 	source/shaders/interiorV.glsl
 	source/shaders/modelF.glsl
@@ -445,38 +263,18 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/skyboxV.glsl
 	source/shaders/sphereF.glsl
 	source/shaders/sphereV.glsl
-	
-	# Scripts folder
-	source/scripts/mainClient.chai
-	source/scripts/mainServer.chai
 )
 
-#------------------------------------------------------------------------------
-# SDL
-#------------------------------------------------------------------------------
+if (APPLE)
+	set (DIFVIEWERGAME_SRC
+		${DIFVIEWERGAME_SRC}
 
-if (NOT EMSCRIPTEN)
-	add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
+		# OpenGL specific things
+		source/graphics/glMac.h
+		source/graphics/glMac.mm
+	)
+endif()
 endif ()
-
-#------------------------------------------------------------------------------
-# Bullet Physics Library
-#------------------------------------------------------------------------------
-
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
-
-#------------------------------------------------------------------------------
-# ENet Networking Library
-#------------------------------------------------------------------------------
-
-if (NOT EMSCRIPTEN)
-	add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/enet" ENet)
-	if (MSVC)
-		add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
-	endif()
-endif ()
-
-#------------------------------------------------------------------------------
 
 set (DIFVIEWERGAME_LIBRARIES
 	# Bullet
@@ -491,6 +289,9 @@ set (DIFVIEWERGAME_LIBRARIES
 	# MNG
 	Mng
 
+	# TGALib
+	TGALib
+
 	# DIF
 	Dif
 )
@@ -499,9 +300,18 @@ set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
 	#SDL2
 	SDL2-static
-	
+
 	#Enet
 	enet
+
+	# Librocket things
+	freetype
+	RocketCore
+	RocketControls
+	RocketDebugger
+
+	# epoxy for now
+	Epoxy
 )
 endif ()
 
@@ -509,15 +319,12 @@ if (WIN32)
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
 
-	# GLEW
-	GLEW
-
 	Zlib
-	
+
 	Kernel32
 	User32
 	OpenGL32
-	
+
 	# These are for enet sockets
 	Winmm
 	ws2_32
@@ -530,7 +337,7 @@ elseif (APPLE)
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
 	z
-	
+
 	# Assimp
 	debug ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x64/Debug/libassimpd.a
 	optimized ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp/bin/x64/Release/libassimp.a
@@ -562,10 +369,15 @@ source_group("assets\\shaders"       REGULAR_EXPRESSION shaders/.*)
 source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)
 source_group("network"               REGULAR_EXPRESSION network/.*)
 source_group("network\\event"        REGULAR_EXPRESSION network/event/.*)
+source_group("gui"                   REGULAR_EXPRESSION gui/.*)
+source_group("gui\\elements"         REGULAR_EXPRESSION gui/elements/.*)
+source_group("graphics"              REGULAR_EXPRESSION graphics/.*)
+source_group("graphics\\GL21"        REGULAR_EXPRESSION graphics/GL21/.*)
+source_group("graphics\\GL33"        REGULAR_EXPRESSION graphics/GL33/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
-target_compile_definitions(Game PUBLIC GLEW_STATIC GLM_FORCE_RADIANS)
+target_compile_definitions(Game PUBLIC GLEW_STATIC GLM_FORCE_RADIANS ROCKET_STATIC_LIB)
 
 if (MSVC)
 	add_definitions(-D_CRT_NONSTDC_NO_WARNINGS)
@@ -583,7 +395,7 @@ set (BUILD_DIR_FILES
 	assets/DefaultNormal.png
 	assets/DefaultSpec.png
 	assets/noise.jpg
-	
+
 	assets/cube.dae
 	assets/grid.png
 	assets/grid.normal.png
@@ -593,7 +405,7 @@ set (BUILD_DIR_FILES
 	source/shaders/interiorV.glsl
 	source/shaders/modelV.glsl
 	source/shaders/modelF.glsl
-	
+
 	source/scripts/main.chai
 	source/levels/test.json
 )

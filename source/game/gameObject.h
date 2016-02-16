@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef gameObject_h
-#define gameObject_h
+#ifndef _GAME_GAMEOBJECT_H_
+#define _GAME_GAMEOBJECT_H_
 
 #include <glm/matrix.hpp>
 
@@ -16,14 +16,7 @@
 #include "network/netObject.h"
 #include "scriptEngine/concreteClassRep.h"
 #include "game/world.h"
-
-#ifdef _WIN32
-#include <GL/glew.h>
-#elif __APPLE__
-#include <OpenGL/gl3.h>
-#elif EMSCRIPTEN
-#include <GLES3/gl3.h>
-#endif
+#include "platform/platformGL.h"
 
 /**
  * An class that forms the foundation for all world objects within the
@@ -35,22 +28,17 @@ protected:
 	/**
 	 * The position of the GameObject.
 	 */
-	Vec3 mPosition;
+	glm::vec3 mPosition;
 
 	/**
 	 * The rotation of the GameObject.
 	 */
-	Quat mRotation;
+	glm::quat mRotation;
 
 	/**
 	 * The scale of the GameObject.
 	 */
-	Vec3 mScale;
-
-	/**
-	 * The world which contains the GameObject.
-	 */
-	World *mWorld;
+	glm::vec3 mScale;
 
 	/**
 	 * The class rep representing the GameObject abstract class
@@ -58,8 +46,7 @@ protected:
 	DECLARE_SCRIPTOBJECT(GameObject);
 	
 public:
-	GameObject() : mPosition(Vec3(0.0f)), mRotation(Quat()), mScale(Vec3(1.0f)), mWorld(nullptr) {};
-	GameObject(World *world) : mPosition(Vec3(0.0f)), mRotation(Quat()), mScale(Vec3(1.0f)), mWorld(world) {};
+	GameObject() : mPosition(glm::vec3(0.0f)), mRotation(glm::quat()), mScale(glm::vec3(1.0f)) {};
 	virtual ~GameObject() {};
 
 	/**
@@ -78,37 +65,37 @@ public:
 	 * Gets the position of the GameObject.
 	 * @return the position vector of the GameObject.
 	 */
-	virtual Vec3 getPosition() const { return mPosition; }
+	virtual glm::vec3 getPosition() const { return mPosition; }
 
 	/**
 	 * Sets the position of the GameObject.
 	 * @param position The position to set the GameObject.
 	 */
-	virtual void setPosition(const Vec3 &position) { mPosition = position; }
+	virtual void setPosition(const glm::vec3 &position) { mPosition = position; }
 
 	/**
 	 * Gets the rotation of the GameObject as a quaternion.
 	 * @return the rotation quaternion of the GameObject.
 	 */
-	virtual Quat getRotation() const { return mRotation; }
+	virtual glm::quat getRotation() const { return mRotation; }
 
 	/**
 	 * Sets the rotation of the GameObject as a quaternion.
 	 * @param rotation The quaternion rotation of the GameObject.
 	 */
-	virtual void setRotation(const Quat &rotation) { mRotation = rotation; }
+	virtual void setRotation(const glm::quat &rotation) { mRotation = rotation; }
 
 	/**
 	 * Gets the scale of the GameObject.
 	 * @return the scale vector of the GameObject.
 	 */
-	virtual Vec3 getScale() const { return mScale; }
+	virtual glm::vec3 getScale() const { return mScale; }
 
 	/**
 	 * Sets the scale of the GameObject.
 	 * @param scale The scale vector of the GameObject.
 	 */
-	virtual void setScale(const Vec3 &scale) { mScale = scale; }
+	virtual void setScale(const glm::vec3 &scale) { mScale = scale; }
 
 	/**
 	 * Updates the camera.
@@ -129,7 +116,7 @@ public:
 	 * @param OUT mat The camera matrix from the GameObject's perspective.
 	 * @param OUT pos The position of the GameObject.
 	 */
-	virtual void getCameraPosition(Mat4 &mat, Vec3 &pos);
+	virtual void getCameraPosition(glm::mat4 &mat, glm::vec3 &pos);
 
 	/**
 	 * An update callback that is called every physics tick.
@@ -150,12 +137,6 @@ public:
 	 * Initializes the fields specific to the GameObject class.
 	 */
 	static void initFields();
-
-	/**
-	 * Initializes the scripting API for the respective sript engine.
-	 * @param engine The script engine to initialize to.
-	 */
-	static void initScript(ScriptEngine *engine);
 };
 
-#endif
+#endif // _GAME_GAMEOBJECT_H_

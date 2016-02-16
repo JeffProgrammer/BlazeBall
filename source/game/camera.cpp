@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -9,7 +9,7 @@
 
 IMPLEMENT_SCRIPTOBJECT(Camera, GameObject);
 
-Camera::Camera(World *world) : GameObject(world) {
+Camera::Camera() : GameObject() {
 	mPitch = 0.0f;
 	mYaw = 0.0f;
 }
@@ -45,26 +45,22 @@ void Camera::updateMove(const Movement &movement, const F64 &delta) {
 	mPosition += glm::vec3(deltaMat[3]) * F32(delta / 0.016f);
 }
 
-void Camera::getCameraPosition(Mat4 &mat, Vec3 &pos) {
+void Camera::getCameraPosition(glm::mat4 &mat, glm::vec3 &pos) {
 	//Reset the matrix
-	mat = Mat4(1.0f);
+	mat = glm::mat4(1.0f);
 
 	//Rotate camera around the origin
-	mat = mat.rotate(mPitch, Vec3(1.0f, 0.0f, 0.0f));
-	mat = mat.rotate(mYaw, Vec3(0.0f, 0.0f, 1.0f));
+	mat = glm::rotate(mat, mPitch, glm::vec3(1.0f, 0.0f, 0.0f));
+	mat = glm::rotate(mat, mYaw, glm::vec3(0.0f, 0.0f, 1.0f));
 
 	//Offset the camera by the negative position to bring us into the center.
 	// This is not affected by pitch/yaw
-	mat = mat.translate(-mPosition);
+	mat = glm::translate(mat, -mPosition);
 
 	pos = mPosition;
 }
 
 void Camera::initFields() {
-	AddFieldSimple("yaw",   F32, offsetof(Camera, mYaw));
-	AddFieldSimple("pitch", F32, offsetof(Camera, mPitch));
-}
-
-void Camera::initScript(ScriptEngine *engine) {
-	// Nothing.
+	AddField(Camera::mYaw, "yaw");
+	AddField(Camera::mPitch, "pitch");
 }

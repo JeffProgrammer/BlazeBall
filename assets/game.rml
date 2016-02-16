@@ -1,0 +1,10 @@
+<rml>
+<head>
+	<link type="text/css" href="game.rcss"/>
+	<title>Window</title>
+</head>
+<body>
+<WorldView class="full">
+</WorldView>
+</body>
+</rml>

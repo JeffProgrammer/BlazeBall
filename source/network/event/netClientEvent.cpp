@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -9,8 +9,6 @@
 #include "base/io.h"
 #include "game/gameObject.h"
 #include "scriptEngine/abstractClassRep.h"
-
-const U8 Magic = 0x42;
 
 std::shared_ptr<NetClientEvent> NetClientEvent::deserialize(CharStream &data, Client *client) {
 	//Don't corrupt the stream if it's not a net event
@@ -92,7 +90,7 @@ bool NetClientGhostCreateEvent::read(CharStream &data) {
 	U32 ghostId = data.pop<U32>();
 	std::string className = data.pop<std::string>();
 
-	mObject = dynamic_cast<NetObject *>(AbstractClassRep::createFromName(mClient->getWorld(), className));
+	mObject = dynamic_cast<NetObject *>(AbstractClassRep::createFromName(className, mClient->getWorld()));
 	if (!mObject) {
 		return false;
 	}

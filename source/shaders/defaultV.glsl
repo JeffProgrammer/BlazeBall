@@ -1,15 +1,20 @@
 #version 330 core
 
-layout(location = 0) in vec3 vertexPosition;
+//------------------------------------------------------------------------------
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
+// All rights reserved.
+//------------------------------------------------------------------------------
 
-uniform mat4 projectionMat;
-uniform mat4 modelMat;
-uniform mat4 viewMat;
+layout(location = 0) in vec3 inVertexPosition;
+
+uniform mat4 inProjectionMat;
+uniform mat4 inModelMat;
+uniform mat4 inViewMat;
 
 void main() {
-	mat4 modelViewProjectionMat = projectionMat * viewMat * modelMat;
+	mat4 modelViewProjectionMat = inProjectionMat * inViewMat * inModelMat;
 
 	//Worldspace position
-	vec4 v = vec4(vertexPosition, 1);
-	gl_Position = modelViewProjectionMat * v;
+	gl_Position = modelViewProjectionMat * vec4(inVertexPosition, 1);
 }

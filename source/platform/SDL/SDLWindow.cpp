@@ -1,11 +1,12 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
 #include "platform/SDL/SDLWindow.h"
 #include "platform/SDL/SDLEvent.h"
+#include "graphics/GL33/gl33.h"
 
 bool SDLWindow::createContext() {
 	//Init SDL
@@ -28,6 +29,8 @@ bool SDLWindow::createContext() {
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
 	//Create the window
 	const U32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
@@ -43,30 +46,23 @@ bool SDLWindow::createContext() {
 	}
 
 	SDL_GL_MakeCurrent(window, context);
-
 #ifdef _WIN32
-	glewExperimental = true;
-	GLenum error = glewInit();
-	if (error != GLEW_OK) {
-		fprintf(stderr, "GLEW failed to init. Error: %d\n", error);
-		return false;
-	}
-
-	// stew on the error, as GLEW actually generates an error in teh core profile.
-	// its known, and documented, on their github. and they refuse to do anything about it.
-	// pussies.
-	//
-	// Uncomment me if we are using the opengl core profile
-	while (glGetError() != GL_NO_ERROR);
+	epoxy_handle_external_wglMakeCurrent();
 #endif
+	// Initialize the GL library
+	GL::createGL<GL33>();
+	
+	// Let the GL library store this context.
+	glBindContextEXT(context);
 
 	IO::printf("Please note that your GPU may support a higher GL version or newer extensions.\n");
 	IO::printf("Extensions outside of the core may be used, but are not required.\n");
 	IO::printf("OpenGL Core Profile Info\n");
-	IO::printf("    Version: %s\n", glGetString(GL_VERSION));
-	IO::printf("     Vendor: %s\n", glGetString(GL_VENDOR));
+	IO::printf("   Version:  %s\n", glGetString(GL_VERSION));
+	IO::printf("   Vendor:   %s\n", glGetString(GL_VENDOR));
 	IO::printf("   Renderer: %s\n", glGetString(GL_RENDERER));
-	IO::printf("    Shading: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	IO::printf("   Shading:  %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	IO::printf("   VRAM:     %uMB\n", glGetVideoRamEXT());
 
 	//Use Vsync
 	setVerticalSync(true);
@@ -85,6 +81,8 @@ void SDLWindow::destroyContext() {
 	// clean up VAO
 	if (mVAO)
 		glDeleteVertexArrays(1, &mVAO);
+	SDL_GL_DeleteContext(context);
+	glBindContextEXT(nullptr);
 	SDL_Quit();
 }
 

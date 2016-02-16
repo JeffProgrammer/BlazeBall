@@ -1,13 +1,13 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
 #include "game/Shape.h"
 #include "render/modelManager.h"
 
-Shape::Shape(World *world, const std::string &shapeFile) : RenderedObject(world) {
+Shape::Shape(const std::string &shapeFile) : RenderedObject() {
 	mShapeFile = shapeFile;
 }
 

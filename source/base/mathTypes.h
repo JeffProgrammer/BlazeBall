@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -35,31 +35,31 @@ public:
 		maxZ = 0.0f;
 	}
 
-	inline Vec3 getMin() const {
-		return Vec3(minX, minY, minZ);
+	inline glm::vec3 getMin() const {
+		return glm::vec3(minX, minY, minZ);
 	}
-	inline Vec3 getMax() const {
-		return Vec3(maxX, maxY, maxZ);
+	inline glm::vec3 getMax() const {
+		return glm::vec3(maxX, maxY, maxZ);
 	}
-	inline Vec3 getCenter() const {
+	inline glm::vec3 getCenter() const {
 		return (getMax() + getMin()) / 2.0f;
 	}
 };
 
 class TetrahetronF {
 public:
-	Vec3 point0;
-	Vec3 point1;
-	Vec3 point2;
-	Vec3 point3;
+	glm::vec3 point0;
+	glm::vec3 point1;
+	glm::vec3 point2;
+	glm::vec3 point3;
 };
 
 struct Vertex {
-	Vec3 point;
+	glm::vec3 point;
 	glm::vec2 uv;
-	Vec3 normal;
-	Vec3 tangent;
-	Vec3 bitangent;
+	glm::vec3 normal;
+	glm::vec3 tangent;
+	glm::vec3 bitangent;
 };
 
 struct Triangle {
@@ -67,12 +67,12 @@ struct Triangle {
 };
 
 struct Point {
-	Vec3 vertex;
-	Vec3 color;
+	glm::vec3 vertex;
+	glm::vec3 color;
 
-	Point(const Vec3 &vertex, const Vec3 &color) : vertex(vertex), color(color) {
+	Point(const glm::vec3 &vertex, const glm::vec3 &color) : vertex(vertex), color(color) {
 
 	}
 };
 
-#endif
+#endif // _BASE_MATHTYPES_H_

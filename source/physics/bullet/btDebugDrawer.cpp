@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -48,8 +48,8 @@ void btDebugDrawer::draw(RenderInfo &info, const PhysicsEngine::DebugDrawType &d
 	mShader->activate();
 
 	mShader->enableAttributes();
-	mShader->setUniformMatrix("projectionMat", false, info.projectionMatrix);
-	mShader->setUniformMatrix("viewMat", false, info.viewMatrix);
+	mShader->setUniformMatrix(UNIFORM_PROJECTION_MATRIX_NAME, false, info.projectionMatrix);
+	mShader->setUniformMatrix(UNIFORM_VIEW_MATRIX_NAME, false, info.viewMatrix);
 
 	glDrawArrays(GL_LINES, 0, mLinePoints.size());
 

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -14,18 +14,18 @@
 
 class AbstractClassRep;
 template<typename T> class ConcreteClassRep;
-class ScriptEngine;
 class ScriptObject;
+class World;
 
 class ScriptObject {
 	template<typename T>
 	friend class ConcreteClassRep;
+	friend class AbstractClassRep;
 public:
 	ScriptObject();
 	virtual ~ScriptObject();
 
 	static void initFields();
-	static void initScript(ScriptEngine *engine);
 
 	virtual AbstractClassRep* getClassRep() {
 		return mClassRep;
@@ -57,8 +57,9 @@ protected:
 	 * They are stored as strings.
 	 */
 	std::unordered_map<std::string, std::string> mDynamicFieldList;
-
 	AbstractClassRep *mClassRep;
+
+	World *mWorld;
 
 	static ConcreteClassRep<ScriptObject> sConcreteClassRep;
 	

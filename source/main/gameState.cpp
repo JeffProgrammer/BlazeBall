@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -27,14 +27,6 @@ void GameState::parseArgs(int argc, const char **argv) {
 
 bool GameState::start() {
 	if (runServer) {
-#ifndef EMSCRIPTEN
-		// Init server scripting
-		if (!ScriptEngine::get(ScriptEngine::SERVER)->init("mainServer.chai"))
-			return false;
-#else
-		
-#endif
-
 		serverWorld = new World(platform->createPhysicsEngine());
 		server = new Server(serverWorld);
 		serverWorld->loadLevel("bowl.json");
@@ -42,29 +34,12 @@ bool GameState::start() {
 	}
 
 	if (runClient) {
-#ifndef EMSCRIPTEN
-		// Init client scripting
-		if (!ScriptEngine::get(ScriptEngine::CLIENT)->init("mainClient.chai"))
-			return false;
-#else
-		
-#endif
-
 		//Create us a new scene
 		RenderWorld *world = new RenderWorld(platform->createPhysicsEngine());
 		client = new Client(world, serverAddress, 28000);
 
 		world->setClient(client);
 		client->connect();
-
-		//Init SDL
-		world->mWindow = platform->createWindow();
-		world->mTimer = platform->createTimer();
-		world->mConfig = new Config("config.txt");
-
-		if (!world->init()) {
-			return false;
-		}
 
 		clientWorld = world;
 	}
@@ -76,37 +51,20 @@ void GameState::stop() {
 		client->disconnect();
 
 		// much hack, very wow
-		if (gSphereVBO)
+		if (gSphereVBO) {
 			glDeleteBuffers(1, &gSphereVBO);
+		}
+		delete client;
+		delete clientWorld;
 	}
 	if (runServer) {
 		server->stop();
+		delete server;
+		delete serverWorld;
 	}
 }
 
 void GameState::runLoop() {
-	F64 lastDelta = 0.0;
-	PlatformTimer *timer = platform->createTimer();
-
-	while (true) {
-		//Profiling
-		timer->start();
-		{
-			if (runClient) {
-				clientWorld->loop(lastDelta);
-				client->pollEvents();
-
-				if (!clientWorld->getRunning()) {
-					break;
-				}
-			} else {
-				std::string input;
-				std::getline(std::cin, input);
-				if (input == "quit")
-					break;
-			}
-		}
-		timer->end();
-		lastDelta = timer->getDelta();
-	}
+	//TODO server quit events
+	client->start();
 }

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -72,5 +72,4 @@ public:
 	virtual bool read(CharStream &data) override;
 };
 
-
-#endif
+#endif // _NETWORK_EVENT_NETSERVEREVENT_H_

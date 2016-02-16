@@ -1,0 +1,27 @@
+set (EPOXY_SRC
+	thirdparty/epoxy/src/dispatch_common.c
+	thirdparty/epoxy/src/dispatch_common.h
+	thirdparty/epoxy/src/gl_generated_dispatch.c
+)
+if (WIN32)
+	#WGL
+	set (EPOXY_SRC
+		${EPOXY_SRC}
+		thirdparty/epoxy/src/dispatch_wgl.c
+		thirdparty/epoxy/src/wgl_generated_dispatch.c
+	)
+elseif (UNIX AND NOT APPLE)
+	#GLX
+	set (EPOXY_SRC
+		${EPOXY_SRC}
+		thirdparty/epoxy/src/dispatch_glx.c
+		thirdparty/epoxy/src/glx_generated_dispatch.c
+	)
+endif()
+add_library(Epoxy STATIC ${EPOXY_SRC})
+if (WIN32)
+	target_compile_definitions(Epoxy PUBLIC BUILD_WGL)
+elseif (UNIX AND NOT APPLE)
+	target_compile_definitions(Epoxy PUBLIC BUILD_GLX)
+endif()
+set_property(TARGET Epoxy APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/epoxy/include")

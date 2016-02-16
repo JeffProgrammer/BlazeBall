@@ -1,11 +1,17 @@
 #version 330 core
 
-in vec3 UV;
-out vec4 fragColor;
+//------------------------------------------------------------------------------
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
+// All rights reserved.
+//------------------------------------------------------------------------------
 
-uniform samplerCube cubemapSampler;
+in vec3 outUV;
+out vec4 outFragColor;
+
+uniform samplerCube inCubemapSampler;
 
 void main() {
-	vec3 materialColor = texture(cubemapSampler, UV).rgb;
-	fragColor = vec4(materialColor, 1.0);
+	vec3 materialColor = texture(inCubemapSampler, outUV).rgb;
+	outFragColor = vec4(materialColor, 1.0);
 }

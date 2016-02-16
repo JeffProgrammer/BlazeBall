@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef SDLEvent_h
-#define SDLEvent_h
+#ifndef _PLATFORM_SDL_SDLEVENT_H_
+#define _PLATFORM_SDL_SDLEVENT_H_
 
 #include <stdio.h>
 #include "platform/platformEvent.h"
@@ -32,6 +32,19 @@ namespace SDLEvent {
 			default: return PlatformEvent::None;
 		}
 	}
+
+	inline MouseButton convertMouse(U8 button) {
+		switch (button) {
+		case SDL_BUTTON_LEFT:
+			return MouseButton::MOUSE_BUTTON_LEFT;
+		case SDL_BUTTON_RIGHT:
+			return MouseButton::MOUSE_BUTTON_RIGHT;
+		case SDL_BUTTON_MIDDLE:
+			return MouseButton::MOUSE_BUTTON_MIDDLE;
+		default:
+			return MouseButton::MOUSE_BUTTON_INVALID;
+		}
+	}
 };
 
-#endif
+#endif // _PLATFORM_SDL_SDLEVENT_H_

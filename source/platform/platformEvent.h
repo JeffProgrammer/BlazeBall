@@ -1,14 +1,21 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef event_h
-#define event_h
+#ifndef _PLATFORM_PLATFORMEVENT_H_
+#define _PLATFORM_PLATFORMEVENT_H_
 
 #include "base/types.h"
 #include "base/event.h"
+
+enum MouseButton {
+	MOUSE_BUTTON_INVALID = -1,
+	MOUSE_BUTTON_LEFT = 1,
+	MOUSE_BUTTON_MIDDLE = 2,
+	MOUSE_BUTTON_RIGHT = 3
+};
 
 class PlatformEvent : public Event {
 public:
@@ -65,13 +72,13 @@ public:
 class MouseDownEvent : public PlatformEvent {
 public:
 	glm::ivec2 position;
-	U8 button;
+	MouseButton button;
 
-	MouseDownEvent() : PlatformEvent(MouseDown), position(glm::ivec2(0, 0)), button(0) {};
+	MouseDownEvent() : PlatformEvent(MouseDown), position(glm::ivec2(0, 0)), button(MOUSE_BUTTON_LEFT) {};
 	glm::ivec2 getPosition() {
 		return position;
 	}
-	U8 getButton() {
+	MouseButton getButton() {
 		return button;
 	}
 };
@@ -79,13 +86,13 @@ public:
 class MouseUpEvent : public PlatformEvent {
 public:
 	glm::ivec2 position;
-	U8 button;
+	MouseButton button;
 
-	MouseUpEvent() : PlatformEvent(MouseUp), position(glm::ivec2(0, 0)), button(0) {};
+	MouseUpEvent() : PlatformEvent(MouseUp), position(glm::ivec2(0, 0)), button(MOUSE_BUTTON_LEFT) {};
 	glm::ivec2 getPosition() {
 		return position;
 	}
-	U8 getButton() {
+	MouseButton getButton() {
 		return button;
 	}
 };
@@ -346,4 +353,4 @@ public:
 	WindowResizeEvent() : PlatformEvent(WindowResize), newSize(glm::ivec2(0, 0)) {};
 };
 
-#endif
+#endif // _PLATFORM_PLATFORMEVENT_H_

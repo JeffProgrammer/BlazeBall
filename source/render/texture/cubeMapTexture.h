@@ -1,21 +1,14 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef cubeMapTexture_h
-#define cubeMapTexture_h
-
-#ifdef _WIN32
-#include <GL/glew.h>
-#elif __APPLE__
-#include <OpenGL/gl3.h>
-#elif EMSCRIPTEN
-#include <GLES3/gl3.h>
-#endif
+#ifndef _RENDER_TEXTURE_CUBEMAPTEXTURE_H_
+#define _RENDER_TEXTURE_CUBEMAPTEXTURE_H_
 
 #include <stdbool.h>
+#include "platform/platformGL.h"
 #include "base/types.h"
 #include "bitmapTexture.h"
 #include "base/io.h"
@@ -128,4 +121,4 @@ public:
 	virtual void deactivate();
 };
 
-#endif
+#endif // _RENDER_TEXTURE_CUBEMAPTEXTURE_H_

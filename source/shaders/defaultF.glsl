@@ -1,7 +1,13 @@
 #version 330 core
 
-out vec4 fragColor;
+//------------------------------------------------------------------------------
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
+// All rights reserved.
+//------------------------------------------------------------------------------
+
+out vec4 outFragColor;
 
 void main() {
-	fragColor = vec4(1, 0, 1, 1);
+	outFragColor = vec4(1, 0, 1, 1);
 }

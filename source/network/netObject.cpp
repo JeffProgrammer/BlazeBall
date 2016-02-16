@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -30,6 +30,6 @@ bool NetObject::write(CharStream &stream) const {
 	return true;
 }
 
-void NetObject::initScript(ScriptEngine *engine) {
+void NetObject::initFields() {
 	// Nothing.
 }

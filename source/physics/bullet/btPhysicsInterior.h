@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef btPhysicsInterior_h
-#define btPhysicsInterior_h
+#ifndef _GAME_PHYSICS_BULLET_BTPHYSICSINTERIOR_H_
+#define _GAME_PHYSICS_BULLET_BTPHYSICSINTERIOR_H_
 
 #include "btPhysicsBody.h"
 
@@ -26,4 +26,4 @@ public:
 	void construct();
 };
 
-#endif /* btPhysicsInterior_h */
+#endif // _GAME_PHYSICS_BULLET_BTPHYSICSINTERIOR_H_

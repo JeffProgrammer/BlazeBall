@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
@@ -19,6 +19,7 @@
 
 #include "render/bitmap/mngsupport.h"
 #include "render/bitmap/jpegsupport.h"
+#include "render/bitmap/tgasupport.h"
 #include "render/texture/bitmapTexture.h"
 
 bool IO::isfile(const std::string &file) {
@@ -96,6 +97,8 @@ Texture *IO::loadTexture(const std::string &file) {
 		readFn = mngReadImage;
 	else if (extension == "jpg")
 		readFn = jpegReadImage;
+	else if (extension == "tga")
+		readFn = tgaReadImage;
 	else {
 		// ?!
 		readFn = mngReadImage;

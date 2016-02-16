@@ -1,5 +1,11 @@
-#ifndef triangle_h
-#define triangle_h
+//------------------------------------------------------------------------------
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
+// All rights reserved.
+//------------------------------------------------------------------------------
+
+#ifndef _BASE_MATH_TRIANGLE_H_
+#define _BASE_MATH_TRIANGLE_H_
 
 #include "base/types.h"
 
@@ -107,4 +113,4 @@ public:
 	}
 };
 
-#endif
+#endif // _BASE_MATH_TRIANGLE_H_

@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef jpegsupport_h
-#define jpegsupport_h
+#ifndef _RENDER_BITMAP_JPEGSUPPORT_H_
+#define _RENDER_BITMAP_JPEGSUPPORT_H_
 
 #include <stdbool.h>
 #include "base/types.h"
@@ -21,4 +21,4 @@
  */
 bool jpegReadImage(const std::string &file, U8 *&bitmap, glm::ivec2 &dims, BitmapTexture::Format &format);
 
-#endif
+#endif // _RENDER_BITMAP_JPEGSUPPORT_H_

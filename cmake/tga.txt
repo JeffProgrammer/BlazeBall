@@ -1,0 +1,6 @@
+set (TGALIB_SRC
+	thirdparty/tgalib/tga.c
+)
+
+add_library(TGALib ${TGALIB_SRC})
+set_property (TARGET TGALib APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/tgalib")

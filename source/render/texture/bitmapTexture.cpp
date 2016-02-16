@@ -1,23 +1,17 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
+
+#include "bitmapTexture.h"
 
 #include <stdio.h>
 #include <string>
 #include <stdlib.h>
 
-#ifdef _WIN32
-#include <GL/glew.h>
-#elif __APPLE__
-#include <OpenGL/gl3.h>
-#elif EMSCRIPTEN
-#include <GLES3/gl3.h>
-#endif
-
+#include "platform/platformGL.h"
 #include "base/io.h"
-#include "bitmapTexture.h"
 #include "render/util.h"
 
 BitmapTexture::BitmapTexture(U8 *pixels, const glm::ivec2 &extent, const Format &format) {

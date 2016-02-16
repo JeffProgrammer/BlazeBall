@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef timer_h
-#define timer_h
+#ifndef _PLATFORM_PLATFORMTIMER_H_
+#define _PLATFORM_PLATFORMTIMER_H_
 
 #include "base/types.h"
 #include <mutex>
@@ -41,6 +41,12 @@ public:
 	 * @return the delta between the timer calls.
 	 */
 	virtual F64 getDelta() const = 0;
+
+	/**
+	 * Gets the elapsed time since the start method was called.
+	 * @return the elapsed time in seconds since it was last called.
+	 */
+	virtual F64 getElapsedTimeSinceStart() = 0;
 };
 
-#endif
+#endif // _PLATFORM_PLATFORMTIMER_H_

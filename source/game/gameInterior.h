@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef gameInterior_h
-#define gameInterior_h
+#ifndef _GAME_GAMEINTERIOR_H_
+#define _GAME_GAMEINTERIOR_H_
 
 #include "base/io.h"
 #include "base/types.h"
@@ -43,7 +43,7 @@ protected:
 
 	DECLARE_SCRIPTOBJECT(GameInterior);
 public:
-	GameInterior(World *world);
+	GameInterior();
 	virtual ~GameInterior();
 	
 	void generateMaterials(std::string directory);
@@ -60,13 +60,13 @@ public:
 	virtual void render(::RenderInfo &info) override;
 	void drawMaterial(Material *material, ::RenderInfo &info, void *userInfo);
 
-	virtual Vec3 getPosition() const override;
-	virtual Quat getRotation() const override;
-	virtual Vec3 getScale() const override;
+	virtual glm::vec3 getPosition() const override;
+	virtual glm::quat getRotation() const override;
+	virtual glm::vec3 getScale() const override;
 
-	virtual void setPosition(const Vec3 &pos) override;
-	virtual void setRotation(const Quat &rot) override;
-	virtual void setScale(const Vec3 &scale) override;
+	virtual void setPosition(const glm::vec3 &pos) override;
+	virtual void setRotation(const glm::quat &rot) override;
+	virtual void setScale(const glm::vec3 &scale) override;
 	
 	virtual inline void updateTick(const F64 &delta) override {};
 
@@ -76,12 +76,6 @@ public:
 	virtual bool write(CharStream &stream) const override;
 
 	static void initFields();
-
-	/**
-	 * Initializes the scripting API for the respective sript engine.
-	 * @param engine The script engine to initialize to.
-	 */
-	static void initScript(ScriptEngine *engine);
 };
 
-#endif
+#endif // _GAME_GAMEINTERIOR_H_

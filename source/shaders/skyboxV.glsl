@@ -1,24 +1,29 @@
 #version 330 core
 
-layout(location = 0) in vec3 vertexPosition;
+//------------------------------------------------------------------------------
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
+// All rights reserved.
+//------------------------------------------------------------------------------
 
-out vec3 UV;
+layout(location = 0) in vec3 inVertexPosition;
 
-uniform mat4 projectionMat;
-uniform mat4 modelMat;
-uniform mat4 viewMat;
-uniform vec3 cameraPos;
-uniform float extent;
+out vec3 outUV;
+
+uniform mat4 inProjectionMat;
+uniform mat4 inViewMat;
+uniform vec3 inCameraPos;
+uniform float inExtent;
 
 void main() {
-	mat4 viewProjectionMat = projectionMat * viewMat;
+	mat4 viewProjectionMat = inProjectionMat * inViewMat;
 
 	//Worldspace position
-	vec4 v = viewProjectionMat * vec4(vertexPosition - (cameraPos / extent), 1);
+	vec4 v = viewProjectionMat * vec4(inVertexPosition - (inCameraPos / inExtent), 1);
 
 	//Note: xyww so the depth test works correctly
 	gl_Position = v.xyww;
 
 	//UVs are the same as the vertex position because it's a 1x1x1 cube
-	UV = vertexPosition;
+	outUV = inVertexPosition;
 }

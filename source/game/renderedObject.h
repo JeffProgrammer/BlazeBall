@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef RenderedObject_h
-#define RenderedObject_h
+#ifndef _GAME_RENDEREDOBJECT_H_
+#define _GAME_RENDEREDOBJECT_H_
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -16,7 +16,7 @@
 
 class RenderedObject : public GameObject {
 public:
-	RenderedObject(World *world) : GameObject(world) {}
+	RenderedObject() : GameObject() {}
 
 	/**
 	 * Render the object using OpenGL.
@@ -53,14 +53,8 @@ public:
 	 */
 	static void initFields();
 
-	/**
-	 * Initializes the scripting API for the respective sript engine.
-	 * @param engine The script engine to initialize to.
-	 */
-	static void initScript(ScriptEngine *engine);
-
 protected:
 	DECLARE_SCRIPTOBJECT(RenderedObject);
 };
 
-#endif
+#endif // _GAME_RENDEREDOBJECT_H_

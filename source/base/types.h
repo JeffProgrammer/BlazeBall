@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef types_h
-#define types_h
+#ifndef _BASE_TYPES_H_
+#define _BASE_TYPES_H_
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -34,4 +34,4 @@ typedef signed long long S64;
 typedef float F32;
 typedef double F64;
 
-#endif
+#endif // _BASE_TYPES_H_

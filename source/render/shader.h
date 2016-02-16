@@ -1,26 +1,18 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2015 Glenn Smith
-// Copyright (c) 2015 Jeff Hutchinson
+// Copyright (c) 2014-2016 Glenn Smith
+// Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef shader_h
-#define shader_h
+#ifndef _RENDER_SHADER_H_
+#define _RENDER_SHADER_H_
 
 #include <stdio.h>
-#include "base/types.h"
-
-#ifdef _WIN32
-#include <GL/glew.h>
-#elif __APPLE__
-#include <OpenGL/gl3.h>
-#elif EMSCRIPTEN
-#include <GLES3/gl3.h>
-#endif
-
 #include <string>
 #include <unordered_map>
-#include "scriptEngine/concreteClassRep.h"
+#include "base/types.h"
+#include "base/math.h"
+#include "platform/platformGL.h"
 #include "game/scriptObject.h"
 
 class Shader {
@@ -258,4 +250,4 @@ template<> inline void Shader::setUniformMatrix(const std::string &name, GLboole
 ShaderUniformMatrix(glm::mat3, glUniformMatrix3fv);
 ShaderUniformMatrix(glm::mat4, glUniformMatrix4fv);
 
-#endif
+#endif // _RENDER_SHADER_H_
