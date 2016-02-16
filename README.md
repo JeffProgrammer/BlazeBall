@@ -39,7 +39,6 @@ Third Party Libraries
 * ENet - Networking Library
 * ENetPP - Networking extensions library for ENet
 * FreeType - Font Library
-* GLEW - OpenGL Extensions Loader
 * Epoxy - OpenGL Extensions Loader
 * GLM - Math Library
 * JPEG - Image Library
