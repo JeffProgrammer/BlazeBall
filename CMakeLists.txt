@@ -16,7 +16,7 @@ if (EMSCRIPTEN)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2 -s USE_PTHREADS=1")
 
-	set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 -o test.html")
+	set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 -O1 -o test.html")
 elseif (MSVC)
 	# Force multiple processors to be used to compile visual studio builds.
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
@@ -55,12 +55,15 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/jpeg.txt)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/mng.txt)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/tga.txt)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/dif.txt)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/epoxy.txt)
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet" Bullet)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/librocket/build" LibRocket)
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/enet" ENet)
+
+if (NOT EMSCRIPTEN)
+	add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2" SDL2)
+	add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/enet" ENet)
+	include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/epoxy.txt)
+endif()
 if (MSVC)
 	add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
 endif()
@@ -89,7 +92,6 @@ set (DIFVIEWERGAME_INCLUDEDIR
 	thirdparty/enetpp/include
 	thirdparty/compat
 	thirdparty/librocket/Include
-	thirdparty/epoxy/include
 )
 
 # Main project source
@@ -144,12 +146,6 @@ set (DIFVIEWERGAME_SRC
 
 	# Graphics folder
 	source/graphics/gl.h
-	source/graphics/glImplementation.cpp
-	source/graphics/glImplementation.h
-	source/graphics/GL21/gl21.cpp
-	source/graphics/GL21/gl21.h
-	source/graphics/GL33/gl33.cpp
-	source/graphics/GL33/gl33.h
 
 	# Networking
 	source/network/bitstream.h
@@ -274,7 +270,6 @@ if (APPLE)
 		source/graphics/glMac.mm
 	)
 endif()
-endif ()
 
 set (DIFVIEWERGAME_LIBRARIES
 	# Bullet
@@ -294,8 +289,31 @@ set (DIFVIEWERGAME_LIBRARIES
 
 	# DIF
 	Dif
+
+	# Librocket things
+	freetype
+	RocketCore
+	RocketControls
+	RocketDebugger
 )
 if (NOT EMSCRIPTEN)
+set (DIFVIEWERGAME_INCLUDEDIR
+	${DIFVIEWERGAME_INCLUDEDIR}
+
+	# Epoxy
+	thirdparty/epoxy/include
+)
+set (DIFVIEWERGAME_SRC
+	${DIFVIEWERGAME_SRC}
+
+	# OpenGL Implementations with Epoxy
+	source/graphics/glImplementation.cpp
+	source/graphics/glImplementation.h
+	source/graphics/GL21/gl21.cpp
+	source/graphics/GL21/gl21.h
+	source/graphics/GL33/gl33.cpp
+	source/graphics/GL33/gl33.h
+)
 set (DIFVIEWERGAME_LIBRARIES
 	${DIFVIEWERGAME_LIBRARIES}
 	#SDL2
@@ -303,12 +321,6 @@ set (DIFVIEWERGAME_LIBRARIES
 
 	#Enet
 	enet
-
-	# Librocket things
-	freetype
-	RocketCore
-	RocketControls
-	RocketDebugger
 
 	# epoxy for now
 	Epoxy

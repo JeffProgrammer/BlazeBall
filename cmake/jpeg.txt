@@ -54,6 +54,10 @@ elseif (MSVC)
 	set(JPEG_SRC ${JPEG_SRC}
 		thirdparty/jpeg/jmemansi.c
 	)
+else ()
+	set(JPEG_SRC ${JPEG_SRC}
+		thirdparty/jpeg/jmemnobs.c
+	)
 endif()
 
 add_library(Jpeg STATIC ${JPEG_SRC})

@@ -6,7 +6,9 @@
 
 #include "platform/SDL/SDLWindow.h"
 #include "platform/SDL/SDLEvent.h"
+#ifndef EMSCRIPTEN
 #include "graphics/GL33/gl33.h"
+#endif
 
 bool SDLWindow::createContext() {
 	//Init SDL
@@ -49,9 +51,10 @@ bool SDLWindow::createContext() {
 #ifdef _WIN32
 	epoxy_handle_external_wglMakeCurrent();
 #endif
+#ifndef EMSCRIPTEN
 	// Initialize the GL library
 	GL::createGL<GL33>();
-	
+
 	// Let the GL library store this context.
 	glBindContextEXT(context);
 
@@ -63,6 +66,7 @@ bool SDLWindow::createContext() {
 	IO::printf("   Renderer: %s\n", glGetString(GL_RENDERER));
 	IO::printf("   Shading:  %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 	IO::printf("   VRAM:     %uMB\n", glGetVideoRamEXT());
+#endif
 
 	//Use Vsync
 	setVerticalSync(true);

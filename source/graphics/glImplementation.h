@@ -10,6 +10,9 @@
 #include <memory>
 #include <string>
 
+#ifdef EMSCRIPTEN
+#include "glEmscripten.h"
+#else
 #include <epoxy/gl.h>
 #if defined(_WIN32)
 #include <epoxy/wgl.h>
@@ -138,4 +141,5 @@ protected:
 	GLfloat mPixelDensity;
 };
 
+#endif //EMSCRIPTEN
 #endif // _GRAPHICS_GL_GLIMPLEMENTATION_H_

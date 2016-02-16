@@ -7,6 +7,10 @@
 #ifndef _PLATFORM_PLATFORMGL_H_
 #define _PLATFORM_PLATFORMGL_H_
 
+#ifdef EMSCRIPTEN
+#include "graphics/glEmscripten.h"
+#else
 #include "graphics/gl.h"
+#endif
 
 #endif // _PLATFORM_PLATFORMGL_H_
