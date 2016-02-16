@@ -70,8 +70,8 @@ void main() {
 	//Also normal mapping
 	mat3 tbn = transpose(mat3(tangent_camera, bitangent_camera, normal_camera));
 
-	light_tangent = tbn * light_camera;
-	direction_tangent = tbn * direction_camera;
+	light_tangent = normalize(tbn * light_camera);
+	direction_tangent = normalize(tbn * direction_camera);
 
 	//Skybox information
 	normal_skybox = mat3(transpose(inverseModelMat)) * vertexNormal;

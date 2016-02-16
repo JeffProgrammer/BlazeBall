@@ -46,18 +46,14 @@ void main() {
 	//Cool MBU-style noise effect
 	vec3 shade = texture(noiseSampler, floor(UV) / 32.0).rgb;
 
-	//Lighting
-	vec3 n = normalize(normalColor);
-	vec3 l = normalize(light_tangent);
-
 	//Cosine of the angle from the light to the normal
-	float cosTheta = clamp(dot(n, l), 0.0, 1.0);
+	float cosTheta = clamp(dot(normalColor, light_tangent), 0.0, 1.0);
 
 	//Eye vector (towards the camera)
 	vec3 eye = normalize(direction_tangent);
 
 	//Direction that light reflects
-	vec3 reflect_light = reflect(-l, n);
+	vec3 reflect_light = reflect(-light_tangent, normalColor);
 
 	//Angle from the eye vector and reflect vector
 	float cosAlpha = clamp(dot(eye, reflect_light), 0.0, 1.0);
