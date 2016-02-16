@@ -29,7 +29,7 @@ using namespace srutil;
 
 #define LIGHT_COLOR_UNIFORM_NAME "lightColor"
 #define AMBIENT_LIGHT_COLOR_UNIFORM_NAME "ambientColor"
-#define SUN_POSITION_UNIFORM_NAME "sunPosition"
+#define SUN_POSITION_UNIFORM_NAME "sunDirection"
 #define SPECULAR_EXPONENT_UNIFORM_NAME "specularExponent"
 
 class RenderWorld;
@@ -42,7 +42,7 @@ struct RenderInfo {
 
 	glm::vec4 lightColor;
 	glm::vec4 ambientColor;
-	glm::vec3 sunPosition;
+	glm::vec3 sunDirection;
 	U32 specularExponent;
 
 	bool isReflectionPass;
@@ -63,7 +63,7 @@ struct RenderInfo {
 	std::unordered_map<Material *, std::vector<std::pair<RenderMethod, void *>>> renderMethods;
 	RenderWorldMethod renderWorld;
 
-	RenderInfo() : projectionMatrix(1), viewMatrix(1), cameraPosition(0), lightColor(0), ambientColor(0), sunPosition(0), specularExponent(1), isReflectionPass(false), viewport{glm::ivec2(0), glm::ivec2(0)}, pixelDensity(1), renderMethods(0), renderWorld() {
+	RenderInfo() : projectionMatrix(1), viewMatrix(1), cameraPosition(0), lightColor(0), ambientColor(0), sunDirection(0), specularExponent(1), isReflectionPass(false), viewport{glm::ivec2(0), glm::ivec2(0)}, pixelDensity(1), renderMethods(0), renderWorld() {
 
 	}
 
@@ -74,7 +74,7 @@ struct RenderInfo {
 		cameraPosition(other.cameraPosition),
 		lightColor(other.lightColor),
 		ambientColor(other.ambientColor),
-		sunPosition(other.sunPosition),
+		sunDirection(other.sunDirection),
 		specularExponent(other.specularExponent),
 		isReflectionPass(other.isReflectionPass),
 		viewport(other.viewport),
@@ -94,7 +94,7 @@ struct RenderInfo {
 		shader->setUniformVector(CAMERA_POSITION_UNIFORM_NAME,     cameraPosition);
 		shader->setUniformVector(LIGHT_COLOR_UNIFORM_NAME,         lightColor);
 		shader->setUniformVector(AMBIENT_LIGHT_COLOR_UNIFORM_NAME, ambientColor);
-		shader->setUniformVector(SUN_POSITION_UNIFORM_NAME,        sunPosition);
+		shader->setUniformVector(SUN_POSITION_UNIFORM_NAME,        sunDirection);
 		shader->setUniform      (SPECULAR_EXPONENT_UNIFORM_NAME,   static_cast<F32>(specularExponent));
 	}
 

@@ -48,7 +48,7 @@ void RenderWorld::render(RenderInfo &info) {
 
 	info.lightColor = lightColor;
 	info.ambientColor = ambientColor;
-	info.sunPosition = sunPosition;
+	info.sunDirection = sunDirection;
 	info.specularExponent = specularExponent;
 
 	info.isReflectionPass = false;

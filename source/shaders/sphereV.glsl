@@ -35,7 +35,7 @@ uniform mat4 inverseModelMat;
 
 uniform vec4 lightColor;
 uniform vec4 ambientColor;
-uniform vec3 sunPosition;
+uniform vec3 sunDirection;
 uniform float specularExponent;
 uniform vec3 cameraPos;
 
@@ -58,8 +58,7 @@ void main() {
 	direction_camera = vec3(0, 0, 0) - position_camera;
 
 	//Vector from vertex to light, but in cameraspace this time
-	vec3 lightPos_camera = (viewMat * vec4(sunPosition, 1)).xyz;
-	light_camera = lightPos_camera + direction_camera;
+	light_camera = -(viewMat * vec4(sunDirection, 0)).xyz;
 
 	mat3 modelView3Mat = mat3(viewMat * modelMat);
 
