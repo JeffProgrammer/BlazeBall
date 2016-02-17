@@ -67,9 +67,6 @@ bool SDLWindow::createContext() {
 	//Use Vsync
 	setVerticalSync(true);
 	
-	//Lock cursor
-	lockCursor(true);
-
 	// we bind a blank VAO, as it's required for core profile
 	glGenVertexArrays(1, &mVAO);
 	glBindVertexArray(mVAO);

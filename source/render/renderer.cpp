@@ -87,10 +87,6 @@ bool Renderer::init() {
 		return false;
 	}
 
-	//TODO: Capture mouse by clicking on the world? Not sure how to implement this
-	mCaptureMouse = true;
-	mWindow->lockCursor(true);
-
 	//Initialize OpenGL
 	if (!initGL()) {
 		return false;
@@ -232,8 +228,6 @@ void Renderer::handleEvent(PlatformEvent *event) {
 			break;
 		case PlatformEvent::WindowFocus:
 			mShouldSleep = false;
-			mCaptureMouse = true;
-			mWindow->lockCursor(true);
 			break;
 		case PlatformEvent::WindowBlur:
 			mShouldSleep = true;
