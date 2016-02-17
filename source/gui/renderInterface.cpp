@@ -42,10 +42,10 @@ GuiRenderInterface::GuiRenderInterface(Client *client, PlatformWindow *window) :
 	mShader = new Shader("Gui", "guiV.glsl", "guiF.glsl");
 	GL_CHECKERRORS();
 
-	mShader->addAttribute("vertexPosition", 2, GL_FLOAT, GL_FALSE, sizeof(Rocket::Core::Vertex), (void *)offsetof(Rocket::Core::Vertex, position));
-	mShader->addAttribute("vertexUV", 2, GL_FLOAT, GL_FALSE, sizeof(Rocket::Core::Vertex), (void *)offsetof(Rocket::Core::Vertex, tex_coord));
-	mShader->addAttribute("vertexColor", 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Rocket::Core::Vertex), (void *)offsetof(Rocket::Core::Vertex, colour));
-	mShader->addUniformLocation("textureSampler", 0);
+	mShader->addAttribute("inVertexPosition", 2, GL_FLOAT, GL_FALSE, sizeof(Rocket::Core::Vertex), (void *)offsetof(Rocket::Core::Vertex, position));
+	mShader->addAttribute("inVertexUV", 2, GL_FLOAT, GL_FALSE, sizeof(Rocket::Core::Vertex), (void *)offsetof(Rocket::Core::Vertex, tex_coord));
+	mShader->addAttribute("inVertexColor", 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Rocket::Core::Vertex), (void *)offsetof(Rocket::Core::Vertex, colour));
+	mShader->addUniformLocation("inTextureSampler", 0);
 }
 
 GuiRenderInterface::~GuiRenderInterface() {
@@ -84,10 +84,10 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 		GL_CHECKERRORS();
 	}
 	GL_CHECKERRORS();
-	mShader->setUniform<GLint>("hasTexture", (glTexture != NULL) ? 1 : 0);
+	mShader->setUniform<GLint>("inHasTexture", (glTexture != NULL) ? 1 : 0);
 	GL_CHECKERRORS();
 	auto vec = glm::vec2(translation.x, translation.y);
-	mShader->setUniformVector<glm::vec2>("translation", vec);
+	mShader->setUniformVector<glm::vec2>("inTranslation", vec);
 	GL_CHECKERRORS();
 	//Should be the whole screen
 	F32 pixelDensity = glGetPixelDensityEXT();
@@ -95,7 +95,7 @@ void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 	glm::mat4 ortho = glm::ortho(0.0f, (float)mWindow->getWindowSize().x * pixelDensity, (float)mWindow->getWindowSize().y * pixelDensity, 0.0f, 0.0f, 1.0f);
 	ortho = glm::scale(ortho, glm::vec3(pixelDensity));
 	ortho = glm::translate(ortho, glm::vec3(translation.x, translation.y, 0.0f));
-	mShader->setUniformMatrix<glm::mat4>("projectionMatrix", GL_FALSE, ortho);
+	mShader->setUniformMatrix<glm::mat4>("inProjectionMatrix", GL_FALSE, ortho);
 	GL_CHECKERRORS();
 
 	// Draw
