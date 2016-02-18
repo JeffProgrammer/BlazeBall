@@ -119,6 +119,21 @@ bool SDLWindow::createContext() {
 		GL::createGL<GL33>();
 	else
 		GL::createGL<GL21>();
+
+	// for the love of god please not software rendering.
+#if defined(_WIN32) || defined(__APPLE__)
+	{
+		std::string renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+	#ifdef _WIN32
+		if (renderer.find("Microsoft") != std::string::npos) {
+	#else
+		if (renderer.find("APPLE") != std::string::npos) {
+	#endif
+			IO::printf("Unable to create a hardware accelerated OpenGL driver. Please make sure that you have OpenGL drivers downloaded and they are up to date.\n");
+			return false;
+		}
+	}
+#endif
 	
 	// Let the GL library store this context.
 	glBindContextEXT(context);
