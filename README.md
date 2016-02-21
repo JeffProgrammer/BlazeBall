@@ -26,6 +26,7 @@ OpenGL 2.1+ (3.0 extensions + GLSL 120)
 
 * Windows XP+
 * Mac OSX 10.6.8+
+* Ubuntu 14.04
 * Intel Core2Duo CPU @ 2.0ghz
 * GPU:
   * NVidia GeForce 8000 series
