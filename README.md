@@ -3,6 +3,9 @@ Blaze Ball
 
 A marble game that is meant to be the successor to Marble Blast.
 
+!["in game image"](http://i.imgur.com/9W5V4rl.jpg "In Game")
+Disclaimer: Temporary assets. Will make our own when we are ready.
+
 Building
 -------------------
 
