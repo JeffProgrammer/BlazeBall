@@ -4,13 +4,13 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-layout(location = 0) in vec3 vertexPosition;
-layout(location = 1) in vec3 vertexColor;
+attribute vec3 vertexPosition;
+attribute vec3 vertexColor;
 
 uniform mat4 projectionMat;
 uniform mat4 viewMat;
 
-out vec3 color;
+varying vec3 color;
 
 void main() {
 	mat4 viewProjectionMat = projectionMat * viewMat;
