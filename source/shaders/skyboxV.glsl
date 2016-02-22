@@ -4,9 +4,9 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-layout(location = 0) in vec3 inVertexPosition;
+attribute vec3 inVertexPosition;
 
-out vec3 outUV;
+varying vec3 outUV;
 
 uniform mat4 inProjectionMat;
 uniform mat4 inViewMat;

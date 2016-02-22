@@ -4,12 +4,11 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-in vec3 outUV;
-out vec4 outFragColor;
+attribute vec3 outUV;
 
 uniform samplerCube inCubemapSampler;
 
 void main() {
-	vec3 materialColor = texture(inCubemapSampler, outUV).rgb;
-	outFragColor = vec4(materialColor, 1.0);
+	vec3 materialColor = textureCube(inCubemapSampler, outUV).rgb;
+	gl_FragColor = vec4(materialColor, 1.0);
 }
