@@ -4,16 +4,17 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-in vec2 outUV;
-in vec4 outColor;
-
-out vec4 outFragColor;
+varying vec2 outUV;
+varying vec4 outColor;
 
 uniform sampler2D inTextureSampler;
 uniform int inHasTexture;
 
 void main() {
-	outFragColor = outColor;
+	// Check to make sure that we have a texture that we are rendering.
+	// If not, just output the color to the fragment.
 	if (inHasTexture == 1)
-		outFragColor = texture(inTextureSampler, outUV);
+		gl_FragColor = texture(inTextureSampler, outUV) * outColor;
+	else
+		gl_FragColor = outColor;
 }
