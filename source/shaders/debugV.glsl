@@ -1,5 +1,3 @@
-#version 330 core
-
 //------------------------------------------------------------------------------
 // Copyright (c) 2014-2016 Glenn Smith
 // Copyright (c) 2014-2016 Jeff Hutchinson
