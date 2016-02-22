@@ -4,8 +4,6 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-out vec4 outFragColor;
-
 void main() {
-	outFragColor = vec4(1, 0, 1, 1);
+	gl_FragColor = vec4(1, 0, 1, 1);
 }

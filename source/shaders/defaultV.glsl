@@ -4,7 +4,7 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-layout(location = 0) in vec3 inVertexPosition;
+attribute vec3 inVertexPosition;
 
 uniform mat4 inProjectionMat;
 uniform mat4 inModelMat;
