@@ -46,6 +46,7 @@ using namespace srutil;
 #define SAMPLER_SPECULAR_NAME             "inSpecularSampler"
 #define SAMPLER_NOISE_NAME                "inNoiseSampler"
 #define SAMPLER_CUBEMAP_NAME              "inCubemapSampler"
+#define SAMPLER_DEPTH_NAME                "inDepthSampler"
 
 class RenderWorld;
 struct RenderInfo {
