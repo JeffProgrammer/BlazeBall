@@ -226,6 +226,8 @@ set (DIFVIEWERGAME_SRC
 	source/render/texture/cubeMapTexture.h
 	source/render/texture/cubeMapFramebufferTexture.cpp
 	source/render/texture/cubeMapFramebufferTexture.h
+	source/render/texture/framebufferTexture.cpp
+	source/render/texture/framebufferTexture.h
 	source/render/texture/texture.cpp
 	source/render/texture/texture.h
 
