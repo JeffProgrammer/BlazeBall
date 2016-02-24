@@ -15,6 +15,7 @@ class FramebufferTexture : public Texture {
 protected:
 	glm::ivec2 mExtent;
 	glm::mat4 mProjectionMat;
+
 	GLenum mFramebuffer;
 	GLenum mRenderbuffer;
 	

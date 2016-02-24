@@ -70,7 +70,7 @@ void FramebufferTexture::generateBuffer() {
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mFramebuffer);
 	GL_CHECKERRORS();
 
-	//Make sure we attach at least one color attachment so it completes the framebuffer
+	//Make sure we attach the two buffers to our framebuffer
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mColorBuffer, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, mDepthBuffer, 0);
 	GL_CHECKERRORS();
@@ -91,8 +91,10 @@ void FramebufferTexture::destroyBuffer() {
 	if (!mGenerated)
 		return;
 
+	//Lots of stuff to clean up
 	glDeleteFramebuffers(1, &mFramebuffer);
 	glDeleteRenderbuffers(1, &mRenderbuffer);
+
 	glDeleteTextures(1, &mColorBuffer);
 	glDeleteTextures(1, &mDepthBuffer);
 }
@@ -105,7 +107,7 @@ void FramebufferTexture::activate(GLenum texNum) {
 	//Activate and bind the buffer
 	glActiveTexture(texNum);
 	glBindTexture(GL_TEXTURE_2D, mColorBuffer);
-	glActiveTexture(texNum + 1);
+	glActiveTexture(texNum + 1); //TODO: Specify both GLenums in the function (virtual is an issue here)
 	glBindTexture(GL_TEXTURE_2D, mDepthBuffer);
 }
 

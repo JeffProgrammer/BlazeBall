@@ -24,6 +24,7 @@ RenderWorld::~RenderWorld() {
 }
 
 void RenderWorld::generateBuffers() {
+	//Loaded below, see there for reasons why
 	mFramebufferTexture = nullptr;
 
 	// now, set up the front buffer, which is simply the quad in which we will render our texture in
@@ -69,10 +70,12 @@ void RenderWorld::render(RenderInfo &info) {
 	info.isReflectionPass = false;
 	info.renderWorld = RenderInfo::RenderWorldMethod::from_method<RenderWorld, &RenderWorld::renderScene>(this);
 
+	//Wait until we're here to create this so we have the viewport data
 	if (mFramebufferTexture == nullptr) {
 		mFramebufferTexture = new FramebufferTexture(info.viewport.size * (S32)info.pixelDensity);
 	}
 
+	//This actually renders the world into the framebuffer
 	mFramebufferTexture->generateBuffer(info);
 	GL_CHECKERRORS();
 
@@ -81,24 +84,29 @@ void RenderWorld::render(RenderInfo &info) {
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 
+	//Load the postFX shader
 	mFramebufferShader->activate();
 	mFramebufferTexture->activate(GL_TEXTURE0);
+	GL_CHECKERRORS();
 
-	mFramebufferShader->setUniformVector("inScreenSize", info.viewport.size);
-	mFramebufferShader->setUniformVector("inProjectionBounds", glm::vec2(0.1f, 500.f));
+	//Basic uniforms for screen size and near/far
+	mFramebufferShader->setUniformVector("inScreenSize", glm::vec2(info.viewport.size)); //Need to cast to float vector
+	mFramebufferShader->setUniformVector("inProjectionBounds", glm::vec2(0.1f, 500.f)); //Hardcoded because lazy
 
 	GL_CHECKERRORS();
 
+	//Rectangle VBO for drawing to the screen
 	glBindBuffer(GL_ARRAY_BUFFER, mFramebufferVBO);
 	GL_CHECKERRORS();
 
+	//Actually draw the framebuffer
 	mFramebufferShader->enableAttributes();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	mFramebufferShader->disableAttributes();
 	GL_CHECKERRORS();
 
+	//Clean up
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 	mFramebufferTexture->deactivate();
 	mFramebufferShader->deactivate();
 	GL_CHECKERRORS();
