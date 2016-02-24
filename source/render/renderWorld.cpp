@@ -5,17 +5,10 @@
 //------------------------------------------------------------------------------
 
 #include "render/renderWorld.h"
-#include "game/gameInterior.h"
-#include "game/camera.h"
-//#include "game/shape.h"
-#include "game/skybox.h"
+
+#include <glm/gtx/vector_angle.hpp>
 #include "render/util.h"
 #include "network/client.h"
-#include <chrono>
-#include <thread>
-#include <algorithm>
-#include <ctime>
-#include <glm/gtx/vector_angle.hpp>
 
 glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(1, 0, 0));
 
@@ -28,6 +21,28 @@ RenderWorld::RenderWorld(PhysicsEngine *physics) : World(physics) {
 }
 
 RenderWorld::~RenderWorld() {
+}
+
+void RenderWorld::generateBuffers() {
+	mFramebufferTexture = nullptr;
+
+	// now, set up the front buffer, which is simply the quad in which we will render our texture in
+	static const GLfloat quad[] = {
+		-1.0f, -1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		-1.0f, 1.0f, 0.0f,
+		-1.0f, 1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		1.0f, 1.0f, 0.0f
+	};
+
+	// create and fill buffer
+	glGenBuffers(1, &mFramebufferVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, mFramebufferVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	mFramebufferShader = Shader::getShaderByName("PostFX");
 }
 
 void RenderWorld::render(RenderInfo &info) {
@@ -54,8 +69,42 @@ void RenderWorld::render(RenderInfo &info) {
 	info.isReflectionPass = false;
 	info.renderWorld = RenderInfo::RenderWorldMethod::from_method<RenderWorld, &RenderWorld::renderScene>(this);
 
-	//Actually render everything
-	renderScene(info);
+	if (mFramebufferTexture == nullptr) {
+		mFramebufferTexture = new FramebufferTexture(info.viewport.size * (S32)info.pixelDensity);
+	}
+
+	mFramebufferTexture->generateBuffer(info);
+	GL_CHECKERRORS();
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+
+	mFramebufferShader->activate();
+	mFramebufferTexture->activate(GL_TEXTURE0);
+
+	mFramebufferShader->setUniformVector("inScreenSize", info.viewport.size);
+	mFramebufferShader->setUniformVector("inProjectionBounds", glm::vec2(0.1f, 500.f));
+
+	GL_CHECKERRORS();
+
+	glBindBuffer(GL_ARRAY_BUFFER, mFramebufferVBO);
+	GL_CHECKERRORS();
+
+	mFramebufferShader->enableAttributes();
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	mFramebufferShader->disableAttributes();
+	GL_CHECKERRORS();
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	mFramebufferTexture->deactivate();
+	mFramebufferShader->deactivate();
+	GL_CHECKERRORS();
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	if (mDoDebugDraw) {
 		glDisable(GL_DEPTH_TEST);
@@ -84,13 +133,6 @@ void RenderWorld::renderScene(RenderInfo &info) {
 	//Run all render methods
 	info.render();
 	info.clearRenderMethods();
-
-	//TODO: Clean up shape rendering
-//	mShapeShader->activate();
-//	info.loadShader(mShapeShader);
-//
-//	MODELMGR->render(mShapeShader, info.viewMatrix, info.projectionMatrix);
-//	mShapeShader->deactivate();
 
 	// check for opengl errors
 	GL_CHECKERRORS();
