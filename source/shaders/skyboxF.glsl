@@ -4,7 +4,7 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-attribute vec3 outUV;
+varying vec3 outUV;
 
 uniform samplerCube inCubemapSampler;
 

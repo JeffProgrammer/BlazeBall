@@ -56,5 +56,5 @@ void main() {
 	vec3 directionSkybox = normalize(outPositionWorld - inCameraPos);
 	vec3 reflection = reflect(directionSkybox, normalize(outNormalSkybox));
 
-	gl_FragColor = mix(outFragColor, textureCube(inCubemapSampler, reflection), inReflectivity);
+	gl_FragColor = mix(gl_FragColor, textureCube(inCubemapSampler, reflection), inReflectivity);
 }
