@@ -63,6 +63,7 @@ GLuint Shader::loadShader(const std::string &path, const GLenum &type) {
 	//Did we actually have an error? If so, terminate here
 	if (!result) {
 		IO::printf("%s error: %s\n", path.c_str(), log);
+		IO::printf("Shader:\n%s\n", shaderSource.c_str());
 		delete[] log;
 
 		//Errored so we can't return an id
