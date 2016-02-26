@@ -1,23 +1,21 @@
-#version 330 core
-
 //------------------------------------------------------------------------------
 // Copyright (c) 2014-2016 Glenn Smith
 // Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-layout(location = 0) in vec3 inVertexPosition;
-layout(location = 1) in vec2 inVertexUV;
-layout(location = 2) in vec3 inVertexNormal;
-layout(location = 3) in vec3 inVertexTangent;
-layout(location = 4) in vec3 inVertexBitangent;
+attribute vec3 inVertexPosition;
+attribute vec2 inVertexUV;
+attribute vec3 inVertexNormal;
+attribute vec3 inVertexTangent;
+attribute vec3 inVertexBitangent;
 
-out vec2 outUV;
-out vec3 outNormal;
-out vec3 outPositionWorld;
-out vec3 outDirectionTangent;
-out vec3 outLightTangent;
-out vec3 outNormalSkybox;
+varying vec2 outUV;
+varying vec3 outNormal;
+varying vec3 outPositionWorld;
+varying vec3 outDirectionTangent;
+varying vec3 outLightTangent;
+varying vec3 outNormalSkybox;
 
 uniform mat4 inProjectionMat;
 uniform mat4 inViewMat;

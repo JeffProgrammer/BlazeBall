@@ -1,15 +1,13 @@
-#version 330 core
-
 //------------------------------------------------------------------------------
 // Copyright (c) 2014-2016 Glenn Smith
 // Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-layout(location = 0) in vec3 inVertexPosition;
-layout(location = 1) in vec2 inVertexUV;
+attribute vec3 inVertexPosition;
+attribute vec2 inVertexUV;
 
-out vec2 outUV;
+varying vec2 outUV;
 
 uniform mat4 inProjectionMat;
 uniform mat4 inModelMat;

@@ -5,6 +5,11 @@
 //------------------------------------------------------------------------------
 
 #include "graphics/GL33/gl33.h"
+#include "graphics/GL33/shaderTranslatorGL33.h"
+
+GL33::GL33() {
+	mTranslator = std::make_unique<ShaderTranslatorGL33>();
+}
 
 void GL33::bindVertexArray(GLuint array) {
 	epoxy_glBindVertexArray(array);

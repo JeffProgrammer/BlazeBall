@@ -17,6 +17,8 @@
 #include <epoxy/glx.h>
 #endif
 
+#include "graphics/shaderTranslator.h"
+
 class GL {
 public:
 	GL();
@@ -110,6 +112,7 @@ public:
 	GLuint getVideoRamEXT();
 	void setPixelDensityEXT(GLfloat pixelDensity);
 	GLfloat getPixelDensityEXT();
+	std::string translateShaderEXT(const std::string &source, GLenum type);
 
 /**
  * Public Static functions available from the GL "namespace"
@@ -136,6 +139,8 @@ protected:
 	void *mCurrentContext;
 
 	GLfloat mPixelDensity;
+
+	std::unique_ptr<ShaderTranslator> mTranslator;
 };
 
 #endif // _GRAPHICS_GL_GLIMPLEMENTATION_H_
