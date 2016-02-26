@@ -31,7 +31,7 @@
 #ifndef _GRAPHICS_GL33_SHADERTRANSLATORGL33_H_
 #define _GRAPHICS_GL33_SHADERTRANSLATORGL33_H_
 
-#include "shaderTranslator.h"
+#include "graphics/shaderTranslator.h"
 
 class ShaderTranslatorGL33 : public ShaderTranslator {
 public:

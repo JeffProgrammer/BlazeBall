@@ -31,7 +31,7 @@
 #ifndef _GRAPHICS_GL21_SHADERTRANSLATORGL21_H_
 #define _GRAPHICS_GL21_SHADERTRANSLATORGL21_H_
 
-#include "shaderTranslator.h"
+#include "graphics/shaderTranslator.h"
 
 class ShaderTranslatorGL21 : public ShaderTranslator {
 public:
