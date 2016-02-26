@@ -4,8 +4,8 @@
 // All rights reserved.
 //-----------------------------------------------------------------------------
 
-#ifndef _GRAPHICS_GL_GL_H_
-#define _GRAPHICS_GL_GL_H_
+#ifndef _GRAPHICS_GL_H_
+#define _GRAPHICS_GL_H_
 
 #include "graphics/glImplementation.h"
 
@@ -336,4 +336,4 @@ inline std::string glTranslateShaderEXT(const std::string &source, GLenum type) 
 	return GL::sGL->translateShaderEXT(source, type);
 }
 
-#endif // _GRAPHICS_GL_GL_H_
+#endif // _GRAPHICS_GL_H_

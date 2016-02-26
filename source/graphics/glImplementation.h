@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef _GRAPHICS_GL_GLIMPLEMENTATION_H_
-#define _GRAPHICS_GL_GLIMPLEMENTATION_H_
+#ifndef _GRAPHICS_GLIMPLEMENTATION_H_
+#define _GRAPHICS_GLIMPLEMENTATION_H_
 
 #include <memory>
 #include <string>
@@ -143,4 +143,4 @@ protected:
 	std::unique_ptr<ShaderTranslator> mTranslator;
 };
 
-#endif // _GRAPHICS_GL_GLIMPLEMENTATION_H_
+#endif // _GRAPHICS_GLIMPLEMENTATION_H_
