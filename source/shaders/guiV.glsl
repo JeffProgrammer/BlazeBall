@@ -15,7 +15,7 @@ varying vec2 outUV;
 varying vec4 outColor;
 
 void main() {
-	gl_Position = inProjectionMatrix * vec4(inVertexPosition, 0.0f, 1.0f);
+	gl_Position = inProjectionMatrix * vec4(inVertexPosition, 0.0, 1.0);
 	outUV = inVertexUV;
 	outColor = inVertexColor;
 }
