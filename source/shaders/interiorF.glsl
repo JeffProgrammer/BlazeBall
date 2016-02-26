@@ -1,19 +1,15 @@
-#version 330 core
-
 //------------------------------------------------------------------------------
 // Copyright (c) 2014-2016 Glenn Smith
 // Copyright (c) 2014-2016 Jeff Hutchinson
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-in vec2 outUV;
-in vec3 outNormal;
-in vec3 outPositionWorld;
-in vec3 outDirectionTangent;
-in vec3 outLightTangent;
-in vec3 outNormalSkybox;
-
-out vec4 outFragColor;
+varying vec2 outUV;
+varying vec3 outNormal;
+varying vec3 outPositionWorld;
+varying vec3 outDirectionTangent;
+varying vec3 outLightTangent;
+varying vec3 outNormalSkybox;
 
 uniform sampler2D   inTextureSampler;
 uniform sampler2D   inNormalSampler;
@@ -29,10 +25,10 @@ uniform float inReflectivity;
 
 void main() {
 	//Texture
-	vec3 materialColor = texture(inTextureSampler, outUV).rgb;
-	vec3 specularColor = texture(inSpecularSampler, outUV).rgb;
-	vec3 normalColor = normalize(texture(inNormalSampler, outUV).rgb * 2.0 - 1.0);
-	vec4 shade = texture(inNoiseSampler, floor(outUV) / 32.0);
+	vec3 materialColor = texture2D(inTextureSampler, outUV).rgb;
+	vec3 specularColor = texture2D(inSpecularSampler, outUV).rgb;
+	vec3 normalColor = normalize(texture2D(inNormalSampler, outUV).rgb * 2.0 - 1.0);
+	vec4 shade = texture2D(inNoiseSampler, floor(outUV) / 32.0);
 
 	//Cosine of the angle from the light to the normal
 	float cosTheta = clamp(dot(normalColor, outLightTangent), 0.0, 1.0);
@@ -47,18 +43,18 @@ void main() {
 	float cosAlpha = clamp(dot(eye, reflectLight), 0.0, 1.0);
 
 	//Diffuse
-	outFragColor = vec4(materialColor, 1) * (inLightColor * inLightColor.a) * cosTheta;
+	gl_FragColor = vec4(materialColor, 1) * (inLightColor * inLightColor.a) * cosTheta;
 	//Ambient
-	outFragColor += vec4(materialColor, 1) * inAmbientColor;
+	gl_FragColor += vec4(materialColor, 1) * inAmbientColor;
 	//Specular
-	outFragColor += vec4(specularColor, 1) * (inLightColor * inLightColor.a) * pow(cosAlpha, inSpecularExponent);
+	gl_FragColor += vec4(specularColor, 1) * (inLightColor * inLightColor.a) * pow(cosAlpha, inSpecularExponent);
 
 	//Shaded tiles
-	outFragColor *= shade;
+	gl_FragColor *= shade;
 
 	//Skybox
 	vec3 directionSkybox = normalize(outPositionWorld - inCameraPos);
 	vec3 reflection = reflect(directionSkybox, normalize(outNormalSkybox));
 
-	outFragColor = mix(outFragColor, texture(inCubemapSampler, reflection), inReflectivity);
+	gl_FragColor = mix(gl_FragColor, textureCube(inCubemapSampler, reflection), inReflectivity);
 }

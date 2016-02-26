@@ -11,6 +11,8 @@
 
 class GL21 : public GL {
 public:
+	GL21();
+
 	virtual void bindVertexArray(GLuint array) override;
 	virtual void deleteVertexArrays(GLsizei count, const GLuint *array) override;
 	virtual void genVertexArrays(GLsizei count, GLuint *arrays) override;

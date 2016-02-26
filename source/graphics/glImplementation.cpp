@@ -324,3 +324,11 @@ void GL::setPixelDensityEXT(GLfloat pixelDensity) {
 GLfloat GL::getPixelDensityEXT() {
 	return mPixelDensity;
 }
+
+std::string GL::translateShaderEXT(const std::string &source, GLenum type) {
+	if (type == GL_VERTEX_SHADER)
+		return mTranslator->translate(source, ShaderTranslator::ShaderType::VERTEX);
+	if (type == GL_FRAGMENT_SHADER)
+		return mTranslator->translate(source, ShaderTranslator::ShaderType::FRAGMENT);
+	return "";
+}

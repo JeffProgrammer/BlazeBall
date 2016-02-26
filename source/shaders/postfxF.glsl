@@ -1,5 +1,3 @@
-#version 330 core
-
 //------------------------------------------------------------------------------
 // Copyright (c) 2014-2016 Glenn Smith
 // Copyright (c) 2014-2016 Jeff Hutchinson
@@ -12,8 +10,7 @@ uniform sampler2D inDepthSampler;
 uniform vec2 inScreenSize;
 uniform vec2 inProjectionBounds;
 
-in vec2 outUV;
-out vec4 outFragColor;
+varying vec2 outUV;
 
 //Super simple conversion functions that make my life easier
 vec2 pixelToNormal(vec2 inSize) {
@@ -34,7 +31,7 @@ float linearize(float zoverw) {
 
 //Basic depth sampling from a texture
 float depth(sampler2D sampler, vec2 uv) {
-	return linearize(texture(sampler, uv).r) * 10;
+	return linearize(texture2D(sampler, uv).r) * 10;
 }
 
 //Easy depth that does pixeling and uses globals
@@ -63,9 +60,9 @@ vec4 toon(vec4 v, float n) {
 
 void main() {
 	//Basic texture
-	outFragColor = texture(inTextureSampler, outUV);
+	gl_FragColor = texture2D(inTextureSampler, outUV);
 	//Super cool toon shading
-	outFragColor = toon(outFragColor, 8);
+	gl_FragColor = toon(gl_FragColor, 8);
 
 	//x and y Sobel kernels 
 	// https://en.wikipedia.org/wiki/Sobel_operator
@@ -82,5 +79,5 @@ void main() {
 	float d = 1 - sqrt(gx * gx + gy * gy);
 
 	//Multiply by the Sobel result to overlay the lines
-	outFragColor *= vec4(d, d, d, 1.0);
+	gl_FragColor *= vec4(d, d, d, 1.0);
 }
