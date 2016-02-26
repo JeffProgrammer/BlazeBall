@@ -17,6 +17,8 @@
 #include <epoxy/glx.h>
 #endif
 
+#include "graphics/shaderTranslator.h"
+
 class GL {
 public:
 	GL();
@@ -136,6 +138,8 @@ protected:
 	void *mCurrentContext;
 
 	GLfloat mPixelDensity;
+
+	std::unique_ptr<ShaderTranslator> mTranslator;
 };
 
 #endif // _GRAPHICS_GL_GLIMPLEMENTATION_H_

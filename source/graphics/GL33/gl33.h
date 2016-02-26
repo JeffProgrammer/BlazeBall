@@ -11,6 +11,8 @@
 
 class GL33 : public GL {
 public:
+	GL33();
+
 	virtual void bindVertexArray(GLuint array) override;
 	virtual void deleteVertexArrays(GLsizei count, const GLuint *array) override;
 	virtual void genVertexArrays(GLsizei count, GLuint *arrays) override;
