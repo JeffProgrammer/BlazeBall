@@ -41,4 +41,8 @@ public:
 	};
 };
 
+namespace PlatformEx {
+	S32 getPhysicalSystemRam();
+};
+
 #endif // _PLATFORM_PLATFORM_H_

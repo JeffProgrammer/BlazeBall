@@ -138,6 +138,7 @@ bool SDLWindow::createContext() {
 	// Let the GL library store this context.
 	glBindContextEXT(context);
 
+	IO::printf("System Memory: %dMB\n", PlatformEx::getPhysicalSystemRam());
 	IO::printf("OpenGL Core Profile Info\n");
 	IO::printf("   Version:  %s\n", glGetString(GL_VERSION));
 	IO::printf("   Vendor:   %s\n", glGetString(GL_VENDOR));
