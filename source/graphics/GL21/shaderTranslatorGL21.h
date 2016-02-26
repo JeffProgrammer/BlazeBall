@@ -28,8 +28,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef shaderTranslatorGL21_h
-#define shaderTranslatorGL21_h
+#ifndef _GRAPHICS_GL21_SHADERTRANSLATORGL21_H_
+#define _GRAPHICS_GL21_SHADERTRANSLATORGL21_H_
 
 #include "shaderTranslator.h"
 
@@ -47,4 +47,4 @@ public:
 	virtual const std::string translate(const std::string &str, ShaderType shaderType) override;
 };
 
-#endif /* shaderTranslatorGL21_h */
+#endif // _GRAPHICS_GL21_SHADERTRANSLATORGL21_H_

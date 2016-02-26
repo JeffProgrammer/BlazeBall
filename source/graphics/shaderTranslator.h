@@ -28,8 +28,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef shaderTranslator_h
-#define shaderTranslator_h
+#ifndef _GRAPHICS_SHADERTRANSLATOR_H_
+#define _GRAPHICS_SHADERTRANSLATOR_H_
 
 #include <iostream>
 #include <string>
@@ -125,4 +125,4 @@ protected:
 	ShaderTokenList mTokens;
 };
 
-#endif /* shaderTranslator_h */
+#endif // _GRAPHICS_SHADERTRANSLATOR_H_

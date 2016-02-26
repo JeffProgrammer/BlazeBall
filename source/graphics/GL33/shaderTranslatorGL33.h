@@ -28,8 +28,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef shaderTranslatorGL33_h
-#define shaderTranslatorGL33_h
+#ifndef _GRAPHICS_GL33_SHADERTRANSLATORGL33_H_
+#define _GRAPHICS_GL33_SHADERTRANSLATORGL33_H_
 
 #include "shaderTranslator.h"
 
@@ -64,4 +64,4 @@ protected:
 	const std::string translateFragmentShader(const std::string &str);
 };
 
-#endif /* shaderTranslatorGL33_h */
+#endif // _GRAPHICS_GL33_SHADERTRANSLATORGL33_H_
