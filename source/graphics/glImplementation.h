@@ -112,7 +112,7 @@ public:
 	GLuint getVideoRamEXT();
 	void setPixelDensityEXT(GLfloat pixelDensity);
 	GLfloat getPixelDensityEXT();
-	std::string translateShaderEXT(const std::string &source, const ShaderTranslator::ShaderType type);
+	std::string translateShaderEXT(const std::string &source, GLenum type);
 
 /**
  * Public Static functions available from the GL "namespace"

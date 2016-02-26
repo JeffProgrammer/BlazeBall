@@ -332,7 +332,7 @@ inline GLfloat glGetPixelDensityEXT() {
  * @param type The type of shader, VERTEX, FRAGMENT, ect.
  * @return the translated shader that can be submitted to the graphics API.
  */
-inline std::string glTranslateShaderEXT(const std::string &source, const ShaderTranslator::ShaderType type) {
+inline std::string glTranslateShaderEXT(const std::string &source, GLenum type) {
 	return GL::sGL->translateShaderEXT(source, type);
 }
 
