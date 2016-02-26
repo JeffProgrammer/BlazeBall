@@ -88,8 +88,11 @@ GLuint Shader::loadProgram(const std::string &vertPath, const std::string &fragP
 	
 	//If there was any error, then let us know.
 	GLenum error = glGetError();
-	if (error) {
-		IO::printf("Error loading shader: code %d\n", error);
+	if (error != GL_NO_ERROR) {
+		while (error != GL_NO_ERROR) {
+			IO::printf("Error loading shader: code %d\n", error);
+			error = glGetError();
+		}
 		return 0;
 	}
 	
