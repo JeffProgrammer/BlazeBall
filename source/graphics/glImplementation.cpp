@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 
 #include "graphics/gl.h"
+#include "platform/platform.h"
 
 //#ifdef __APPLE__
 #include "graphics/glMac.h"
@@ -306,10 +307,27 @@ GLuint GL::getVideoRamEXT() {
 		return memory[0] / 1024;
 	}
 
-	// TODO
-	// Intel cards on Windows does not have a way of getting memory.
-	// However, Intel has values on their website we can use.
-	// for now, return 0.
+	// Intel cards share memory. We will approximate how much
+	// Video ram is being used here based on system memory.
+	// A maximum allocation of 1.7GB can be done on windows systems.
+	// TOTOALLY NOT A VALID WAY OF DOING THIS. BUT WILL BE GOOD ENOUGH
+	// FOR OUR PURPOSES.
+	// We will assume max. allocation can be done if the system holds
+	// 12 or more GB of physical ram.
+	S32 systemRam = PlatformEx::getPhysicalSystemRam();
+	if (systemRam >= 12288) // 12GB
+		return 1700;
+	if (systemRam >= 8192) // 8GB
+		return 1536;
+	if (systemRam >= 4096) // 4GB
+		return 1024;
+	if (systemRam >= 3072) // 3GB
+		return 512;
+	if (systemRam >= 2048) // 2GB
+		return 256;
+	if (systemRam >= 1024) // 1GB
+		return 128;
+	// Do we have a GPU? Is this a server? Is this PC from 1980?
 	return 0;
 #endif
 }
