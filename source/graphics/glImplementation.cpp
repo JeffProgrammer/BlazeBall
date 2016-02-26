@@ -324,3 +324,7 @@ void GL::setPixelDensityEXT(GLfloat pixelDensity) {
 GLfloat GL::getPixelDensityEXT() {
 	return mPixelDensity;
 }
+
+std::string GL::translateShaderEXT(const std::string &source, const ShaderTranslator::ShaderType type) {
+	return mTranslator->translate(source, type);
+}
