@@ -31,7 +31,7 @@ float linearize(float zoverw) {
 
 //Basic depth sampling from a texture
 float depth(sampler2D sampler, vec2 uv) {
-	return linearize(texture(sampler, uv).r) * 10;
+	return linearize(texture2D(sampler, uv).r) * 10;
 }
 
 //Easy depth that does pixeling and uses globals
@@ -60,7 +60,7 @@ vec4 toon(vec4 v, float n) {
 
 void main() {
 	//Basic texture
-	gl_FragColor = texture(inTextureSampler, outUV);
+	gl_FragColor = texture2D(inTextureSampler, outUV);
 	//Super cool toon shading
 	gl_FragColor = toon(gl_FragColor, 8);
 
