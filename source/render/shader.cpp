@@ -42,7 +42,6 @@ GLuint Shader::loadShader(const std::string &path, const GLenum &type) {
 		return 0;
 
 	auto shaderSource = glTranslateShaderEXT(reinterpret_cast<const char*>(data), type);
-	delete[] data;
 	auto src = reinterpret_cast<U8*>(const_cast<char*>(shaderSource.c_str()));
 	
 	GLint result = GL_FALSE;
