@@ -333,10 +333,8 @@ GLuint GL::getVideoRamEXT() {
 }
 
 void GL::setPixelDensityEXT(GLfloat pixelDensity) {
-	if (mPixelDensity < 0.0f) {
-		return;
-	}
-	mPixelDensity = pixelDensity;
+	if (mPixelDensity >= 0.0f)
+		mPixelDensity = pixelDensity;
 }
 
 GLfloat GL::getPixelDensityEXT() {
