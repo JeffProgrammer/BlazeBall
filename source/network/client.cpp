@@ -12,6 +12,7 @@
 #include "base/io.h"
 #include "main/gameState.h"
 #include "gui/elements/elementWorldView.h"
+#include "render/renderWorld.h"
 
 Client::Client(World *world, const std::string &ipAddress, const U16 port) : mWorld(world) {
 	mServerAddress = ipAddress;
@@ -55,6 +56,8 @@ void Client::start() {
 	if (!mRenderer->initGUI()) {
 		return;
 	}
+
+	dynamic_cast<RenderWorld *>(mWorld)->generateBuffers();
 
 	mRunning = true;
 

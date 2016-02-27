@@ -18,22 +18,11 @@
 #include "base/math.h"
 #include "base/types.h"
 #include "base/io.h"
-#include "texture/texture.h"
-#include "game/sphere.h"
+#include "texture/framebufferTexture.h"
 #include "physics/physicsEngine.h"
-#include "render/shader.h"
-#include "platform/platformWindow.h"
-#include "platform/platformEvent.h"
-#include "game/movement.h"
-#include "game/camera.h"
-#include "game/skybox.h"
-#include "render/modelManager.h"
-#include "renderInfo.h"
-#include "base/config.h"
+#include "render/renderInfo.h"
+#include "game/renderedObject.h"
 #include "game/world.h"
-#include "gui/renderInterface.h"
-#include "gui/systemInterface.h"
-
 
 class Client;
 
@@ -41,6 +30,13 @@ class RenderWorld : public World {
 protected:
 	Client *mClient;
 	bool mDoDebugDraw;
+	std::vector<RenderedObject *> mRenderedObjects;
+
+	Shader *mFramebufferShader;
+	FramebufferTexture *mFramebufferTexture;
+	GLuint mFramebufferVBO;
+
+	bool mUsePostFX;
 
 public:
 	const glm::vec4 lightColor     = glm::vec4(1.000000f, 1.000000f, 1.000000f, 1.400000f);
@@ -49,11 +45,8 @@ public:
 	const glm::vec3 sunDirection   = glm::vec3(0.57f, 0.28f, -0.77f);
 	const U32 specularExponent   = 7;
 
-	std::vector<RenderedObject *> mRenderedObjects;
-	Skybox *mSkybox;
-	Shader *mShapeShader;
-	
 	virtual void addObject(GameObject *object);
+	void generateBuffers();
 
 	RenderWorld(PhysicsEngine *physics);
 	virtual ~RenderWorld();
