@@ -3,6 +3,9 @@ Blaze Ball
 
 A marble game that is meant to be the successor to Marble Blast.
 
+!["in game image"](http://i.imgur.com/9W5V4rl.jpg "In Game")
+Disclaimer: Temporary assets. Will make our own when we are ready.
+
 Building
 -------------------
 
@@ -23,6 +26,7 @@ OpenGL 2.1+ (3.0 extensions + GLSL 120)
 
 * Windows XP+
 * Mac OSX 10.6.8+
+* Ubuntu 14.04
 * Intel Core2Duo CPU @ 2.0ghz
 * GPU:
   * NVidia GeForce 8000 series

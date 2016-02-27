@@ -86,11 +86,11 @@ void Sphere::generate() {
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * point, &points[0], GL_STATIC_DRAW);
 
-	mCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
+//	mCubemap = new CubeMapFramebufferTexture(glm::ivec2(64));
 
 	Material *material = new Material("marble.skin");
 	material->setShader(Shader::getShaderByName("Sphere"));
-	material->setTexture(mCubemap, GL_TEXTURE3);
+//	material->setTexture(mCubemap, GL_TEXTURE3);
 	setMaterial(material);
 }
 
@@ -124,7 +124,7 @@ void Sphere::render(RenderInfo &info) {
 
 	//Generate the cubemap framebuffer texture from this sphere
 	if (!info.isReflectionPass) {
-		mCubemap->generateBuffer(getPosition(), info);
+//		mCubemap->generateBuffer(getPosition(), info);
 	}
 
 	info.addRenderMethod(mMaterial, RenderInfo::RenderMethod::from_method<Sphere, &Sphere::draw>(this));

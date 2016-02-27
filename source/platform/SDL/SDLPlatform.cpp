@@ -15,3 +15,9 @@ PlatformTimer *SDLPlatform::createTimer() {
 PlatformWindow *SDLPlatform::createWindow() {
 	return new SDLWindow();
 }
+
+namespace PlatformEx {
+	S32 getPhysicalSystemRam() {
+		return SDL_GetSystemRAM();
+	}
+};

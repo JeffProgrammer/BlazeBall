@@ -54,4 +54,9 @@ void Shader::initializeShaders() {
 	Shader *debugShader = new Shader("Debug", "debugV.glsl", "debugF.glsl");
 	debugShader->addAttribute(ATTRIBUTE_POSITION_NAME, 3, GL_FLOAT, false, sizeof(Point), (void *)offsetof(Point, vertex));
 	debugShader->addAttribute(ATTRIBUTE_COLOR_NAME,    3, GL_FLOAT, false, sizeof(Point), (void *)offsetof(Point, color));
+
+	Shader *postFXShader = new Shader("PostFX", "postfxV.glsl", "postfxF.glsl");
+	postFXShader->addUniformLocation(SAMPLER_TEXTURE_NAME, 0);
+	postFXShader->addUniformLocation(SAMPLER_DEPTH_NAME,   1);
+	postFXShader->addAttribute(ATTRIBUTE_POSITION_NAME, 3, GL_FLOAT, GL_FALSE);
 }

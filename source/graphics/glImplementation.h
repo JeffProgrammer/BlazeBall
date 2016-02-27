@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef _GRAPHICS_GL_GLIMPLEMENTATION_H_
-#define _GRAPHICS_GL_GLIMPLEMENTATION_H_
+#ifndef _GRAPHICS_GLIMPLEMENTATION_H_
+#define _GRAPHICS_GLIMPLEMENTATION_H_
 
 #include <memory>
 #include <string>
@@ -16,6 +16,8 @@
 #elif defined(__linux__) || defined(__FREEBSD__)
 #include <epoxy/glx.h>
 #endif
+
+#include "graphics/shaderTranslator.h"
 
 class GL {
 public:
@@ -110,6 +112,7 @@ public:
 	GLuint getVideoRamEXT();
 	void setPixelDensityEXT(GLfloat pixelDensity);
 	GLfloat getPixelDensityEXT();
+	std::string translateShaderEXT(const std::string &source, GLenum type);
 
 /**
  * Public Static functions available from the GL "namespace"
@@ -136,6 +139,8 @@ protected:
 	void *mCurrentContext;
 
 	GLfloat mPixelDensity;
+
+	std::unique_ptr<ShaderTranslator> mTranslator;
 };
 
-#endif // _GRAPHICS_GL_GLIMPLEMENTATION_H_
+#endif // _GRAPHICS_GLIMPLEMENTATION_H_

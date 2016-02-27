@@ -5,6 +5,11 @@
 //------------------------------------------------------------------------------
 
 #include "graphics/GL21/gl21.h"
+#include "graphics/GL21/shaderTranslatorGL21.h"
+
+GL21::GL21() {
+	mTranslator = std::make_unique<ShaderTranslatorGL21>();
+}
 
 void GL21::bindVertexArray(GLuint array) {
 #ifdef __APPLE__

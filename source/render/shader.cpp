@@ -40,12 +40,15 @@ GLuint Shader::loadShader(const std::string &path, const GLenum &type) {
 	U8 *data = IO::readFile(path, length);
 	if (data == NULL)
 		return 0;
+
+	auto shaderSource = glTranslateShaderEXT(reinterpret_cast<const char*>(data), type);
+	auto src = reinterpret_cast<U8*>(const_cast<char*>(shaderSource.c_str()));
 	
 	GLint result = GL_FALSE;
 	S32 infoLogLength;
-	
+
 	//Try to compile the shader
-	glShaderSource(shaderId, 1, (const GLchar **)&data, NULL);
+	glShaderSource(shaderId, 1, (const GLchar**)&src, NULL);
 	glCompileShader(shaderId);
 	delete[] data;
 	
@@ -60,6 +63,7 @@ GLuint Shader::loadShader(const std::string &path, const GLenum &type) {
 	//Did we actually have an error? If so, terminate here
 	if (!result) {
 		IO::printf("%s error: %s\n", path.c_str(), log);
+		IO::printf("Shader:\n%s\n", shaderSource.c_str());
 		delete[] log;
 
 		//Errored so we can't return an id
@@ -84,8 +88,11 @@ GLuint Shader::loadProgram(const std::string &vertPath, const std::string &fragP
 	
 	//If there was any error, then let us know.
 	GLenum error = glGetError();
-	if (error) {
-		IO::printf("Error loading shader: code %d\n", error);
+	if (error != GL_NO_ERROR) {
+		while (error != GL_NO_ERROR) {
+			IO::printf("Error loading shader: code %d\n", error);
+			error = glGetError();
+		}
 		return 0;
 	}
 	

@@ -29,6 +29,8 @@ public:
 	World *clientWorld;
 	World *serverWorld;
 
+	std::vector<std::string> mCmdArgs;
+
 	GameState(std::unique_ptr<Platform> &&platform) {
 		this->platform = std::move(platform);
 		//Local server by default

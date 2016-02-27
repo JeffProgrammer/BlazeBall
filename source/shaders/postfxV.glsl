@@ -4,11 +4,13 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-varying vec3 outUV;
+attribute vec3 inVertexPosition;
 
-uniform samplerCube inCubemapSampler;
+varying vec2 outUV;
 
 void main() {
-	vec3 materialColor = textureCube(inCubemapSampler, outUV).rgb;
-	gl_FragColor = vec4(materialColor, 1.0);
+	//Worldspace position
+	gl_Position = vec4(inVertexPosition, 1);
+
+	outUV = (inVertexPosition.xy + vec2(1, 1)) / 2.0;
 }

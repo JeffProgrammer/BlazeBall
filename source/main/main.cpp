@@ -20,6 +20,10 @@ std::unique_ptr<GameState> GameState::gState = nullptr;
 int main(int argc, const char **argv) {
 	GameState::gState = std::make_unique<GameState>(std::make_unique<SDLPlatform>(std::make_unique<Platform::ConcretePhysicsEngineFactory<btPhysicsEngine>>()));
 
+	// Copy command line arguments into the gamestate
+	for (int i = 0; i < argc; i++)
+		GameState::gState->mCmdArgs.push_back(argv[i]);
+
 	// Initialize JSON fields
 	AbstractClassRep::init();
 

@@ -131,10 +131,16 @@ set (DIFVIEWERGAME_SRC
 	source/graphics/gl.h
 	source/graphics/glImplementation.cpp
 	source/graphics/glImplementation.h
+	source/graphics/shaderTranslator.cpp
+	source/graphics/shaderTranslator.h
 	source/graphics/GL21/gl21.cpp
 	source/graphics/GL21/gl21.h
+	source/graphics/GL21/shaderTranslatorGL21.cpp
+	source/graphics/GL21/shaderTranslatorGL21.h
 	source/graphics/GL33/gl33.cpp
 	source/graphics/GL33/gl33.h
+	source/graphics/GL33/shaderTranslatorGL33.cpp
+	source/graphics/GL33/shaderTranslatorGL33.h
 
 	# Networking
 	source/network/bitstream.h
@@ -226,6 +232,8 @@ set (DIFVIEWERGAME_SRC
 	source/render/texture/cubeMapTexture.h
 	source/render/texture/cubeMapFramebufferTexture.cpp
 	source/render/texture/cubeMapFramebufferTexture.h
+	source/render/texture/framebufferTexture.cpp
+	source/render/texture/framebufferTexture.h
 	source/render/texture/texture.cpp
 	source/render/texture/texture.h
 
