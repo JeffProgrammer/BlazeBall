@@ -18,7 +18,7 @@ glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4(1.0f), glm::radians(
 
 RenderWorld::RenderWorld(PhysicsEngine *physics) : World(physics) {
 	mDoDebugDraw = false;
-	mUsePostFX = true;
+	mUsePostFX = false;
 }
 
 RenderWorld::~RenderWorld() {
