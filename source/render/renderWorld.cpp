@@ -18,6 +18,7 @@ glm::mat4 RenderInfo::inverseRotMat = glm::rotate(glm::mat4(1.0f), glm::radians(
 
 RenderWorld::RenderWorld(PhysicsEngine *physics) : World(physics) {
 	mDoDebugDraw = false;
+	mUsePostFX = true;
 }
 
 RenderWorld::~RenderWorld() {
@@ -70,49 +71,53 @@ void RenderWorld::render(RenderInfo &info) {
 	info.isReflectionPass = false;
 	info.renderWorld = RenderInfo::RenderWorldMethod::from_method<RenderWorld, &RenderWorld::renderScene>(this);
 
-	//Wait until we're here to create this so we have the viewport data
-	if (mFramebufferTexture == nullptr) {
-		mFramebufferTexture = new FramebufferTexture(info.viewport.size * (S32)info.pixelDensity);
+	if (mUsePostFX) {
+		//Wait until we're here to create this so we have the viewport data
+		if (mFramebufferTexture == nullptr) {
+			mFramebufferTexture = new FramebufferTexture(info.viewport.size * (S32)info.pixelDensity);
+		}
+
+		//This actually renders the world into the framebuffer
+		mFramebufferTexture->generateBuffer(info);
+		GL_CHECKERRORS();
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
+
+		//Load the postFX shader
+		mFramebufferShader->activate();
+		mFramebufferTexture->activate(GL_TEXTURE0);
+		GL_CHECKERRORS();
+
+		//Basic uniforms for screen size and near/far
+		mFramebufferShader->setUniformVector("inScreenSize", glm::vec2(info.viewport.size)); //Need to cast to float vector
+		mFramebufferShader->setUniformVector("inProjectionBounds", glm::vec2(0.1f, 500.f)); //Hardcoded because lazy
+
+		GL_CHECKERRORS();
+
+		//Rectangle VBO for drawing to the screen
+		glBindBuffer(GL_ARRAY_BUFFER, mFramebufferVBO);
+		GL_CHECKERRORS();
+
+		//Actually draw the framebuffer
+		mFramebufferShader->enableAttributes();
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		mFramebufferShader->disableAttributes();
+		GL_CHECKERRORS();
+
+		//Clean up
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		mFramebufferTexture->deactivate();
+		mFramebufferShader->deactivate();
+		GL_CHECKERRORS();
+
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+	} else {
+		renderScene(info);
 	}
-
-	//This actually renders the world into the framebuffer
-	mFramebufferTexture->generateBuffer(info);
-	GL_CHECKERRORS();
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
-
-	//Load the postFX shader
-	mFramebufferShader->activate();
-	mFramebufferTexture->activate(GL_TEXTURE0);
-	GL_CHECKERRORS();
-
-	//Basic uniforms for screen size and near/far
-	mFramebufferShader->setUniformVector("inScreenSize", glm::vec2(info.viewport.size)); //Need to cast to float vector
-	mFramebufferShader->setUniformVector("inProjectionBounds", glm::vec2(0.1f, 500.f)); //Hardcoded because lazy
-
-	GL_CHECKERRORS();
-
-	//Rectangle VBO for drawing to the screen
-	glBindBuffer(GL_ARRAY_BUFFER, mFramebufferVBO);
-	GL_CHECKERRORS();
-
-	//Actually draw the framebuffer
-	mFramebufferShader->enableAttributes();
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	mFramebufferShader->disableAttributes();
-	GL_CHECKERRORS();
-
-	//Clean up
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	mFramebufferTexture->deactivate();
-	mFramebufferShader->deactivate();
-	GL_CHECKERRORS();
-
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
 
 	if (mDoDebugDraw) {
 		glDisable(GL_DEPTH_TEST);
