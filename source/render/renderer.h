@@ -23,6 +23,7 @@
 #include "render/renderInfo.h"
 #include "gui/renderInterface.h"
 #include "gui/systemInterface.h"
+#include "gui/guiDocument.h"
 
 class Client;
 class Renderer {
@@ -32,7 +33,8 @@ protected:
 	Config *mConfig;
 
 	Rocket::Core::Context *mRocketContext;
-	Rocket::Core::ElementDocument *mRocketDocument;
+
+	GuiDocument *mCurrentDocument;
 
 	struct {
 		bool left;
@@ -58,6 +60,10 @@ public:
 	bool initGL();
 	bool init();
 	void handleEvent(PlatformEvent *event);
+
+	Rocket::Core::ElementDocument *loadDocument(const std::string &path);
+	void setCurrentDocument(GuiDocument *document);
+	void setCurrentDocument(const std::string &name);
 
 	void updateWindowSize(const glm::ivec2 &size);
 	RenderInfo getRenderInfo(const glm::ivec2 &size);
