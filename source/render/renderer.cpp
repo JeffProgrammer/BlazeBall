@@ -10,6 +10,9 @@
 #include "network/client.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "gui/documents/mainMenuDocument.h"
+#include "gui/documents/gameDocument.h"
+
 Renderer::Renderer(Client *client) : mClient(client) {
 	mRocketContext = nullptr;
 	mConfig = new Config("config.txt");
@@ -125,16 +128,43 @@ bool Renderer::initGUI() {
 
 	// Initialize base gui
 	mRocketContext = Rocket::Core::CreateContext("game", Rocket::Core::Vector2i(screenSize.x, screenSize.y));
-	mRocketDocument = mRocketContext->LoadDocument("game.rml");
+	mCurrentDocument = new MainMenuDocument("MainMenu", this, loadDocument("menu.rml"));
 
-	if (mRocketDocument) {
-		mRocketDocument->Show();
-		mRocketDocument->RemoveReference();
+	//Load the game for later usage
+	new GameDocument("Game", this, loadDocument("game.rml"));
+
+	if (mCurrentDocument) {
+		setCurrentDocument(mCurrentDocument);
 	} else {
-		IO::printf("Unable to show document demo.rml\n");
+		IO::printf("Could not load menu\n");
 		return false;
 	}
+
 	return true;
+}
+
+Rocket::Core::ElementDocument *Renderer::loadDocument(const std::string &path) {
+	Rocket::Core::ElementDocument *rdoc = mRocketContext->LoadDocument(path.c_str());
+	if (rdoc) {
+		return rdoc;
+	} else {
+		return nullptr;
+	}
+}
+
+void Renderer::setCurrentDocument(GuiDocument *document) {
+	mCurrentDocument->getDocument()->Hide();
+	mCurrentDocument->onSleep();
+
+	mCurrentDocument = document;
+
+	document->getDocument()->Show();
+	document->onWake();
+}
+
+void Renderer::setCurrentDocument(const std::string &name) {
+	GuiDocument *doc = GuiDocument::getDocument(name);
+	setCurrentDocument(doc);
 }
 
 void Renderer::handleEvent(PlatformEvent *event) {

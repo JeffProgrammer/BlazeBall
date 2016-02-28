@@ -23,6 +23,7 @@
 #include "render/renderInfo.h"
 #include "gui/renderInterface.h"
 #include "gui/systemInterface.h"
+#include "gui/guiDocument.h"
 
 class Client;
 class Renderer {
@@ -32,7 +33,8 @@ protected:
 	Config *mConfig;
 
 	Rocket::Core::Context *mRocketContext;
-	Rocket::Core::ElementDocument *mRocketDocument;
+
+	GuiDocument *mCurrentDocument;
 
 	struct {
 		bool left;
@@ -52,6 +54,12 @@ public:
 	PlatformWindow *getWindow() const { return mWindow; }
 	void setWindow(PlatformWindow *window) { mWindow = window; }
 
+	bool getCaptureMouse() { return mCaptureMouse; }
+	void setCaptureMouse(bool capture) {
+		mCaptureMouse = capture;
+		mWindow->lockCursor(capture);
+	}
+
 	void render(const F64 &delta);
 
 	bool initGUI();
@@ -59,8 +67,12 @@ public:
 	bool init();
 	void handleEvent(PlatformEvent *event);
 
+	Rocket::Core::ElementDocument *loadDocument(const std::string &path);
+	void setCurrentDocument(GuiDocument *document);
+	void setCurrentDocument(const std::string &name);
+
 	void updateWindowSize(const glm::ivec2 &size);
 	RenderInfo getRenderInfo(const glm::ivec2 &size);
 };
 
-#endif _RENDER_RENDERER_H_
+#endif //_RENDER_RENDERER_H_
