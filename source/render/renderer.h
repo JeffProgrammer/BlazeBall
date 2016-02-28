@@ -54,6 +54,12 @@ public:
 	PlatformWindow *getWindow() const { return mWindow; }
 	void setWindow(PlatformWindow *window) { mWindow = window; }
 
+	bool getCaptureMouse() { return mCaptureMouse; }
+	void setCaptureMouse(bool capture) {
+		mCaptureMouse = capture;
+		mWindow->lockMouse(capture);
+	}
+
 	void render(const F64 &delta);
 
 	bool initGUI();

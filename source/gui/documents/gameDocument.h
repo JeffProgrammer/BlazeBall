@@ -12,6 +12,9 @@
 class GameDocument : public GuiDocument {
 public:
 	GameDocument(const std::string &name, Renderer *renderer, Rocket::Core::ElementDocument *document) : GuiDocument(name, renderer, document) {}
+
+	virtual void onSleep();
+	virtual void onWake();
 };
 
 #endif

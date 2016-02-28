@@ -5,3 +5,12 @@
 //------------------------------------------------------------------------------
 
 #include "gameDocument.h"
+#include "render/renderer.h"
+
+void GameDocument::onSleep() {
+
+}
+
+void GameDocument::onWake() {
+	mRenderer->setCaptureMouse(true);
+}

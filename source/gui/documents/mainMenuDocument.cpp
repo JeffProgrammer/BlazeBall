@@ -25,3 +25,10 @@ void MainMenuDocument::onEvent(Rocket::Core::Event &event) {
 		}
 	}
 }
+
+void MainMenuDocument::onSleep() {
+
+}
+void MainMenuDocument::onWake() {
+	mRenderer->setCaptureMouse(false);
+}

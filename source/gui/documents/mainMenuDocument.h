@@ -14,6 +14,9 @@ public:
 	MainMenuDocument(const std::string &name, Renderer *renderer, Rocket::Core::ElementDocument *document);
 
 	virtual void onEvent(Rocket::Core::Event &event);
+
+	virtual void onSleep();
+	virtual void onWake();
 };
 
 #endif
