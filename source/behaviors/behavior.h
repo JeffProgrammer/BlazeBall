@@ -7,11 +7,33 @@
 #ifndef _BEHAVIORS_BEHAVIOR_H_
 #define _BEHAVIORS_BEHAVIOR_H_
 
+#include "base/types.h"
+
+class ScriptObject;
+
 class Behavior {
 public:
-public:
-	virtual void onStart() = 0;
-	virtual void onUpdate(const F64 &dt) = 0;
+	/**
+	 * Called when the behavior is added to the object.
+	 * @param GameObject the reference to the object that this behavior is
+	 * attached too. dynamic cast and store this to your own reference
+	 * pointer on the behavior.
+	 * @note Do NOT delete this reference inside the behavior.
+	 */
+	virtual void start(ScriptObject *gameObject) = 0;
+
+	/**
+	 * Called when the behavior is deleted on the object.
+	 * Note that this will always be called before the object is deleted,
+	 * so it is safe to reference the object in this method.
+	 */
+	virtual void cleanup() = 0;
+
+	/**
+	 * Called when the game ticks every frame.
+	 * @param dt The delta time between updates.
+	 */
+	virtual void update(const F64 &dt) = 0;
 };
 
 #endif // _BEHAVIORS_BEHAVIOR_H_
