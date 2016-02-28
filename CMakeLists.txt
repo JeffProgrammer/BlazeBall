@@ -104,6 +104,8 @@ set (DIFVIEWERGAME_SRC
 	source/behaviors/behaviorAbstractClassRep.cpp
 	source/behaviors/behaviorAbstractClassRep.h
 	source/behaviors/behaviorConcreteClassRep.h
+	source/behaviors/triggerBehavior.cpp
+	source/behaviors/triggerBehavior.h
 	
 	# Game folder
 	source/game/camera.cpp
