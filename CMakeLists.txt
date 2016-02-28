@@ -120,10 +120,18 @@ set (DIFVIEWERGAME_SRC
 	source/game/world.h
 
 	# Gui
+	source/gui/guiDocument.cpp
+	source/gui/guiDocument.h
 	source/gui/renderInterface.cpp
 	source/gui/renderInterface.h
 	source/gui/systemInterface.cpp
 	source/gui/systemInterface.h
+
+	source/gui/documents/gameDocument.cpp
+	source/gui/documents/gameDocument.h
+	source/gui/documents/mainMenuDocument.cpp
+	source/gui/documents/mainMenuDocument.h
+
 	source/gui/elements/elementWorldView.cpp
 	source/gui/elements/elementWorldView.h
 
@@ -358,6 +366,7 @@ source_group("assets\\scripts"       REGULAR_EXPRESSION scripts/.*)
 source_group("network"               REGULAR_EXPRESSION network/.*)
 source_group("network\\event"        REGULAR_EXPRESSION network/event/.*)
 source_group("gui"                   REGULAR_EXPRESSION gui/.*)
+source_group("gui\\documents"        REGULAR_EXPRESSION gui/documents/.*)
 source_group("gui\\elements"         REGULAR_EXPRESSION gui/elements/.*)
 source_group("graphics"              REGULAR_EXPRESSION graphics/.*)
 source_group("graphics\\GL21"        REGULAR_EXPRESSION graphics/GL21/.*)
