@@ -11,6 +11,9 @@
 
 class ScriptObject;
 
+/**
+ * An abstract class that represents the basis for all behaviors.
+ */
 class Behavior {
 public:
 	/**
@@ -27,13 +30,13 @@ public:
 	 * Note that this will always be called before the object is deleted,
 	 * so it is safe to reference the object in this method.
 	 */
-	virtual void cleanup() = 0;
+	virtual void cleanup() {}
 
 	/**
 	 * Called when the game ticks every frame.
 	 * @param dt The delta time between updates.
 	 */
-	virtual void update(const F64 &dt) = 0;
+	virtual void update(const F64 &dt) {}
 };
 
 #endif // _BEHAVIORS_BEHAVIOR_H_
