@@ -98,6 +98,13 @@ set (DIFVIEWERGAME_SRC
 	source/base/types.h
 	source/base/math/triangle.h
 
+	# Behavior folder
+	source/behaviors/behavior.cpp
+	source/behaviors/behavior.h
+	source/behaviors/behaviorAbstractClassRep.cpp
+	source/behaviors/behaviorAbstractClassRep.h
+	source/behaviors/behaviorConcreteClassRep.h
+	
 	# Game folder
 	source/game/camera.cpp
 	source/game/camera.h
@@ -344,6 +351,7 @@ source_group("main"                  REGULAR_EXPRESSION main/.*)
 source_group("render"                REGULAR_EXPRESSION render/.*)
 source_group("base"                  REGULAR_EXPRESSION base/.*)
 source_group("base\\math"            REGULAR_EXPRESSION base/math/.*)
+source_group("behaviors"             REGULAR_EXPRESSION behaviors/.*)
 source_group("render\\bitmap"        REGULAR_EXPRESSION bitmap/.*)
 source_group("game"                  REGULAR_EXPRESSION game/.*)
 source_group("objects"               REGULAR_EXPRESSION objects/.*)
