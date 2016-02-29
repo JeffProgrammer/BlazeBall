@@ -125,6 +125,8 @@ set (DIFVIEWERGAME_SRC
 	source/game/skybox.h
 	source/game/sphere.cpp
 	source/game/sphere.h
+	source/game/trigger.cpp
+	source/game/trigger.h
 	source/game/world.cpp
 	source/game/world.h
 
@@ -183,6 +185,8 @@ set (DIFVIEWERGAME_SRC
 	source/physics/physicsRigidBody.h	
 	source/physics/physicsSphere.cpp
 	source/physics/physicsSphere.h
+	source/physics/physicsTrigger.cpp
+	source/physics/physicsTrigger.h
 
 	# Platform folder
 	source/platform/platform.h
