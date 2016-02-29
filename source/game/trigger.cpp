@@ -21,6 +21,10 @@ Trigger::~Trigger() {
 
 void Trigger::onAddToScene() {
 	Parent::onAddToScene();
+
+	mTrigger = new PhysicsTrigger(this);
+	mTrigger->setWorld(mWorld);
+	mWorld->getPhysicsEngine()->addBody(mTrigger);
 }
 
 bool Trigger::read(CharStream &stream) {

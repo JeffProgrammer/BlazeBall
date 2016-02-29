@@ -9,23 +9,27 @@
 #include "physics/physicsTrigger.h"
 #include "game/trigger.h"
 
-// using ghost objects in bullet:
-// http://www.bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=7468
-
 PhysicsTrigger::PhysicsTrigger(Trigger *trigger) {
-	btBoxShape *shape = new btBoxShape(btConvert(trigger->getScale()));
+	auto shape = new btBoxShape(btConvert(trigger->getScale()));
 	shape->setMargin(0.01f);
-	shape->setUserPointer(trigger);
 
 	btTransform transform;
 	transform.setIdentity();
 	transform.setOrigin(btConvert(trigger->getPosition()));
 	transform.setRotation(btConvert(trigger->getRotation()));
 
-	mActor = new btGhostObject();
-	mActor->setCollisionShape(shape);
-	mActor->setWorldTransform(transform);
+	auto state = new btDefaultMotionState();
+	state->setWorldTransform(transform);
+	mActor = new btRigidBody(0.0f, state, shape);
 
 	// Set the trigger flag on the actor.
-	mActor->setCollisionFlags(mActor->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+	mActor->setCollisionFlags(
+		mActor->getCollisionFlags() | 
+		btCollisionObject::CF_NO_CONTACT_RESPONSE | 
+		btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK
+	);
+}
+
+void PhysicsTrigger::notifyContact(ContactCallbackInfo &info, bool isBody0) {
+	IO::printf("OMG!\n");
 }

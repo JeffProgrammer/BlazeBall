@@ -44,6 +44,7 @@ PhysicsSphere::PhysicsSphere(const F32 &radius) {
 	mActor->setCcdSweptSphereRadius(radius / 10.0f);
 	mActor->setRollingFriction(3.0f);
 	mActor->setAnisotropicFriction(shape->getAnisotropicRollingFrictionDirection(), btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION);
+	mActor->setCollisionFlags(mActor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 	mActor->setContactProcessingThreshold(0.0f);
 }
 

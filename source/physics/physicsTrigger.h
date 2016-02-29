@@ -13,7 +13,9 @@ class Trigger;
 
 class PhysicsTrigger : public PhysicsBody {
 public:
-	PhysicsTrigger(Trigger *userData);
+	PhysicsTrigger(Trigger *trigger);
+
+	virtual void notifyContact(ContactCallbackInfo &info, bool isBody0) override;
 };
 
 #endif // _GAME_PHYSICS_PHYSICSTRIGGER_H_

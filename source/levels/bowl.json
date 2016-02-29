@@ -19,5 +19,10 @@
 		"face3": "cubemap/sky3.jpg",
 		"face4": "cubemap/sky4.jpg",
 		"face5": "cubemap/sky5.jpg"
+	},
+	{
+		"class": "Trigger",
+		"position": "0 0 10",
+		"scale": "50 50 50"
 	}
 ]

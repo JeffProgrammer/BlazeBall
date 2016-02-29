@@ -8,6 +8,7 @@
 #include <BulletCollision/CollisionShapes/btTriangleShape.h>
 #include <BulletCollision/NarrowPhaseCollision/btPersistentManifold.h>
 #include <BulletCollision/CollisionDispatch/btInternalEdgeUtility.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 #include <algorithm>
 #include <vector>
 
@@ -55,6 +56,10 @@ void contactProcessedCallback(btManifoldPoint &cp, const btCollisionObject *colO
 		body0->notifyContact(info, true);
 	if (body1)
 		body1->notifyContact(info, false);
+}
+
+void triggerPreTickCallback(btDynamicsWorld *world, btScalar timeStep) {
+
 }
 
 PhysicsEngine::PhysicsEngine() {
@@ -111,11 +116,13 @@ void PhysicsEngine::addBody(PhysicsBody *physBody) {
 	btCollisionObject *col = physBody->getCollisionObject();
 	col->setUserPointer(physBody);
 
-	col->setCollisionFlags(col->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
-
+	// TODO handle kinematics
 	btRigidBody *rigid = dynamic_cast<btRigidBody*>(col);
 	if (rigid != nullptr) {
 		mWorld->addRigidBody(rigid);
+	} else {
+		// it's a trigger.
+
 	}
 }
 
