@@ -58,10 +58,6 @@ void contactProcessedCallback(btManifoldPoint &cp, const btCollisionObject *colO
 		body1->notifyContact(info, false);
 }
 
-void triggerPreTickCallback(btDynamicsWorld *world, btScalar timeStep) {
-
-}
-
 PhysicsEngine::PhysicsEngine() {
 	mRunning = false;
 	mExtraTime = 0.0;
