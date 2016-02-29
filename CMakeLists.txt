@@ -177,20 +177,12 @@ set (DIFVIEWERGAME_SRC
 	source/physics/physicsBody.h
 	source/physics/physicsEngine.cpp
 	source/physics/physicsEngine.h
+	source/physics/physicsInterior.cpp
+	source/physics/physicsInterior.h
+	source/physics/physicsRigidBody.cpp
+	source/physics/physicsRigidBody.h	
 	source/physics/physicsSphere.cpp
 	source/physics/physicsSphere.h
-
-	# Bullet physics
-	source/physics/bullet/btPhysicsBody.cpp
-	source/physics/bullet/btPhysicsBody.h
-	source/physics/bullet/btPhysicsEngine.cpp
-	source/physics/bullet/btPhysicsEngine.h
-	source/physics/bullet/btPhysicsInterior.cpp
-	source/physics/bullet/btPhysicsInterior.h
-	source/physics/bullet/btPhysicsSphere.cpp
-	source/physics/bullet/btPhysicsSphere.h
-	source/physics/bullet/btDebugDrawer.cpp
-	source/physics/bullet/btDebugDrawer.h
 
 	# Platform folder
 	source/platform/platform.h

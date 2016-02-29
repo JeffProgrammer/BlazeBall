@@ -13,7 +13,7 @@
 #include "platform/platformGL.h"
 #include "gameObject.h"
 #include "base/types.h"
-#include "physics/physicsBody.h"
+#include "physics/physicsSphere.h"
 #include "render/material.h"
 #include "game/movement.h"
 #include "renderedObject.h"
@@ -28,7 +28,7 @@ class Sphere : public RenderedObject {
 	const F32 LinearRollDamping   = 0.025f; // 97.5% of original
 
 protected:
-	PhysicsBody *mActor;
+	PhysicsSphere *mActor;
 	F32 mMaxAngVel;
 	Material *mMaterial;
 	Movement mMovement;

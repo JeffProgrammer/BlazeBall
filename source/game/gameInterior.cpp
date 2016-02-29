@@ -7,6 +7,7 @@
 #include "game/gameInterior.h"
 #include "base/io.h"
 #include "physics/physicsBody.h"
+#include "physics/physicsInterior.h"
 #include "render/texture/texture.h"
 #include <string>
 #include <cfloat>
@@ -91,7 +92,7 @@ void GameInterior::generateMaterials(std::string directory) {
 }
 
 void GameInterior::generateMesh() {
-	mActor = mWorld->getPhysicsEngine()->createInterior(this);
+	mActor = new PhysicsInterior(this);
 	mActor->setWorld(mWorld);
 	mWorld->getPhysicsEngine()->addBody(mActor);
 }

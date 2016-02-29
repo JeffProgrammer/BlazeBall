@@ -4,16 +4,16 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#include "physics/bullet/btPhysicsEngine.h"
-#include "physics/bullet/btPhysicsInterior.h"
+#include "physics/physicsEngine.h"
+#include "physics/physicsInterior.h"
 #include "game/gameInterior.h"
 #include <vector>
 
-btPhysicsInterior::btPhysicsInterior(GameInterior *interior) : btPhysicsBody(), mInterior(interior) {
+PhysicsInterior::PhysicsInterior(GameInterior *interior) : PhysicsRigidBody(), mInterior(interior) {
 	construct();
 }
 
-void btPhysicsInterior::construct() {
+void PhysicsInterior::construct() {
     //Create body
 	btMotionState *state = new btDefaultMotionState();
 	btTriangleMesh *mesh = new btTriangleMesh;

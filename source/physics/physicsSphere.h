@@ -8,14 +8,20 @@
 #define _GAME_PHYSICS_PHYSICSSPHERE_H_
 
 #include "base/types.h"
+#include "physics/physicsRigidBody.h"
 
-class PhysicsSphere {
+class PhysicsSphere : public PhysicsRigidBody {
 public:
-	virtual bool getColliding() = 0;
-	virtual glm::vec3 getCollisionNormal(glm::vec3 &toiVelocity) = 0;
+	PhysicsSphere(const F32 &radius);
 
-	virtual F32 getRadius() = 0;
-	virtual void setRadius(const F32 &radius) = 0;
+	virtual bool getColliding();
+	virtual glm::vec3 getCollisionNormal(glm::vec3 &toiVelocity);
+
+	F32 getRadius();
+	void setRadius(const F32 &radius);
+
+	virtual bool modifyContact(ContactCallbackInfo &info, bool isBody0) override;
+	virtual void notifyContact(ContactCallbackInfo &info, bool isBody0) override;
 };
 
 #endif // _GAME_PHYSICS_PHYSICSSPHERE_H_
