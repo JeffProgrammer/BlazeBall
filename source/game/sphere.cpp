@@ -409,6 +409,7 @@ void Sphere::updateTick(const F64 &delta) {
 
 void Sphere::onAddToScene() {
 	mActor = new PhysicsSphere(mRadius);
+	mActor->setCollisonObject(mActor->getActor());
 	mActor->setPosition(mPosition);
 	mActor->setMass(mMass);
 	mActor->setWorld(mWorld);

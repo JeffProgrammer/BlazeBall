@@ -35,6 +35,8 @@ public:
 	btCollisionObject *getCollisionObject() {
 		return mCollision;
 	}
+
+	void setCollisonObject(btCollisionObject *obj) { mCollision = obj; }
 };
 
 #endif // _GAME_PHYSICS_PHYSICSBODY_H_
