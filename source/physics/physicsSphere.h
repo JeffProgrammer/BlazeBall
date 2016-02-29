@@ -8,9 +8,9 @@
 #define _GAME_PHYSICS_PHYSICSSPHERE_H_
 
 #include "base/types.h"
-#include "physics/physicsBody.h"
+#include "physics/physicsRigidBody.h"
 
-class PhysicsSphere : public PhysicsBody {
+class PhysicsSphere : public PhysicsRigidBody {
 public:
 	PhysicsSphere(const F32 &radius);
 

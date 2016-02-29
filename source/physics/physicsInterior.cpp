@@ -9,7 +9,7 @@
 #include "game/gameInterior.h"
 #include <vector>
 
-PhysicsInterior::PhysicsInterior(GameInterior *interior) : PhysicsBody(), mInterior(interior) {
+PhysicsInterior::PhysicsInterior(GameInterior *interior) : PhysicsRigidBody(), mInterior(interior) {
 	construct();
 }
 

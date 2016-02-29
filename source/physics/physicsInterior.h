@@ -7,9 +7,9 @@
 #ifndef _GAME_PHYSICS_BULLET_BTPHYSICSINTERIOR_H_
 #define _GAME_PHYSICS_BULLET_BTPHYSICSINTERIOR_H_
 
-#include "physics/physicsBody.h"
+#include "physics/physicsRigidBody.h"
 
-class PhysicsInterior : public PhysicsBody {
+class PhysicsInterior : public PhysicsRigidBody {
 public:
 	struct TriangleInfo {
 		U32 surfaceIndex;

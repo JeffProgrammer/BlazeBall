@@ -170,6 +170,8 @@ set (DIFVIEWERGAME_SRC
 	source/physics/physicsEngine.h
 	source/physics/physicsInterior.cpp
 	source/physics/physicsInterior.h
+	source/physics/physicsRigidBody.cpp
+	source/physics/physicsRigidBody.h	
 	source/physics/physicsSphere.cpp
 	source/physics/physicsSphere.h
 

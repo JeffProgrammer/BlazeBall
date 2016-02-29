@@ -108,11 +108,15 @@ void PhysicsEngine::step(const F64 &delta) {
 }
 
 void PhysicsEngine::addBody(PhysicsBody *physBody) {
-	btRigidBody *rigid = physBody->getActor();
-	rigid->setUserPointer(physBody);
+	btCollisionObject *col = physBody->getCollisionObject();
+	col->setUserPointer(physBody);
 
-	rigid->setCollisionFlags(rigid->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
-	mWorld->addRigidBody(rigid);
+	col->setCollisionFlags(col->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+
+	btRigidBody *rigid = dynamic_cast<btRigidBody*>(col);
+	if (rigid != nullptr) {
+		mWorld->addRigidBody(rigid);
+	}
 }
 
 void PhysicsEngine::raycast(RaycastInfo &info) {
