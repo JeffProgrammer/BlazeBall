@@ -13,7 +13,7 @@ class SDLPlatform : public Platform {
 public:
 	virtual PlatformTimer *createTimer();
 	virtual PlatformWindow *createWindow();
-	SDLPlatform(std::unique_ptr<PhysicsEngineFactory> &&physFactory) : Platform(std::move(physFactory)) {}
+	SDLPlatform() {}
 };
 
 #endif // _PLATFORM_SDL_SDLPLATFORM_H_

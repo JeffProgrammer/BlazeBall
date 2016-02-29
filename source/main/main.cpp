@@ -7,7 +7,7 @@
 #include <fstream>
 #include <cstdlib>
 
-#include "physics/bullet/btPhysicsEngine.h"
+#include "physics/PhysicsEngine.h"
 #include "scriptEngine/abstractClassRep.h"
 #include "platform/SDL/SDLPlatform.h"
 #include "network/network.h"
@@ -18,7 +18,7 @@
 std::unique_ptr<GameState> GameState::gState = nullptr;
 
 int main(int argc, const char **argv) {
-	GameState::gState = std::make_unique<GameState>(std::make_unique<SDLPlatform>(std::make_unique<Platform::ConcretePhysicsEngineFactory<btPhysicsEngine>>()));
+	GameState::gState = std::make_unique<GameState>(std::make_unique<SDLPlatform>());
 
 	// Copy command line arguments into the gamestate
 	for (int i = 0; i < argc; i++)
