@@ -10,8 +10,6 @@
 #include "physics/physicsBody.h"
 
 class PhysicsRigidBody : public PhysicsBody {
-protected:
-	btRigidBody *mActor;
 public:
 	virtual F32 getMass() const;
 	virtual glm::vec3 getLinearVelocity() const;
@@ -29,9 +27,7 @@ public:
 	virtual void applyImpulse(const glm::vec3 &impulse, const glm::vec3 &origin);
 	virtual void applyForce(const glm::vec3 &force, const glm::vec3 &origin);
 
-	btRigidBody *getActor() {
-		return mActor;
-	}
+	inline btRigidBody* getRigidActor() const { return static_cast<btRigidBody*>(mActor); }
 };
 
 #endif // _GAME_PHYSICS_PHYSICSRIGIDBODY_H_

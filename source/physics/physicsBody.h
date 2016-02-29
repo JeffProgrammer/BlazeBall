@@ -14,7 +14,7 @@
 class PhysicsBody {
 protected:
 	World *mWorld;
-	btCollisionObject *mCollision;
+	btCollisionObject *mActor;
 public:
 	virtual void setWorld(World *world) { mWorld = world; }
 	virtual World *getWorld() { return mWorld; }
@@ -33,10 +33,8 @@ public:
 	virtual void notifyContact(ContactCallbackInfo &info, bool isBody0);
 
 	btCollisionObject *getCollisionObject() {
-		return mCollision;
+		return mActor;
 	}
-
-	void setCollisonObject(btCollisionObject *obj) { mCollision = obj; }
 };
 
 #endif // _GAME_PHYSICS_PHYSICSBODY_H_
