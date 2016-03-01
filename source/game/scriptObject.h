@@ -15,6 +15,7 @@
 class AbstractClassRep;
 template<typename T> class ConcreteClassRep;
 class ScriptObject;
+class Behavior;
 class World;
 
 class ScriptObject {
@@ -42,6 +43,14 @@ public:
 		return mName;
 	}
 
+	inline void addBehavior(Behavior *behavior) {
+		mBehaviors.push_back(behavior);
+	}
+
+	std::vector<Behavior*> getBehaviors() {
+		return mBehaviors;
+	}
+
 	std::string mName;
 
 protected:
@@ -60,6 +69,8 @@ protected:
 	AbstractClassRep *mClassRep;
 
 	World *mWorld;
+
+	std::vector<Behavior*> mBehaviors;
 
 	static ConcreteClassRep<ScriptObject> sConcreteClassRep;
 	

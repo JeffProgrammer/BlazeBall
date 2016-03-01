@@ -8,6 +8,8 @@
 
 #include <rapidjson/document.h>
 #include "game/gameObject.h"
+#include "behaviors/behaviorConcreteClassRep.h"
+#include "behaviors/behavior.h"
 
 #ifdef __APPLE__
 #define stricmp strcasecmp
@@ -102,7 +104,6 @@ bool World::loadLevel(const std::string &file) {
 				continue;
 			}
 			const char *fieldName = field->name.GetString();
-			const char *fieldValue = field->value.GetString();
 
 			// Make sure that the field only is 1 word. If not reject it
 			if (temp___containsMoreThanOneWord(fieldName)) {
@@ -110,14 +111,31 @@ bool World::loadLevel(const std::string &file) {
 				continue;
 			}
 
-			// we allready got the class field.
-			if (stricmp(fieldName, "class") == 0)
-				continue;
+			if (field->value.IsArray()) {
+				// Behaviors are an array of behavior objects.
+				// we create them here.
+				if (stricmp(fieldName, "behaviors") == 0) {
+					for (auto name = field->value.Begin(); name != field->value.End(); ++name) {
+						const char *behaviorName = name->GetString();
+						auto behavior = BehaviorAbstractClassRep::createFromName(behaviorName);
+						if (behavior == nullptr) {
+							IO::printf("Could not create behavior named %s.\n", behaviorName);
+						} else {
+							scriptObject->addBehavior(behavior);
+						}
+					}
+				}
+			} else {
+				const char *fieldValue = field->value.GetString();
 
-			//Try and set the field
-			if (!scriptObject->setField(fieldName, fieldValue)) {
-				IO::printf("Could not set class field %s on an object of type %s.\n", fieldName, klass);
-				continue;
+				// we allready got the class field.
+				if (stricmp(fieldName, "class") == 0)
+					continue;
+
+				//Try and set the field
+				if (!scriptObject->setField(fieldName, fieldValue)) {
+					IO::printf("Could not set class field %s on an object of type %s.\n", fieldName, klass);
+				}
 			}
 		}
 
@@ -127,6 +145,12 @@ bool World::loadLevel(const std::string &file) {
 		if (gameObject != nullptr) {
 			// add it to the scene.
 			addObject(gameObject);
+		}
+
+		// for each behavior, call the start method on them.
+		auto behaviors = scriptObject->getBehaviors();
+		for (Behavior *behavior : behaviors) {
+			behavior->start(scriptObject);
 		}
 	}
 

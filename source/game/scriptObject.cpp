@@ -7,6 +7,7 @@
 #include "game/scriptObject.h"
 #include "scriptEngine/abstractClassRep.h"
 #include "scriptEngine/concreteClassRep.h"
+#include "behaviors/behavior.h"
 #include "game/world.h"
 
 #ifdef __APPLE__
@@ -26,6 +27,10 @@ ScriptObject::ScriptObject() {
 }
 
 ScriptObject::~ScriptObject() {
+	// Cleanup is called here on all behaviors
+	for (auto *behavior : mBehaviors)
+		behavior->cleanup();
+
 	IO::printf("Destructed object %p\n", this);
 }
 
