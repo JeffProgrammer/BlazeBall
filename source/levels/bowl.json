@@ -22,7 +22,7 @@
 	},
 	{
 		"class": "Trigger",
-		"position": "0 0 10",
+		"position": "0 0 -20",
 		"scale": "50 50 50"
 	}
 ]

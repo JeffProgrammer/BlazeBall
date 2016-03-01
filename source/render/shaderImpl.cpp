@@ -59,4 +59,9 @@ void Shader::initializeShaders() {
 	postFXShader->addUniformLocation(SAMPLER_TEXTURE_NAME, 0);
 	postFXShader->addUniformLocation(SAMPLER_DEPTH_NAME,   1);
 	postFXShader->addAttribute(ATTRIBUTE_POSITION_NAME, 3, GL_FLOAT, GL_FALSE);
+
+	// Trigger shader
+	Shader *triggerShader = new Shader("Trigger", "triggerV.glsl", "triggerF.glsl");
+	triggerShader->addAttribute(ATTRIBUTE_POSITION_NAME, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
 }

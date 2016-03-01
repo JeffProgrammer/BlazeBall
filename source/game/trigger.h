@@ -8,19 +8,23 @@
 #define _GAME_TRIGGER_H_
 
 #include <vector>
-#include "gameObject.h"
+#include "game/renderedObject.h"
 #include "physics/physicsTrigger.h"
 
 class Sphere;
 
-class Trigger : public GameObject {
-	typedef GameObject Parent;
+class Trigger : public RenderedObject {
+	typedef RenderedObject Parent;
 	friend class PhysicsTrigger;
 public:
 	Trigger();
 	virtual ~Trigger();
 
 	virtual void onAddToScene() override;
+
+	void generateBuffer();
+	void draw(Material *material, RenderInfo &info, void *userInfo);
+	virtual void render(RenderInfo &info) override;
 
 	virtual bool read(CharStream &stream) override;
 	virtual bool write(CharStream &stream) const override;
@@ -39,6 +43,11 @@ protected:
 	std::vector<Sphere*> mObjects;
 
 	PhysicsTrigger *mTrigger;
+
+	GLuint mBuffer;
+	GLuint mLineBuffer;
+	bool mGenerated;
+	Material *mMaterial;
 
 	DECLARE_SCRIPTOBJECT(Trigger);
 };

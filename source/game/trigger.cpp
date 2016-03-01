@@ -6,6 +6,7 @@
 
 #include "game/trigger.h"
 #include "game/sphere.h"
+#include "render/triggerData.h"
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,10 +15,14 @@ IMPLEMENT_SCRIPTOBJECT(Trigger, GameObject);
 
 Trigger::Trigger() {
 	mTrigger = nullptr;
+	mGenerated = false;
 }
 
 Trigger::~Trigger() {
 	delete mTrigger;
+	delete mMaterial;
+	
+	glDeleteBuffers(1, &mBuffer);
 }
 
 void Trigger::onAddToScene() {
@@ -26,6 +31,66 @@ void Trigger::onAddToScene() {
 	mTrigger = new PhysicsTrigger(this);
 	mTrigger->setWorld(mWorld);
 	mWorld->getPhysicsEngine()->addBody(mTrigger);
+}
+
+void Trigger::generateBuffer() {
+	glGenBuffers(1, &mBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * sizeof(TriggerData::cubeVertices), TriggerData::cubeVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glGenBuffers(1, &mLineBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, mLineBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * sizeof(TriggerData::lineVertices), TriggerData::lineVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	Shader *shader = Shader::getShaderByName("Trigger");
+	mMaterial = new Material("", shader);
+
+	mGenerated = true;
+}
+
+void Trigger::draw(Material *material, RenderInfo &info, void *userInfo) {
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthFunc(GL_LESS);
+
+	Shader *shader = mMaterial->getShader();
+
+	mMaterial->activate();
+	info.loadShader(shader);
+
+	loadModelMatrix(info, shader);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
+	shader->enableAttributes();
+	shader->setUniform("inLines", 0);
+
+	//Simple draw
+	glDrawArrays(GL_TRIANGLES, 0, 36); //Hardcoded count from # of verts above
+	epoxy_glFrontFace(GL_CW);
+	glDrawArrays(GL_TRIANGLES, 0, 36); //Hardcoded count from # of verts above
+	epoxy_glFrontFace(GL_CCW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mLineBuffer);
+	shader->enableAttributes();
+	shader->setUniform("inLines", 1);
+	glDrawArrays(GL_LINES, 0, sizeof(TriggerData::lineVertices) / 12);
+
+	shader->disableAttributes();
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	mMaterial->deactivate();
+
+	glDisable(GL_BLEND);
+}
+
+void Trigger::render(RenderInfo &info) {
+	if (!mGenerated) {
+		generateBuffer();
+	}
+
+	info.addRenderMethod(mMaterial, RenderInfo::RenderMethod::from_method<Trigger, &Trigger::draw>(this), nullptr, RenderInfo::RenderOrderPosition::Debug);
 }
 
 bool Trigger::read(CharStream &stream) {

@@ -91,6 +91,14 @@ public:
 	Material(const std::string &path) : mShader(nullptr) {
 		loadTextures(path);
 	}
+
+	/**
+	 * Construct a material from only a shader. This material will have no textures.
+	 * @param name   The material's name
+	 * @param shader The shader to be used with this material
+	 */
+	Material(const std::string &name, Shader *shader) : mShader(shader), mMaterialName(name) {
+	}
 	
 	/**
 	 * Construct a material from a diffuse, normal, and specular texture path.
