@@ -23,6 +23,9 @@
 	{
 		"class": "Trigger",
 		"position": "0 0 -20",
-		"scale": "50 50 50"
+		"scale": "50 50 50",
+		"behaviors": [
+			"HelloWorldTrigger"
+		]
 	}
 ]

@@ -7,6 +7,7 @@
 #include "game/trigger.h"
 #include "game/sphere.h"
 #include "render/triggerData.h"
+#include "behaviors/triggerBehavior.h"
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -134,10 +135,30 @@ void Trigger::onEnterTrigger(Sphere *collider) {
 
 	IO::printf("%p has entered the trigger %p\n", collider, this);
 	mObjects.push_back(collider);
+
+	// Notify all behaviors that we have entered a trigger
+	for (Behavior *b : mBehaviors) {
+		// TODO: THIS IS SO SLOW.
+		// THIS NEEDS TO BE CHANGED OR ELSE WE CAN EXPERIENCE A PERFORMANCE HIT!!!!!
+		TriggerBehavior *tb = dynamic_cast<TriggerBehavior*>(b);
+		if (tb != nullptr) {
+			tb->onEnterTrigger();
+		}
+	}
 }
 
 void Trigger::onLeaveTrigger(Sphere *collider) {
 	IO::printf("%p has left the trigger %p\n", collider, this);
+
+	// Notify all behaviors that we have entered a trigger
+	for (Behavior *b : mBehaviors) {
+		// TODO: THIS IS SO SLOW.
+		// THIS NEEDS TO BE CHANGED OR ELSE WE CAN EXPERIENCE A PERFORMANCE HIT!!!!!
+		TriggerBehavior *tb = dynamic_cast<TriggerBehavior*>(b);
+		if (tb != nullptr) {
+			tb->onLeaveTrigger();
+		}
+	}
 }
 
 void Trigger::initFields() {

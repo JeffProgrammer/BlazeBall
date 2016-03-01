@@ -57,6 +57,7 @@ endif()
 # Includes for main project
 set (DIFVIEWERGAME_INCLUDEDIR
 	source
+	game
 	thirdparty/bullet
 	thirdparty/bullet/src
 	thirdparty/glm
@@ -262,6 +263,10 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/skyboxV.glsl
 	source/shaders/sphereF.glsl
 	source/shaders/sphereV.glsl
+	
+	# Game Logic stuff
+	game/triggers/helloWorldTrigger.cpp
+	game/triggers/helloWorldTrigger.h
 )
 
 if (APPLE)
@@ -369,6 +374,8 @@ source_group("gui\\elements"         REGULAR_EXPRESSION gui/elements/.*)
 source_group("graphics"              REGULAR_EXPRESSION graphics/.*)
 source_group("graphics\\GL21"        REGULAR_EXPRESSION graphics/GL21/.*)
 source_group("graphics\\GL33"        REGULAR_EXPRESSION graphics/GL33/.*)
+
+source_group("gameLogic\\triggers"   REGULAR_EXPRESSION game/triggers/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})
