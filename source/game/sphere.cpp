@@ -143,11 +143,11 @@ void Sphere::applyForce(const glm::vec3 &force, const glm::vec3 &origin) {
 }
 
 bool Sphere::getColliding() {
-	return dynamic_cast<PhysicsSphere *>(mActor)->getColliding();
+	return mActor->getColliding();
 }
 
 glm::vec3 Sphere::getCollisionNormal(glm::vec3 &toiVelocity) {
-	return dynamic_cast<PhysicsSphere *>(mActor)->getCollisionNormal(toiVelocity);
+	return mActor->getCollisionNormal(toiVelocity);
 }
 
 glm::vec3 Sphere::getPosition() const {
