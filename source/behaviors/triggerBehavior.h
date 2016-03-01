@@ -25,8 +25,6 @@ public:
 
 	virtual void onLeaveTrigger() {}
 
-	virtual void onTickTrigger() {}
-
 protected:
 	F32 mTick;
 };
