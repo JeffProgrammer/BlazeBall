@@ -220,6 +220,7 @@ set (DIFVIEWERGAME_SRC
 	source/render/shader.cpp
 	source/render/shader.h
 	source/render/shaderImpl.cpp
+	source/render/triggerData.h
 	source/render/util.h
 
 	# Bitmap folder
