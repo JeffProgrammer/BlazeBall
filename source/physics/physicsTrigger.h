@@ -16,6 +16,9 @@ public:
 	PhysicsTrigger(Trigger *trigger);
 
 	virtual void notifyContact(ContactCallbackInfo &info, bool isBody0) override;
+
+protected:
+	Trigger *mTrigger;
 };
 
 #endif // _GAME_PHYSICS_PHYSICSTRIGGER_H_

@@ -10,9 +10,12 @@
 #include "base/types.h"
 #include "physics/physicsRigidBody.h"
 
+class Sphere;
+
 class PhysicsSphere : public PhysicsRigidBody {
+	friend class PhysicsTrigger;
 public:
-	PhysicsSphere(const F32 &radius);
+	PhysicsSphere(Sphere *sphere, const F32 &radius);
 
 	virtual bool getColliding();
 	virtual glm::vec3 getCollisionNormal(glm::vec3 &toiVelocity);
@@ -22,6 +25,9 @@ public:
 
 	virtual bool modifyContact(ContactCallbackInfo &info, bool isBody0) override;
 	virtual void notifyContact(ContactCallbackInfo &info, bool isBody0) override;
+
+protected:
+	Sphere *mSphere;
 };
 
 #endif // _GAME_PHYSICS_PHYSICSSPHERE_H_

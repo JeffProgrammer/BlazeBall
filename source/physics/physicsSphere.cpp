@@ -9,13 +9,14 @@
 #include "physics/physicsInterior.h"
 
 #include "game/gameInterior.h"
+#include "game/sphere.h"
 #include "base/math/triangle.h"
 
 #ifndef _WIN32
 #define stricmp strcasecmp
 #endif
 
-PhysicsSphere::PhysicsSphere(const F32 &radius) {
+PhysicsSphere::PhysicsSphere(Sphere *sphere, const F32 &radius) {
 	//Motion state and shape
 	btMotionState *state = new btDefaultMotionState();
 	btCollisionShape *shape = new btSphereShape(radius);
@@ -46,6 +47,8 @@ PhysicsSphere::PhysicsSphere(const F32 &radius) {
 	mActor->setAnisotropicFriction(shape->getAnisotropicRollingFrictionDirection(), btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION);
 	mActor->setCollisionFlags(mActor->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 	mActor->setContactProcessingThreshold(0.0f);
+
+	mSphere = sphere;
 }
 
 bool PhysicsSphere::getColliding() {
@@ -142,7 +145,7 @@ void PhysicsSphere::notifyContact(ContactCallbackInfo &info, bool isBody0) {
 	//The interior with which we collided
 	PhysicsInterior *inter = dynamic_cast<PhysicsInterior *>(isBody0 ? info.body1 : info.body0);
 	if (inter == nullptr) {
-		PhysicsSphere *sphere = dynamic_cast<PhysicsSphere *>(isBody0 ? info.body1 : info.body1);
+		PhysicsSphere *sphere = dynamic_cast<PhysicsSphere *>(isBody0 ? info.body1 : info.body0);
 		if (sphere != nullptr) {
 			btVector3 impulse = info.point.m_normalWorldOnB * info.point.m_appliedImpulse;
 			IO::printf("Sphere push: %f %f %f\n", impulse.x(), impulse.y(), impulse.z());

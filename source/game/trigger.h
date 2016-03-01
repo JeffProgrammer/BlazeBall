@@ -11,8 +11,11 @@
 #include "gameObject.h"
 #include "physics/physicsTrigger.h"
 
+class Sphere;
+
 class Trigger : public GameObject {
 	typedef GameObject Parent;
+	friend class PhysicsTrigger;
 public:
 	Trigger();
 	virtual ~Trigger();
@@ -24,8 +27,8 @@ public:
 
 	virtual void updateTick(const F64 &dt) override;
 
-	void onEnterTrigger(GameObject *collider);
-	void onLeaveTrigger(GameObject *collider);
+	void onEnterTrigger(Sphere *collider);
+	void onLeaveTrigger(Sphere *collider);
 
 	/**
 	* Initializes the fields specific to the GameObject class.
@@ -33,7 +36,7 @@ public:
 	static void initFields();
 
 protected:
-	std::vector<GameObject*> mObjects;
+	std::vector<Sphere*> mObjects;
 
 	PhysicsTrigger *mTrigger;
 
