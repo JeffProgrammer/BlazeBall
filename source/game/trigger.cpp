@@ -45,7 +45,7 @@ void Trigger::updateTick(const F64 &dt) {
 
 	std::vector<Sphere*> removeList;
 
-	BoxF &triggerBox = mTrigger->getWorldBox();
+	const BoxF &triggerBox = mTrigger->getWorldBox();
 
 	for (Sphere *obj : mObjects) {
 		// If the object is not inside of the trigger,

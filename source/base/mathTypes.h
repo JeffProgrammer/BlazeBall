@@ -54,7 +54,7 @@ public:
 		return (getMax() + getMin()) / 2.0f;
 	}
 
-	inline bool intersectsBox(const BoxF &box) {
+	inline bool intersectsBox(const BoxF &box) const {
 		if (box.minX > maxX)
 			return false;
 		if (box.minY > maxY)
