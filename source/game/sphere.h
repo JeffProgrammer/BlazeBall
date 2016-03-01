@@ -20,6 +20,8 @@
 #include "render/texture/cubeMapFramebufferTexture.h"
 
 class Sphere : public RenderedObject {
+	friend class PhysicsSphere;
+
 	const F32 AppliedAcceleration = 750.f; //Maximum, lowers when reaching max roll velocity
 	const F32 MaxRollVelocity     = 15.f; //In one direction (diagonal-supported)
 	const F32 MaxAirSpinVelocity  = 50.f; //Same as above but for angular, only when falling
@@ -73,6 +75,7 @@ public:
 	glm::vec3 getTorque() const;
 	F32 getRadius() const;
 	F32 getMass() const;
+	BoxF getWorldBox() const { if (!mActor) return BoxF();  return mActor->getWorldBox(); };
 
 	virtual void setPosition(const glm::vec3 &pos) override;
 	virtual void setRotation(const glm::quat &rot) override;

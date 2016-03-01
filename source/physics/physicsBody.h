@@ -22,6 +22,7 @@ public:
 	virtual glm::vec3 getPosition() const;
 	virtual glm::quat getRotation() const;
 	virtual glm::vec3 getScale() const;
+	virtual BoxF      getWorldBox() const;
 
 	virtual void setPosition(const glm::vec3 &position);
 	virtual void setRotation(const glm::quat &rotation);

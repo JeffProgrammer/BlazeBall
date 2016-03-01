@@ -18,6 +18,12 @@ glm::vec3 PhysicsBody::getScale() const {
 	return btConvert(mActor->getCollisionShape()->getLocalScaling());
 }
 
+BoxF PhysicsBody::getWorldBox() const {
+	btVector3 min, max;
+	mActor->getCollisionShape()->getAabb(mActor->getWorldTransform(), min, max);
+	return BoxF(btConvert(min), btConvert(max));
+}
+
 void PhysicsBody::setPosition(const glm::vec3 &position) {
 	btTransform worldTrans = mActor->getWorldTransform();
 	worldTrans.setOrigin(btConvert(position));
