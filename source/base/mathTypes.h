@@ -35,6 +35,15 @@ public:
 		maxZ = 0.0f;
 	}
 
+	BoxF(const glm::vec3 &min, const glm::vec3 &max) {
+		minX = min.x;
+		minY = min.y;
+		minZ = min.z;
+		maxX = max.x;
+		maxY = max.y;
+		maxZ = max.z;
+	}
+
 	inline glm::vec3 getMin() const {
 		return glm::vec3(minX, minY, minZ);
 	}
@@ -43,6 +52,22 @@ public:
 	}
 	inline glm::vec3 getCenter() const {
 		return (getMax() + getMin()) / 2.0f;
+	}
+
+	inline bool intersectsBox(const BoxF &box) {
+		if (box.minX > maxX)
+			return false;
+		if (box.minY > maxY)
+			return false;
+		if (box.minZ > maxZ)
+			return false;
+		if (box.maxX < minX)
+			return false;
+		if (box.maxY < minY)
+			return false;
+		if (box.maxZ < minZ)
+			return false;
+		return true;
 	}
 };
 
