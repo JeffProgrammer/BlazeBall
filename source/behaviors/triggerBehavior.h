@@ -8,6 +8,7 @@
 #define _BEHAVIORS_TRIGGERBEHAVIOR_H_
 
 #include "behaviors/behavior.h"
+#include "behaviors/behaviorConcreteClassRep.h"
 
 /**
  * A class that represents the basis for all behaviors that have
