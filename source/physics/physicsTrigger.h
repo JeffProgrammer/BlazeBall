@@ -14,6 +14,7 @@ class Trigger;
 class PhysicsTrigger : public PhysicsBody {
 public:
 	PhysicsTrigger(Trigger *trigger);
+	virtual ~PhysicsTrigger();
 
 	virtual void notifyContact(ContactCallbackInfo &info, bool isBody0) override;
 

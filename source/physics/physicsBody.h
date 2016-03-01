@@ -16,6 +16,8 @@ protected:
 	World *mWorld;
 	btCollisionObject *mActor;
 public:
+	virtual ~PhysicsBody() {}
+
 	virtual void setWorld(World *world) { mWorld = world; }
 	virtual World *getWorld() { return mWorld; }
 	

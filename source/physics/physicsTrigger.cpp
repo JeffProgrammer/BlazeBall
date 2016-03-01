@@ -40,6 +40,10 @@ PhysicsTrigger::PhysicsTrigger(Trigger *trigger) {
 	mTrigger = trigger;
 }
 
+PhysicsTrigger::~PhysicsTrigger() {
+	delete mActor;
+}
+
 void PhysicsTrigger::notifyContact(ContactCallbackInfo &info, bool isBody0) {
 	// Note: if RTII becomes to slow here, we can implement a custom integer
 	// based solution so that it is blazingly fast.
