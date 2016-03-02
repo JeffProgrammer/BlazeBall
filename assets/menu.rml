@@ -1,0 +1,10 @@
+<rml>
+<head>
+	<link type="text/css" href="menu.rcss"/>
+	<link type="text/template" href="window.rml" />
+	<title>Window</title>
+</head>
+<body template="window">
+	<p id="play" data-command="setContent" data-content="Game">Click Me</p>
+</body>
+</rml>
