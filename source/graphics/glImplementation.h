@@ -61,6 +61,7 @@ public:
 
 	void framebufferRenderBuffer(GLenum target, GLenum attachment, GLenum renderbufferTarget, GLuint renderBuffer);
 	void framebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
+	void frontFace(GLenum mode);
 
 	void genBuffers(GLsizei count, GLuint *buffers);
 	void generateMipMap(GLenum target);

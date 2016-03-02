@@ -137,6 +137,10 @@ inline void glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum text
 	GL::sGL->framebufferTexture2D(target, attachment, textarget, texture, level);
 }
 
+inline void glFrontFace(GLenum mode) {
+	GL::sGL->frontFace(mode);
+}
+
 inline void glGenBuffers(GLsizei count, GLuint *buffers) {
 	GL::sGL->genBuffers(count, buffers);
 }

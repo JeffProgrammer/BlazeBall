@@ -70,9 +70,9 @@ void Trigger::draw(Material *material, RenderInfo &info, void *userInfo) {
 
 	//Simple draw
 	glDrawArrays(GL_TRIANGLES, 0, 36); //Hardcoded count from # of verts above
-	epoxy_glFrontFace(GL_CW);
+	glFrontFace(GL_CW);
 	glDrawArrays(GL_TRIANGLES, 0, 36); //Hardcoded count from # of verts above
-	epoxy_glFrontFace(GL_CCW);
+	glFrontFace(GL_CCW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mLineBuffer);
 	shader->enableAttributes();

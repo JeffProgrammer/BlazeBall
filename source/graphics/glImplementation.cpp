@@ -135,6 +135,10 @@ void GL::framebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget
 	epoxy_glFramebufferTexture2D(target, attachment, textarget, texture, level);
 }
 
+void GL::frontFace(GLenum mode) {
+	epoxy_glFrontFace(mode);
+}
+
 void GL::genBuffers(GLsizei count, GLuint *buffers) {
 	epoxy_glGenBuffers(count, buffers);
 }
