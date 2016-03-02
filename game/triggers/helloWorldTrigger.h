@@ -28,9 +28,9 @@ public:
 	 */
 	virtual void start(ScriptObject *gameObject) override;
 
-	virtual void onEnterTrigger() override;
+	virtual void onEnterTrigger(GameObject *obj) override;
 
-	virtual void onLeaveTrigger() override;
+	virtual void onLeaveTrigger(GameObject *obj) override;
 
 	DECLARE_BEHAVIOR(HelloWorldTrigger);
 

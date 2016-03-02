@@ -142,7 +142,7 @@ void Trigger::onEnterTrigger(Sphere *collider) {
 		// THIS NEEDS TO BE CHANGED OR ELSE WE CAN EXPERIENCE A PERFORMANCE HIT!!!!!
 		TriggerBehavior *tb = dynamic_cast<TriggerBehavior*>(b);
 		if (tb != nullptr) {
-			tb->onEnterTrigger();
+			tb->onEnterTrigger(collider);
 		}
 	}
 }
@@ -156,7 +156,7 @@ void Trigger::onLeaveTrigger(Sphere *collider) {
 		// THIS NEEDS TO BE CHANGED OR ELSE WE CAN EXPERIENCE A PERFORMANCE HIT!!!!!
 		TriggerBehavior *tb = dynamic_cast<TriggerBehavior*>(b);
 		if (tb != nullptr) {
-			tb->onLeaveTrigger();
+			tb->onLeaveTrigger(collider);
 		}
 	}
 }

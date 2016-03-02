@@ -10,6 +10,8 @@
 #include "behaviors/behavior.h"
 #include "behaviors/behaviorConcreteClassRep.h"
 
+class GameObject;
+
 /**
  * A class that represents the basis for all behaviors that have
  * trigger callbacks.
@@ -21,9 +23,9 @@ public:
 		mTick = 100;
 	}
 
-	virtual void onEnterTrigger() {}
+	virtual void onEnterTrigger(GameObject *obj) {}
 
-	virtual void onLeaveTrigger() {}
+	virtual void onLeaveTrigger(GameObject *obj) {}
 
 protected:
 	F32 mTick;

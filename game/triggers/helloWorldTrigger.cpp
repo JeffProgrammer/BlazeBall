@@ -19,10 +19,10 @@ void HelloWorldTrigger::start(ScriptObject *gameObject) {
 	assert(mTrigger != nullptr);
 }
 
-void HelloWorldTrigger::onEnterTrigger() {
+void HelloWorldTrigger::onEnterTrigger(GameObject *obj) {
 	IO::printf("%s\n", mHelloMessage.c_str());
 }
 
-void HelloWorldTrigger::onLeaveTrigger() {
+void HelloWorldTrigger::onLeaveTrigger(GameObject *obj) {
 	IO::printf("%s\n", mGoodbyeMessage.c_str());
 }
