@@ -4,11 +4,14 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
+#include <sstream>
 #include "netClientEvent.h"
 #include "network/client.h"
 #include "base/io.h"
 #include "game/gameObject.h"
 #include "scriptEngine/abstractClassRep.h"
+#include "behaviors/behaviorConcreteClassRep.h"
+#include "behaviors/behavior.h"
 
 std::shared_ptr<NetClientEvent> NetClientEvent::deserialize(CharStream &data, Client *client) {
 	//Don't corrupt the stream if it's not a net event
@@ -100,6 +103,20 @@ bool NetClientGhostCreateEvent::read(CharStream &data) {
 		return false;
 	}
 
+	// Create behaviors and attach them to the object.
+	std::string name;
+	std::stringstream ss(mObject->getBehaviorString());
+	while (std::getline(ss, name, ' ')) {
+		auto behavior = BehaviorAbstractClassRep::createFromName(name);
+		if (behavior == nullptr) {
+			IO::printf("Could not create behavior named %s.\n", name.c_str());
+			continue;
+		}
+		else {
+			mObject->addBehavior(behavior);
+		}
+	}
+
 	//Read the packet from the server.
 	if (!mObject->readServerPacket(data))
 		return false;
@@ -110,6 +127,12 @@ bool NetClientGhostCreateEvent::read(CharStream &data) {
 	if (gameObject != nullptr) {
 		// add it to the scene.
 		mClient->getWorld()->addObject(gameObject);
+	}
+
+	// for each behavior, call the start method on them.
+	auto behaviors = mObject->getBehaviors();
+	for (Behavior *behavior : behaviors) {
+		behavior->start(mObject);
 	}
 
 	return true;

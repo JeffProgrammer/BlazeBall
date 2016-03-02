@@ -22,6 +22,7 @@ ScriptObject::ScriptObject() {
 	mClassRep = nullptr;
 	mWorld = nullptr;
 	mName = "";
+	mBehaviorString = "";
 
 	IO::printf("Constructed object %p\n", this);
 }

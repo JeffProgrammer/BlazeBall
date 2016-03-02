@@ -51,6 +51,14 @@ public:
 		return mBehaviors;
 	}
 
+	std::string getBehaviorString() {
+		return mBehaviorString;
+	}
+
+	void setBehaviorString(const std::string &behaviors) {
+		mBehaviorString = behaviors;
+	}
+
 	std::string mName;
 
 protected:
@@ -71,6 +79,7 @@ protected:
 	World *mWorld;
 
 	std::vector<Behavior*> mBehaviors;
+	std::string mBehaviorString;
 
 	static ConcreteClassRep<ScriptObject> sConcreteClassRep;
 	

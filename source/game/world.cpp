@@ -104,6 +104,7 @@ bool World::loadLevel(const std::string &file) {
 				continue;
 			}
 			const char *fieldName = field->name.GetString();
+			const char *fieldValue = "";
 
 			// Make sure that the field only is 1 word. If not reject it
 			if (temp___containsMoreThanOneWord(fieldName)) {
@@ -111,31 +112,43 @@ bool World::loadLevel(const std::string &file) {
 				continue;
 			}
 
+			// we allready got the class field.
+			if (stricmp(fieldName, "class") == 0)
+				continue;
+
 			if (field->value.IsArray()) {
 				// Behaviors are an array of behavior objects.
 				// we create them here.
 				if (stricmp(fieldName, "behaviors") == 0) {
+					std::string behaviorList = "";
 					for (auto name = field->value.Begin(); name != field->value.End(); ++name) {
-						const char *behaviorName = name->GetString();
+						std::string behaviorName = name->GetString();
 						auto behavior = BehaviorAbstractClassRep::createFromName(behaviorName);
 						if (behavior == nullptr) {
-							IO::printf("Could not create behavior named %s.\n", behaviorName);
+							IO::printf("Could not create behavior named %s.\n", behaviorName.c_str());
+							continue;
 						} else {
 							scriptObject->addBehavior(behavior);
 						}
+
+						// append to behavior list
+						if (behaviorList == "")
+							behaviorList = behaviorName;
+						else
+							behaviorList += " " + behaviorName;
 					}
+					
+					// set field behaviors to a list of them.
+					fieldValue = behaviorList.c_str();
+					scriptObject->setBehaviorString(fieldValue);
 				}
 			} else {
-				const char *fieldValue = field->value.GetString();
+				fieldValue = field->value.GetString();
+			}
 
-				// we allready got the class field.
-				if (stricmp(fieldName, "class") == 0)
-					continue;
-
-				//Try and set the field
-				if (!scriptObject->setField(fieldName, fieldValue)) {
-					IO::printf("Could not set class field %s on an object of type %s.\n", fieldName, klass);
-				}
+			//Try and set the field
+			if (!scriptObject->setField(fieldName, fieldValue)) {
+				IO::printf("Could not set class field %s on an object of type %s.\n", fieldName, klass);
 			}
 		}
 

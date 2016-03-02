@@ -23,10 +23,12 @@ bool NetObject::writeServerPacket(CharStream &stream) const {
 }
 
 bool NetObject::read(CharStream &stream) {
+	mBehaviorString = stream.pop<std::string>();
 	return true;
 }
 
 bool NetObject::write(CharStream &stream) const {
+	stream.push<std::string>(mBehaviorString);
 	return true;
 }
 
