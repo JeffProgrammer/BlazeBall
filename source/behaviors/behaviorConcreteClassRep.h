@@ -25,10 +25,4 @@ public:
 	}
 };
 
-#define DECLARE_BEHAVIOR(className) \
-	static BehaviorConcreteClassRep<className> sBehaviorConcreteClassRep
-
-#define IMPLEMENT_BEHAVIOR(className) \
-	BehaviorConcreteClassRep<className> className::sBehaviorConcreteClassRep(#className)
-
 #endif // _BEHAVIORS_BEHAVIORCONCRETECLASSREP_H_

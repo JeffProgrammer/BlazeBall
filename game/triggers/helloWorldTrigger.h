@@ -7,7 +7,7 @@
 #ifndef _GAMELOGIC_TRIGGERS_HELLOWORLDTRIGGER_H_
 #define _GAMELOGIC_TRIGGERS_HELLOWORLDTRIGGER_H_
 
-#include "behaviors/triggerBehavior.h"
+#include "behaviors/behaviorAPI.h"
 #include "game/trigger.h"
 
 /**
@@ -15,7 +15,7 @@
  * trigger callbacks.
  * Please derive from this class. Do not use this as your behavior.
  */
-class HelloWorldTrigger : public TriggerBehavior {
+class HelloWorldTrigger : public Behavior {
 public:
 	HelloWorldTrigger();
 

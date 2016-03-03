@@ -10,6 +10,7 @@
 #include "base/types.h"
 
 class ScriptObject;
+class GameObject;
 
 /**
  * An abstract class that represents the basis for all behaviors.
@@ -37,6 +38,22 @@ public:
 	 * @param dt The delta time between updates.
 	 */
 	virtual void update(const F64 &dt) {}
+
+	/**
+	 * Called when a game object enters the trigger.
+	 * @param obj The object that collided with the trigger.
+	 * @Note This callback will only be fired if the behavior is attached to an
+	 *  object of type Trigger.
+	 */
+	virtual void onEnterTrigger(GameObject *obj) {}
+
+	/**
+	 * Called when a game object leaves the trigger.
+	 * @param obj The object that collided with the trigger.
+	 * @Note This callback will only be fired if the behavior is attached to an
+	 *  object of type Trigger.
+	 */
+	virtual void onLeaveTrigger(GameObject *obj) {}
 };
 
 #endif // _BEHAVIORS_BEHAVIOR_H_
