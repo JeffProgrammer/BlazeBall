@@ -35,6 +35,7 @@ public:
 	virtual void bindVertexArray(GLuint array) = 0;
 	void blendFunc(GLenum sfactor, GLenum dfactor);
 	void bufferData(GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage);
+	void bufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data);
 
 	void clear(GLbitfield bitField);
 	void clearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
@@ -51,6 +52,7 @@ public:
 	void deleteTextures(GLsizei count, const GLuint *textures);
 	virtual void deleteVertexArrays(GLsizei count, const GLuint *array) = 0;
 	void depthFunc(GLenum func);
+	void depthMask(GLboolean flag);
 	void disable(GLenum cap);
 	void disableVertexAttribArray(GLuint index);
 	void drawArrays(GLenum mode, GLint first, GLsizei count);

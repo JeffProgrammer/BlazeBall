@@ -49,6 +49,10 @@ inline void glBufferData(GLenum target, GLsizeiptr size, const GLvoid *data, GLe
 	GL::sGL->bufferData(target, size, data, usage);
 }
 
+inline void glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data) {
+	GL::sGL->bufferSubData(target, offset, size, data);
+}
+
 inline void glClear(GLbitfield bitField) {
 	GL::sGL->clear(bitField);
 }
@@ -103,6 +107,10 @@ inline void glDeleteVertexArrays(GLsizei count, const GLuint *array) {
 
 inline void glDepthFunc(GLenum func) {
 	GL::sGL->depthFunc(func);
+}
+
+inline void glDepthMask(GLboolean flag) {
+	GL::sGL->depthMask(flag);
 }
 
 inline void glDisable(GLenum cap) {

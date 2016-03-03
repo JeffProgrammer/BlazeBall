@@ -51,6 +51,10 @@ void GL::bufferData(GLenum target, GLsizeiptr size, const GLvoid *data, GLenum u
 	epoxy_glBufferData(target, size, data, usage);
 }
 
+void GL::bufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data) {
+	epoxy_glBufferSubData(target, offset, size, data);
+}
+
 void GL::clear(GLbitfield bitField) {
 	epoxy_glClear(bitField);
 }
@@ -101,6 +105,10 @@ void GL::deleteTextures(GLsizei count, const GLuint *textures) {
 
 void GL::depthFunc(GLenum func) {
 	epoxy_glDepthFunc(func);
+}
+
+void GL::depthMask(GLboolean flag) {
+	epoxy_glDepthMask(flag);
 }
 
 void GL::disable(GLenum cap) {
