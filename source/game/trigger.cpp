@@ -24,6 +24,7 @@ Trigger::~Trigger() {
 	delete mMaterial;
 	
 	glDeleteBuffers(1, &mBuffer);
+	glDeleteBuffers(1, &mLineBuffer);
 }
 
 void Trigger::onAddToScene() {
