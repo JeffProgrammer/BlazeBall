@@ -6,7 +6,7 @@
 
 #include "behaviors/behaviorAbstractClassRep.h"
 
-// initialize the lined list for abstractclassrep
+// initialize the linked list for abstractclassrep
 BehaviorAbstractClassRep *BehaviorAbstractClassRep::sLast = nullptr;
 
 Behavior* BehaviorAbstractClassRep::createFromName(const std::string &name) {
