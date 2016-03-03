@@ -54,7 +54,9 @@ public:
 	void disable(GLenum cap);
 	void disableVertexAttribArray(GLuint index);
 	void drawArrays(GLenum mode, GLint first, GLsizei count);
-	void drawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices); 
+	virtual void drawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei primCount) = 0;
+	void drawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices);
+	void drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices);
 	
 	void enable(GLenum cap);
 	void enableVertexAttribArray(GLuint index);
@@ -81,6 +83,8 @@ public:
 	
 	void linkProgram(GLuint program);
 
+	void multiDrawArrays(GLenum mode, const GLint *first, const GLsizei *count, GLsizei drawCount);
+
 	void pixelStorei(GLenum pname, GLint param);
 
 	void renderbufferStorage(GLenum target, GLenum internalFormat, GLsizei width, GLsizei height);
@@ -104,6 +108,7 @@ public:
 	void useProgram(GLuint program);
 
 	void vertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+	virtual void vertexAttribDivisor(GLuint index, GLuint divisor) = 0;
 	void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
 
 /* Custom extensions*/

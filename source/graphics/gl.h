@@ -117,9 +117,17 @@ inline void glDrawArrays(GLenum mode, GLint first, GLsizei count) {
 	GL::sGL->drawArrays(mode, first, count);
 }
 
+inline void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei primCount) {
+	GL::sGL->drawArraysInstanced(mode, first, count, primCount);
+}
+
 inline void glDrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices) {
 	GL::sGL->drawElements(mode, count, type, indices);
 } 
+
+inline void glDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices) {
+	GL::sGL->drawRangeElements(mode, start, end, count, type, indices);
+}
 
 inline void glEnable(GLenum cap) {
 	GL::sGL->enable(cap);
@@ -205,6 +213,10 @@ inline void glLinkProgram(GLuint program) {
 	GL::sGL->linkProgram(program);
 }
 
+inline void glmultiDrawArrays(GLenum mode, const GLint *first, const GLsizei *count, GLsizei drawCount) {
+	GL::sGL->multiDrawArrays(mode, first, count, drawCount);
+}
+
 inline void glPixelStorei(GLenum pname, GLint param) {
 	GL::sGL->pixelStorei(pname, param);
 }
@@ -275,6 +287,10 @@ inline void glUseProgram(GLuint program) {
 
 inline void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) {
 	GL::sGL->vertexAttribPointer(index, size, type, normalized, stride, pointer);
+}
+
+inline void glVertexAttribDivisor(GLuint index, GLuint divisor) {
+	GL::sGL->vertexAttribDivisor(index, divisor);
 }
 
 inline void glViewport(GLint x, GLint y, GLsizei width, GLsizei height) {

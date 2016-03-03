@@ -20,6 +20,11 @@ void GL21::bindVertexArray(GLuint array) {
 #endif
 }
 
+void GL21::drawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei primCount) {
+	// Requires OpenGL 3.1 or Instance support
+	epoxy_glDrawArraysInstancedARB(mode, first, count, primCount);
+}
+
 void GL21::deleteVertexArrays(GLsizei count, const GLuint *array) {
 #ifdef __APPLE__
 	epoxy_glDeleteVertexArraysAPPLE(count, array);
@@ -36,4 +41,9 @@ void GL21::genVertexArrays(GLsizei count, GLuint *arrays) {
 	// Requires OpenGL 3.0 or ARB_VERTEX_ARRAY_OBJECT
 	epoxy_glGenVertexArrays(count, arrays);
 #endif
+}
+
+void GL21::vertexAttribDivisor(GLuint index, GLuint divisor) {
+	// Requires OpenGL 3.3 or ARB_INSTANCED_ARRAYS
+	epoxy_glVertexAttribDivisorARB(index, divisor);
 }

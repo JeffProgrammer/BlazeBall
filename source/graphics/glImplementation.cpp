@@ -119,6 +119,10 @@ void GL::drawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *ind
 	epoxy_glDrawElements(mode, count, type, indices);
 }
 
+void GL::drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices) {
+	epoxy_glDrawRangeElements(mode, start, end, count, type, indices);
+}
+
 void GL::enable(GLenum cap) {
 	epoxy_glEnable(cap);
 }
@@ -197,6 +201,10 @@ GLint GL::getUniformLocation(GLuint program, const GLchar *name) {
 
 void GL::linkProgram(GLuint program) {
 	epoxy_glLinkProgram(program);
+}
+
+void GL::multiDrawArrays(GLenum mode, const GLint *first, const GLsizei *count, GLsizei drawCount) {
+	epoxy_glMultiDrawArrays(mode, first, count, drawCount);
 }
 
 void GL::pixelStorei(GLenum pname, GLint param) {
