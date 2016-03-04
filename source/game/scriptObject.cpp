@@ -112,3 +112,8 @@ bool ScriptObject::setField(const std::string &name, const std::string &value) {
 	}
 	return setDynamicField(name, value);
 }
+
+void ScriptObject::update(const F64 &dt) {
+	for (auto behavior : mBehaviors)
+		behavior->update(dt);
+}

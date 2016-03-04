@@ -4,7 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#include "gameObject.h"
+#include "game/gameObject.h"
+#include "behaviors/behavior.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 IMPLEMENT_SCRIPTOBJECT(GameObject, ScriptObject);
@@ -12,9 +13,16 @@ IMPLEMENT_SCRIPTOBJECT(GameObject, ScriptObject);
 void GameObject::updateCamera(const Movement &movement, const F64 &delta) {
 	//Nothing
 }
+
 void GameObject::updateMove(const Movement &movement, const F64 &delta) {
 	//Nothing
 }
+
+void GameObject::updateTick(const F64 &dt) {
+	for (auto behavior : mBehaviors)
+		behavior->updateTick(dt);
+}
+
 void GameObject::getCameraPosition(glm::mat4 &mat, glm::vec3 &pos) {
 	mat = glm::mat4(1.0f);
 	mat = glm::translate(mat, glm::vec3(-mPosition.x, -mPosition.y, -mPosition.z));

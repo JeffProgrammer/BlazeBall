@@ -38,11 +38,19 @@ World::~World() {
 
 void World::loop(const F64 &delta) {
 	mPhysicsEngine->simulate(delta);
+
+	// Call update on all objects for their behaviors
+	for (auto object : mObjects)
+		object->update(delta);
 }
 
 void World::tick(const F64 &delta) {
 	for (auto object : mObjects) {
-		object->updateTick(delta);
+		// TODO: create custom RTII system because this will be slow as fuck
+		// TODO: should be PhysicsObject, not GameObject once we implement that.
+		auto go = dynamic_cast<GameObject*>(object);
+		if (go != nullptr)
+			go->updateTick(delta);
 	}
 }
 
@@ -51,7 +59,7 @@ GameObject* World::findGameObject(const std::string &name) {
 	// TODO: store objects in a hash map or something.
 	for (const auto obj : mObjects) {
 		if (obj->getName() == name)
-			return obj;
+			return dynamic_cast<GameObject*>(obj);
 	}
 	return nullptr;
 }

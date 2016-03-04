@@ -59,6 +59,8 @@ public:
 		mBehaviorString = behaviors;
 	}
 
+	virtual void update(const F64 &dt);
+
 	std::string mName;
 
 protected:

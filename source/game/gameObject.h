@@ -123,7 +123,7 @@ public:
 	 * @param delta The delta, in seconds, between physics ticks.
 	 * @note Called at a fixed timestep.
 	 */
-	virtual void updateTick(const F64 &delta) {}
+	virtual void updateTick(const F64 &delta);
 
 	/**
 	 * A callback that is called when the object is added to the scene.

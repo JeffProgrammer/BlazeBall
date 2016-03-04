@@ -40,6 +40,12 @@ public:
 	virtual void update(const F64 &dt) {}
 
 	/**
+	 * Called whenever the physics engine ticks.
+	 * @param dt The time delta between each physics tick.
+	 */
+	virtual void updateTick(const F64 &dt) {}
+
+	/**
 	 * Called when a game object enters the trigger.
 	 * @param obj The object that collided with the trigger.
 	 * @Note This callback will only be fired if the behavior is attached to an

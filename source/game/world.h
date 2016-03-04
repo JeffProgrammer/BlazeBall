@@ -16,7 +16,7 @@
 class GameObject;
 class World : public ScriptObject {
 protected:
-	std::vector<GameObject *> mObjects;
+	std::vector<ScriptObject *> mObjects;
 	PhysicsEngine *mPhysicsEngine;
 
 	bool mRunning;
@@ -43,7 +43,7 @@ public:
 	
 	bool loadLevel(const std::string &file);
 
-	const std::vector<GameObject *> &getObjectList() { return mObjects; }
+	const std::vector<ScriptObject *> &getObjectList() { return mObjects; }
 	GameObject *findGameObject(const std::string &name);
 	virtual void addObject(GameObject *object);
 

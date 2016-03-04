@@ -36,7 +36,9 @@ void Server::start() {
 	IO::printf("Starting server process...\n");
 
 	for (const auto &object : mWorld->getObjectList()) {
-		addGhostedObject(object);
+		auto netObject = dynamic_cast<NetObject*>(object);
+		if (netObject != nullptr)
+			addGhostedObject(netObject);
 	}
 
 	enetpp::server_listen_params<ClientConnection> params;
