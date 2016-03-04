@@ -46,9 +46,13 @@ void Renderer::render(const F64 &delta) {
 		}
 	}
 
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	// render GUI
 	mRocketContext->Render();
 	mRocketContext->Update();
+
+	GL_CHECKERRORS();
 
 	//Flip buffers
 	mWindow->swapBuffers();
@@ -107,6 +111,7 @@ bool Renderer::initGL() {
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LESS);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 

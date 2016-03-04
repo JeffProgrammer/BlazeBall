@@ -14,7 +14,7 @@ void main() {
 	// Check to make sure that we have a texture that we are rendering.
 	// If not, just output the color to the fragment.
 	if (inHasTexture == 1)
-		gl_FragColor = texture2D(inTextureSampler, outUV) * outColor;
+		gl_FragColor = texture2D(inTextureSampler, outUV);
 	else
 		gl_FragColor = outColor;
 }
