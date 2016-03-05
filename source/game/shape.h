@@ -58,10 +58,13 @@ protected:
 	DECLARE_SCRIPTOBJECT(Shape);
 
 public:
-	Shape(const std::string &shapeFile);
+	Shape();
 	virtual ~Shape();
 	virtual void updateTick(const F64 &delta) override;
 	virtual void render(RenderInfo &info) override;
+
+	virtual bool read(CharStream &stream) override;
+	virtual bool write(CharStream &stream) const override;
 
 	void loadShape();
 	void draw(Material *material, ::RenderInfo &info, void *userData);

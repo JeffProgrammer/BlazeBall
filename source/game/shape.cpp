@@ -21,8 +21,7 @@
 
 IMPLEMENT_SCRIPTOBJECT(Shape, RenderedObject);
 
-Shape::Shape(const std::string &shapeFile) : RenderedObject() {
-	mShapeFile = shapeFile;
+Shape::Shape() {
 	mGenerated = false;
 
 	char buffer[512]; // If your path is longer than this, then FUCK YOU
@@ -55,6 +54,23 @@ void Shape::render(RenderInfo &info) {
 		data->vbo = mesh.vbo;
 		info.addRenderMethod(mesh.material, RenderInfo::RenderMethod::from_method<Shape, &Shape::draw>(this), data);
 	}
+}
+
+bool Shape::read(CharStream &stream) {
+	if (!Parent::read(stream)) {
+		return false;
+	}
+
+	mShapeFile = stream.pop<std::string>();
+	return true;
+}
+bool Shape::write(CharStream &stream) const {
+	if (!Parent::write(stream)) {
+		return false;
+	}
+
+	stream.push<std::string>(mShapeFile);
+	return true;
 }
 
 void Shape::draw(Material *material, ::RenderInfo &info, void *userData) {
@@ -229,6 +245,7 @@ bool Shape::_generateMaterial(const ModelScene *scene, const aiMesh *mesh, Mater
 	std::string specularFile = Texture::find(directory + DIR_SEP + specularName);
 
 	material = new Material(diffuseFile, normalFile, specularFile);
+	material->setShader(Shader::getShaderByName("Model"));
 	return true;
 }
 
