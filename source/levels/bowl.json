@@ -27,5 +27,11 @@
 		"behaviors": [
 			"HelloWorldTrigger"
 		]
+	},
+	{
+		"class": "Shape",
+		"position": "5 5 0",
+		"scale": "1 1 1",
+		"shapeFile": "cube.dae"
 	}
 ]
