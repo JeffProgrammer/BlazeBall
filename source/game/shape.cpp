@@ -19,6 +19,8 @@
 #include <unistd.h>
 #endif
 
+IMPLEMENT_SCRIPTOBJECT(Shape, RenderedObject);
+
 Shape::Shape(const std::string &shapeFile) : RenderedObject() {
 	mShapeFile = shapeFile;
 	mGenerated = false;
@@ -228,4 +230,8 @@ bool Shape::_generateMaterial(const ModelScene *scene, const aiMesh *mesh, Mater
 
 	material = new Material(diffuseFile, normalFile, specularFile);
 	return true;
+}
+
+void Shape::initFields() {
+	AddField(Shape::mShapeFile, "shapeFile");
 }

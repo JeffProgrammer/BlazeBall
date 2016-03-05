@@ -55,6 +55,8 @@ protected:
 		GLuint ibo;
 	};
 
+	DECLARE_SCRIPTOBJECT(Shape);
+
 public:
 	Shape(const std::string &shapeFile);
 	virtual ~Shape();
@@ -79,6 +81,8 @@ public:
 	const std::string& getShapeFile() const {
 		return mShapeFile;
 	}
+
+	static void initFields();
 
 	template<typename To, typename From>
 	To assimpCast(const From &vec);
