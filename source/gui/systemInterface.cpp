@@ -134,6 +134,7 @@ Rocket::Core::Input::KeyIdentifier GuiInterface::translateKey(KeyEvent::Key key)
 		case KeyEvent::KEY_F22: return Rocket::Core::Input::KI_F22;
 		case KeyEvent::KEY_F23: return Rocket::Core::Input::KI_F23;
 		case KeyEvent::KEY_F24: return Rocket::Core::Input::KI_F24;
+		case KeyEvent::KEY_ESCAPE: return Rocket::Core::Input::KI_ESCAPE;
 		case KeyEvent::KEY_SCROLLLOCK: return Rocket::Core::Input::KI_SCROLL;
 		case KeyEvent::KEY_RSHIFT: return Rocket::Core::Input::KI_RSHIFT;
 		case KeyEvent::KEY_LCTRL: return Rocket::Core::Input::KI_LCONTROL;

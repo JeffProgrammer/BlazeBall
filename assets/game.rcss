@@ -34,3 +34,13 @@ body {
 	height: 100%;
 	display: block;
 }
+#pauseScreen {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+}
+.hidden {
+	display: none;
+}

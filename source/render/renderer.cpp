@@ -199,12 +199,6 @@ void Renderer::handleEvent(PlatformEvent *event) {
 //					mDoDebugDraw = !mDoDebugDraw;
 					break;
 				}
-				case KeyEvent::KEY_ESCAPE:
-				{
-					mWindow->lockCursor(false);
-					mCaptureMouse = false;
-					break;
-				}
 				default:
 					break;
 			}
