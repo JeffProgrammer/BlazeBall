@@ -61,6 +61,20 @@ protected:
 	/// @param OUT material The material object that will be used for this mesh, or nullptr if failure.
 	/// @return true if the materials could be created, false if the material could not be created.
 	bool _generateMaterial(const aiMesh *mesh, Material *&material);
+
+	template<typename To, typename From>
+	To assimpCast(const From &vec);
 };
+
+template<>
+inline glm::vec3 MeshResource::assimpCast(const aiVector3D &vec) {
+	return glm::vec3(vec.x, vec.y, vec.z);
+}
+
+template<>
+inline glm::vec2 MeshResource::assimpCast(const aiVector2D &vec) {
+	return glm::vec2(vec.x, vec.y);
+}
+
 
 #endif // _RESOURCE_MESHRESOURCE_H_
