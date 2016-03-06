@@ -35,9 +35,22 @@ public:
 	GuiDocument(const std::string &name, Renderer *renderer, Rocket::Core::ElementDocument *document);
 	virtual ~GuiDocument();
 
+	/**
+	 * Callback for the document when it becomes current
+	 */
 	virtual void onWake() {}
+	/**
+	 * Callback for the document when another document becomes current
+	 */
 	virtual void onSleep() {}
-
+	/**
+	 * Callback for the document immediately before it is rendered.
+	 */
+	virtual void onRender() {}
+	/**
+	 * Callback for the document when an event is received
+	 * @param event The event from Rocket
+	 */
 	virtual void onEvent(Rocket::Core::Event &event) {}
 
 	Rocket::Core::ElementDocument *getDocument() { return mDocument; }

@@ -47,6 +47,9 @@ void Renderer::render(const F64 &delta) {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	//Update GUI before render
+	mCurrentDocument->onRender();
+
 	// render GUI
 	mRocketContext->Render();
 	mRocketContext->Update();
