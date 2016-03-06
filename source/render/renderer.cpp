@@ -236,7 +236,7 @@ void Renderer::handleEvent(PlatformEvent *event) {
 				mClient->getMovement().yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x;
 				mClient->getMovement().pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y;
 			} else {
-				mRocketContext->ProcessMouseMove(static_cast<MouseMoveEvent *>(event)->position.x, static_cast<MouseMoveEvent *>(event)->position.x, 0);
+				mRocketContext->ProcessMouseMove(static_cast<MouseMoveEvent *>(event)->position.x, static_cast<MouseMoveEvent *>(event)->position.y, 0);
 			}
 			break;
 		case PlatformEvent::MouseDown:
