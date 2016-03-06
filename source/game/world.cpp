@@ -8,6 +8,8 @@
 
 #include <rapidjson/document.h>
 #include "game/gameObject.h"
+#include "behaviors/behaviorConcreteClassRep.h"
+#include "behaviors/behavior.h"
 
 #ifdef __APPLE__
 #define stricmp strcasecmp
@@ -36,11 +38,19 @@ World::~World() {
 
 void World::loop(const F64 &delta) {
 	mPhysicsEngine->simulate(delta);
+
+	// Call update on all objects for their behaviors
+	for (auto object : mObjects)
+		object->update(delta);
 }
 
 void World::tick(const F64 &delta) {
 	for (auto object : mObjects) {
-		object->updateTick(delta);
+		// TODO: create custom RTII system because this will be slow as fuck
+		// TODO: should be PhysicsObject, not GameObject once we implement that.
+		auto go = dynamic_cast<GameObject*>(object);
+		if (go != nullptr)
+			go->updateTick(delta);
 	}
 }
 
@@ -49,7 +59,7 @@ GameObject* World::findGameObject(const std::string &name) {
 	// TODO: store objects in a hash map or something.
 	for (const auto obj : mObjects) {
 		if (obj->getName() == name)
-			return obj;
+			return dynamic_cast<GameObject*>(obj);
 	}
 	return nullptr;
 }
@@ -102,7 +112,7 @@ bool World::loadLevel(const std::string &file) {
 				continue;
 			}
 			const char *fieldName = field->name.GetString();
-			const char *fieldValue = field->value.GetString();
+			const char *fieldValue = "";
 
 			// Make sure that the field only is 1 word. If not reject it
 			if (temp___containsMoreThanOneWord(fieldName)) {
@@ -114,10 +124,39 @@ bool World::loadLevel(const std::string &file) {
 			if (stricmp(fieldName, "class") == 0)
 				continue;
 
+			if (field->value.IsArray()) {
+				// Behaviors are an array of behavior objects.
+				// we create them here.
+				if (stricmp(fieldName, "behaviors") == 0) {
+					std::string behaviorList = "";
+					for (auto name = field->value.Begin(); name != field->value.End(); ++name) {
+						std::string behaviorName = name->GetString();
+						auto behavior = BehaviorAbstractClassRep::createFromName(behaviorName);
+						if (behavior == nullptr) {
+							IO::printf("Could not create behavior named %s.\n", behaviorName.c_str());
+							continue;
+						} else {
+							scriptObject->addBehavior(behavior);
+						}
+
+						// append to behavior list
+						if (behaviorList == "")
+							behaviorList = behaviorName;
+						else
+							behaviorList += " " + behaviorName;
+					}
+					
+					// set field behaviors to a list of them.
+					fieldValue = behaviorList.c_str();
+					scriptObject->setBehaviorString(fieldValue);
+				}
+			} else {
+				fieldValue = field->value.GetString();
+			}
+
 			//Try and set the field
 			if (!scriptObject->setField(fieldName, fieldValue)) {
 				IO::printf("Could not set class field %s on an object of type %s.\n", fieldName, klass);
-				continue;
 			}
 		}
 
@@ -127,6 +166,12 @@ bool World::loadLevel(const std::string &file) {
 		if (gameObject != nullptr) {
 			// add it to the scene.
 			addObject(gameObject);
+		}
+
+		// for each behavior, call the start method on them.
+		auto behaviors = scriptObject->getBehaviors();
+		for (Behavior *behavior : behaviors) {
+			behavior->start(scriptObject);
 		}
 	}
 

@@ -49,6 +49,10 @@ inline void glBufferData(GLenum target, GLsizeiptr size, const GLvoid *data, GLe
 	GL::sGL->bufferData(target, size, data, usage);
 }
 
+inline void glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data) {
+	GL::sGL->bufferSubData(target, offset, size, data);
+}
+
 inline void glClear(GLbitfield bitField) {
 	GL::sGL->clear(bitField);
 }
@@ -105,6 +109,10 @@ inline void glDepthFunc(GLenum func) {
 	GL::sGL->depthFunc(func);
 }
 
+inline void glDepthMask(GLboolean flag) {
+	GL::sGL->depthMask(flag);
+}
+
 inline void glDisable(GLenum cap) {
 	GL::sGL->disable(cap);
 }
@@ -117,9 +125,17 @@ inline void glDrawArrays(GLenum mode, GLint first, GLsizei count) {
 	GL::sGL->drawArrays(mode, first, count);
 }
 
+inline void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei primCount) {
+	GL::sGL->drawArraysInstanced(mode, first, count, primCount);
+}
+
 inline void glDrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices) {
 	GL::sGL->drawElements(mode, count, type, indices);
 } 
+
+inline void glDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices) {
+	GL::sGL->drawRangeElements(mode, start, end, count, type, indices);
+}
 
 inline void glEnable(GLenum cap) {
 	GL::sGL->enable(cap);
@@ -135,6 +151,10 @@ inline void glFramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum r
 
 inline void glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) {
 	GL::sGL->framebufferTexture2D(target, attachment, textarget, texture, level);
+}
+
+inline void glFrontFace(GLenum mode) {
+	GL::sGL->frontFace(mode);
 }
 
 inline void glGenBuffers(GLsizei count, GLuint *buffers) {
@@ -199,6 +219,10 @@ inline GLint glGetUniformLocation(GLuint program, const GLchar *name) {
 
 inline void glLinkProgram(GLuint program) {
 	GL::sGL->linkProgram(program);
+}
+
+inline void glmultiDrawArrays(GLenum mode, const GLint *first, const GLsizei *count, GLsizei drawCount) {
+	GL::sGL->multiDrawArrays(mode, first, count, drawCount);
 }
 
 inline void glPixelStorei(GLenum pname, GLint param) {
@@ -271,6 +295,10 @@ inline void glUseProgram(GLuint program) {
 
 inline void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) {
 	GL::sGL->vertexAttribPointer(index, size, type, normalized, stride, pointer);
+}
+
+inline void glVertexAttribDivisor(GLuint index, GLuint divisor) {
+	GL::sGL->vertexAttribDivisor(index, divisor);
 }
 
 inline void glViewport(GLint x, GLint y, GLsizei width, GLsizei height) {

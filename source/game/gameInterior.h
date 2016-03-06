@@ -11,6 +11,7 @@
 #include "base/types.h"
 #include "render/material.h"
 #include "physics/physicsEngine.h"
+#include "physics/physicsInterior.h"
 #include "game/gameObject.h"
 #include "renderedObject.h"
 
@@ -26,7 +27,7 @@ protected:
 	std::vector<Material*> mMaterialList;
 	Texture *mNoiseTexture;
 
-	PhysicsBody *mActor;
+	PhysicsInterior *mActor;
 	
 	struct RenderInfo {
 		std::vector<U32> numMaterialTriangles;

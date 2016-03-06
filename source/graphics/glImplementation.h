@@ -35,6 +35,7 @@ public:
 	virtual void bindVertexArray(GLuint array) = 0;
 	void blendFunc(GLenum sfactor, GLenum dfactor);
 	void bufferData(GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage);
+	void bufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data);
 
 	void clear(GLbitfield bitField);
 	void clearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
@@ -51,16 +52,20 @@ public:
 	void deleteTextures(GLsizei count, const GLuint *textures);
 	virtual void deleteVertexArrays(GLsizei count, const GLuint *array) = 0;
 	void depthFunc(GLenum func);
+	void depthMask(GLboolean flag);
 	void disable(GLenum cap);
 	void disableVertexAttribArray(GLuint index);
 	void drawArrays(GLenum mode, GLint first, GLsizei count);
-	void drawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices); 
+	virtual void drawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei primCount) = 0;
+	void drawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices);
+	void drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices);
 	
 	void enable(GLenum cap);
 	void enableVertexAttribArray(GLuint index);
 
 	void framebufferRenderBuffer(GLenum target, GLenum attachment, GLenum renderbufferTarget, GLuint renderBuffer);
 	void framebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
+	void frontFace(GLenum mode);
 
 	void genBuffers(GLsizei count, GLuint *buffers);
 	void generateMipMap(GLenum target);
@@ -79,6 +84,8 @@ public:
 	GLint getUniformLocation(GLuint program, const GLchar *name);
 	
 	void linkProgram(GLuint program);
+
+	void multiDrawArrays(GLenum mode, const GLint *first, const GLsizei *count, GLsizei drawCount);
 
 	void pixelStorei(GLenum pname, GLint param);
 
@@ -103,6 +110,7 @@ public:
 	void useProgram(GLuint program);
 
 	void vertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+	virtual void vertexAttribDivisor(GLuint index, GLuint divisor) = 0;
 	void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
 
 /* Custom extensions*/

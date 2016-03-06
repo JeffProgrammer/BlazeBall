@@ -7,9 +7,9 @@
 #ifndef _GAME_PHYSICS_BULLET_BTPHYSICSINTERIOR_H_
 #define _GAME_PHYSICS_BULLET_BTPHYSICSINTERIOR_H_
 
-#include "btPhysicsBody.h"
+#include "physics/physicsRigidBody.h"
 
-class btPhysicsInterior : public btPhysicsBody {
+class PhysicsInterior : public PhysicsRigidBody {
 public:
 	struct TriangleInfo {
 		U32 surfaceIndex;
@@ -22,7 +22,7 @@ public:
 	GameInterior *getInterior() { return mInterior; }
 
 	const TriangleInfo &getTriangleInfo(const U32 &triangleIndex) { return mTriangleLookup[triangleIndex]; }
-	btPhysicsInterior(GameInterior *interior);
+	PhysicsInterior(GameInterior *interior);
 	void construct();
 };
 

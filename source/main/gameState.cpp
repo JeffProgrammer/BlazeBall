@@ -27,7 +27,7 @@ void GameState::parseArgs(int argc, const char **argv) {
 
 bool GameState::start() {
 	if (runServer) {
-		serverWorld = new World(platform->createPhysicsEngine());
+		serverWorld = new World(new PhysicsEngine());
 		server = new Server(serverWorld);
 		serverWorld->loadLevel("bowl.json");
 		server->start();
@@ -35,7 +35,7 @@ bool GameState::start() {
 
 	if (runClient) {
 		//Create us a new scene
-		RenderWorld *world = new RenderWorld(platform->createPhysicsEngine());
+		RenderWorld *world = new RenderWorld(new PhysicsEngine());
 		client = new Client(world, serverAddress, 28000);
 
 		world->setClient(client);

@@ -13,13 +13,15 @@
 #include "platform/platformGL.h"
 #include "gameObject.h"
 #include "base/types.h"
-#include "physics/physicsBody.h"
+#include "physics/physicsSphere.h"
 #include "render/material.h"
 #include "game/movement.h"
 #include "renderedObject.h"
 #include "render/texture/cubeMapFramebufferTexture.h"
 
 class Sphere : public RenderedObject {
+	friend class PhysicsSphere;
+
 	const F32 AppliedAcceleration = 750.f; //Maximum, lowers when reaching max roll velocity
 	const F32 MaxRollVelocity     = 15.f; //In one direction (diagonal-supported)
 	const F32 MaxAirSpinVelocity  = 50.f; //Same as above but for angular, only when falling
@@ -28,7 +30,7 @@ class Sphere : public RenderedObject {
 	const F32 LinearRollDamping   = 0.025f; // 97.5% of original
 
 protected:
-	PhysicsBody *mActor;
+	PhysicsSphere *mActor;
 	F32 mMaxAngVel;
 	Material *mMaterial;
 	Movement mMovement;
@@ -73,6 +75,7 @@ public:
 	glm::vec3 getTorque() const;
 	F32 getRadius() const;
 	F32 getMass() const;
+	BoxF getWorldBox() const { if (!mActor) return BoxF();  return mActor->getWorldBox(); };
 
 	virtual void setPosition(const glm::vec3 &pos) override;
 	virtual void setRotation(const glm::quat &rot) override;

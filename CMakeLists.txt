@@ -57,6 +57,7 @@ endif()
 # Includes for main project
 set (DIFVIEWERGAME_INCLUDEDIR
 	source
+	game
 	thirdparty/bullet
 	thirdparty/bullet/src
 	thirdparty/glm
@@ -98,6 +99,14 @@ set (DIFVIEWERGAME_SRC
 	source/base/types.h
 	source/base/math/triangle.h
 
+	# Behavior folder
+	source/behaviors/behavior.cpp
+	source/behaviors/behavior.h
+	source/behaviors/behaviorAbstractClassRep.cpp
+	source/behaviors/behaviorAbstractClassRep.h
+	source/behaviors/behaviorAPI.h
+	source/behaviors/behaviorConcreteClassRep.h
+	
 	# Game folder
 	source/game/camera.cpp
 	source/game/camera.h
@@ -116,6 +125,8 @@ set (DIFVIEWERGAME_SRC
 	source/game/skybox.h
 	source/game/sphere.cpp
 	source/game/sphere.h
+	source/game/trigger.cpp
+	source/game/trigger.h
 	source/game/world.cpp
 	source/game/world.h
 
@@ -176,20 +187,14 @@ set (DIFVIEWERGAME_SRC
 	source/physics/physicsBody.h
 	source/physics/physicsEngine.cpp
 	source/physics/physicsEngine.h
+	source/physics/physicsInterior.cpp
+	source/physics/physicsInterior.h
+	source/physics/physicsRigidBody.cpp
+	source/physics/physicsRigidBody.h	
 	source/physics/physicsSphere.cpp
 	source/physics/physicsSphere.h
-
-	# Bullet physics
-	source/physics/bullet/btPhysicsBody.cpp
-	source/physics/bullet/btPhysicsBody.h
-	source/physics/bullet/btPhysicsEngine.cpp
-	source/physics/bullet/btPhysicsEngine.h
-	source/physics/bullet/btPhysicsInterior.cpp
-	source/physics/bullet/btPhysicsInterior.h
-	source/physics/bullet/btPhysicsSphere.cpp
-	source/physics/bullet/btPhysicsSphere.h
-	source/physics/bullet/btDebugDrawer.cpp
-	source/physics/bullet/btDebugDrawer.h
+	source/physics/physicsTrigger.cpp
+	source/physics/physicsTrigger.h
 
 	# Platform folder
 	source/platform/platform.h
@@ -223,6 +228,7 @@ set (DIFVIEWERGAME_SRC
 	source/render/shader.cpp
 	source/render/shader.h
 	source/render/shaderImpl.cpp
+	source/render/triggerData.h
 	source/render/util.h
 
 	# Bitmap folder
@@ -264,6 +270,10 @@ set (DIFVIEWERGAME_SRC
 	source/shaders/skyboxV.glsl
 	source/shaders/sphereF.glsl
 	source/shaders/sphereV.glsl
+	
+	# Game Logic stuff
+	game/triggers/helloWorldTrigger.cpp
+	game/triggers/helloWorldTrigger.h
 )
 
 if (APPLE)
@@ -352,6 +362,7 @@ source_group("main"                  REGULAR_EXPRESSION main/.*)
 source_group("render"                REGULAR_EXPRESSION render/.*)
 source_group("base"                  REGULAR_EXPRESSION base/.*)
 source_group("base\\math"            REGULAR_EXPRESSION base/math/.*)
+source_group("behaviors"             REGULAR_EXPRESSION behaviors/.*)
 source_group("render\\bitmap"        REGULAR_EXPRESSION bitmap/.*)
 source_group("game"                  REGULAR_EXPRESSION game/.*)
 source_group("objects"               REGULAR_EXPRESSION objects/.*)
@@ -371,6 +382,8 @@ source_group("gui\\elements"         REGULAR_EXPRESSION gui/elements/.*)
 source_group("graphics"              REGULAR_EXPRESSION graphics/.*)
 source_group("graphics\\GL21"        REGULAR_EXPRESSION graphics/GL21/.*)
 source_group("graphics\\GL33"        REGULAR_EXPRESSION graphics/GL33/.*)
+
+source_group("gameLogic\\triggers"   REGULAR_EXPRESSION game/triggers/.*)
 
 set_property(TARGET Game PROPERTY COMPILE_FLAGS "")
 target_link_libraries(Game ${DIFVIEWERGAME_LIBRARIES})

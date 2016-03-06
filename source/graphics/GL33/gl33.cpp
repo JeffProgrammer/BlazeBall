@@ -15,10 +15,18 @@ void GL33::bindVertexArray(GLuint array) {
 	epoxy_glBindVertexArray(array);
 }
 
+void GL33::drawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei primCount) {
+	epoxy_glDrawArraysInstanced(mode, first, count, primCount);
+}
+
 void GL33::deleteVertexArrays(GLsizei count, const GLuint *array) {
 	epoxy_glDeleteVertexArrays(count, array);
 }
 
 void GL33::genVertexArrays(GLsizei count, GLuint *arrays) {
 	epoxy_glGenVertexArrays(count, arrays);
+}
+
+void GL33::vertexAttribDivisor(GLuint index, GLuint divisor) {
+	epoxy_glVertexAttribDivisor(index, divisor);
 }

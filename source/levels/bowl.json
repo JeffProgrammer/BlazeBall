@@ -19,5 +19,19 @@
 		"face3": "cubemap/sky3.jpg",
 		"face4": "cubemap/sky4.jpg",
 		"face5": "cubemap/sky5.jpg"
+	},
+	{
+		"class": "Trigger",
+		"position": "0 0 -20",
+		"scale": "50 50 50",
+		"behaviors": [
+			"HelloWorldTrigger"
+		]
+	},
+	{
+		"class": "Shape",
+		"position": "5 5 0",
+		"scale": "1 1 1",
+		"shapeFile": "cube.dae"
 	}
 ]

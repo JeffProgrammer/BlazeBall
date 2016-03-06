@@ -106,11 +106,13 @@ void Sphere::draw(Material *material, RenderInfo &info, void *userInfo) {
 
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
 	material->getShader()->enableAttributes();
+	material->activate();
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
 
 	material->getShader()->disableAttributes();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	material->deactivate();
 }
 
 void Sphere::render(RenderInfo &info) {
@@ -143,11 +145,11 @@ void Sphere::applyForce(const glm::vec3 &force, const glm::vec3 &origin) {
 }
 
 bool Sphere::getColliding() {
-	return dynamic_cast<PhysicsSphere *>(mActor)->getColliding();
+	return mActor->getColliding();
 }
 
 glm::vec3 Sphere::getCollisionNormal(glm::vec3 &toiVelocity) {
-	return dynamic_cast<PhysicsSphere *>(mActor)->getCollisionNormal(toiVelocity);
+	return mActor->getCollisionNormal(toiVelocity);
 }
 
 glm::vec3 Sphere::getPosition() const {
@@ -408,7 +410,7 @@ void Sphere::updateTick(const F64 &delta) {
 }
 
 void Sphere::onAddToScene() {
-	mActor = mWorld->getPhysicsEngine()->createSphere(mRadius);
+	mActor = new PhysicsSphere(this, mRadius);
 	mActor->setPosition(mPosition);
 	mActor->setMass(mMass);
 	mActor->setWorld(mWorld);

@@ -14,8 +14,10 @@ public:
 	GL33();
 
 	virtual void bindVertexArray(GLuint array) override;
+	virtual void drawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei primCount) override;
 	virtual void deleteVertexArrays(GLsizei count, const GLuint *array) override;
 	virtual void genVertexArrays(GLsizei count, GLuint *arrays) override;
+	virtual void vertexAttribDivisor(GLuint index, GLuint divisor) override;
 };
 
 #endif // _GRAPHICS_GL33_GL33_H_

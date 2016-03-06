@@ -14,31 +14,11 @@
 
 class Platform {
 public:
-	struct PhysicsEngineFactory {
-		virtual PhysicsEngine *createPhysicsEngine() = 0;
-	};
-
-protected:
-	std::unique_ptr<PhysicsEngineFactory> mPhysicsFactory;
-
-public:
-	Platform(std::unique_ptr<PhysicsEngineFactory> &&physFactory) {
-		mPhysicsFactory = std::move(physFactory);
-	}
+	Platform() {}
 	virtual ~Platform() {}
 
 	virtual PlatformTimer *createTimer() = 0;
 	virtual PlatformWindow *createWindow() = 0;
-	PhysicsEngine *createPhysicsEngine() {
-		return mPhysicsFactory->createPhysicsEngine();
-	}
-
-	template<typename T>
-	struct ConcretePhysicsEngineFactory : public PhysicsEngineFactory {
-		virtual PhysicsEngine *createPhysicsEngine() {
-			return new T();
-		}
-	};
 };
 
 namespace PlatformEx {

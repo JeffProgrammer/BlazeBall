@@ -45,7 +45,8 @@ void Shader::initializeShaders() {
 
 	//TODO: Have a config somewhere load all of these and init these values
 	Shader *shapeShader = new Shader("Model", "modelV.glsl", "modelF.glsl");
-	//TODO: Shapes
+	shapeShader->addAttribute(ATTRIBUTE_POSITION_NAME, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
+	shapeShader->addAttribute(ATTRIBUTE_UV_NAME, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
 	shapeShader->addUniformLocation(SAMPLER_TEXTURE_NAME, 0);
 	//	shapeShader->addUniformLocation(SAMPLER_NORMAL_NAME, 1);
 	//	shapeShader->addUniformLocation(SAMPLER_SPECULAR_NAME, 2);
@@ -59,4 +60,9 @@ void Shader::initializeShaders() {
 	postFXShader->addUniformLocation(SAMPLER_TEXTURE_NAME, 0);
 	postFXShader->addUniformLocation(SAMPLER_DEPTH_NAME,   1);
 	postFXShader->addAttribute(ATTRIBUTE_POSITION_NAME, 3, GL_FLOAT, GL_FALSE);
+
+	// Trigger shader
+	Shader *triggerShader = new Shader("Trigger", "triggerV.glsl", "triggerF.glsl");
+	triggerShader->addAttribute(ATTRIBUTE_POSITION_NAME, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
 }

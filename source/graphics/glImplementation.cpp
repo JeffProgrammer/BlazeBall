@@ -51,6 +51,10 @@ void GL::bufferData(GLenum target, GLsizeiptr size, const GLvoid *data, GLenum u
 	epoxy_glBufferData(target, size, data, usage);
 }
 
+void GL::bufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data) {
+	epoxy_glBufferSubData(target, offset, size, data);
+}
+
 void GL::clear(GLbitfield bitField) {
 	epoxy_glClear(bitField);
 }
@@ -103,6 +107,10 @@ void GL::depthFunc(GLenum func) {
 	epoxy_glDepthFunc(func);
 }
 
+void GL::depthMask(GLboolean flag) {
+	epoxy_glDepthMask(flag);
+}
+
 void GL::disable(GLenum cap) {
 	epoxy_glDisable(cap);
 }
@@ -119,6 +127,10 @@ void GL::drawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *ind
 	epoxy_glDrawElements(mode, count, type, indices);
 }
 
+void GL::drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices) {
+	epoxy_glDrawRangeElements(mode, start, end, count, type, indices);
+}
+
 void GL::enable(GLenum cap) {
 	epoxy_glEnable(cap);
 }
@@ -133,6 +145,10 @@ void GL::framebufferRenderBuffer(GLenum target, GLenum attachment, GLenum render
 
 void GL::framebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) {
 	epoxy_glFramebufferTexture2D(target, attachment, textarget, texture, level);
+}
+
+void GL::frontFace(GLenum mode) {
+	epoxy_glFrontFace(mode);
 }
 
 void GL::genBuffers(GLsizei count, GLuint *buffers) {
@@ -193,6 +209,10 @@ GLint GL::getUniformLocation(GLuint program, const GLchar *name) {
 
 void GL::linkProgram(GLuint program) {
 	epoxy_glLinkProgram(program);
+}
+
+void GL::multiDrawArrays(GLenum mode, const GLint *first, const GLsizei *count, GLsizei drawCount) {
+	epoxy_glMultiDrawArrays(mode, first, count, drawCount);
 }
 
 void GL::pixelStorei(GLenum pname, GLint param) {

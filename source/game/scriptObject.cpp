@@ -7,6 +7,7 @@
 #include "game/scriptObject.h"
 #include "scriptEngine/abstractClassRep.h"
 #include "scriptEngine/concreteClassRep.h"
+#include "behaviors/behavior.h"
 #include "game/world.h"
 
 #ifdef __APPLE__
@@ -21,11 +22,16 @@ ScriptObject::ScriptObject() {
 	mClassRep = nullptr;
 	mWorld = nullptr;
 	mName = "";
+	mBehaviorString = "";
 
 	IO::printf("Constructed object %p\n", this);
 }
 
 ScriptObject::~ScriptObject() {
+	// Cleanup is called here on all behaviors
+	for (auto *behavior : mBehaviors)
+		behavior->cleanup();
+
 	IO::printf("Destructed object %p\n", this);
 }
 
@@ -105,4 +111,9 @@ bool ScriptObject::setField(const std::string &name, const std::string &value) {
 		return setMemberField(name, value);
 	}
 	return setDynamicField(name, value);
+}
+
+void ScriptObject::update(const F64 &dt) {
+	for (auto behavior : mBehaviors)
+		behavior->update(dt);
 }

@@ -76,10 +76,19 @@ struct RenderInfo {
 	typedef delegate<void, Material *, RenderInfo &> RenderMethod;
 	typedef delegate<void, RenderInfo &> RenderWorldMethod;
 #endif
-	std::unordered_map<Material *, std::vector<std::pair<RenderMethod, void *>>> renderMethods;
+
+	enum RenderOrderPosition {
+		Skybox,
+		Mesh,
+		Shape,
+		Debug,
+		MaxCount
+	};
+
+	std::vector<std::unordered_map<Material *, std::vector<std::pair<RenderMethod, void *>>>> renderMethods;
 	RenderWorldMethod renderWorld;
 
-	RenderInfo() : projectionMatrix(1), viewMatrix(1), cameraPosition(0), lightColor(0), ambientColor(0), sunDirection(0), specularExponent(1), isReflectionPass(false), viewport{glm::ivec2(0), glm::ivec2(0)}, pixelDensity(1), renderMethods(0), renderWorld() {
+	RenderInfo() : projectionMatrix(1), viewMatrix(1), cameraPosition(0), lightColor(0), ambientColor(0), sunDirection(0), specularExponent(1), isReflectionPass(false), viewport{glm::ivec2(0), glm::ivec2(0)}, pixelDensity(1), renderMethods(RenderOrderPosition::MaxCount), renderWorld() {
 
 	}
 
@@ -95,7 +104,7 @@ struct RenderInfo {
 		isReflectionPass(other.isReflectionPass),
 		viewport(other.viewport),
 		pixelDensity(other.pixelDensity),
-		renderMethods(0), //Make sure to reset this to have nothing in it when we copy
+		renderMethods(RenderOrderPosition::MaxCount), //Make sure to reset this to have nothing in it when we copy
 		renderWorld(other.renderWorld) {
 
 	}
@@ -121,8 +130,8 @@ struct RenderInfo {
 	 * @param method   A function (or lambda expression) that will be called to
 	 *                 perform the rendering.
 	 */
-	inline void addRenderMethod(Material *material, RenderMethod method, void *userinfo = nullptr) {
-		renderMethods[material].push_back(std::make_pair(method, userinfo));
+	inline void addRenderMethod(Material *material, RenderMethod method, void *userinfo = nullptr, RenderOrderPosition order = RenderOrderPosition::Shape) {
+		renderMethods[order][material].push_back(std::make_pair(method, userinfo));
 	}
 
 	/**
@@ -136,26 +145,29 @@ struct RenderInfo {
 	 * Submit all stored render methods in the renderInfo.
 	 */
 	void render() {
-		//Render methods are sorted by material
-		for (auto &pair : renderMethods) {
-			//Load the material for the methods
-			Material *material = pair.first;
-			material->activate();
+		//First, they're sorted by order
+		for (auto &list : renderMethods) {
+			//Render methods are sorted by material
+			for (auto &pair : list) {
+				//Load the material for the methods
+				Material *material = pair.first;
+				material->activate();
 
-			if (material->getShader() == nullptr)
-				material->setShader(Shader::defaultShader);
+				if (material->getShader() == nullptr)
+					material->setShader(Shader::defaultShader);
 
-			loadShader(material->getShader());
+				loadShader(material->getShader());
 
-			//And call every method that uses this material
-			for (auto &methodPair : pair.second) {
-				methodPair.first(material, *this, methodPair.second);
+				//And call every method that uses this material
+				for (auto &methodPair : pair.second) {
+					methodPair.first(material, *this, methodPair.second);
 
-				GL_CHECKERRORS();
+					GL_CHECKERRORS();
+				}
+
+				//Deactivate the material before loading the next one
+				material->deactivate();
 			}
-
-			//Deactivate the material before loading the next one
-			material->deactivate();
 		}
 	}
 
