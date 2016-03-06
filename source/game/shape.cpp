@@ -81,10 +81,12 @@ void Shape::draw(Material *material, ::RenderInfo &info, void *userData) {
 
 	glBindBuffer(GL_ARRAY_BUFFER, data->vbo);
 	shader->enableAttributes();
+	material->activate();
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data->ibo);
 	glDrawElements(data->primitive, data->indiceCount, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(data->offset));
 
 	shader->disableAttributes();
+	material->deactivate();
 
 	GL_CHECKERRORS();
 	delete data;

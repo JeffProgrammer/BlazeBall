@@ -106,11 +106,13 @@ void Sphere::draw(Material *material, RenderInfo &info, void *userInfo) {
 
 	glBindBuffer(GL_ARRAY_BUFFER, gSphereVBO);
 	material->getShader()->enableAttributes();
+	material->activate();
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, segments * slices * 2);
 
 	material->getShader()->disableAttributes();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	material->deactivate();
 }
 
 void Sphere::render(RenderInfo &info) {
