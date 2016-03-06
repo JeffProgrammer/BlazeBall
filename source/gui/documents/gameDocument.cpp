@@ -87,3 +87,9 @@ void GameDocument::onWake() {
 	//Hide pause menu
 	mDocument->GetElementById("pauseScreen")->SetClass("hidden", true);
 }
+
+void GameDocument::onRender() {
+	Rocket::Core::String str;
+	str.FormatString(32, "FPS: %.1f", mRenderer->getFPS());
+	mDocument->GetElementById("fpsMeter")->SetInnerRML(str);
+}

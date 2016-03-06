@@ -44,3 +44,14 @@ body {
 .hidden {
 	display: none;
 }
+#fpsMeter {
+	position: absolute;
+	bottom: 5px;
+	left: 5px;
+
+	font-family: Delicious;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 18;
+	color: white;
+}

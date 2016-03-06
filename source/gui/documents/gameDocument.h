@@ -17,6 +17,7 @@ public:
 
 	virtual void onSleep();
 	virtual void onWake();
+	virtual void onRender();
 };
 
 #endif
