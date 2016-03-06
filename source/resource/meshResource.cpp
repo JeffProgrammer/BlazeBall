@@ -13,10 +13,12 @@
 
 MeshResource::MeshResource(const std::string &file) {
 	mResourceFile = file;
+	mAssimpScene.scene = nullptr;
 }
 
 MeshResource::~MeshResource() {
-
+	if (mAssimpScene.scene != nullptr)
+		aiReleaseImport(mAssimpScene.scene);
 }
 
 bool MeshResource::load() {
@@ -47,6 +49,68 @@ bool MeshResource::load() {
 //-----------------------------------------------------------------------------
 // Loading done with Assimp.
 //-----------------------------------------------------------------------------
+
+void MeshResource::_readMesh() {
+	for (U32 i = 0; i < mAssimpScene.scene->mNumMeshes; i++) {
+		const aiMesh *mesh = mAssimpScene.scene->mMeshes[i];
+
+		Material *material = nullptr;
+		if (!_generateMaterial(mesh, material))
+			continue;
+
+		SubMeshData meshData;
+		meshData.material = material;
+		for (U32 j = 0; j < mesh->mNumVertices; j++) {
+			Vertex vertex;
+			vertex.point = assimpCast<glm::vec3>(mesh->mVertices[j]);
+			vertex.normal = assimpCast<glm::vec3>(mesh->mNormals[j]);
+			vertex.uv = glm::vec2(mesh->mTextureCoords[0][j].x, mesh->mTextureCoords[0][j].y);
+
+			if (mesh->HasTangentsAndBitangents()) {
+				vertex.tangent = assimpCast<glm::vec3>(mesh->mTangents[j]);
+				vertex.bitangent = assimpCast<glm::vec3>(mesh->mBitangents[j]);
+			}
+			else {
+				vertex.tangent = glm::vec3(0.0f);
+				vertex.bitangent = glm::vec3(0.0f);
+			}
+
+			meshData.vertices.push_back(vertex);
+		}
+
+		// Set primitive type on the meshData
+		// get primitive type
+		U32 primCount = 0;
+		switch (mesh->mPrimitiveTypes) {
+		case aiPrimitiveType_POINT:
+			meshData.primitive = GL_POINTS;
+			primCount = 1;
+			break;
+		case aiPrimitiveType_LINE:
+			meshData.primitive = GL_LINES;
+			primCount = 2;
+			break;
+		case aiPrimitiveType_TRIANGLE:
+			meshData.primitive = GL_TRIANGLES;
+			primCount = 3;
+			break;
+		default:
+			// invalid primitive type
+			assert(false);
+			break;
+		}
+
+		// now, do the index buffer
+		for (U32 j = 0; j < mesh->mNumFaces; j++) {
+			for (U32 k = 0; k < primCount; k++) {
+				meshData.indices.push_back(mesh->mFaces[j].mIndices[k]);
+			}
+		}
+
+		// store it as a sub mesh.
+		mSubMeshes.push_back(meshData);
+	}
+}
 
 void MeshResource::_getBoundingBoxNode(const aiScene *scene, const aiNode *node, aiVector3D *min, aiVector3D *max, aiMatrix4x4 *transform) {
 	aiMatrix4x4 prev = *transform;
