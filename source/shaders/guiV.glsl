@@ -17,5 +17,5 @@ varying vec4 outColor;
 void main() {
 	gl_Position = inProjectionMatrix * vec4(inVertexPosition, 0.0, 1.0);
 	outUV = inVertexUV;
-	outColor = inVertexColor;
+	outColor = inVertexColor / 255.0;
 }
