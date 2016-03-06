@@ -37,13 +37,13 @@ public:
 	virtual void end() = 0;
 	
 	/* 
-	 * Gets the time delta between the start() and end() calls.
-	 * @return the delta between the timer calls.
+	 * Gets the time delta in seconds between the start() and end() calls.
+	 * @return the delta in seconds between the timer calls.
 	 */
 	virtual F64 getDelta() const = 0;
 
 	/**
-	 * Gets the elapsed time since the start method was called.
+	 * Gets the elapsed time in seconds since the start method was called.
 	 * @return the elapsed time in seconds since it was last called.
 	 */
 	virtual F64 getElapsedTimeSinceStart() = 0;

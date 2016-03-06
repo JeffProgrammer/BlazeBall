@@ -27,6 +27,7 @@
 
 class Client;
 class Renderer {
+	friend class Client;
 protected:
 	Client *mClient;
 	PlatformWindow *mWindow;
@@ -34,6 +35,7 @@ protected:
 	Rocket::Core::Context *mRocketContext;
 
 	GuiDocument *mCurrentDocument;
+	F32 mFPS;
 
 	struct {
 		bool left;
@@ -59,6 +61,7 @@ public:
 		mWindow->lockCursor(capture);
 	}
 
+	F32 getFPS() { return mFPS; }
 	Client *getClient() { return mClient; }
 
 	void render(const F64 &delta);

@@ -13,7 +13,7 @@
 #include "gui/documents/mainMenuDocument.h"
 #include "gui/documents/gameDocument.h"
 
-Renderer::Renderer(Client *client) : mClient(client) {
+Renderer::Renderer(Client *client) : mClient(client), mFPS(0) {
 	mRocketContext = nullptr;
 }
 

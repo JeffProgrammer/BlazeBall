@@ -63,10 +63,18 @@ void Client::start() {
 
 	mRunning = true;
 
-
 	PlatformTimer *timer = GameState::gState->platform->createTimer();
+	PlatformTimer *secondTimer = GameState::gState->platform->createTimer();
+	secondTimer->start();
+
 	F64 lastDelta = 0.0;
+	U32 frames = 0;
 	while (mRunning) {
+		if (secondTimer->getElapsedTimeSinceStart() > 1.0) {
+			secondTimer->start();
+			mRenderer->mFPS = frames;
+			frames = 0;
+		}
 		timer->start();
 
 		mWorld->loop(lastDelta);
@@ -82,6 +90,8 @@ void Client::start() {
 
 		timer->end();
 		lastDelta = timer->getDelta();
+
+		frames ++;
 	}
 	delete timer;
 }
