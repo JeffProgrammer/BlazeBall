@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef _RENDER_RESOURCELOADER_H_
-#define _RENDER_RESOURCELOADER_H_
+#ifndef _RESOURCE_RESOURCELOADER_H_
+#define _RESOURCE_RESOURCELOADER_H_
 
 #include <unordered_map>
 #include "base/types.h"
@@ -49,4 +49,4 @@ public:
 	IResource* loadMesh(const std::string &file);
 };
 
-#endif // _RENDER_RESOURCELOADER_H_
+#endif // _RESOURCE_RESOURCELOADER_H_
