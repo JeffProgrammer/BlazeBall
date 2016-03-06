@@ -1,0 +1,10 @@
+moveForward;34
+moveBackward;29
+moveLeft;12
+moveRight;30
+lookUp;91
+lookDown;93
+lookLeft;90
+lookRight;92
+jump;1
+fire;28

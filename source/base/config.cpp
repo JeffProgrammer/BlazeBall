@@ -14,10 +14,18 @@ Config::Config(const std::string &path) {
 }
 
 void Config::loadDefaults() {
-	mDefaultKeyMap["forward"]  = KeyEvent::KEY_W;
-	mDefaultKeyMap["backward"] = KeyEvent::KEY_S;
-	mDefaultKeyMap["left"]     = KeyEvent::KEY_A;
-	mDefaultKeyMap["right"]    = KeyEvent::KEY_D;
+	//Read the file
+	std::ifstream file("defaultConfig.txt");
+
+	std::string line;
+	while (std::getline(file, line, '\n')) {
+		std::stringstream ss(line);
+
+		std::string name, key;
+		if (std::getline(ss, name, ';') && std::getline(ss, key, ';')) {
+			mKeyMap[name] = std::atoi(key.c_str());
+		}
+	}
 }
 
 void Config::load(const std::string &path) {

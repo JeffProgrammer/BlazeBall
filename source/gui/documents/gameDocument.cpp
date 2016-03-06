@@ -44,20 +44,20 @@ void GameDocument::onEvent(Rocket::Core::Event &event) {
 		Client *client = mRenderer->getClient();
 		Config *config = client->getConfig();
 
-		if (key == config->getKey("forward"))  client->getMovement().forward  = true;
-		if (key == config->getKey("backward")) client->getMovement().backward = true;
-		if (key == config->getKey("left"))     client->getMovement().left     = true;
-		if (key == config->getKey("right"))    client->getMovement().right    = true;
+		if (key == config->getKey("moveForward"))  client->getMovement().forward  = true;
+		if (key == config->getKey("moveBackward")) client->getMovement().backward = true;
+		if (key == config->getKey("moveLeft"))     client->getMovement().left     = true;
+		if (key == config->getKey("moveRight"))    client->getMovement().right    = true;
 	} else if (type == "keyup") {
 		int key = event.GetParameter("key_identifier", 0);
 
 		Client *client = mRenderer->getClient();
 		Config *config = client->getConfig();
 
-		if (key == config->getKey("forward"))  client->getMovement().forward  = false;
-		if (key == config->getKey("backward")) client->getMovement().backward = false;
-		if (key == config->getKey("left"))     client->getMovement().left     = false;
-		if (key == config->getKey("right"))    client->getMovement().right    = false;
+		if (key == config->getKey("moveForward"))  client->getMovement().forward  = false;
+		if (key == config->getKey("moveBackward")) client->getMovement().backward = false;
+		if (key == config->getKey("moveLeft"))     client->getMovement().left     = false;
+		if (key == config->getKey("moveRight"))    client->getMovement().right    = false;
 	}
 }
 
