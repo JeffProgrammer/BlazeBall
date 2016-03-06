@@ -42,48 +42,59 @@ void GameDocument::onEvent(Rocket::Core::Event &event) {
 			mRenderer->setCaptureMouse(shouldHide);
 		}
 
-		Client *client = mRenderer->getClient();
-		Config *config = client->getConfig();
+		if (!getPaused()) {
+			Client *client = mRenderer->getClient();
+			Config *config = client->getConfig();
 
-		//TODO: Make this neater
-		if (key == config->getKey("moveForward"))  client->getMovement().forward  = true;
-		if (key == config->getKey("moveBackward")) client->getMovement().backward = true;
-		if (key == config->getKey("moveLeft"))     client->getMovement().left     = true;
-		if (key == config->getKey("moveRight"))    client->getMovement().right    = true;
+			//TODO: Make this neater
+			if (key == config->getKey("moveForward"))  client->getMovement().forward  = true;
+			if (key == config->getKey("moveBackward")) client->getMovement().backward = true;
+			if (key == config->getKey("moveLeft"))     client->getMovement().left     = true;
+			if (key == config->getKey("moveRight"))    client->getMovement().right    = true;
 
-		if (key == config->getKey("lookUp"))    client->getMovement().pitchUp   = true;
-		if (key == config->getKey("lookDown"))  client->getMovement().pitchDown = true;
-		if (key == config->getKey("lookLeft"))  client->getMovement().yawLeft   = true;
-		if (key == config->getKey("lookRight")) client->getMovement().yawRight  = true;
-		if (key == config->getKey("jump"))      client->getMovement().jump      = true;
-		if (key == config->getKey("fire"))      client->getMovement().fire      = true;
+			if (key == config->getKey("lookUp"))    client->getMovement().pitchUp   = true;
+			if (key == config->getKey("lookDown"))  client->getMovement().pitchDown = true;
+			if (key == config->getKey("lookLeft"))  client->getMovement().yawLeft   = true;
+			if (key == config->getKey("lookRight")) client->getMovement().yawRight  = true;
+			if (key == config->getKey("jump"))      client->getMovement().jump      = true;
+			if (key == config->getKey("fire"))      client->getMovement().fire      = true;
+		}
 	} else if (type == "keyup") {
 		int key = event.GetParameter("key_identifier", 0);
 
-		Client *client = mRenderer->getClient();
-		Config *config = client->getConfig();
+		if (!getPaused()) {
+			Client *client = mRenderer->getClient();
+			Config *config = client->getConfig();
 
-		//TODO: Make this neater
-		if (key == config->getKey("moveForward"))  client->getMovement().forward  = false;
-		if (key == config->getKey("moveBackward")) client->getMovement().backward = false;
-		if (key == config->getKey("moveLeft"))     client->getMovement().left     = false;
-		if (key == config->getKey("moveRight"))    client->getMovement().right    = false;
+			//TODO: Make this neater
+			if (key == config->getKey("moveForward"))  client->getMovement().forward  = false;
+			if (key == config->getKey("moveBackward")) client->getMovement().backward = false;
+			if (key == config->getKey("moveLeft"))     client->getMovement().left     = false;
+			if (key == config->getKey("moveRight"))    client->getMovement().right    = false;
 
-		if (key == config->getKey("lookUp"))    client->getMovement().pitchUp   = false;
-		if (key == config->getKey("lookDown"))  client->getMovement().pitchDown = false;
-		if (key == config->getKey("lookLeft"))  client->getMovement().yawLeft   = false;
-		if (key == config->getKey("lookRight")) client->getMovement().yawRight  = false;
-		if (key == config->getKey("jump"))      client->getMovement().jump      = false;
-		if (key == config->getKey("fire"))      client->getMovement().fire      = false;
+			if (key == config->getKey("lookUp"))    client->getMovement().pitchUp   = false;
+			if (key == config->getKey("lookDown"))  client->getMovement().pitchDown = false;
+			if (key == config->getKey("lookLeft"))  client->getMovement().yawLeft   = false;
+			if (key == config->getKey("lookRight")) client->getMovement().yawRight  = false;
+			if (key == config->getKey("jump"))      client->getMovement().jump      = false;
+			if (key == config->getKey("fire"))      client->getMovement().fire      = false;
+		}
 	} else if (type == "mousemove") {
-		int x = event.GetParameter("movement_x", 0);
-		int y = event.GetParameter("movement_y", 0);
+		//Only update movement if we're not paused
+		if (!getPaused()) {
+			int x = event.GetParameter("movement_x", 0);
+			int y = event.GetParameter("movement_y", 0);
 
-		Client *client = mRenderer->getClient();
+			Client *client = mRenderer->getClient();
 
-		client->getMovement().yaw = static_cast<F32>(x);
-		client->getMovement().pitch = static_cast<F32>(y);
+			client->getMovement().yaw = static_cast<F32>(x);
+			client->getMovement().pitch = static_cast<F32>(y);
+		}
 	}
+}
+
+bool GameDocument::getPaused() {
+	return !mRenderer->getCaptureMouse();
 }
 
 void GameDocument::onSleep() {

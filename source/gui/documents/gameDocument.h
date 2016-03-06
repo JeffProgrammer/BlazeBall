@@ -10,6 +10,7 @@
 #include "gui/guiDocument.h"
 
 class GameDocument : public GuiDocument {
+	bool getPaused();
 public:
 	GameDocument(const std::string &name, Renderer *renderer, Rocket::Core::ElementDocument *document);
 
