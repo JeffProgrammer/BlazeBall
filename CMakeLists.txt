@@ -223,6 +223,13 @@ set (DIFVIEWERGAME_SRC
 	source/render/triggerData.h
 	source/render/util.h
 
+	# Resource folder
+	source/resource/IResource.h
+	source/resource/resourceLoader.cpp
+	source/resource/resourceLoader.h
+	source/resource/meshResource.cpp
+	source/resource/meshResource.h
+
 	# Bitmap folder
 	source/render/bitmap/jpegSupport.cpp
 	source/render/bitmap/jpegSupport.h
@@ -356,6 +363,7 @@ source_group("base"                  REGULAR_EXPRESSION base/.*)
 source_group("base\\math"            REGULAR_EXPRESSION base/math/.*)
 source_group("behaviors"             REGULAR_EXPRESSION behaviors/.*)
 source_group("render\\bitmap"        REGULAR_EXPRESSION bitmap/.*)
+source_group("resource"              REGULAR_EXPRESSION resource/.*)
 source_group("game"                  REGULAR_EXPRESSION game/.*)
 source_group("objects"               REGULAR_EXPRESSION objects/.*)
 source_group("game\\physics"         REGULAR_EXPRESSION physics/.*)
