@@ -15,13 +15,52 @@
 class MeshResource : public IResource {
 	typedef IResource Parent;
 public:
+	struct SubMeshData {
+		std::vector<U16> indices;
+		std::vector<Vertex> vertices;
+		GLenum primitive;
+		Material *material; // Todo make materials into a resource
+	};
+
 	MeshResource(const std::string &file);
 	~MeshResource();
 
 	bool load();
 
+	inline const BoxF getWorldBox() const {
+		return BoxF(mAssimpScene.sceneMin, mAssimpScene.sceneMax);
+	}
+
+	inline const glm::vec3 getWorldBoxCenter() const {
+		return mAssimpScene.sceneCenter;
+	}
+
 private:
 	std::string mResourceFile;
+
+	struct AssimpScene {
+		const aiScene *scene;
+		glm::vec3 sceneCenter;
+		glm::vec3 sceneMin;
+		glm::vec3 sceneMax;
+	};
+	AssimpScene mAssimpScene;
+
+	std::vector<SubMeshData> mSubMeshes;
+
+protected:
+	void _getBoundingBoxNode(const aiScene *scene, const aiNode *node, aiVector3D *min, aiVector3D *max, aiMatrix4x4 *transform);
+	void _getBoundingBox(const aiScene *scene, aiVector3D *min, aiVector3D *max);
+
+	void _readMesh();
+
+	// TODO: MAKE MATERIALS INTO A RESOURCE.
+	/// Generates the materials for this specific mesh.
+	/// @param IN scene The model scene object of which we are generating materials for.
+	/// @param IN mesh The mesh object that the material is for.
+	/// @param OUT material The material object that will be used for this mesh, or nullptr if failure.
+	/// @return true if the materials could be created, false if the material could not be created.
+	bool _generateMaterial(const aiMesh *mesh, Material *&material);
 };
 
 #endif // _RESOURCE_MESHRESOURCE_H_
