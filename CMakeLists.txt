@@ -227,10 +227,12 @@ set (DIFVIEWERGAME_SRC
 	source/resource/interiorResource.cpp
 	source/resource/interiorResource.h
 	source/resource/IResource.h
-	source/resource/resourceLoader.cpp
-	source/resource/resourceLoader.h
+	source/resource/materialResource.cpp
+	source/resource/materialResource.h
 	source/resource/meshResource.cpp
 	source/resource/meshResource.h
+	source/resource/resourceLoader.cpp
+	source/resource/resourceLoader.h
 
 	# Bitmap folder
 	source/render/bitmap/jpegSupport.cpp

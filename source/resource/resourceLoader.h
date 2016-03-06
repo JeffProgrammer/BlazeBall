@@ -13,6 +13,7 @@
 
 class MeshResource;
 class InteriorResource;
+class MaterialResource;
 
 class ResourceLoader {
 private:
@@ -52,6 +53,8 @@ public:
 	MeshResource* loadMesh(const std::string &file);
 
 	InteriorResource* loadInterior(const std::string &file);
+
+	MaterialResource* loadMaterial(const std::string &file);
 };
 
 #endif // _RESOURCE_RESOURCELOADER_H_

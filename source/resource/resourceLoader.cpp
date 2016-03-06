@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 
 #include "resource/resourceLoader.h"
+#include "resource/materialResource.h"
 #include "resource/meshResource.h"
 #include "resource/interiorResource.h"
 
@@ -76,5 +77,9 @@ InteriorResource* ResourceLoader::loadInterior(const std::string &file) {
 		mInteriorResourceMap[file] = resource;
 		return resource;
 	}
+	return nullptr;
+}
+
+MaterialResource *ResourceLoader::loadMaterial(const std::string &file) {
 	return nullptr;
 }
