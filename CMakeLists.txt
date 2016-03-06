@@ -224,6 +224,8 @@ set (DIFVIEWERGAME_SRC
 	source/render/util.h
 
 	# Resource folder
+	source/resource/interiorResource.cpp
+	source/resource/interiorResource.h
 	source/resource/IResource.h
 	source/resource/resourceLoader.cpp
 	source/resource/resourceLoader.h

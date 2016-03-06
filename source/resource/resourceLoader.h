@@ -12,6 +12,7 @@
 #include "resource/IResource.h"
 
 class MeshResource;
+class InteriorResource;
 
 class ResourceLoader {
 private:
@@ -25,6 +26,8 @@ private:
 	std::unordered_map<std::string, IResource*> mResourceMap;
 
 	std::unordered_map<std::string, MeshResource*> mMeshResourceMap;
+
+	std::unordered_map<std::string, InteriorResource*> mInteriorResourceMap;
 
 	std::string mCurrentWorkingDir;
 public:
@@ -46,7 +49,9 @@ public:
 		return mCurrentWorkingDir;
 	}
 
-	IResource* loadMesh(const std::string &file);
+	MeshResource* loadMesh(const std::string &file);
+
+	InteriorResource* loadInterior(const std::string &file);
 };
 
 #endif // _RESOURCE_RESOURCELOADER_H_
