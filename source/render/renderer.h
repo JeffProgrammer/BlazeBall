@@ -30,7 +30,6 @@ class Renderer {
 protected:
 	Client *mClient;
 	PlatformWindow *mWindow;
-	Config *mConfig;
 
 	Rocket::Core::Context *mRocketContext;
 
@@ -59,6 +58,8 @@ public:
 		mCaptureMouse = capture;
 		mWindow->lockCursor(capture);
 	}
+
+	Client *getClient() { return mClient; }
 
 	void render(const F64 &delta);
 

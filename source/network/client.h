@@ -14,6 +14,7 @@
 #include <Rocket/Core/ElementDocument.h>
 
 #include "base/types.h"
+#include "base/config.h"
 #include "network/event/netClientEvent.h"
 #include "network/netObject.h"
 #include "game/world.h"
@@ -56,6 +57,7 @@ public:
 	World *getWorld() { return mWorld; }
 	Renderer *getRenderer() { return mRenderer; }
 	Movement &getMovement() { return mMovement; }
+	Config *getConfig() { return mConfig; }
 
 	GameObject *getControlObject() const { return mControlObject; }
 	void setControlObject(GameObject *object) { mControlObject = object; dynamic_cast<Sphere *>(object)->setActivationState(true); }
@@ -69,6 +71,7 @@ protected:
 	Renderer *mRenderer;
 	bool mRunning;
 	Movement mMovement;
+	Config *mConfig;
 
 	GuiInterface *mGuiInterface;
 	GuiRenderInterface *mGuiRenderInterface;

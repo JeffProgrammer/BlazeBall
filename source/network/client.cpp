@@ -19,10 +19,12 @@ Client::Client(World *world, const std::string &ipAddress, const U16 port) : mWo
 	mPort = port;
 
 	mControlObject = nullptr;
+	mConfig = new Config("config.txt");
 }
 
 Client::~Client() {
 	delete mRenderer;
+	delete mConfig;
 	Rocket::Core::Shutdown();
 }
 

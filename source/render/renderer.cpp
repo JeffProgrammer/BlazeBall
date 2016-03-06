@@ -15,7 +15,6 @@
 
 Renderer::Renderer(Client *client) : mClient(client) {
 	mRocketContext = nullptr;
-	mConfig = new Config("config.txt");
 }
 
 Renderer::~Renderer() {
@@ -181,10 +180,6 @@ void Renderer::handleEvent(PlatformEvent *event) {
 			break;
 		case PlatformEvent::KeyDown: {
 			KeyEvent::Key key = static_cast<KeyEvent::Key>(static_cast<KeyDownEvent *>(event)->key);
-			if (key == mConfig->getKey("forward"))  mClient->getMovement().forward  = true;
-			if (key == mConfig->getKey("backward")) mClient->getMovement().backward = true;
-			if (key == mConfig->getKey("left"))     mClient->getMovement().left     = true;
-			if (key == mConfig->getKey("right"))    mClient->getMovement().right    = true;
 			switch (key) {
 				case KeyEvent::KEY_UP:    mClient->getMovement().pitchUp   = true; break;
 				case KeyEvent::KEY_DOWN:  mClient->getMovement().pitchDown = true; break;
@@ -207,10 +202,6 @@ void Renderer::handleEvent(PlatformEvent *event) {
 		}
 		case PlatformEvent::KeyUp: {
 			KeyEvent::Key key = static_cast<KeyEvent::Key>(static_cast<KeyDownEvent *>(event)->key);
-			if (key == mConfig->getKey("forward"))  mClient->getMovement().forward  = false;
-			if (key == mConfig->getKey("backward")) mClient->getMovement().backward = false;
-			if (key == mConfig->getKey("left"))     mClient->getMovement().left     = false;
-			if (key == mConfig->getKey("right"))    mClient->getMovement().right    = false;
 			switch (key) {
 				case KeyEvent::KEY_UP:    mClient->getMovement().pitchUp   = false; break;
 				case KeyEvent::KEY_DOWN:  mClient->getMovement().pitchDown = false; break;

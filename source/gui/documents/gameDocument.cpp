@@ -6,6 +6,7 @@
 
 #include "gameDocument.h"
 #include "render/renderer.h"
+#include "network/client.h"
 
 GameDocument::GameDocument(const std::string &name, Renderer *renderer, Rocket::Core::ElementDocument *document) : GuiDocument(name, renderer, document) {
 	mDocument->GetElementById("back")->AddEventListener("click", mListener);
@@ -27,10 +28,10 @@ void GameDocument::onEvent(Rocket::Core::Event &event) {
 			}
 		}
 	} else if (type == "keydown") {
-		int keyIdentifier = event.GetParameter("key_identifier", 0);
+		int key = event.GetParameter("key_identifier", 0);
 
 		//Esc key hides the pause menu
-		if (keyIdentifier == Rocket::Core::Input::KI_ESCAPE) {
+		if (key == Rocket::Core::Input::KI_ESCAPE) {
 			auto *pauseScreen = mDocument->GetElementById("pauseScreen");
 			bool shouldHide = !pauseScreen->IsClassSet("hidden");
 
@@ -39,10 +40,24 @@ void GameDocument::onEvent(Rocket::Core::Event &event) {
 			//If we show the pause menu we shouldn't capture mouse
 			mRenderer->setCaptureMouse(shouldHide);
 		}
-		//TODO Marble control
+
+		Client *client = mRenderer->getClient();
+		Config *config = client->getConfig();
+
+		if (key == config->getKey("forward"))  client->getMovement().forward  = true;
+		if (key == config->getKey("backward")) client->getMovement().backward = true;
+		if (key == config->getKey("left"))     client->getMovement().left     = true;
+		if (key == config->getKey("right"))    client->getMovement().right    = true;
 	} else if (type == "keyup") {
-		int keyIdentifier = event.GetParameter("key_identifier", 0);
-		//TODO Marble control
+		int key = event.GetParameter("key_identifier", 0);
+
+		Client *client = mRenderer->getClient();
+		Config *config = client->getConfig();
+
+		if (key == config->getKey("forward"))  client->getMovement().forward  = false;
+		if (key == config->getKey("backward")) client->getMovement().backward = false;
+		if (key == config->getKey("left"))     client->getMovement().left     = false;
+		if (key == config->getKey("right"))    client->getMovement().right    = false;
 	}
 }
 
