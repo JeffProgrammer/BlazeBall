@@ -60,6 +60,9 @@ GuiRenderInterface::~GuiRenderInterface() {
 //       to use a ring buffer in constant allocations of vram.
 void GuiRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation) {
 	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthFunc(GL_LESS);
 	mShader->activate();
 	GL_CHECKERRORS();
 
