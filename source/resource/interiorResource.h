@@ -23,6 +23,13 @@ public:
 
 private:
 	std::string mResourceFile;
+
+	/**
+	 * Holds the data for the interior.
+	 * Material*        - Each material has a number of triangles.
+	 * vector<Triangle> - Triangle list for each material.
+	 */
+	std::unordered_map<Material*, std::vector<Triangle>> triangles;
 };
 
 #endif // _RESOURCE_INTERIORRESOURCE_H_
