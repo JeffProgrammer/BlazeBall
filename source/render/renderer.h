@@ -33,16 +33,9 @@ protected:
 	PlatformWindow *mWindow;
 
 	Rocket::Core::Context *mRocketContext;
-
 	GuiDocument *mCurrentDocument;
+
 	F32 mFPS;
-
-	struct {
-		bool left;
-		bool middle;
-		bool right;
-	} mouseButtons;
-
 	bool mCaptureMouse;
 	bool mPrintFPS;
 	bool mShouldSleep;

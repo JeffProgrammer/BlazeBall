@@ -12,6 +12,7 @@ GameDocument::GameDocument(const std::string &name, Renderer *renderer, Rocket::
 	mDocument->GetElementById("back")->AddEventListener("click", mListener);
 	mDocument->AddEventListener("keydown", mListener);
 	mDocument->AddEventListener("keyup", mListener);
+	mDocument->AddEventListener("mousemove", mListener);
 }
 
 void GameDocument::onEvent(Rocket::Core::Event &event) {
@@ -74,6 +75,14 @@ void GameDocument::onEvent(Rocket::Core::Event &event) {
 		if (key == config->getKey("lookRight")) client->getMovement().yawRight  = false;
 		if (key == config->getKey("jump"))      client->getMovement().jump      = false;
 		if (key == config->getKey("fire"))      client->getMovement().fire      = false;
+	} else if (type == "mousemove") {
+		int x = event.GetParameter("movement_x", 0);
+		int y = event.GetParameter("movement_y", 0);
+
+		Client *client = mRenderer->getClient();
+
+		client->getMovement().yaw = static_cast<F32>(x);
+		client->getMovement().pitch = static_cast<F32>(y);
 	}
 }
 

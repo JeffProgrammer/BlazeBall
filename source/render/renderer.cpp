@@ -13,7 +13,7 @@
 #include "gui/documents/mainMenuDocument.h"
 #include "gui/documents/gameDocument.h"
 
-Renderer::Renderer(Client *client) : mClient(client), mFPS(0) {
+Renderer::Renderer(Client *client) : mClient(client), mFPS(0), mCaptureMouse(false) {
 	mRocketContext = nullptr;
 }
 
@@ -202,44 +202,30 @@ void Renderer::handleEvent(PlatformEvent *event) {
 			mRocketContext->ProcessKeyUp(GuiInterface::translateKey(key), 0);
 			break;
 		}
-			//Mouse for rotation
 		case PlatformEvent::MouseMove:
 			if (mCaptureMouse) {
-				mClient->getMovement().yaw += (GLfloat)((MouseMoveEvent *)event)->delta.x;
-				mClient->getMovement().pitch += (GLfloat)((MouseMoveEvent *)event)->delta.y;
+				Rocket::Core::Dictionary dict;
+				dict.Set("mouse_x", static_cast<MouseMoveEvent *>(event)->position.x);
+				dict.Set("mouse_y", static_cast<MouseMoveEvent *>(event)->position.y);
+				dict.Set("movement_x", static_cast<MouseMoveEvent *>(event)->delta.x);
+				dict.Set("movement_y", static_cast<MouseMoveEvent *>(event)->delta.y);
+
+				mRocketContext->GetHoverElement()->DispatchEvent("mousemove", dict, true);
 			} else {
 				mRocketContext->ProcessMouseMove(static_cast<MouseMoveEvent *>(event)->position.x, static_cast<MouseMoveEvent *>(event)->position.y, 0);
 			}
 			break;
 		case PlatformEvent::MouseDown:
-			switch (((MouseDownEvent *)event)->button) {
-				case MouseButton::MOUSE_BUTTON_LEFT: mouseButtons.left   = true; break;
-				case MouseButton::MOUSE_BUTTON_MIDDLE: mouseButtons.middle = true; break;
-				case MouseButton::MOUSE_BUTTON_RIGHT: mouseButtons.right  = true; break;
-				default: break;
-			}
-			if (!mCaptureMouse) {
-				mRocketContext->ProcessMouseButtonDown(GuiInterface::translateMouseButton(static_cast<MouseDownEvent *>(event)->button), 0);
-			}
+			mRocketContext->ProcessMouseButtonDown(GuiInterface::translateMouseButton(static_cast<MouseDownEvent *>(event)->button), 0);
 			break;
 		case PlatformEvent::MouseUp:
-			switch (((MouseDownEvent *)event)->button) {
-				case MouseButton::MOUSE_BUTTON_LEFT: mouseButtons.left   = false; break;
-				case MouseButton::MOUSE_BUTTON_MIDDLE: mouseButtons.middle = false; break;
-				case MouseButton::MOUSE_BUTTON_RIGHT: mouseButtons.right  = false; break;
-				default: break;
-			}
-			if (!mCaptureMouse) {
-				mRocketContext->ProcessMouseButtonUp(GuiInterface::translateMouseButton(static_cast<MouseDownEvent *>(event)->button), 0);
-			}
+			mRocketContext->ProcessMouseButtonUp(GuiInterface::translateMouseButton(static_cast<MouseDownEvent *>(event)->button), 0);
 			break;
 		case PlatformEvent::WindowFocus:
 			mShouldSleep = false;
 			break;
 		case PlatformEvent::WindowBlur:
 			mShouldSleep = true;
-			mWindow->lockCursor(false);
-			mCaptureMouse = false;
 			break;
 		case PlatformEvent::WindowResize:
 			updateWindowSize(static_cast<WindowResizeEvent *>(event)->newSize);
