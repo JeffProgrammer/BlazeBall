@@ -30,7 +30,7 @@ void Config::load(const std::string &path) {
 
 		std::string name, key;
 		if (std::getline(ss, name, ';') && std::getline(ss, key, ';')) {
-			mKeyMap[name] = static_cast<KeyEvent::Key>(key[0]);
+			mKeyMap[name] = std::atoi(key.c_str());
 		}
 	}
 }

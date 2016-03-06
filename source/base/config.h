@@ -13,8 +13,8 @@
 
 class Config {
 protected:
-	std::map<std::string, KeyEvent::Key> mDefaultKeyMap;
-	std::map<std::string, KeyEvent::Key> mKeyMap;
+	std::map<std::string, int> mDefaultKeyMap;
+	std::map<std::string, int> mKeyMap;
 
 	void loadDefaults();
 	void load(const std::string &path);
@@ -22,13 +22,13 @@ public:
 	Config(const std::string &path);
 
 
-	inline KeyEvent::Key getKey(const std::string &name) {
+	inline int getKey(const std::string &name) {
 		if (mKeyMap.find(name) == mKeyMap.end())
 			return getDefaultKey(name);
 		return mKeyMap[name];
 	}
 
-	inline KeyEvent::Key getDefaultKey(const std::string &name) {
+	inline int getDefaultKey(const std::string &name) {
 		return mDefaultKeyMap[name];
 	}
 };
