@@ -6,6 +6,14 @@
 
 #include "resource/resourceLoader.h"
 
+// For getcwd
+#ifdef _WIN32
+#include <direct.h>
+#define getcwd _getcwd
+#else
+#include <unistd.h>
+#endif
+
 ResourceLoader *ResourceLoader::sResourceLoader = nullptr;
 
 void ResourceLoader::create() {
@@ -17,7 +25,8 @@ void ResourceLoader::destroy() {
 }
 
 ResourceLoader::ResourceLoader() {
-
+	char buffer[1024]; // If your path is longer than this, idk what to say.
+	mCurrentWorkingDir = getcwd(buffer, 1024);
 }
 
 ResourceLoader::~ResourceLoader() {

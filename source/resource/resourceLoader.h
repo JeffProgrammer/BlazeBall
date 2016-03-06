@@ -24,6 +24,8 @@ private:
 	std::unordered_map<std::string, IResource*> mResourceMap;
 
 	std::unordered_map<std::string, MeshResource*> mMeshResourceMap;
+
+	std::string mCurrentWorkingDir;
 public:
 	static void create();
 	static void destroy();
@@ -33,6 +35,10 @@ public:
 
 	inline bool containsResource(const std::string &resource) {
 		return (mResourceMap.find(resource) != mResourceMap.end());
+	}
+
+	inline const std::string getCurrentDirectory() const {
+		return mCurrentWorkingDir;
 	}
 
 	IResource* loadMesh(const std::string &file);
