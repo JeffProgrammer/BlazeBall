@@ -5,6 +5,6 @@
 	<title>Window</title>
 </head>
 <body template="window">
-	<p id="play" data-command="setContent" data-content="Game">Click Me</p>
+	<button id="play" data-command="setContent" data-content="Game">Click Me</button>
 </body>
 </rml>

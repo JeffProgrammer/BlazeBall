@@ -1,10 +1,13 @@
 <rml>
 <head>
 	<link type="text/css" href="game.rcss"/>
+	<link type="text/css" href="menu.rcss"/>
+	<link type="text/template" href="window.rml" />
 	<title>Window</title>
 </head>
 <body>
 <WorldView class="full">
+<button id="back" data-command="setContent" data-content="Menu">Go back?</button>
 </WorldView>
 </body>
 </rml>
