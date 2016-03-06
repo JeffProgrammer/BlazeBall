@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 
 #include "resource/resourceLoader.h"
+#include "resource/meshResource.h"
 
 // For getcwd
 #ifdef _WIN32

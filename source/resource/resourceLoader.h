@@ -10,7 +10,8 @@
 #include <unordered_map>
 #include "base/types.h"
 #include "resource/IResource.h"
-#include "resource/meshResource.h"
+
+class MeshResource;
 
 class ResourceLoader {
 private:
@@ -29,6 +30,10 @@ private:
 public:
 	static void create();
 	static void destroy();
+	static ResourceLoader *get() {
+		assert(sResourceLoader != nullptr);
+		return sResourceLoader;
+	}
 
 	ResourceLoader();
 	~ResourceLoader();
