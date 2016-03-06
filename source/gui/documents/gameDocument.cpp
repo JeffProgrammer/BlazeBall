@@ -44,20 +44,36 @@ void GameDocument::onEvent(Rocket::Core::Event &event) {
 		Client *client = mRenderer->getClient();
 		Config *config = client->getConfig();
 
+		//TODO: Make this neater
 		if (key == config->getKey("moveForward"))  client->getMovement().forward  = true;
 		if (key == config->getKey("moveBackward")) client->getMovement().backward = true;
 		if (key == config->getKey("moveLeft"))     client->getMovement().left     = true;
 		if (key == config->getKey("moveRight"))    client->getMovement().right    = true;
+
+		if (key == config->getKey("lookUp"))    client->getMovement().pitchUp   = true;
+		if (key == config->getKey("lookDown"))  client->getMovement().pitchDown = true;
+		if (key == config->getKey("lookLeft"))  client->getMovement().yawLeft   = true;
+		if (key == config->getKey("lookRight")) client->getMovement().yawRight  = true;
+		if (key == config->getKey("jump"))      client->getMovement().jump      = true;
+		if (key == config->getKey("fire"))      client->getMovement().fire      = true;
 	} else if (type == "keyup") {
 		int key = event.GetParameter("key_identifier", 0);
 
 		Client *client = mRenderer->getClient();
 		Config *config = client->getConfig();
 
+		//TODO: Make this neater
 		if (key == config->getKey("moveForward"))  client->getMovement().forward  = false;
 		if (key == config->getKey("moveBackward")) client->getMovement().backward = false;
 		if (key == config->getKey("moveLeft"))     client->getMovement().left     = false;
 		if (key == config->getKey("moveRight"))    client->getMovement().right    = false;
+
+		if (key == config->getKey("lookUp"))    client->getMovement().pitchUp   = false;
+		if (key == config->getKey("lookDown"))  client->getMovement().pitchDown = false;
+		if (key == config->getKey("lookLeft"))  client->getMovement().yawLeft   = false;
+		if (key == config->getKey("lookRight")) client->getMovement().yawRight  = false;
+		if (key == config->getKey("jump"))      client->getMovement().jump      = false;
+		if (key == config->getKey("fire"))      client->getMovement().fire      = false;
 	}
 }
 

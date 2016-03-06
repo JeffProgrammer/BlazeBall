@@ -181,13 +181,7 @@ void Renderer::handleEvent(PlatformEvent *event) {
 		case PlatformEvent::KeyDown: {
 			KeyEvent::Key key = static_cast<KeyEvent::Key>(static_cast<KeyDownEvent *>(event)->key);
 			switch (key) {
-				case KeyEvent::KEY_UP:    mClient->getMovement().pitchUp   = true; break;
-				case KeyEvent::KEY_DOWN:  mClient->getMovement().pitchDown = true; break;
-				case KeyEvent::KEY_LEFT:  mClient->getMovement().yawLeft   = true; break;
-				case KeyEvent::KEY_RIGHT: mClient->getMovement().yawRight  = true; break;
-				case KeyEvent::KEY_SPACE: mClient->getMovement().jump      = true; break;
 				case KeyEvent::KEY_V: mWindow->toggleVsync(); break;
-				case KeyEvent::KEY_Q: mClient->getMovement().fire = true; break;
 				case KeyEvent::KEY_T:
 				{
 					//TODO
@@ -202,16 +196,6 @@ void Renderer::handleEvent(PlatformEvent *event) {
 		}
 		case PlatformEvent::KeyUp: {
 			KeyEvent::Key key = static_cast<KeyEvent::Key>(static_cast<KeyDownEvent *>(event)->key);
-			switch (key) {
-				case KeyEvent::KEY_UP:    mClient->getMovement().pitchUp   = false; break;
-				case KeyEvent::KEY_DOWN:  mClient->getMovement().pitchDown = false; break;
-				case KeyEvent::KEY_LEFT:  mClient->getMovement().yawLeft   = false; break;
-				case KeyEvent::KEY_RIGHT: mClient->getMovement().yawRight  = false; break;
-				case KeyEvent::KEY_SPACE: mClient->getMovement().jump      = false; break;
-				case KeyEvent::KEY_Q:     mClient->getMovement().fire      = false; break;
-				default:
-					break;
-			}
 			mRocketContext->ProcessKeyUp(GuiInterface::translateKey(key), 0);
 			break;
 		}
