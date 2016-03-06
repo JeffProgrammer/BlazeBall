@@ -31,16 +31,11 @@ public:
 		return BoxF(mAssimpScene.sceneMin, mAssimpScene.sceneMax);
 	}
 
-	inline const glm::vec3 getWorldBoxCenter() const {
-		return mAssimpScene.sceneCenter;
-	}
-
 private:
 	std::string mResourceFile;
 
 	struct AssimpScene {
 		const aiScene *scene;
-		glm::vec3 sceneCenter;
 		glm::vec3 sceneMin;
 		glm::vec3 sceneMax;
 	};

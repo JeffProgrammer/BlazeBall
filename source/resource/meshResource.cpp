@@ -31,15 +31,8 @@ bool MeshResource::load() {
 	// get scene center and world box
 	aiVector3D min, max;
 	_getBoundingBox(scene, &min, &max);
-	mAssimpScene.sceneMin.x = min.x;
-	mAssimpScene.sceneMin.y = min.y;
-	mAssimpScene.sceneMin.z = min.z;
-	mAssimpScene.sceneMax.x = max.x;
-	mAssimpScene.sceneMax.y = max.y;
-	mAssimpScene.sceneMax.z = max.z;
-	mAssimpScene.sceneCenter.x = (mAssimpScene.sceneMin.x + mAssimpScene.sceneMax.x) / 2.0f;
-	mAssimpScene.sceneCenter.y = (mAssimpScene.sceneMin.y + mAssimpScene.sceneMax.y) / 2.0f;
-	mAssimpScene.sceneCenter.z = (mAssimpScene.sceneMin.z + mAssimpScene.sceneMax.z) / 2.0f;
+	mAssimpScene.sceneMin = assimpCast<glm::vec3>(min);
+	mAssimpScene.sceneMax = assimpCast<glm::vec3>(max);
 
 	// read the mesh using the assimp api calls.
 	_readMesh();
