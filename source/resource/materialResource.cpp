@@ -9,12 +9,15 @@
 
 MaterialResource::MaterialResource(const std::string &file) {
 	mResourceFile = file;
+	mMaterial = nullptr;
 }
 
 MaterialResource::~MaterialResource() {
-
+	delete mMaterial;
 }
 
 bool MaterialResource::load() {
+	mMaterial = new Material(mResourceFile);
+	// TODO set shader reference to material.
 	return true;
 }

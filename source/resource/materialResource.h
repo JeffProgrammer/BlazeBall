@@ -20,6 +20,7 @@ public:
 
 private:
 	std::string mResourceFile;
+	Material *mMaterial;
 };
 
 #endif // _RESOURCE_MATERIALRESOURCE_H_
