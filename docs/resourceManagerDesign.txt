@@ -1,0 +1,18 @@
+Resource manager is responsible for allocating and destroying all “resources”. 
+A resource can be a mesh, interior, material.
+Resource manager gives you access to all of the meshes, interiors, materials, ect. So if you just wanted a specific resource, u can grab that list. OR if you want everything, there’s a big momma list as well.
+When we do regular render, instead of doing per-object rendering, we do per material/shader rendering. This is much more efficient for sending OpenGL commands.
+Instead of doing:
+Foreach (obj in list) {
+	renderObject();
+}
+We do this:
+Foreach (Material in ResourceManager::materials)
+{
+    foreach (object in material)
+    {
+         renderObject();
+    }
+}
+Material resources hold references to meshresources, which is a base class of interior resources and shape resources.
+Materials are generated via JSON structures. However. I have a slight problem with this. For example, HOW DO WE KNOW WHAT MATERIAL BELONGS TO WHAT OBJECT????? TODO I need to figure this out.
