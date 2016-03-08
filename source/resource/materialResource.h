@@ -29,14 +29,15 @@ public:
 	void removeMeshRef(MeshResource *resource);
 
 	inline Material *getMaterial() const {
-		return mMaterial.get();
+		return mMaterial;
 	}
+
 private:
-	std::string mDiffuseTexture;
-
-	std::unique_ptr<Material> mMaterial;
-
 	std::vector<MeshResource*> mMeshses;
+	
+	std::string mResourceFile;
+
+	Material *mMaterial;
 };
 
 #endif // _RESOURCE_MATERIALRESOURCE_H_

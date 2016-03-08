@@ -9,16 +9,17 @@
 #include "render/material.h"
 
 MaterialResource::MaterialResource(const std::string &file) {
-	mDiffuseTexture = file;
+	mResourceFile = file;
 	mMaterial = nullptr;
 }
 
 MaterialResource::~MaterialResource() {
-
+	if (mMaterial != nullptr)
+		delete mMaterial;
 }
 
 bool MaterialResource::load() {
-	mMaterial = std::make_unique<Material>(mDiffuseTexture);
+	mMaterial = new Material(mResourceFile);
 	return true;
 }
 
