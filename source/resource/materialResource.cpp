@@ -8,19 +8,13 @@
 #include "resource/resourceLoader.h"
 #include "render/material.h"
 
-MaterialResource::MaterialResource(const std::string &file) {
-	mResourceFile = file;
-	mMaterial = nullptr;
+MaterialResource::MaterialResource(const std::string &name, std::vector<std::pair<Texture*, GLuint>> &textures) {
+	mName = name;
+	mMaterial = new Material(name, textures);
 }
 
 MaterialResource::~MaterialResource() {
-	if (mMaterial != nullptr)
-		delete mMaterial;
-}
-
-bool MaterialResource::load() {
-	mMaterial = new Material(mResourceFile);
-	return true;
+	delete mMaterial;
 }
 
 void MaterialResource::setShader(Shader *shader) {

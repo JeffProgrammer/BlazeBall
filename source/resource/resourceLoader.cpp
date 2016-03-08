@@ -4,10 +4,13 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
+#include <rapidjson/rapidjson.h>
+#include <rapidjson/document.h>
 #include "resource/resourceLoader.h"
 #include "resource/materialResource.h"
 #include "resource/meshResource.h"
 #include "resource/interiorResource.h"
+#include "render/texture/bitmapTexture.h"
 
 // For getcwd
 #ifdef _WIN32
@@ -80,6 +83,103 @@ InteriorResource* ResourceLoader::loadInterior(const std::string &file) {
 	return nullptr;
 }
 
-MaterialResource *ResourceLoader::loadMaterial(const std::string &file) {
-	return nullptr;
+void ResourceLoader::loadMaterials(const std::string &file) {
+	// read the json file
+	U32 fileLength;
+	const char *contents = reinterpret_cast<const char*>(IO::readFile(file, fileLength));
+	rapidjson::Document document;
+	document.Parse(contents);
+
+	for (auto obj = document.Begin(); obj != document.End(); ++obj) {
+		// make sure this is an object. We can only have an array of objects.
+		if (!obj->IsObject()) {
+			IO::printf("The level file %s can only have an array of objects within the JSON structure.\n", file.c_str());
+			continue;
+		}
+
+		bool fail = false;
+		std::string name;
+		Shader *shader;
+		std::vector<std::pair<Texture*, GLuint>> textures;
+
+		// Loop through members.
+		for (auto member = obj->MemberBegin(); member != obj->MemberEnd(); ++member) {
+			std::string fieldName = member->name.GetString();
+			if (fieldName == "name") {
+				if (!member->value.IsString()) {
+					IO::printf("Material Warning: Material name must be value type string! Setting to nil.\n");
+					name = "";
+				} else {
+					name = member->value.GetString();
+				}
+			} else if (fieldName == "shader") {
+				if (!member->value.IsString()) {
+					IO::printf("Material Error: The shader value must be of type string!\n");
+					fail = true;
+					break;
+				}
+				
+				shader = Shader::getShaderByName(member->value.GetString());
+				if (shader == nullptr) {
+					IO::printf("Material Error: Unable to find shader %s!\n", member->value.GetString());
+					fail = true;
+					break;
+				}
+			} else if (fieldName == "textures") {
+				if (!member->value.IsObject()) {
+					IO::printf("Material Error: The textures field must implement an object for its value!\n");
+					fail = true;
+					break;
+				}
+
+				// You know this code is messy when you have to call a variable doubleFailure.
+				bool doubleFailure = false;
+				for (auto innerMember = member->value.MemberBegin(); innerMember != member->value.MemberEnd(); ++innerMember) {
+					if (!innerMember->name.IsInt()) {
+						IO::printf("Material Error: Texture number must be of type int!\n");
+						doubleFailure = true;
+						break;
+					}
+
+					if (!innerMember->value.IsString()) {
+						IO::printf("MaterialError: Texture value must be of type string!\n");
+						doubleFailure = true;
+						break;
+					}
+
+					// Now check to make sure that the texture exists as a file.
+					if (!IO::isfile(innerMember->value.GetString())) {
+						IO::printf("Material Error: Texture %s is not a file!\n", innerMember->value.GetString());
+						doubleFailure = true;
+						break;
+					}
+
+					auto bitmap = IO::loadTexture(innerMember->value.GetString());
+					textures.push_back(std::pair<Texture*, GLuint>(bitmap, innerMember->name.GetInt()));
+				}
+
+				if (doubleFailure == true) {
+					IO::printf("Material Error: The textures could not be configured from the JSON object!\n");
+					fail = true;
+					break;
+				}
+			} else {
+				IO::printf("Material Warning: Unknown field %s\n");
+			}
+		}
+
+		if (!fail) {
+			if (textures.size() == 0) {
+				IO::printf("Material Error: No textures have been found. Unable to create material %s", name.c_str());
+				continue;
+			}
+
+			// Create the material resource.
+			auto resource = new MaterialResource(name, textures);
+			resource->setShader(shader);
+			mMaterialResources.push_back(resource);
+		} else {
+			IO::printf("MaterialError: Unable to create material %s\n", name.c_str());
+		}
+	}
 }

@@ -30,6 +30,8 @@ private:
 
 	std::unordered_map<std::string, InteriorResource*> mInteriorResourceMap;
 
+	std::vector<MaterialResource*> mMaterialResources;
+
 	std::string mCurrentWorkingDir;
 public:
 	static void create();
@@ -54,7 +56,7 @@ public:
 
 	InteriorResource* loadInterior(const std::string &file);
 
-	MaterialResource* loadMaterial(const std::string &file);
+	void loadMaterials(const std::string &file);
 };
 
 #endif // _RESOURCE_RESOURCELOADER_H_

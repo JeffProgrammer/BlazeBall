@@ -17,10 +17,8 @@ class MeshResource;
 class MaterialResource : public IResource {
 	typedef IResource Parent;
 public:
-	MaterialResource(const std::string &file);
+	MaterialResource(const std::string &name, std::vector<std::pair<Texture*, GLuint>> &textures);
 	~MaterialResource();
-
-	bool load();
 
 	void setShader(Shader *shader);
 
@@ -34,10 +32,10 @@ public:
 
 private:
 	std::vector<MeshResource*> mMeshes;
-	
-	std::string mResourceFile;
 
 	Material *mMaterial;
+
+	std::string mName;
 };
 
 #endif // _RESOURCE_MATERIALRESOURCE_H_
