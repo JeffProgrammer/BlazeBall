@@ -8,6 +8,7 @@
 #include <rapidjson/document.h>
 #include "resource/resourceLoader.h"
 #include "resource/materialResource.h"
+#include "resource/materialResourceFile.h"
 #include "resource/meshResource.h"
 #include "resource/interiorResource.h"
 #include "render/texture/bitmapTexture.h"
@@ -84,6 +85,14 @@ InteriorResource* ResourceLoader::loadInterior(const std::string &file) {
 }
 
 void ResourceLoader::loadMaterials(const std::string &file) {
+	if (containsResource(file))
+		return;
+
+	if (!IO::isfile(file)) {
+		IO::printf("Unable to find material json resource file %s!\n", file.c_str());
+		return;
+	}
+
 	// read the json file
 	U32 fileLength;
 	const char *contents = reinterpret_cast<const char*>(IO::readFile(file, fileLength));
@@ -182,4 +191,8 @@ void ResourceLoader::loadMaterials(const std::string &file) {
 			IO::printf("MaterialError: Unable to create material %s\n", name.c_str());
 		}
 	}
+
+	// cache this file as a resource.
+	auto resource = new MaterialResourceFile(file);
+	mResourceMap[file] = resource;
 }

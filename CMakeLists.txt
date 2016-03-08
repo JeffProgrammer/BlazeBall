@@ -229,6 +229,7 @@ set (DIFVIEWERGAME_SRC
 	source/resource/IResource.h
 	source/resource/materialResource.cpp
 	source/resource/materialResource.h
+	source/resource/materialResourceFile.h
 	source/resource/meshResource.cpp
 	source/resource/meshResource.h
 	source/resource/resourceLoader.cpp
