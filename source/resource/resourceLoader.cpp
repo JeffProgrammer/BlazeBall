@@ -98,7 +98,7 @@ void ResourceLoader::loadMaterials(const std::string &file) {
 	const char *contents = reinterpret_cast<const char*>(IO::readFile(file, fileLength));
 	rapidjson::Document document;
 	document.Parse(contents);
-
+	
 	for (auto obj = document.Begin(); obj != document.End(); ++obj) {
 		// make sure this is an object. We can only have an array of objects.
 		if (!obj->IsObject()) {
@@ -144,11 +144,8 @@ void ResourceLoader::loadMaterials(const std::string &file) {
 				// You know this code is messy when you have to call a variable doubleFailure.
 				bool doubleFailure = false;
 				for (auto innerMember = member->value.MemberBegin(); innerMember != member->value.MemberEnd(); ++innerMember) {
-					if (!innerMember->name.IsInt()) {
-						IO::printf("Material Error: Texture number must be of type int!\n");
-						doubleFailure = true;
-						break;
-					}
+					// TODO: write a isNum string function to check this.
+					U32 id = U32(atoi(innerMember->name.GetString()));
 
 					if (!innerMember->value.IsString()) {
 						IO::printf("MaterialError: Texture value must be of type string!\n");
@@ -164,7 +161,7 @@ void ResourceLoader::loadMaterials(const std::string &file) {
 					}
 
 					auto bitmap = IO::loadTexture(innerMember->value.GetString());
-					textures.push_back(std::pair<Texture*, GLuint>(bitmap, innerMember->name.GetInt()));
+					textures.push_back(std::pair<Texture*, GLuint>(bitmap, id));
 				}
 
 				if (doubleFailure == true) {
