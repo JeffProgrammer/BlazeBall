@@ -29,9 +29,16 @@ void MaterialResource::setShader(Shader *shader) {
 }
 
 void MaterialResource::addMeshRef(MeshResource *resource) {
-	mMeshses.push_back(resource);
+	// Make sure that the mesh hasn't already been added to the material.
+	if (std::find(mMeshes.begin(), mMeshes.end(), resource) != mMeshes.end())
+		return;
+
+	mMeshes.push_back(resource);
 }
 
 void MaterialResource::removeMeshRef(MeshResource *resource) {
-
+	// Make sure that the object is in the vector
+	auto pos = std::find(mMeshes.begin(), mMeshes.end(), resource);
+	if (pos != mMeshes.end())
+		mMeshes.erase(pos);
 }

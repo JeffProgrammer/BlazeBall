@@ -33,7 +33,7 @@ public:
 	}
 
 private:
-	std::vector<MeshResource*> mMeshses;
+	std::vector<MeshResource*> mMeshes;
 	
 	std::string mResourceFile;
 
