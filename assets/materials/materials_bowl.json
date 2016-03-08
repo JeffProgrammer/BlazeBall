@@ -1,0 +1,82 @@
+[
+	{
+		"name": "beam",
+		"textures": {
+			"0": "bowl/beam.png",
+			"1": "bowl/beam.normal.jng"
+		},
+		"shader": "Interior"
+	},
+	{
+		"name": "edge_white",
+		"textures": {
+			"0": "bowl/edge_white.jpg",
+			"1": "bowl/edge_white.normal.jng",
+			"2": "bowl/edge_white.alpha.jpg"
+		},
+		"shader": "Interior"
+	},
+	{
+		"name": "friction_high",
+		"textures": {
+			"0": "bowl/friction_high.png",
+			"1": "bowl/friction_high.normal.jpg",
+			"2": "bowl/friction_high.alpha.png"
+		},
+		"shader": "Interior"
+	},
+	{
+		"name": "plate_1",
+		"textures": {
+			"0": "bowl/plate_1.jpg",
+			"1": "bowl/plate_1.normal.png",
+			"2": "bowl/plate_1.alpha.jpg"
+		},
+		"shader": "Interior"
+	},
+	{
+		"name": "tile_beginner",
+		"textures": {
+			"0": "bowl/tile_beginner.png",
+			"1": "bowl/tile_beginner.normal.png",
+			"2": "bowl/tile_beginner.alpha.jpg"
+		},
+		"shader": "Interior"
+	},
+	{
+		"name": "tile_beginner_blue",
+		"textures": {
+			"0": "bowl/tile_beginner_blue.jpg",
+			"1": "bowl/tile_beginner_blue.normal.png",
+			"2": "bowl/tile_beginner_blue.alpha.jpg"
+		},
+		"shader": "Interior"
+	},
+	{
+		"name": "tile_beginner_red",
+		"textures": {
+			"0": "bowl/tile_beginner_red.jpg",
+			"1": "bowl/tile_beginner_red.normal.png",
+			"2": "bowl/tile_beginner_red.alpha.jpg"
+		},
+		"shader": "Interior"
+	},
+	{
+		"name": "tile_underside",
+		"textures": {
+			"0": "bowl/tile_underside.jpg",
+			"1": "bowl/tile_underside.normal.png",
+			"2": "bowl/tile_underside.alpha.jpg"
+		},
+		"shader": "Interior"
+	},
+	{
+		"name": "wall_brown",
+		"textures": {
+			"0": "bowl/wall_brown.png",
+			"1": "bowl/wall_brown.normal.jpg",
+			"2": "bowl/wall_brown.alpha.png"
+		},
+		"shader": "Interior"
+	}   
+]

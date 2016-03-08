@@ -7,6 +7,7 @@
 #include "render/shader.h"
 #include "base/math.h"
 #include "render/renderInfo.h"
+#include "resource/resourceLoader.h"
 
 void Shader::initializeShaders() {
 	// Interior shader
@@ -65,4 +66,6 @@ void Shader::initializeShaders() {
 	Shader *triggerShader = new Shader("Trigger", "triggerV.glsl", "triggerF.glsl");
 	triggerShader->addAttribute(ATTRIBUTE_POSITION_NAME, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
+	// for now do materials here. I know it sucks :/
+	ResourceLoader::get()->loadMaterials("materials/materials_bowl.json");
 }

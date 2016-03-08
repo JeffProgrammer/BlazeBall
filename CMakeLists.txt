@@ -416,6 +416,8 @@ set (BUILD_DIR_FILES
 	assets/grid.normal.png
 	assets/grid.alpha.png
 
+	assets/materials/materials_bowl.json
+
 	source/shaders/interiorF.glsl
 	source/shaders/interiorV.glsl
 	source/shaders/modelV.glsl
