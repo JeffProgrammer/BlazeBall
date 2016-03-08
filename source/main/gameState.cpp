@@ -7,6 +7,7 @@
 #include "gameState.h"
 
 #include "render/renderWorld.h"
+#include "resource/resourceLoader.h"
 
 extern GLuint gSphereVBO;
 
@@ -34,6 +35,9 @@ bool GameState::start() {
 	}
 
 	if (runClient) {
+		// init resource loader
+		ResourceLoader::create();
+
 		//Create us a new scene
 		RenderWorld *world = new RenderWorld(new PhysicsEngine());
 		client = new Client(world, serverAddress, 28000);
@@ -54,6 +58,10 @@ void GameState::stop() {
 		if (gSphereVBO) {
 			glDeleteBuffers(1, &gSphereVBO);
 		}
+
+		// cleanup resource loader
+		ResourceLoader::destroy();
+
 		delete client;
 		delete clientWorld;
 	}
