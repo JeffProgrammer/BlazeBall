@@ -1,18 +1,48 @@
 Resource manager is responsible for allocating and destroying all “resources”. 
 A resource can be a mesh, interior, material.
 Resource manager gives you access to all of the meshes, interiors, materials, ect. So if you just wanted a specific resource, u can grab that list. OR if you want everything, there’s a big momma list as well.
-When we do regular render, instead of doing per-object rendering, we do per material/shader rendering. This is much more efficient for sending OpenGL commands.
+When we do regular render, instead of doing per-object rendering, we do per shader rendering. This is much more efficient for sending OpenGL commands.
 Instead of doing:
-Foreach (obj in list) {
-	renderObject();
+function render() {
+	foreach (obj in list) {
+		foreach (material in object) {
+			bindShader();
+			setMaterial(material);
+			renderObject();
+		}
+	}
 }
 We do this:
-Foreach (Material in ResourceManager::materials)
-{
-    foreach (object in material)
-    {
-         renderObject();
-    }
+function render() {
+	foreach (Shader in ShaderList)
+	{
+		bindShader();
+		foreach (material in Shader) {
+			setMaterial(Material);
+			foreach (object in Material)
+			{
+				renderObject();
+			}
+		}
+	}
 }
 Material resources hold references to meshresources, which is a base class of interior resources and shape resources.
-Materials are generated via JSON structures. However. I have a slight problem with this. For example, HOW DO WE KNOW WHAT MATERIAL BELONGS TO WHAT OBJECT????? TODO I need to figure this out.
+Materials are generated via JSON structures.
+All materials will be loaded from JSON at the start. However, they will not upload textures to the GPU unless a mesh is using them (effectivly being reference counted).
+void addMesh() {
+	if (is first mesh)
+		createMaterial();
+	addMeshToList
+}
+void removeMesh() {
+	removeMeshFromList();
+	if (mesh list is count of 0) {
+		delete Material;
+		Material = nullptr;
+	}
+}
+
+Shaders will hold references to each material. The shader will render everything in its entirety, and then move onto the next shader. The only shaders that are used for rendering will be reference
+counted similar to the materials, however shader programs sit on the GPU ALL the time. They do not get deleted until the program cleans up. How does reference counting play into this?
+Simple. Glad you asked. When a material references the shader, it will simply bump up the ref count on the shader and that shader will be put into a data structure (most likely a std::vector) and
+that structure will contain the shaders found in the code sample above where the sample render method is provided. The shader then holds references to the materials.
