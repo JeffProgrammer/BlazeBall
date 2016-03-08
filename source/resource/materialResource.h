@@ -7,8 +7,12 @@
 #ifndef _RESOURCE_MATERIALRESOURCE_H_
 #define _RESOURCE_MATERIALRESOURCE_H_
 
+#include <vector>
+#include <memory>
 #include "resource/IResource.h"
-#include "render/material.h"
+
+class Material;
+class MeshResource;
 
 class MaterialResource : public IResource {
 	typedef IResource Parent;
@@ -18,8 +22,21 @@ public:
 
 	bool load();
 
+	void setShader(Shader *shader);
+
+	void addMeshRef(MeshResource *resource);
+
+	void removeMeshRef(MeshResource *resource);
+
+	inline Material *getMaterial() const {
+		return mMaterial.get();
+	}
 private:
-	std::string mResourceFile;
+	std::string mDiffuseTexture;
+
+	std::unique_ptr<Material> mMaterial;
+
+	std::vector<MeshResource*> mMeshses;
 };
 
 #endif // _RESOURCE_MATERIALRESOURCE_H_
