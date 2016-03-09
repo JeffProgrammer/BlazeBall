@@ -60,4 +60,4 @@ inline glm::vec2 ShapeResource::assimpCast(const aiVector2D &vec) {
 }
 
 
-#endif // _RESOURCE_MESHRESOURCE_H_
+#endif // _RESOURCE_SHAPERESOURCE_H_
