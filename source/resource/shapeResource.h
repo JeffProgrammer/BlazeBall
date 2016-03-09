@@ -15,19 +15,12 @@
 class ShapeResource : public MeshResource {
 	typedef MeshResource Parent;
 public:
-	struct SubMeshData {
-		std::vector<U16> indices;
-		std::vector<Vertex> vertices;
-		GLenum primitive;
-		Material *material; // Todo make materials into a resource
-	};
-
 	ShapeResource(const std::string &file);
 	~ShapeResource();
 
 	virtual bool load() override;
 
-	inline const BoxF getWorldBox() const {
+	virtual const BoxF getWorldBox() const override {
 		return BoxF(mAssimpScene.sceneMin, mAssimpScene.sceneMax);
 	}
 
@@ -39,9 +32,6 @@ private:
 	};
 	AssimpScene mAssimpScene;
 
-	std::vector<SubMeshData> mSubMeshes;
-
-protected:
 	void _getBoundingBoxNode(const aiScene *scene, const aiNode *node, aiVector3D *min, aiVector3D *max, aiMatrix4x4 *transform);
 	void _getBoundingBox(const aiScene *scene, aiVector3D *min, aiVector3D *max);
 

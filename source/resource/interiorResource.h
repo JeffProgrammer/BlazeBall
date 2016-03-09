@@ -21,14 +21,12 @@ public:
 
 	virtual bool load() override;
 
-private:
+	virtual const BoxF getWorldBox() const override {
+		return mWorldBox;
+	}
 
-	/**
-	 * Holds the data for the interior.
-	 * Material*        - Each material has a number of triangles.
-	 * vector<Triangle> - Triangle list for each material.
-	 */
-	std::unordered_map<Material*, std::vector<Triangle>> triangles;
+private:
+	BoxF mWorldBox;
 };
 
 #endif // _RESOURCE_INTERIORRESOURCE_H_
