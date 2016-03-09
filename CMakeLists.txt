@@ -234,6 +234,8 @@ set (DIFVIEWERGAME_SRC
 	source/resource/meshResource.h
 	source/resource/resourceLoader.cpp
 	source/resource/resourceLoader.h
+	source/resource/shapeResource.cpp
+	source/resource/shapeResource.h
 
 	# Bitmap folder
 	source/render/bitmap/jpegSupport.cpp
