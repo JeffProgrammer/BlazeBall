@@ -6,8 +6,8 @@
 
 #include "resource/interiorResource.h"
 
-InteriorResource::InteriorResource(const std::string &file) {
-	mResourceFile = file;
+InteriorResource::InteriorResource(const std::string &file) : MeshResource(file) {
+
 }
 
 InteriorResource::~InteriorResource() {

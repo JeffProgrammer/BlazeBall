@@ -11,18 +11,17 @@
 #include <vector>
 #include "base/types.h"
 #include "base/io.h"
-#include "resource/IResource.h"
+#include "resource/MeshResource.h"
 
-class InteriorResource : public IResource {
-	typedef IResource Parent;
+class InteriorResource : public MeshResource {
+	typedef MeshResource Parent;
 public:
 	InteriorResource(const std::string &file);
 	~InteriorResource();
 
-	bool load();
+	virtual bool load() override;
 
 private:
-	std::string mResourceFile;
 
 	/**
 	 * Holds the data for the interior.

@@ -9,8 +9,8 @@
 #include "resource/resourceLoader.h"
 #include "resource/materialResource.h"
 #include "resource/materialResourceFile.h"
-#include "resource/meshResource.h"
 #include "resource/interiorResource.h"
+#include "resource/shapeResource.h"
 #include "render/texture/bitmapTexture.h"
 
 // For getcwd
@@ -40,10 +40,10 @@ ResourceLoader::~ResourceLoader() {
 
 }
 
-MeshResource* ResourceLoader::loadMesh(const std::string &file) {
+ShapeResource* ResourceLoader::loadShape(const std::string &file) {
 	// See if it's already in the map. If it is, we are good.
 	if (containsResource(file))
-		return mMeshResourceMap[file];
+		return static_cast<ShapeResource*>(mMeshResourceMap[file]);
 
 	// Make sure that this file exists!
 	if (!IO::isfile(file)) {
@@ -51,7 +51,7 @@ MeshResource* ResourceLoader::loadMesh(const std::string &file) {
 		return nullptr;
 	}
 
-	MeshResource *resource = new MeshResource(file);
+	auto resource = new ShapeResource(file);
 	if (resource->load()) {
 		// If we loaded the resource successfully, then store the resource
 		// pointer to our hash maps and then return the resource.
@@ -65,7 +65,7 @@ MeshResource* ResourceLoader::loadMesh(const std::string &file) {
 InteriorResource* ResourceLoader::loadInterior(const std::string &file) {
 	// See if it's already in the map. If it is, we are good.
 	if (containsResource(file))
-		return mInteriorResourceMap[file];
+		return static_cast<InteriorResource*>(mMeshResourceMap[file]);
 
 	// Make sure that this file exists!
 	if (!IO::isfile(file)) {
@@ -73,12 +73,12 @@ InteriorResource* ResourceLoader::loadInterior(const std::string &file) {
 		return nullptr;
 	}
 
-	InteriorResource *resource = new InteriorResource(file);
+	auto resource = new InteriorResource(file);
 	if (resource->load()) {
 		// If we loaded the resource successfully, then store the resource
 		// pointer to our hash maps and then return the resource.
 		mResourceMap[file] = resource;
-		mInteriorResourceMap[file] = resource;
+		mMeshResourceMap[file] = resource;
 		return resource;
 	}
 	return nullptr;

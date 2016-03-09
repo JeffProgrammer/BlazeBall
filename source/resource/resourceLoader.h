@@ -13,6 +13,7 @@
 
 class MeshResource;
 class InteriorResource;
+class ShapeResource;
 class MaterialResource;
 
 class ResourceLoader {
@@ -27,8 +28,6 @@ private:
 	std::unordered_map<std::string, IResource*> mResourceMap;
 
 	std::unordered_map<std::string, MeshResource*> mMeshResourceMap;
-
-	std::unordered_map<std::string, InteriorResource*> mInteriorResourceMap;
 
 	std::vector<MaterialResource*> mMaterialResources;
 
@@ -52,7 +51,7 @@ public:
 		return mCurrentWorkingDir;
 	}
 
-	MeshResource* loadMesh(const std::string &file);
+	ShapeResource* loadShape(const std::string &file);
 
 	InteriorResource* loadInterior(const std::string &file);
 
