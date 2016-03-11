@@ -210,7 +210,7 @@ void Renderer::handleEvent(PlatformEvent *event) {
 				dict.Set("movement_x", static_cast<MouseMoveEvent *>(event)->delta.x);
 				dict.Set("movement_y", static_cast<MouseMoveEvent *>(event)->delta.y);
 
-				mRocketContext->GetHoverElement()->DispatchEvent("mousemove", dict, true);
+				mCurrentDocument->getDocument()->DispatchEvent("mousemove", dict, true);
 			} else {
 				mRocketContext->ProcessMouseMove(static_cast<MouseMoveEvent *>(event)->position.x, static_cast<MouseMoveEvent *>(event)->position.y, 0);
 			}
