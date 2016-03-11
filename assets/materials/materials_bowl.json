@@ -3,7 +3,8 @@
 		"name": "beam",
 		"textures": {
 			"0": "bowl/beam.png",
-			"1": "bowl/beam.normal.jng"
+			"1": "bowl/beam.normal.jng",
+			"3": "noise.jpg"
 		},
 		"shader": "Interior"
 	},
@@ -12,7 +13,8 @@
 		"textures": {
 			"0": "bowl/edge_white.jpg",
 			"1": "bowl/edge_white.normal.jng",
-			"2": "bowl/edge_white.alpha.jpg"
+			"2": "bowl/edge_white.alpha.jpg",
+			"3": "noise.jpg"
 		},
 		"shader": "Interior"
 	},
@@ -21,7 +23,8 @@
 		"textures": {
 			"0": "bowl/friction_high.png",
 			"1": "bowl/friction_high.normal.jpg",
-			"2": "bowl/friction_high.alpha.png"
+			"2": "bowl/friction_high.alpha.png",
+			"3": "noise.jpg"
 		},
 		"shader": "Interior"
 	},
@@ -30,7 +33,8 @@
 		"textures": {
 			"0": "bowl/plate_1.jpg",
 			"1": "bowl/plate_1.normal.png",
-			"2": "bowl/plate_1.alpha.jpg"
+			"2": "bowl/plate_1.alpha.jpg",
+			"3": "noise.jpg"
 		},
 		"shader": "Interior"
 	},
@@ -39,7 +43,8 @@
 		"textures": {
 			"0": "bowl/tile_beginner.png",
 			"1": "bowl/tile_beginner.normal.png",
-			"2": "bowl/tile_beginner.alpha.jpg"
+			"2": "bowl/tile_beginner.alpha.jpg",
+			"3": "noise.jpg"
 		},
 		"shader": "Interior"
 	},
@@ -48,7 +53,8 @@
 		"textures": {
 			"0": "bowl/tile_beginner_blue.jpg",
 			"1": "bowl/tile_beginner_blue.normal.png",
-			"2": "bowl/tile_beginner_blue.alpha.jpg"
+			"2": "bowl/tile_beginner_blue.alpha.jpg",
+			"3": "noise.jpg"
 		},
 		"shader": "Interior"
 	},
@@ -57,7 +63,8 @@
 		"textures": {
 			"0": "bowl/tile_beginner_red.jpg",
 			"1": "bowl/tile_beginner_red.normal.png",
-			"2": "bowl/tile_beginner_red.alpha.jpg"
+			"2": "bowl/tile_beginner_red.alpha.jpg",
+			"3": "noise.jpg"
 		},
 		"shader": "Interior"
 	},
@@ -66,7 +73,8 @@
 		"textures": {
 			"0": "bowl/tile_underside.jpg",
 			"1": "bowl/tile_underside.normal.png",
-			"2": "bowl/tile_underside.alpha.jpg"
+			"2": "bowl/tile_underside.alpha.jpg",
+			"3": "noise.jpg"
 		},
 		"shader": "Interior"
 	},
@@ -75,7 +83,8 @@
 		"textures": {
 			"0": "bowl/wall_brown.png",
 			"1": "bowl/wall_brown.normal.jpg",
-			"2": "bowl/wall_brown.alpha.png"
+			"2": "bowl/wall_brown.alpha.png",
+			"3": "noise.jpg"
 		},
 		"shader": "Interior"
 	}   
