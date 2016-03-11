@@ -24,15 +24,22 @@ void MainMenuDocument::onEvent(Rocket::Core::Event &event) {
 			if (doc) {
 				mRenderer->setCurrentDocument(doc);
 			}
-		} else if (command == "loadServer") {
-			Rocket::Core::String content = event.GetCurrentElement()->GetAttribute("data-content", Rocket::Core::String(""));
+		} else if (command == "loadLocalServer") {
+			Rocket::Core::String level = event.GetCurrentElement()->GetAttribute("data-level", Rocket::Core::String(""));
+			U16 port = event.GetCurrentElement()->GetAttribute("data-port", 28000);
 
 			//Load up a server
-			GameState::gState->createServer(28000);
-			GameState::gState->server->loadLevel(content.CString());
+			GameState::gState->createServer(port);
+			GameState::gState->server->loadLevel(level.CString());
 
 			//Connect to it
 			GameState::gState->connectToServer("localhost", 28000);
+		} else if (command == "connectToServer") {
+			Rocket::Core::String server = event.GetCurrentElement()->GetAttribute("data-server", Rocket::Core::String(""));
+			U16 port = event.GetCurrentElement()->GetAttribute("data-port", 28000);
+
+			//Connect to it
+			GameState::gState->connectToServer(server.CString(), port);
 		}
 	}
 }
