@@ -14,11 +14,9 @@
 #include "gui/elements/elementWorldView.h"
 #include "render/renderWorld.h"
 
-Client::Client(World *world, const std::string &ipAddress, const U16 port) : mWorld(world) {
-	mServerAddress = ipAddress;
-	mPort = port;
-
+Client::Client() : mWorld(nullptr) {
 	mControlObject = nullptr;
+	mConnected = DISCONNECTED;
 	mConfig = new Config("config.txt");
 }
 
@@ -59,8 +57,6 @@ void Client::start() {
 		return;
 	}
 
-	dynamic_cast<RenderWorld *>(mWorld)->generateBuffers();
-
 	mRunning = true;
 
 	PlatformTimer *timer = GameState::gState->platform->createTimer();
@@ -77,15 +73,21 @@ void Client::start() {
 		}
 		timer->start();
 
-		mWorld->loop(lastDelta);
-		pollEvents();
-
-		if (!mWorld->getRunning()) {
-			stop();
-			return;
+		if (mConnected != DISCONNECTED) {
+			pollEvents();
 		}
 
-		updateMovement(lastDelta);
+		if (mConnected == CONNECTED) {
+			mWorld->loop(lastDelta);
+
+			if (!mWorld->getRunning()) {
+				stop();
+				return;
+			}
+
+			updateMovement(lastDelta);
+		}
+
 		mRenderer->render(lastDelta);
 
 		timer->end();
@@ -121,7 +123,11 @@ void Client::updateMovement(const F64 &delta) {
 	}
 }
 
-void Client::connect() {
+void Client::connect(const std::string &serverAddress, const U16 port) {
+	mServerAddress = serverAddress;
+	mPort = port;
+	mConnected = CONNECTING;
+
 	IO::printf("Connecting to IP address: %s\n", mServerAddress.c_str());
 
 	enetpp::client_connect_params params;
@@ -139,11 +145,22 @@ void Client::disconnect() {
 void Client::pollEvents() {
 	auto onConnect = [this]() {
 		IO::printf("You have connected to the server!\n");
+
+		mConnected = CONNECTED;
+
+		//Create us a new scene
+		RenderWorld *world = new RenderWorld(new PhysicsEngine());
+		world->setClient(this);
+		mWorld = world;
+
 		this->sendEvent(std::make_shared<NetClientConnectEvent>(this));
 	};
 
-	auto onDisconnect = []() {
+	auto onDisconnect = [this]() {
 		IO::printf("You have disconnected from the server!\n");
+
+		mConnected = DISCONNECTED;
+		delete mWorld;
 	};
 
 	auto onReceiveData = [this](const U8 *data, size_t size) {

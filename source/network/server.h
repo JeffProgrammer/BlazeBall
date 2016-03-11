@@ -21,11 +21,13 @@
 
 class Server {
 public:
-	Server(World *world);
+	Server(World *world, U16 port);
 	~Server();
 
 	void start();
 	void stop();
+
+	void loadLevel(const std::string &level);
 
 	void pollEvents();
 
@@ -63,6 +65,7 @@ private:
 	PlatformTimer *mTimer;
 	F64 mAccumulator;
 	World *mWorld;
+	U16 mPort;
 
 	std::unordered_map<U32, NetObject *> mGhostedObjects;
 	std::unordered_map<NetObject *, U32> mGhostedIndices;

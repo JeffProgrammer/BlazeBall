@@ -38,7 +38,8 @@ void ElementWorldView::OnRender() {
 	info.setScissor();
 
 	//Actually render
-	static_cast<RenderWorld *>(mClient->getWorld())->render(info);
+	if (mClient->getWorld() != nullptr)
+		static_cast<RenderWorld *>(mClient->getWorld())->render(info);
 
 	//Disable scissor for now
 	glDisable(GL_SCISSOR_TEST);

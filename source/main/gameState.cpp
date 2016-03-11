@@ -25,23 +25,23 @@ void GameState::parseArgs(int argc, const char **argv) {
 	}
 }
 
+void GameState::createServer(U16 port) {
+	serverWorld = new World(new PhysicsEngine());
+	server = new Server(serverWorld, port);
+	server->start();
+}
+
+void GameState::connectToServer(const std::string &address, U16 port) {
+	client->connect(address, port);
+}
+
+void GameState::disconnectFromServer() {
+	client->disconnect();
+}
+
 bool GameState::start() {
-	if (runServer) {
-		serverWorld = new World(new PhysicsEngine());
-		server = new Server(serverWorld);
-		serverWorld->loadLevel("bowl.json");
-		server->start();
-	}
-
 	if (runClient) {
-		//Create us a new scene
-		RenderWorld *world = new RenderWorld(new PhysicsEngine());
-		client = new Client(world, serverAddress, 28000);
-
-		world->setClient(client);
-		client->connect();
-
-		clientWorld = world;
+		client = new Client();
 	}
 	return true;
 }

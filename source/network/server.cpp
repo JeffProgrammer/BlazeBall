@@ -16,7 +16,7 @@
 U32 Server::sUniqueId = 0;
 U32 Server::sLastGhostId = 0;
 
-Server::Server(World *world) : mWorld(world) {
+Server::Server(World *world, U16 port) : mWorld(world), mPort(port) {
 	mIsRunning = false;
 	mAccumulator = 0.0;
 	mTimer = new SDLTimer();
@@ -44,7 +44,7 @@ void Server::start() {
 	enetpp::server_listen_params<ClientConnection> params;
 	params.set_max_client_count(16);
 	params.set_channel_count(1);
-	params.set_listen_port(28000);
+	params.set_listen_port(mPort);
 	params.set_initialize_client_function([this](ClientConnection &client, const char *ipAddress) {
 		// Initializes the client by assining its IP address and its unique identifier.
 		client.mIpAddress = ipAddress;
@@ -87,6 +87,15 @@ void Server::run() {
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		mTimer->end();
 		delta = mTimer->getDelta();
+	}
+}
+
+void Server::loadLevel(const std::string &level) {
+	mWorld->loadLevel(level);
+	for (const auto &object : mWorld->getObjectList()) {
+		auto netObject = dynamic_cast<NetObject*>(object);
+		if (netObject != nullptr)
+			addGhostedObject(netObject);
 	}
 }
 

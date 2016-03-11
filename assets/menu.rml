@@ -5,6 +5,7 @@
 	<title>Window</title>
 </head>
 <body template="window">
-	<button id="play" data-command="setContent" data-content="Game">Click Me</button>
+	<button id="play" data-command="loadServer" data-content="bowl.json">Start the Server</button>
+	<button id="game" data-command="setContent" data-content="Game">Show Game Screen</button>
 </body>
 </rml>

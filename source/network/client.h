@@ -26,14 +26,20 @@
 #include "gui/systemInterface.h"
 
 class Client {
+	enum ConnectionState {
+		DISCONNECTED,
+		CONNECTING,
+		CONNECTED
+	};
+
 public:
-	Client(World *world, const std::string &serverAddress, const U16 port);
+	Client();
 	~Client();
 
 	void start();
 	void stop();
 
-	void connect();
+	void connect(const std::string &serverAddress, const U16 port);
 	void disconnect();
 
 	void pollEvents();
@@ -66,10 +72,14 @@ protected:
 	enetpp::client mClient;
 	std::string mServerAddress;
 	U16 mPort;
+	ConnectionState mConnected;
+
 	World *mWorld;
 	GameObject *mControlObject;
+
 	Renderer *mRenderer;
 	bool mRunning;
+
 	Movement mMovement;
 	Config *mConfig;
 

@@ -42,6 +42,11 @@ public:
 
 	}
 
+	void createServer(U16 port);
+
+	void connectToServer(const std::string &address, U16 port);
+	void disconnectFromServer();
+
 	static std::unique_ptr<GameState> gState;
 
 	void parseArgs(int argc, const char **argv);
