@@ -51,6 +51,12 @@ public:
 		return (mResourceMap.find(resource) != mResourceMap.end());
 	}
 
+	inline ShaderResource* getShaderResource(Shader *shader) {
+		if (mShaderResources.find(shader) == mShaderResources.end())
+			return nullptr;
+		return mShaderResources[shader];
+	}
+
 	inline const std::string getCurrentDirectory() const {
 		return mCurrentWorkingDir;
 	}

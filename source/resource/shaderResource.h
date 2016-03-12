@@ -29,6 +29,10 @@ public:
 
 	void removeMaterial(MaterialResource *material);
 
+	inline bool containsMaterial(MaterialResource *material) {
+		return std::find(mMaterialList.begin(), mMaterialList.end(), material) != mMaterialList.end();
+	}
+
 protected:
 	std::string mResourceFile;
 	Shader *mShader;
