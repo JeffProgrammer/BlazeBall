@@ -11,6 +11,7 @@
 #include "resource/materialResourceFile.h"
 #include "resource/interiorResource.h"
 #include "resource/shapeResource.h"
+#include "resource/shaderResource.h"
 #include "render/texture/bitmapTexture.h"
 
 // For getcwd
@@ -82,6 +83,15 @@ InteriorResource* ResourceLoader::loadInterior(const std::string &file) {
 		return resource;
 	}
 	return nullptr;
+}
+
+ShaderResource* ResourceLoader::loadShader(Shader *shader) {
+	if (mShaderResources.find(shader) != mShaderResources.end())
+		return mShaderResources[shader];
+	ShaderResource *resource = new ShaderResource("");
+	resource->temp_setShader(shader);
+	mShaderResources[shader] = resource;
+	return resource;
 }
 
 void ResourceLoader::loadMaterials(const std::string &file) {

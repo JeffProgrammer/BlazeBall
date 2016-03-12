@@ -4,8 +4,8 @@
 // All rights reserved.
 //------------------------------------------------------------------------------
 
-#ifndef _RESOURCE_MESHRESOURCE_H_
-#define _RESOURCE_MESHRESOURCE_H_
+#ifndef _RESOURCE_SHADERRESOURCE_H_
+#define _RESOURCE_SHADERRESOURCE_H_
 
 #include "resource/IResource.h"
 #include "render/shader.h"
@@ -19,6 +19,11 @@ public:
 	~ShaderResource();
 
 	bool load();
+
+	// TEMPORARY
+	void temp_setShader(Shader *shader) {
+		mShader = shader;
+	}
 
 	void addMaterial(MaterialResource *material);
 
@@ -34,4 +39,4 @@ protected:
 	std::vector<MaterialResource*> mMaterialList;
 };
 
-#endif // _RESOURCE_MESHRESOURCE_H_
+#endif // _RESOURCE_SHADERRESOURCE_H_

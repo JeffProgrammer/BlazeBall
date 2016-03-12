@@ -15,6 +15,7 @@ class MeshResource;
 class InteriorResource;
 class ShapeResource;
 class MaterialResource;
+class ShaderResource;
 
 class ResourceLoader {
 private:
@@ -30,6 +31,9 @@ private:
 	std::unordered_map<std::string, MeshResource*> mMeshResourceMap;
 
 	std::vector<MaterialResource*> mMaterialResources;
+
+	// TEMPORARY
+	std::unordered_map<Shader*, ShaderResource*> mShaderResources;
 
 	std::string mCurrentWorkingDir;
 public:
@@ -54,6 +58,10 @@ public:
 	ShapeResource* loadShape(const std::string &file);
 
 	InteriorResource* loadInterior(const std::string &file);
+
+	// Note: we should be loading shaders from json files. for now we
+	// hardcode them in c++
+	ShaderResource* loadShader(Shader *shader);
 
 	void loadMaterials(const std::string &file);
 };
