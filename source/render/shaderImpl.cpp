@@ -17,12 +17,12 @@ void Shader::initializeShaders() {
 	interiorShader->addUniformLocation(SAMPLER_SPECULAR_NAME, 2);
 	interiorShader->addUniformLocation(SAMPLER_NOISE_NAME,    3);
 	interiorShader->addUniformLocation(SAMPLER_CUBEMAP_NAME,  4);
-
 	interiorShader->addAttribute(ATTRIBUTE_POSITION_NAME,  3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, point)));
 	interiorShader->addAttribute(ATTRIBUTE_UV_NAME,        2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
 	interiorShader->addAttribute(ATTRIBUTE_NORMAL_NAME,    3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
 	interiorShader->addAttribute(ATTRIBUTE_TANGENT_NAME,   3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
 	interiorShader->addAttribute(ATTRIBUTE_BITANGENT_NAME, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
+	ResourceLoader::get()->loadShader(interiorShader);
 
 	// Sphere shader
 	Shader *sphereShader = new Shader("Sphere", "sphereV.glsl", "sphereF.glsl");
