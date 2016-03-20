@@ -1,10 +1,7 @@
-Blaze Ball
+The BlazeBall Engine
 =============
 
-A marble game that is meant to be the successor to Marble Blast.
-
-!["in game image"](http://i.imgur.com/9W5V4rl.jpg "In Game")
-Disclaimer: Temporary assets. Will make our own when we are ready.
+A game engine that was made for a 3D marble project. It has since been released under the BSD license because it became too much of a hastle to make a commercial game AND the engine, instead of focusing on the game itself. Hopefully people will find some use for this code as long as they abide by the License. See the LICENSE file for more information.
 
 Building
 -------------------
@@ -21,19 +18,15 @@ The executable is run as `Game <dif file> [dif file 2, ...]`. Files can be in an
 Requirements
 -------------------
 
-C++11 support  
-OpenGL 2.1+ (3.0 extensions + GLSL 120)
+C++14 supported compiler. MSVC 2015, Clang 3.5+ 
+OpenGL 3.3, although OpenGL 2.1 should work if mainstream 3.x extensions are supported.
 
-* Windows XP+
-* Mac OSX 10.6.8+
-* Ubuntu 14.04
-* Intel Core2Duo CPU @ 2.0ghz
-* GPU:
-  * NVidia GeForce 8000 series
-  * ATI Radeon HD 2000 series
-  * Intel HD 3000 Graphics
-  * 256MB VRAM
-* 2GB Ram
+* Windows 7+
+* Mac OSX 10.10.5+
+
+Tested on Nvidia and Intel cards using their latest drivers. ATI will most likely work.
+
+Although not tested, this code should run on older operating systems such as Windows XP and Mac OSX Snow Leopard or higher. It was never tested on Linux, but considering that it works on MacOSX and we use third party libraries with UNIX compatability, it shouldn't be to bad to get it up and running.
 
 Third Party Libraries
 -------------------
@@ -60,4 +53,26 @@ License
 Copyright (c) 2014-2016, Glenn Smith
 Copyright (c) 2014-2016, Jeff Hutchinson
 All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of the project nor the
+      names of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
